@@ -8,8 +8,34 @@ html {
 	height: 100%;
 }
 
+html:not([dark]) {
+	--color-text: rgb(0, 0, 0);
+	--color-description: rgb(66, 66, 66);
+	--color-normal: rgb(255, 255, 255);
+	--color-darker: rgb(194, 194, 194);
+	--color-outline: rgb(0, 0, 0);
+	--color-button: radial-gradient(at center top, rgb(255, 255, 255), rgba(85, 85, 85, 0.5));
+}
+
+html[dark] {
+	background: black;
+
+	--color-text: rgb(238, 238, 238);
+	--color-description: rgb(185, 185, 185);
+	--color-normal: rgb(48, 48, 48);
+	--color-normal-50: rgba(48, 48, 48, 0.5);
+	--color-darker: rgb(22, 22, 22);
+	--color-darker-50: rgba(22, 22, 22, 0.5);
+	--color-outline: rgb(125, 125, 125);
+	--color-button: radial-gradient(at center top, rgb(128, 128, 128), rgba(85, 85, 85, 0.5));
+}
+
 body {
 	margin: 0;
 	width: 100%;
 	height: 100%;
+}
+
+* {
+	color: var(--color-text);
 }
