@@ -5,6 +5,8 @@
     let popUp = false
 
     function checkWidthAndHeight() {
+        if (typeof window === "undefined") return;
+
         let mobile = false
         let horizon = false
 
@@ -19,12 +21,14 @@
     }
 
     onMount(() => {
+        if (typeof window === "undefined") return;
         checkWidthAndHeight();
         window.addEventListener('resize' , checkWidthAndHeight);
         window.addEventListener('orientationchange' , checkWidthAndHeight);
     })
 
     onDestroy(() => {
+        if (typeof window === "undefined") return;
         window.removeEventListener('resize' , checkWidthAndHeight);
         window.removeEventListener('orientationchange' , checkWidthAndHeight);
     })
