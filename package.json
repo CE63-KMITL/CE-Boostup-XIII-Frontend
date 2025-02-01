@@ -40,5 +40,6 @@
 	"dependencies": {
 		"svelte-icons": "^2.1.0"
 	},
-	"author": "CE63@KMITL"
+	"author": "CE63@KMITL",
+	"license": "MIT"
 }
