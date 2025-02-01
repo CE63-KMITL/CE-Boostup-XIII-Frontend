@@ -1,12 +1,15 @@
 <script lang="ts">
     import IoIosEyeOff from 'svelte-icons/io/IoIosEyeOff.svelte';
     import IoLogoGoogle from 'svelte-icons/io/IoLogoGoogle.svelte';
-    import Horizon from './horizonmobile.svelte'
-    import Vertical from './verticalmobile.svelte'
+    import './horizonmobile.scss'
+    import './verticalmobile.scss'
     import {onMount , onDestroy} from "svelte";
 
     let isHorizonMobile = false
     let isVerticalMobile = false
+
+    let Dynamic1, Dynamic2, Dynamic3, Dynamic4, Dynamic5, Dynamic6, Dynamic7,Dynamic8 ;
+    let Dynamic9, Dynamic10, Dynamic11,Dynamic12, Dynamic13 ; 
 
     function checkWidthAndHeight() {
         if (typeof window === "undefined") return;
@@ -41,45 +44,56 @@
         window.removeEventListener('resize' , checkWidthAndHeight);
         window.removeEventListener('orientationchange' , checkWidthAndHeight);
     })
+
+    $: Dynamic1 = isHorizonMobile ? "HorizonContainer" : isVerticalMobile ? "VerticalContainer" : "Container";
+    $: Dynamic2 = isHorizonMobile ? "HorizonLoginBox" : isVerticalMobile ? "VerticalLoginBox" : "LoginBox";
+    $: Dynamic3 = isHorizonMobile ? "HorizonLoginHead" : isVerticalMobile ? "VerticalLoginHead" : "LoginHead";
+    $: Dynamic4 = isHorizonMobile ? "HorizonInputBox" : isVerticalMobile ? "VerticalInputBox" : "InputBox";
+    $: Dynamic5 = isHorizonMobile ? "HorizonEmail" : isVerticalMobile ? "VerticalEmail" : "Email";
+    $: Dynamic6 = isHorizonMobile ? "HorizonPasswordBox" : isVerticalMobile ? "VerticalPasswordBox" : "PasswordBox";
+    $: Dynamic7 = isHorizonMobile ? "HorizonPassword" : isVerticalMobile ? "VerticalPassword" : "Password";
+    $: Dynamic8 = isHorizonMobile ? "HorizonIoIosEyeOff" : isVerticalMobile ? "VerticalIoIosEyeOff" : "IoIosEyeOff";
+    $: Dynamic9 = isHorizonMobile ? "HorizonForgetPassword" : isVerticalMobile ? "VerticalForgetPassword" : "ForgetPassword";
+    $: Dynamic10 = isHorizonMobile ? "HorizonLogin" : isVerticalMobile ? "VerticalLogin" : "Login";
+    $: Dynamic11 = isHorizonMobile ? "HorizonText" : isVerticalMobile ? "VerticalText" : "Text";
+    $: Dynamic12 = isHorizonMobile ? "HorizonGoogle" : isVerticalMobile ? "VerticalGoogle" : "Google";
+    $: Dynamic13 = isHorizonMobile ? "HorizonIoLogoGoogle" : isVerticalMobile ? "VerticalIoLogoGoogle" : "IoLogoGoogle";
+
 </script>
 
-{#if isHorizonMobile}
-    <Horizon/>
-{:else if isVerticalMobile}
-    <Vertical/>
-{:else}
-    <div class="Container">
-        <div class="LoginBox">
-            <h1 style="font-size: 7.5vh; font-weight: 700;">Login</h1>
-            <div class="InputBox" style="align-self: self-start;">
-                <input class = "Email" type="email" style="font-size: 3vh;">
-                <div class="PasswordBox">
-                    <input class = "Password" type="password" style="font-size: 3vh;">
-                    <button>
-                        <div style="width: 4.6vh; border: 1px solid gray;  border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
-                            <IoIosEyeOff/>
-                        </div>
-                    </button>
-                </div>
-                <button style="display: flex; font-size: 3vh">
-                    Forget password?
+<div class={Dynamic1}>
+    <div class={Dynamic2}>
+        <h1 class={Dynamic3}>
+            Login
+        </h1>
+        <div class={Dynamic4}>
+            <input class ={Dynamic5} type="email">
+            <div class={Dynamic6}>
+                <input class = {Dynamic7} type="password">
+                <button>
+                    <div class={Dynamic8}>
+                        <IoIosEyeOff/>
+                    </div>
                 </button>
             </div>
-            <button class="Login" style="font-size: 4vh; font-weight: 500;">
-                Login
-            </button>
-            <p style="font-size: 3vh;">
-                or
-            </p>
-            <button class="Google" style=" display: flex; align-items: center; justify-content: center; font-size: 3.5vh; font-weight: 500;">
-                <div style="width: 4.15vh; margin-right: 5px">
-                    <IoLogoGoogle/>
-                </div>
-                Login with Google
+            <button class={Dynamic9}>
+                Forget password?
             </button>
         </div>
+        <button class={Dynamic10}>
+            Login
+        </button>
+        <p class={Dynamic11}>
+            or
+        </p>
+        <button class={Dynamic12}>
+            <div  class={Dynamic13}>
+                <IoLogoGoogle/>
+            </div>
+            Login with Google
+        </button>
     </div>
-{/if}
+</div>
 
 <style lang="scss">
     .Container {
@@ -106,14 +120,22 @@
         border-radius: 25px;
         backdrop-filter: blur(15px);
     }
+
+    .LoginHead{
+        font-size: 7.5vh; 
+        font-weight: 700;
+    }
+
     .InputBox{
         display: flex;
+        align-self: self-start;
         flex-direction: column;
         justify-content: center;
         width: 100%;
         margin-top: 20px;
         gap: 10px;
     }
+
     .PasswordBox{
         display: flex;
         align-items: center;
@@ -128,6 +150,7 @@
         background-color: transparent;
         border: 1px solid gray;
         border-radius: 5px;
+        font-size: 3vh;
     }
 
     .Password {
@@ -140,6 +163,19 @@
         border-radius: 5px;
         border-top-right-radius: 0px;
         border-bottom-right-radius: 0px;
+        font-size: 3vh;
+    }
+
+    .IoIosEyeOff{
+        width: 4.65vh; 
+        border: 1px solid gray;  
+        border-top-right-radius: 5px; 
+        border-bottom-right-radius: 5px;
+    }
+
+    .ForgetPassword {
+        display: flex;
+        font-size: 2vh
     }
 
     .Login {
@@ -147,11 +183,27 @@
         width: 100%;
         border: 1px solid gray;
         border-radius: 25px;
+        font-size: 4vh; 
+        font-weight: 500;
+    }
+
+    .Text {
+        font-size: 3vh;
     }
 
     .Google {
         width: 100%;
         border: 1px solid gray;
         border-radius: 15px;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-size: 3.5vh; 
+        font-weight: 500;
+    }
+
+    .IoLogoGoogle{
+        width: 4.15vh; 
+        margin-right: 5px
     }
 </style>
