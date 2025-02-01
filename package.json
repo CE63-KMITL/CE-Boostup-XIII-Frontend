@@ -3,6 +3,8 @@
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
+     "author": "CE63@KMITL",
+	"license": "MIT",
 	"scripts": {
 		"<--Main-->": "",
 		"dev": "vite dev",
