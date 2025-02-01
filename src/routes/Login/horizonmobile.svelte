@@ -1,87 +1,41 @@
 <script lang="ts">
     import IoIosEyeOff from 'svelte-icons/io/IoIosEyeOff.svelte';
     import IoLogoGoogle from 'svelte-icons/io/IoLogoGoogle.svelte';
-    import Horizon from './horizonmobile.svelte'
-    import Vertical from './verticalmobile.svelte'
-    import {onMount , onDestroy} from "svelte";
-
-    let isHorizonMobile = false
-    let isVerticalMobile = false
-
-    function checkWidthAndHeight() {
-        if (typeof window === "undefined") return;
-
-        let mobile = false
-        let horizon = false
-        let vertical = false
-
-        if(window.innerWidth <= 1000){
-            mobile = true
-        }
-        if(window.innerWidth > window.innerHeight){
-            horizon = true
-        }
-        if(window.innerHeight > window.innerWidth && window.innerHeight <= 1000){
-            vertical = true
-        }
-
-        isHorizonMobile = mobile && horizon
-        isVerticalMobile = mobile && vertical
-    }
-
-    onMount(() => {
-        if (typeof window === "undefined") return;
-        checkWidthAndHeight();
-        window.addEventListener('resize' , checkWidthAndHeight);
-        window.addEventListener('orientationchange' , checkWidthAndHeight);
-    })
-
-    onDestroy(() => {
-        if (typeof window === "undefined") return;
-        window.removeEventListener('resize' , checkWidthAndHeight);
-        window.removeEventListener('orientationchange' , checkWidthAndHeight);
-    })
 </script>
 
-{#if isHorizonMobile}
-    <Horizon/>
-{:else if isVerticalMobile}
-    <Vertical/>
-{:else}
     <div class="Container">
         <div class="LoginBox">
-            <h1 style="font-size: 7.5vh; font-weight: 700;">Login</h1>
+            <h1 style="font-size: 12vh; font-weight: 700;">Login</h1>
             <div class="InputBox" style="align-self: self-start;">
-                <input class = "Email" type="email" style="font-size: 3vh;">
+                <input class = "Email" type="email" style="font-size: 4vh;">
                 <div class="PasswordBox">
-                    <input class = "Password" type="password" style="font-size: 3vh;">
+                    <input class = "Password" type="password" style="font-size: 4vh;">
                     <button>
-                        <div style="width: 4.6vh; border: 1px solid gray;  border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
+                        <div style="width: 6.4vh; border: 1px solid gray;  border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
                             <IoIosEyeOff/>
                         </div>
                     </button>
                 </div>
-                <button style="display: flex; font-size: 3vh">
+                <button style="display: flex; font-size: 4vh">
                     Forget password?
                 </button>
             </div>
-            <button class="Login" style="font-size: 4vh; font-weight: 500;">
+            <button class="Login" style="font-size: 5.5vh; font-weight: 500;">
                 Login
             </button>
-            <p style="font-size: 3vh;">
+            <p style="font-size: 4.5vh;">
                 or
             </p>
-            <button class="Google" style=" display: flex; align-items: center; justify-content: center; font-size: 3.5vh; font-weight: 500;">
-                <div style="width: 4.15vh; margin-right: 5px">
+            <button class="Google" style=" display: flex; align-items: center; justify-content: center; font-size: 5vh; font-weight: 500;">
+                <div style="width: 5.65vh; margin-right: 5px">
                     <IoLogoGoogle/>
                 </div>
                 Login with Google
             </button>
         </div>
     </div>
-{/if}
 
-<style lang="scss">
+<style>
     .Container {
         display: flex;
         align-items: center;
@@ -111,7 +65,7 @@
         flex-direction: column;
         justify-content: center;
         width: 100%;
-        margin-top: 20px;
+        margin-top: 10px;
         gap: 10px;
     }
     .PasswordBox{

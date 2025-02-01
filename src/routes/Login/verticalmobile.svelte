@@ -5,29 +5,29 @@
 
     <div class="Container">
         <div class="LoginBox">
-            <h1 style="font-size: 12vh; font-weight: 700;">Login</h1>
+            <h1 style="font-size: 12vw; font-weight: 700;">Login</h1>
             <div class="InputBox" style="align-self: self-start;">
-                <input class = "Email" type="email" style="font-size: 4vh;">
+                <input class = "Email" type="email" style="font-size: 4vw;">
                 <div class="PasswordBox">
-                    <input class = "Password" type="password" style="font-size: 4vh;">
+                    <input class = "Password" type="password" style="font-size: 4vw;">
                     <button>
-                        <div style="width: 6.5vh; border: 1px solid gray;  border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
+                        <div style="width: 6.35vw; border: 1px solid gray;  border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
                             <IoIosEyeOff/>
                         </div>
                     </button>
                 </div>
-                <button style="display: flex; font-size: 4vh">
+                <button style="display: flex; font-size: 4vw">
                     Forget password?
                 </button>
             </div>
-            <button class="Login" style="font-size: 5.5vh; font-weight: 500;">
+            <button class="Login" style="font-size: 5.5vw; font-weight: 500;">
                 Login
             </button>
-            <p style="font-size: 4.5vh;">
+            <p style="font-size: 4.5vw;">
                 or
             </p>
-            <button class="Google" style=" display: flex; align-items: center; justify-content: center; font-size: 5vh; font-weight: 500;">
-                <div style="width: 5.65vh; margin-right: 5px">
+            <button class="Google" style=" display: flex; align-items: center; justify-content: center; font-size: 5vw; font-weight: 500;">
+                <div style="width: 5.65vw; margin-right: 5px">
                     <IoLogoGoogle/>
                 </div>
                 Login with Google
