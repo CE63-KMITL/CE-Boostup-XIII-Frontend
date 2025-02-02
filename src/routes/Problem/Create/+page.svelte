@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div>ว้าวหน้าหลักสุดยอดไปเลย</div>
+<div>Create</div>
 
 <style lang="scss">
 </style>
