@@ -1,19 +1,49 @@
 <script>
+    import { onMount , onDestroy } from "svelte";
 
+    let isMobileHorizon = false
+    let isVertical = false
+
+    function checkVertical(){
+        let mobile = false, horizon = false, vertical = false
+        window.innerHeight < 1000 && window.innerWidth < 1000? mobile= true:false
+        window.innerWidth > window.innerHeight ? horizon= true:false
+        window.innerWidth < 1100 && window.innerHeight > window.innerWidth ? vertical= true:false
+
+        isMobileHorizon = mobile && horizon
+        isVertical = vertical
+    }
+
+    onMount(() => {
+        if (typeof window === "undefined") return;
+        checkVertical();
+        window.addEventListener('resize' , checkVertical);
+        window.addEventListener('orientationchange' , checkVertical);
+    })
+
+    onDestroy(() => {
+        if (typeof window === "undefined") return;
+        window.removeEventListener('resize' , checkVertical);
+        window.removeEventListener('orientationchange' , checkVertical);
+    })
+
+    $: Dynamic1 = isVertical ? "VerticalProblemContainer" : isMobileHorizon ? "HorizonProblemContainer" : "ProblemContainer"
+    $: Dynamic2 = isVertical ? "VerticalCodeInputBox" : isMobileHorizon ? "HorizonCodeInputBox" : "CodeInputBox"
+    $: Dynamic3 = isVertical ? "VerticalInfoAndTestcaseBox" : isMobileHorizon ? "HorizonInfoAndTestcaseBox" : "InfoAndTestcaseBox"
 </script>
 
-<div class="ProblemContainer">
-    <div class="CodeInputBox">
+<div class={Dynamic1}>
+    <div class={Dynamic2}>
         <div class="WrapButton">
             <button class="Run">Run</button>
             <button class="Submit">Submit</button>
         </div>
         <textarea class="CodeInput" placeholder="Enter your code..."></textarea>
     </div>
-    <div class="InfoAndTestcaseBox">
+    <div class={Dynamic3}>
         <div class="HeadAndDescriptionBox">
             <h1 class="ProblemHead">Head</h1>
-            <p class="ProblemDescription">Description</p>
+            <p class="ProblemDescription">Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
         </div>
         <div class="TestcaseBox">
             <div class="TestcaseWrap">
@@ -23,7 +53,7 @@
             </div>
             <div class="TestcaseWrap">
                 <p class="TestcaseNo">Test case1</p>
-                <p class="InputAndOutput">Input: </p>
+                <p class="InputAndOutput">Input: 11111111111111111111111111111111111111111aaaaaaaaaaaaaaaaaaaa</p>
                 <p class="InputAndOutput">Output: </p>
             </div>
             <div class="TestcaseWrap">
@@ -75,7 +105,7 @@
         background-color: peachpuff;
         border: 1px solid saddlebrown;
         border-radius: 10px;
-        padding: 5px;
+        padding: auto;
         font-size: 2vh;
         font-weight: 600;
     }
@@ -84,7 +114,7 @@
         background-color: peachpuff;
         border: 1px solid saddlebrown;
         border-radius: 10px;
-        padding: 5px;
+        padding: auto;
         font-size: 2vh;
         font-weight: 600;
     }
@@ -102,6 +132,16 @@
         padding-left: 20px;
         padding-right: 20px;
         font-size: 2vh;
+    }
+    .CodeInput::-webkit-scrollbar{
+        width: 1vh;
+    }
+    .CodeInput::-webkit-scrollbar-thumb {
+        background: saddlebrown;
+        border-radius: 10px;
+    }
+    .CodeInput::-webkit-scrollbar-thumb:hover {
+        background: #8b5a2b;
     }
     .CodeInput:focus{
         border: 2px solid saddlebrown;
@@ -129,6 +169,7 @@
         border-radius: 10px;
     }
     .ProblemHead{
+        max-height: 30%;
         text-align: center;
         font-size: 4vh;
         font-weight: 500;
@@ -143,12 +184,23 @@
         text-overflow: ellipsis;
     }
     .ProblemDescription{
-        max-height: 80%;
-        margin: 5px 5px 10px 10px ;
+        max-height: 65%;
+        margin: 5px 0px 10px 10px ;
+        padding-right: 5px;
         font-size: 2vh;
         white-space: normal;
         word-break: break-word;
-        overflow: hidden;
+        overflow: auto;
+    }
+    .ProblemDescription::-webkit-scrollbar{
+        width: 1vh;
+    }
+    .ProblemDescription::-webkit-scrollbar-thumb {
+        background: saddlebrown;
+        border-radius: 10px;
+    }
+    .ProblemDescription::-webkit-scrollbar-thumb:hover {
+        background: #8b5a2b;
     }
     .TestcaseBox{
         display: flex;
@@ -159,6 +211,7 @@
         border: 2px solid saddlebrown;
         border-radius: 10px;
         padding: 15px;
+        padding-right: 10px;
         gap: 30px;
         font-size: 2vh;
         white-space: normal;
@@ -166,7 +219,7 @@
         overflow: auto;
     }
     .TestcaseBox::-webkit-scrollbar{
-        width: 10px;
+        width: 1vh;
     }
     .TestcaseBox::-webkit-scrollbar-thumb {
         background: saddlebrown;
@@ -178,5 +231,33 @@
     .TestcaseNo{
         font-size: 2.25vh;
         font-weight: 600;
+    }
+    .VerticalProblemContainer{
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 25px;
+        align-items: center;
+        width: 100%;
+        height: 150vh;
+        background-color: wheat;
+    }
+    .VerticalCodeInputBox{
+        height: 50%;
+        width: 90%;
+        margin-bottom: 25px;
+    }
+    .VerticalInfoAndTestcaseBox{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        width: 90%;
+        height: 50%;
+        background-color: burlywood;
+        border: 2px solid saddlebrown;
+        border-radius: 20px;
     }
 </style>
