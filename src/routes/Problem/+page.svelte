@@ -1,5 +1,6 @@
 <script>
     import { onMount , onDestroy } from "svelte";
+    import '../../app.css'
 
     let isMobileHorizon = false
     let isVertical = false
@@ -82,28 +83,30 @@
         justify-content: space-around;
         width: 100%;
         height: 100%;
-        background-color: wheat;
+        background-color: var(--bg);
     }
     .CodeInputBox{
         height: 80%;
         width: 70%;
     }
+    
     .WrapButton{
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%;
         height: 7.5%;
-        background-color: burlywood;
-        border: 2px solid saddlebrown;
+        background-color: var(--darker);
+        border: 2px solid var(--outline);
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
         gap: 20px;
+        color: var(--text);
     }
     .Run{
         width: 12.5vh;
-        background-color: peachpuff;
-        border: 1px solid saddlebrown;
+        background: var(--button-bg);
+        border: 1px solid var(--outline);
         border-radius: 10px;
         padding: auto;
         font-size: 2vh;
@@ -111,8 +114,8 @@
     }
     .Submit{
         width: 12.5vh;
-        background-color: peachpuff;
-        border: 1px solid saddlebrown;
+        background: var(--button-bg);
+        border: 1px solid var(--outline);
         border-radius: 10px;
         padding: auto;
         font-size: 2vh;
@@ -121,8 +124,8 @@
     .CodeInput{
         width: 100%;
         height: 92.5%;
-        background-color: antiquewhite;
-        border: 2px solid saddlebrown;
+        background-color: var(--darker-50);
+        border: 2px solid var(--outline);
         border-top: none;
         border-radius: 20px;
         border-top-left-radius: 0px;
@@ -140,14 +143,14 @@
         height: 1vh;
     }
     .CodeInput::-webkit-scrollbar-thumb {
-        background: saddlebrown;
+        background: var(--darker);
         border-radius: 10px;
     }
     .CodeInput::-webkit-scrollbar-thumb:hover {
-        background: #8b5a2b;
+        background: var(--darker-50);
     }
     .CodeInput:focus{
-        border: 2px solid saddlebrown;
+        border: 2px solid var(--outline);
         border-top: none;
         outline: none;
         box-shadow: none;
@@ -160,15 +163,15 @@
         padding-top: 20px;
         width: 25%;
         height: 80%;
-        background-color: burlywood;
-        border: 2px solid saddlebrown;
+        background-color: var(--darker-50);
+        border: 2px solid var(--outline);
         border-radius: 20px;
     }
     .HeadAndDescriptionBox{
         width: 90%;
         height: 30%;
-        background-color: antiquewhite;
-        border: 2px solid saddlebrown;
+        background-color: var(--bg-50);
+        border: 2px solid var(--outline);
         border-radius: 10px;
     }
     .ProblemHead{
@@ -176,10 +179,11 @@
         text-align: center;
         font-size: 4vh;
         font-weight: 500;
-        border-bottom: 2px solid saddlebrown;
+        color: var(--text);
+        border-bottom: 2px solid var(--outline);
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
-        background-color: peachpuff;
+        background-color: var(--darker);
         padding-left: 15px;
         padding-right: 15px;
         white-space: nowrap;
@@ -191,6 +195,7 @@
         margin: 5px 0px 10px 10px ;
         padding-right: 5px;
         font-size: 2vh;
+        color: var(--description);
         white-space: normal;
         word-break: break-word;
         overflow: auto;
@@ -199,19 +204,19 @@
         width: 1vh;
     }
     .ProblemDescription::-webkit-scrollbar-thumb {
-        background: saddlebrown;
+        background: var(--darker);
         border-radius: 10px;
     }
     .ProblemDescription::-webkit-scrollbar-thumb:hover {
-        background: #8b5a2b;
+        background: var(--darker-50);
     }
     .TestcaseBox{
         display: flex;
         flex-direction: column;
         width: 90%;
         height: 60%;
-        background-color: antiquewhite;
-        border: 2px solid saddlebrown;
+        background-color: var(--bg-50);
+        border: 2px solid var(--outline);
         border-radius: 10px;
         padding: 15px;
         padding-right: 10px;
@@ -225,15 +230,19 @@
         width: 1vh;
     }
     .TestcaseBox::-webkit-scrollbar-thumb {
-        background: saddlebrown;
+        background: var(--darker);
         border-radius: 10px;
     }
     .TestcaseBox::-webkit-scrollbar-thumb:hover {
-        background: #8b5a2b;
+        background: var(--darker-50);
     }
     .TestcaseNo{
         font-size: 2.25vh;
         font-weight: 600;
+        color: var(--text);
+    }
+    .InputAndOutput{
+        color: var(--description);
     }
     .VerticalProblemContainer{
         display: flex;
@@ -242,7 +251,7 @@
         align-items: center;
         width: 100%;
         height: 150vh;
-        background-color: wheat;
+        background-color: var(--bg);
     }
     .VerticalCodeInputBox{
         height: 50%;
@@ -259,8 +268,8 @@
         padding-bottom: 20px;
         width: 90%;
         height: 50%;
-        background-color: burlywood;
-        border: 2px solid saddlebrown;
+        background-color: var(--darker-50);
+        border: 2px solid var(--outline);
         border-radius: 20px;
     }
     .HorizonProblemContainer{
@@ -270,7 +279,7 @@
         width: 100%;
         height: 150vh;
         gap: 25px;
-        background-color: wheat;
+        background-color: var(--bg);
     }
     .HorizonCodeInputBox{
         height: 50%;
@@ -287,8 +296,8 @@
         padding-bottom: 20px;
         width: 90%;
         height: 50%;
-        background-color: burlywood;
-        border: 2px solid saddlebrown;
+        background-color: var(--darker-50);
+        border: 2px solid var(--outline);
         border-radius: 20px;
     }
 </style>
