@@ -3,6 +3,7 @@
     import IoLogoGoogle from 'svelte-icons/io/IoLogoGoogle.svelte';
     import './horizonmobile.scss'
     import './verticalmobile.scss'
+    import '../../app.css'
     import {onMount , onDestroy} from "svelte";
 
     let isHorizonMobile = false
@@ -102,7 +103,7 @@
         justify-content: center;
         height: 100%;
         width: 100%;
-        background-image: url(./LoginImage/4428788.jpg);
+        background-color: var(--bg);
         background-position: center;
         background-attachment: fixed;
     }
@@ -116,7 +117,7 @@
         padding: 20px;
         padding-top: 0px;
         gap: 15px;
-        border: 2px solid gray;
+        border: 2px solid var(--outline);
         border-radius: 25px;
         backdrop-filter: blur(15px);
     }
@@ -148,7 +149,7 @@
         padding-left: 10px;
         padding-right: 10px;
         background-color: transparent;
-        border: 1px solid gray;
+        border: 1px solid var(--outline);
         border-radius: 5px;
         font-size: 3vh;
     }
@@ -158,7 +159,7 @@
         padding-right: 10px;
         width: 100%;
         background-color: transparent;
-        border: 1px solid gray;
+        border: 1px solid var(--outline);
         border-right: 0px;
         border-radius: 5px;
         border-top-right-radius: 0px;
@@ -168,7 +169,7 @@
 
     .IoIosEyeOff{
         width: 4.65vh; 
-        border: 1px solid gray;  
+        border: 1px solid var(--outline);  
         border-top-right-radius: 5px; 
         border-bottom-right-radius: 5px;
     }
@@ -179,10 +180,10 @@
     }
 
     .Login {
-        background-color: wheat;
+        background-color: var(--darker-50);
         width: 100%;
-        border: 1px solid gray;
-        border-radius: 25px;
+        border: 1px solid var(--outline);
+        border-radius: 15px;
         font-size: 4vh; 
         font-weight: 500;
     }
@@ -193,8 +194,9 @@
 
     .Google {
         width: 100%;
-        border: 1px solid gray;
+        border: 1px solid var(--outline);
         border-radius: 15px;
+        background-color: var(--darker-50);
         display: flex; 
         align-items: center; 
         justify-content: center; 
