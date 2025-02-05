@@ -4,8 +4,8 @@
 
 <style lang="scss">
 	button {
-		border: 1px solid var(--color-outline);
-		background: var(--color-button-bg);
+		border: 1px solid var(--outline);
+		background: var(--button-bg);
 		border-radius: 10px;
 		padding: 5px;
 	}
