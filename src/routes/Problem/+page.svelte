@@ -132,9 +132,12 @@
         padding-left: 20px;
         padding-right: 20px;
         font-size: 2vh;
+        white-space: nowrap;
+        overflow: auto;
     }
     .CodeInput::-webkit-scrollbar{
         width: 1vh;
+        height: 1vh;
     }
     .CodeInput::-webkit-scrollbar-thumb {
         background: saddlebrown;
