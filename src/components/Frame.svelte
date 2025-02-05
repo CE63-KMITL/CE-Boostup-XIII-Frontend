@@ -1,12 +1,13 @@
-<button>
+<div>
 	<slot></slot>
-</button>
+</div>
 
 <style lang="scss">
-	button {
+	div {
 		border: 1px solid var(--color-outline);
-		background: var(--color-button-bg);
+		background: var(--color-darker-50);
 		border-radius: 10px;
 		padding: 5px;
+		margin: 5px;
 	}
 </style>
