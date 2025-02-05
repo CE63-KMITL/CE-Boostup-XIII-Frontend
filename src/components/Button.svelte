@@ -1,4 +1,9 @@
-<button>
+<script lang="ts">
+	let className = "";
+	export { className as class };
+</script>
+
+<button class={className}>
 	<slot></slot>
 </button>
 
