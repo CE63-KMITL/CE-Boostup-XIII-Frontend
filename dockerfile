@@ -1,11 +1,11 @@
-FROM node:22-slim AS build
+FROM node:23-alpine AS build
 WORKDIR /app
 
 COPY . .
 
 RUN npm i -g pnpm && pnpm i && pnpm run build
 
-FROM node:22-slim
+FROM node:23-alpine
 WORKDIR /app
 
 COPY --from=build /app/build .
