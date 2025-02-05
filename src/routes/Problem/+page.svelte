@@ -260,4 +260,32 @@
         border: 2px solid saddlebrown;
         border-radius: 20px;
     }
+    .HorizonProblemContainer{
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        width: 100%;
+        height: 150vh;
+        gap: 25px;
+        background-color: wheat;
+    }
+    .HorizonCodeInputBox{
+        height: 50%;
+        width: 90%;
+        margin-bottom: 25px;
+    }
+    .HorizonInfoAndTestcaseBox{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        width: 90%;
+        height: 50%;
+        background-color: burlywood;
+        border: 2px solid saddlebrown;
+        border-radius: 20px;
+    }
 </style>
