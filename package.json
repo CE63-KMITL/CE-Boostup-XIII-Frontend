@@ -1,5 +1,5 @@
 {
-	"name": "ce-boostup-13-frontend",
+	"name": "ce-boostup-xiii-frontend",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -8,11 +8,11 @@
 	"scripts": {
 		"<--Main-->": "",
 		"dev": "vite dev",
-		"build > create-image > run": "npm-run-all stop-container build create-image run-container",
+		"build > create-image > run": "npm-run-all stop-container create-image run-container",
 		"<--Docker-->": "",
-		"run-container": "echo 'Server running at : \u001b[32mhttp://localhost:3001\u001b[39m' && docker run -p 3001:3001 ce-boostup-13-frontend",
-		"stop-container": "docker ps -a --filter \"ancestor=ce-boostup-13-frontend\" -q | xargs -r docker rm -f || true",
-		"create-image": "docker build -t ce-boostup-13-frontend .",
+		"run-container": "echo 'Server running at : \u001b[32mhttp://localhost:3001\u001b[39m' && docker run -p 3001:3001 ce-boostup-xiii-frontend",
+		"stop-container": "docker ps -a --filter \"ancestor=ce-boostup-xiii-frontend\" -q | xargs -r docker rm -f || true",
+		"create-image": "docker build -t ce-boostup-xiii-frontend .",
 		"<--Svelte-->": "",
 		"build": "vite build",
 		"preview": "vite preview",

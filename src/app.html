@@ -1,5 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+	<script>
+		const URL_Params = new URLSearchParams(window.location.search);
+
+		if (URL_Params.get("dark")) {
+			localStorage.setItem("dark", URL_Params.get("dark"));
+		}
+
+		if (localStorage.getItem("dark") === "true") {
+			document.documentElement.setAttribute("dark", "");
+		} else {
+			document.documentElement.removeAttribute("dark");
+		}
+	</script>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
