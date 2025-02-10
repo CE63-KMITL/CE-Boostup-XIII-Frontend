@@ -1,7 +1,8 @@
 <script lang="ts">
+    import Menubuttonbydeaw from "../../componentsbydeaw/Menubuttonbydeaw.svelte";
 </script>
 
-<div>ว้าวหน้าหลักสุดยอดไปเลย</div>
+<Menubuttonbydeaw/>
 
 <style lang="scss">
 </style>
