@@ -21,77 +21,99 @@
     function deleteTestCase(index: number) {
         test_cases = test_cases.filter((_, i) => i !== index);
     }
+    function enableHorizontalScroll(node) {
+        const handleWheel = (event) => {
+            if (event.deltaY !== 0) {
+                event.preventDefault();
+                node.scrollLeft += event.deltaY*2.5;
+            }
+        };
+
+        node.addEventListener('wheel', handleWheel);
+
+        return {
+            destroy() {
+                node.removeEventListener('wheel', handleWheel);
+            }
+        };
+    }
 </script>
 
 <div class="ProblemCreateContianer">
     <div class="Navbar"></div>
-    <div class="ProblemInfo">
-        <div class="ProblemHead">
-            <h1 class="HeadText">Exercise Name</h1>
-            <textarea class="ProblemNameInput" placeholder="Exercise Name"></textarea>
-        </div>
-        <div class="UserAndExDetails">
-            <div class="Username">
-                <h1 class="Avatar" style="color: green; font-weight:600">//Add avatar icon</h1>
-                <h1 class="HeadText">{user.name}</h1>
+    <div class="ScrollSnap">
+        <div class="ProblemInfo">
+            <div class="ProblemHead">
+                <h1 class="HeadText">Exercise Name</h1>
+                <textarea class="ProblemNameInput" placeholder="Exercise Name"></textarea>
             </div>
-            <div class="TagsBox">
-                <h1 class="HeadText">Tags</h1>
-                <select class="Tags" bind:value={first_option}>
-                    {#each options as option}
-                        <option value={option.id}>{option.value}</option>
-                    {/each}
-                </select>
-            </div>
-            <textarea class="ProblemDetailsInput" placeholder="Type exercise's detail here"></textarea>
-        </div>
-        <button class="DoneButton">Done</button>
-    </div>
-    <div class="CodeInputandOutput">
-        <div class="CodeInputBox">
-            <div class="CodeInputHead">
-                <h1 class="HeadText">Code</h1>
-                <button class="Run">Run</button>
-            </div>
-            <textarea class="CodeInput" placeholder="Code here"></textarea>
-        </div>
-        <div class="TerminalBox">
-            <h1 class="HeadText">Terminal</h1>
-            <textarea class="Output" placeholder="Output here"></textarea>
-        </div>
-    </div>
-    <div class="TestCase">
-        <button class="RunAll">Run All</button>
-        <div class="TestCaseBox">
-            {#each test_cases as test_case , i}
-                <div class="TestCaseContainer">
-                    <div class="TestCaseCover">
-                        <h1 class="HeadText">Test Case {i+1}</h1>
-                        <div class="HiddenTestcaseBox">
-                            <input class="CheckBox" type="checkbox" bind:checked={test_case.hidden}>
-                            <p>Hidden Test Case</p>
-                        </div>
-                        <textarea class="TestCaseInput" placeholder="Input here"  bind:value={test_case.input}></textarea>
-                        <textarea  class="TestCaseOutput" placeholder="Output here" bind:value={test_case.output}></textarea>
-                    </div>
-                    <button class="Delete" on:click={() => deleteTestCase(i)}>Delete</button>
+            <div class="UserAndExDetails">
+                <div class="Username">
+                    <h1 class="Avatar" style="color: green; font-weight:600">//Add avatar icon</h1>
+                    <h1 class="HeadText">{user.name}</h1>
                 </div>
-            {/each}
-            <button class="AddTestCase" on:click={() => addTestCase()}>+</button>
+                <div class="TagsBox">
+                    <h1 class="HeadText">Tags</h1>
+                    <select class="Tags" bind:value={first_option}>
+                        {#each options as option}
+                            <option value={option.id}>{option.value}</option>
+                        {/each}
+                    </select>
+                </div>
+                <textarea class="ProblemDetailsInput" placeholder="Type exercise's detail here"></textarea>
+            </div>
+            <button class="DoneButton">Done</button>
+        </div>
+        <div class="CodeInputandOutput">
+            <div class="CodeInputBox">
+                <div class="CodeInputHead">
+                    <h1 class="HeadText">Code</h1>
+                    <button class="Run">Run</button>
+                </div>
+                <textarea class="CodeInput" placeholder="Code here"></textarea>
+            </div>
+            <div class="TerminalBox">
+                <h1 class="HeadText">Terminal</h1>
+                <textarea class="Output" placeholder="Output here"></textarea>
+            </div>
+        </div>
+        <div class="TestCase">
+            <button class="RunAll">Run All</button>
+            <div class="TestCaseBox" use:enableHorizontalScroll>
+                {#each test_cases as test_case , i}
+                    <div class="TestCaseContainer">
+                        <div class="TestCaseCover">
+                            <h1 class="HeadText">Test Case {i+1}</h1>
+                            <div class="HiddenTestcaseBox">
+                                <input class="CheckBox" type="checkbox" bind:checked={test_case.hidden}>
+                                <p>Hidden Test Case</p>
+                            </div>
+                            <textarea class="TestCaseInput" placeholder="Input here"  bind:value={test_case.input}></textarea>
+                            <textarea  class="TestCaseOutput" placeholder="Output here" bind:value={test_case.output}></textarea>
+                        </div>
+                        <button class="Delete" on:click={() => deleteTestCase(i)}>Delete</button>
+                    </div>
+                {/each}
+                <button class="AddTestCase" on:click={() => addTestCase()}>+</button>
+            </div>
         </div>
     </div>
 </div>
 
 <style lang="scss">
+    body{
+        overflow: hidden;
+    }
     .ProblemCreateContianer{
         width: 100%;
-        min-height: 100%;
+        max-height: 100vh;
         height: auto;
         background-color: var(--bg);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        overflow-y: auto;
     }
     .Navbar{
         position: fixed;
@@ -100,14 +122,22 @@
         width: 100%;
         background-color: gray;
     }
-    .ProblemInfo{
-        margin-top: 7rem;
+    .ScrollSnap {
+        margin-top: 5rem;
+        height: calc(100vh - 5rem);
         width: 100%;
+        overflow-y: auto; 
+        scroll-snap-type: y mandatory; 
+    }
+    .ProblemInfo{
+        width: 100%;
+        height: calc(100vh - 5rem);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 16px;
+        scroll-snap-align: start;
     }
     .ProblemHead{
         display: flex;
@@ -179,12 +209,13 @@
     }
     .CodeInputandOutput{
         width: 100%;
+        height: calc(100vh - 5rem);
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
         gap: 2.5%;
-        margin-top: 9rem;
+        scroll-snap-align: start;
     }
     .CodeInputBox{
         width: 55%;
@@ -253,23 +284,25 @@
     }
     .TestCase{
         max-width: 90%;
+        height: calc(100vh - 5rem);
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-self: center;
         justify-content: center;
         gap: 16px;
-        margin-top: 9rem;
+        scroll-snap-align: start;
     }
     .TestCaseBox{
         display: flex;
         align-items: center;
         gap: 16px;
-        margin-bottom: 2rem;
         overflow-x: auto;        
         white-space: nowrap;         
         scroll-behavior: smooth;
         max-width: 100%;
         padding-bottom: 15px;
+        scroll-snap-type: x mandatory;
     }
     .TestCaseBox::-webkit-scrollbar{
         width: 1vh;
@@ -299,6 +332,7 @@
         align-items: center;
         justify-content: center;
         gap: 12px;
+        scroll-snap-align: start;
     }
     .TestCaseCover{
         display: flex;
@@ -339,7 +373,22 @@
         padding: 5px;
         font-size: 1rem;
         line-height: 1.5rem;
+        text-wrap: nowrap;
         resize: none;
+    }
+    .TestCaseInput::-webkit-scrollbar{
+        width: 1vh;
+        height: 1vh;
+    }
+    .TestCaseInput::-webkit-scrollbar-thumb {
+        background: var(--darker);
+        border-radius: 10px;
+    }
+    .TestCaseInput::-webkit-scrollbar-thumb:hover {
+        background: var(--darker-50);
+    }
+    .TestCaseInput:focus{
+        box-shadow: none;
     }
     .TestCaseOutput{
         height: 15rem;
@@ -349,7 +398,22 @@
         padding: 5px;
         font-size: 1rem;
         line-height: 1.5rem;
+        text-wrap: nowrap;
         resize: none;
+    }
+    .TestCaseOutput::-webkit-scrollbar{
+        width: 1vh;
+        height: 1vh;
+    }
+    .TestCaseOutput::-webkit-scrollbar-thumb {
+        background: var(--darker);
+        border-radius: 10px;
+    }
+    .TestCaseOutput::-webkit-scrollbar-thumb:hover {
+        background: var(--darker-50);
+    }
+    .TestCaseOutput:focus{
+        box-shadow: none;
     }
     .AddTestCase{
         display: flex;      
@@ -388,12 +452,36 @@
             width: 90%;
         }
         .TestCaseContainer{
-            min-width: 17.5rem;
-            max-width: 17.5rem;
+            min-width: 15.5rem;
+            max-width: 15.5rem;
         }
         .AddTestCase{
             min-width: 3.5rem;
             max-width: 3.5rem;
+        }
+    }
+
+    @media(max-width: 1400px){
+        .ScrollSnap{
+            scroll-snap-type: none;
+        }
+        .ProblemInfo{
+            height: auto;
+            margin-top: 2rem;
+            scroll-snap-align: none;
+        }
+        .CodeInputandOutput{
+            height: auto;
+            margin-top: 9rem;
+            scroll-snap-align: none;
+        }
+        .TestCase{
+            height: auto;
+            margin-top: 9rem;
+            scroll-snap-align: none;
+        }
+        .TestCaseBox{
+            margin-bottom: 2rem;
         }
     }
 </style>
