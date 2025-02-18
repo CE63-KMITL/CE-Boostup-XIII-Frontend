@@ -193,7 +193,7 @@
         border-radius: 5px;
         padding: 5px;
         width: 100%;
-        height: 40rem;
+        height: 50vh;
         font-size: 1rem;
         line-height: 1.5rem;
         resize: none;
@@ -237,7 +237,7 @@
 		padding: 5px;
     }
     .CodeInput{
-        height: 40rem;
+        height: 75vh;
         width: 100%;
         border: 1px solid var(--outline);
         border-radius: 5px;
@@ -271,7 +271,7 @@
         gap: 12px;
     }
     .Output{
-        height: 40rem;
+        height: 75vh;
         width: 100%;
         border: 1px solid var(--outline);
         border-radius: 5px;
@@ -366,7 +366,7 @@
         font-size: 1rem;
     }
     .TestCaseInput{
-        height: 25rem;
+        height: 35vh;
         width: 100%;
         border: 1px solid var(--outline);
         border-radius: 5px;
@@ -391,7 +391,7 @@
         box-shadow: none;
     }
     .TestCaseOutput{
-        height: 15rem;
+        height: 25vh;
         width: 100%;
         border: 1px solid var(--outline);
         border-radius: 5px;
@@ -423,7 +423,7 @@
         top: 14px;
         min-width: 7.5rem;
         max-width: 7.5rem;
-        height: 40.7rem;
+        height: 61.5vh;
         border: 1px solid var(--outline);
         border-radius: 5px;
         padding: 5px;
@@ -479,9 +479,6 @@
             height: auto;
             margin-top: 9rem;
             scroll-snap-align: none;
-        }
-        .TestCaseBox{
-            margin-bottom: 2rem;
         }
     }
 </style>
