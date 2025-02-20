@@ -5,6 +5,7 @@
     import './verticalmobile.scss'
     import '../../app.css'
     import {onMount , onDestroy} from "svelte";
+    import Button from '../../components/Button.svelte';
 
     let isHorizonMobile = false
     let isVerticalMobile = false
@@ -59,7 +60,44 @@
     $: Dynamic11 = isHorizonMobile ? "HorizonText" : isVerticalMobile ? "VerticalText" : "Text";
     $: Dynamic12 = isHorizonMobile ? "HorizonGoogle" : isVerticalMobile ? "VerticalGoogle" : "Google";
     $: Dynamic13 = isHorizonMobile ? "HorizonIoLogoGoogle" : isVerticalMobile ? "VerticalIoLogoGoogle" : "IoLogoGoogle";
+    $: dynamicFontSize1 = isHorizonMobile ? "3vh" : isVerticalMobile ? "3vw" : "2vh"; 
+    $: dynamicFontSize2 = isHorizonMobile ? "5.5vh" : isVerticalMobile ? "5.5vw" : "4vh"; 
+    $: dynamicFontSize3 = isHorizonMobile ? "5vh" : isVerticalMobile ? "5vw" : "3.5vh"; 
 
+    const seePassword = {
+        padding: "0px",
+        "border-radius": "5px",
+        "border-top-left-radius": "0px",
+        "border-bottom-left-radius": "0px",
+    }
+
+    $: forgetPassword = {
+        display: "flex",
+        padding: "0px",
+        border: "none",
+		background: "none",
+		"border-radius": "0px",
+        "font-size": dynamicFontSize1
+    }
+
+    $: logIn = {
+        width: "100%",
+        "border-radius": "15px",
+        "font-size": dynamicFontSize2, 
+        "font-weight": "500",
+        "padding": "0px"
+    }
+
+    $: logInWithGoogle ={
+        width: "100%",
+        "border-radius": "15px",
+        display: "flex",
+        "padding": "0px",
+        "align-items": "center",
+        "justify-content": "center",
+        "font-size": dynamicFontSize3,
+        "font-weight": "500"
+    }
 </script>
 
 <div class={Dynamic1}>
@@ -71,28 +109,28 @@
             <input class ={Dynamic5} type="email">
             <div class={Dynamic6}>
                 <input class = {Dynamic7} type="password">
-                <button>
+                <Button style={seePassword}>
                     <div class={Dynamic8}>
                         <IoIosEyeOff/>
                     </div>
-                </button>
+                </Button>
             </div>
-            <button class={Dynamic9}>
+            <Button class={Dynamic9} style={forgetPassword}>
                 Forget password?
-            </button>
+            </Button>
         </div>
-        <button class={Dynamic10}>
+        <Button class={Dynamic10} style={logIn}>
             Login
-        </button>
+        </Button>
         <p class={Dynamic11}>
             or
         </p>
-        <button class={Dynamic12}>
+        <Button class={Dynamic12} style={logInWithGoogle}>
             <div  class={Dynamic13}>
                 <IoLogoGoogle/>
             </div>
             Login with Google
-        </button>
+        </Button>
     </div>
 </div>
 
@@ -168,40 +206,13 @@
     }
 
     .IoIosEyeOff{
-        width: 4.65vh; 
-        border: 1px solid var(--outline);  
+        width: 4.5vh;   
         border-top-right-radius: 5px; 
         border-bottom-right-radius: 5px;
     }
 
-    .ForgetPassword {
-        display: flex;
-        font-size: 2vh
-    }
-
-    .Login {
-        background-color: var(--darker-50);
-        width: 100%;
-        border: 1px solid var(--outline);
-        border-radius: 15px;
-        font-size: 4vh; 
-        font-weight: 500;
-    }
-
     .Text {
         font-size: 3vh;
-    }
-
-    .Google {
-        width: 100%;
-        border: 1px solid var(--outline);
-        border-radius: 15px;
-        background-color: var(--darker-50);
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        font-size: 3.5vh; 
-        font-weight: 500;
     }
 
     .IoLogoGoogle{
