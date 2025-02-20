@@ -1,4 +1,17 @@
-<button>
+<script lang="ts">
+	export let style = {};
+
+	let className = "";
+	export { className as class };
+
+	const formatToHTMLStyleFromObject = (styleObj) => {
+        return Object.entries(style).reduce((acc, [key, value]) => `${acc} ${key}: ${value};`, '');
+	};
+
+	$: styleHTML = formatToHTMLStyleFromObject(style);
+</script>
+
+<button style={styleHTML} class={className}>
 	<slot></slot>
 </button>
 

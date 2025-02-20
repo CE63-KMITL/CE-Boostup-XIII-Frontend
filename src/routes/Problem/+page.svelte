@@ -1,6 +1,7 @@
 <script>
     import { onMount , onDestroy } from "svelte";
     import '../../app.css'
+    import Button from "../../components/Button.svelte";
 
     let isMobileHorizon = false
     let isVertical = false
@@ -31,13 +32,30 @@
     $: Dynamic1 = isVertical ? "VerticalProblemContainer" : isMobileHorizon ? "HorizonProblemContainer" : "ProblemContainer"
     $: Dynamic2 = isVertical ? "VerticalCodeInputBox" : isMobileHorizon ? "HorizonCodeInputBox" : "CodeInputBox"
     $: Dynamic3 = isVertical ? "VerticalInfoAndTestcaseBox" : isMobileHorizon ? "HorizonInfoAndTestcaseBox" : "InfoAndTestcaseBox"
+
+    const run ={
+        width: "12.5vh",
+        "border-radius": "10px",
+        padding: "0px",
+        "font-size": "2vh",
+        "font-weight": "600"
+    }
+
+    const submit ={
+        width: "12.5vh",
+        "border-radius": "10px",
+        padding: "0px",
+        "font-size": "2vh",
+        "font-weight": "600"
+    }
+
 </script>
 
 <div class={Dynamic1}>
     <div class={Dynamic2}>
         <div class="WrapButton">
-            <button class="Run">Run</button>
-            <button class="Submit">Submit</button>
+            <Button class="Run" style={run}>Run</Button>
+            <Button class="Submit" style={submit}>Submit</Button>
         </div>
         <textarea class="CodeInput" placeholder="Enter your code..."></textarea>
     </div>
@@ -102,24 +120,6 @@
         border-top-right-radius: 20px;
         gap: 20px;
         color: var(--text);
-    }
-    .Run{
-        width: 12.5vh;
-        background: var(--button-bg);
-        border: 1px solid var(--outline);
-        border-radius: 10px;
-        padding: auto;
-        font-size: 2vh;
-        font-weight: 600;
-    }
-    .Submit{
-        width: 12.5vh;
-        background: var(--button-bg);
-        border: 1px solid var(--outline);
-        border-radius: 10px;
-        padding: auto;
-        font-size: 2vh;
-        font-weight: 600;
     }
     .CodeInput{
         width: 100%;
