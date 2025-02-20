@@ -18,7 +18,17 @@
     //Add TestCase and Delete
     function addTestCase() {
         test_cases = [...test_cases, { input: '', output: '', hidden: false }];
+
+        const scrollContainer = document.querySelector('.TestCaseBox') as HTMLElement;
+    
+        if (scrollContainer) {
+            scrollContainer.scrollTo({
+                left: scrollContainer.scrollWidth,
+                behavior: 'smooth'
+            } )
+        }
     }
+    
     function deleteTestCase(index: number) {
         test_cases = test_cases.filter((_, i) => i !== index);
     }
@@ -72,6 +82,12 @@
         };
     }
 
+    function checkHorizonSroll(){
+        if(!enableHorizontalScroll){
+            return enableHorizontalScroll
+        }
+    }
+
     const done = {
         position: "fixed",
         bottom: "20px",
@@ -96,13 +112,14 @@
         "font-size": "2.25rem",
         "line-height": "2.75rem",
         "font-weight": "600",
-        "border-radius": "5px"
+        "border-radius": "5px",
+        "scroll-snap-align": "end"
     }
 </script>
 
 <div class="ProblemCreateContianer">
     <div class="Navbar"></div>
-    <div class="ScrollSnap"  use:enableVerticalScroll>
+    <div class="ScrollSnap"  use:checkHorizonSroll()>
         <div class="ProblemInfo">
             <div class="ProblemHead">
                 <h1 class="HeadText">Exercise Name</h1>
@@ -370,7 +387,7 @@
         align-items: center;
         justify-content: center;
         gap: 12px;
-        scroll-snap-align: start;
+        scroll-snap-align: end;
     }
     .TestCaseCover{
         display: flex;
@@ -492,6 +509,10 @@
             height: auto;
             margin-top: 9rem;
             scroll-snap-align: none;
+        }
+        .TestCaseBox{
+            scroll-snap-type: none;
+            padding-right: 2px;
         }
     }
 </style>
