@@ -51,12 +51,12 @@
         function onWheel(e: WheelEvent) {
             e.deltaY > 0
                 ? node.scrollTo({
-                    top: node.scrollTop + 330,
+                    top: node.scrollTop + node.clientHeight / 1.25,
                     left: 0,
                     behavior: 'smooth'
                 })
                 : node.scrollTo({
-                    top: node.scrollTop - 330,
+                    top: node.scrollTop - node.clientHeight / 1.25,
                     left: 0,
                     behavior: 'smooth'
                 });
@@ -162,9 +162,6 @@
 </div>
 
 <style lang="scss">
-    body{
-        overflow-x: hidden;
-    }
     .ProblemCreateContianer{
         width: 100%;
         max-height: 100vh;
@@ -175,6 +172,7 @@
         align-items: center;
         justify-content: center;
         overflow-y: auto;
+        overflow-x: hidden;
     }
     .Navbar{
         position: fixed;
