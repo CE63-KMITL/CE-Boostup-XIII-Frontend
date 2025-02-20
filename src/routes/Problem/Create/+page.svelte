@@ -47,6 +47,31 @@
         };
     }
 
+    function enableVerticalScroll(node: HTMLElement) {
+        function onWheel(e: WheelEvent) {
+            e.deltaY > 0
+                ? node.scrollTo({
+                    top: node.scrollTop + 330,
+                    left: 0,
+                    behavior: 'smooth'
+                })
+                : node.scrollTo({
+                    top: node.scrollTop - 330,
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            e.preventDefault();
+        }
+
+        node.addEventListener('wheel', onWheel, { passive: false });
+
+        return {
+            destroy() {
+                node.removeEventListener('wheel', onWheel);
+            }
+        };
+    }
+
     const done = {
         position: "fixed",
         bottom: "20px",
@@ -77,7 +102,7 @@
 
 <div class="ProblemCreateContianer">
     <div class="Navbar"></div>
-    <div class="ScrollSnap">
+    <div class="ScrollSnap"  use:enableVerticalScroll>
         <div class="ProblemInfo">
             <div class="ProblemHead">
                 <h1 class="HeadText">Exercise Name</h1>
@@ -138,7 +163,7 @@
 
 <style lang="scss">
     body{
-        overflow: hidden;
+        overflow-x: hidden;
     }
     .ProblemCreateContianer{
         width: 100%;
