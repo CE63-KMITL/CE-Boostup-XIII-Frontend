@@ -1,5 +1,6 @@
 <script lang="ts">
     import '../../../app.css'
+    import Button from '../../../components/Button.svelte';
 
     //Test data
     let user = { 
@@ -21,21 +22,56 @@
     function deleteTestCase(index: number) {
         test_cases = test_cases.filter((_, i) => i !== index);
     }
-    function enableHorizontalScroll(node) {
-        const handleWheel = (event) => {
-            if (event.deltaY !== 0) {
-                event.preventDefault();
-                node.scrollLeft += event.deltaY*2.5;
-            }
-        };
+    function enableHorizontalScroll(node: HTMLElement) {
+        function onWheel(e: WheelEvent) {
+            e.deltaY > 0
+                ? node.scrollTo({
+                      top: 0,
+                      left: node.scrollLeft + 330,
+                      behavior: 'smooth'
+                  })
+                : node.scrollTo({
+                      top: 0,
+                      left: node.scrollLeft - 330,
+                      behavior: 'smooth'
+                  });
+            e.preventDefault();
+        }
 
-        node.addEventListener('wheel', handleWheel);
+        node.addEventListener('wheel', onWheel, { passive: false });
 
         return {
             destroy() {
-                node.removeEventListener('wheel', handleWheel);
+                node.removeEventListener('wheel', onWheel);
             }
         };
+    }
+
+    const done = {
+        position: "fixed",
+        bottom: "20px",
+        right: "20px",
+    }
+
+    const deleteTC = {
+        color: "var(--text)",
+        "font-size": "1rem",
+        "line-height": "1.5rem"
+    }
+
+    const addTC = { 
+        display: "flex",      
+        "align-items": "center", 
+        "justify-content": "center",
+        "position": "relative",
+        "top": "14px",
+        "min-width": "7.5rem",
+        "max-width": "7.5rem",
+        "height": "61.25vh",
+        "font-size": "2.25rem",
+        "line-height": "2.75rem",
+        "font-weight": "600",
+        "border-radius": "5px"
     }
 </script>
 
@@ -62,13 +98,13 @@
                 </div>
                 <textarea class="ProblemDetailsInput" placeholder="Type exercise's detail here"></textarea>
             </div>
-            <button class="DoneButton">Done</button>
+            <Button class="DoneButton" style={done}>Done</Button>
         </div>
         <div class="CodeInputandOutput">
             <div class="CodeInputBox">
                 <div class="CodeInputHead">
                     <h1 class="HeadText">Code</h1>
-                    <button class="Run">Run</button>
+                    <Button class="Run">Run</Button>
                 </div>
                 <textarea class="CodeInput" placeholder="Code here"></textarea>
             </div>
@@ -78,7 +114,7 @@
             </div>
         </div>
         <div class="TestCase">
-            <button class="RunAll">Run All</button>
+            <Button class="RunAll">Run All</Button>
             <div class="TestCaseBox" use:enableHorizontalScroll>
                 {#each test_cases as test_case , i}
                     <div class="TestCaseContainer">
@@ -91,10 +127,10 @@
                             <textarea class="TestCaseInput" placeholder="Input here"  bind:value={test_case.input}></textarea>
                             <textarea  class="TestCaseOutput" placeholder="Output here" bind:value={test_case.output}></textarea>
                         </div>
-                        <button class="Delete" on:click={() => deleteTestCase(i)}>Delete</button>
+                        <Button class="Delete" style={deleteTC} on:click={() => deleteTestCase(i)}>Delete</Button>
                     </div>
                 {/each}
-                <button class="AddTestCase" on:click={() => addTestCase()}>+</button>
+                <Button class="AddTestCase" style={addTC} on:click={addTestCase}>+</Button>
             </div>
         </div>
     </div>
@@ -198,15 +234,6 @@
         line-height: 1.5rem;
         resize: none;
     }
-    .DoneButton{
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        border: 1px solid var(--outline);
-		background: var(--button-bg);
-		border-radius: 10px;
-		padding: 5px;
-    }
     .CodeInputandOutput{
         width: 100%;
         height: calc(100vh - 5rem);
@@ -229,12 +256,6 @@
         display: flex;
         width: 100%;
         justify-content: space-between;
-    }
-    .Run{
-        border: 1px solid var(--outline);
-		background: var(--button-bg);
-		border-radius: 10px;
-		padding: 5px;
     }
     .CodeInput{
         height: 75vh;
@@ -317,12 +338,6 @@
     }
     .TestCaseBox:focus{
         box-shadow: none;
-    }
-    .RunAll{
-        border: 1px solid var(--outline);
-		background: var(--button-bg);
-		border-radius: 10px;
-		padding: 5px;
     }
     .TestCaseContainer{
         min-width: 25rem;
@@ -414,31 +429,6 @@
     }
     .TestCaseOutput:focus{
         box-shadow: none;
-    }
-    .AddTestCase{
-        display: flex;      
-        align-items: center;   
-        justify-content: center; 
-        position: relative;
-        top: 14px;
-        min-width: 7.5rem;
-        max-width: 7.5rem;
-        height: 61.5vh;
-        border: 1px solid var(--outline);
-        border-radius: 5px;
-        padding: 5px;
-        font-size: 2.25rem;
-        line-height: 2.75rem;
-        font-weight: 600;
-    }
-    .Delete{
-        border: 1px solid var(--outline);
-		background: var(--button-bg);
-		border-radius: 10px;
-		padding: 5px;
-        color: var(--text);
-        font-size: 1rem;
-        line-height: 1.5rem;
     }
     @media (max-width: 1000px){
         .CodeInputandOutput{
