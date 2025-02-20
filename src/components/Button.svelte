@@ -10,7 +10,7 @@
 <style lang="scss">
 	button {
 		border: 1px solid var(--outline);
-		background: var(--button-bg);
+		// background: var(--button-bg);
 		border-radius: 10px;
 		padding: 5px;
 	}
