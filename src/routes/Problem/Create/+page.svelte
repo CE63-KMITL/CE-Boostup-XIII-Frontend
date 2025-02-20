@@ -84,7 +84,7 @@
 
     function checkHorizonSroll(){
         if(!enableHorizontalScroll){
-            return enableHorizontalScroll
+            return enableVerticalScroll
         }
     }
 
