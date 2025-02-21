@@ -1,0 +1,110 @@
+.VerticalContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: var(--bg);
+    background-position: center;
+    background-attachment: fixed;
+}
+.VerticalLoginBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto    ;
+    width: 20vw;
+    min-width: fit-content;
+    padding: 20px;
+    padding-top: 0px;
+    gap: 15px;
+    border: 2px solid var(--outline);
+    border-radius: 25px;
+    backdrop-filter: blur(15px);
+}
+
+
+.VerticalLoginHead{
+    font-size: 12vw; 
+    font-weight: 700;
+}
+
+.VerticalInputBox{
+    display: flex;
+    align-self: self-start;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    gap: 10px;
+}
+.VerticalPasswordBox{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.VerticalEmail {
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: transparent;
+    border: 1px solid var(--outline);
+    border-radius: 5px;
+    font-size: 4vw;
+}
+
+.VerticalPassword {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid var(--outline);
+    border-right: 0px;
+    border-radius: 5px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    font-size: 4vw;
+}
+
+.VerticalIoIosEyeOff{
+    width: 6vw;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.VerticalForgetPassword{
+    display: flex; 
+    font-size: 3vw;
+}
+
+.VerticalLogin {
+    background-color: var(--darker-50);
+    width: 100%;
+    border: 1px solid var(--outline);
+    border-radius: 15px;
+    font-size: 5.5vw;
+    font-weight: 500;
+}
+
+.VerticalText{
+    font-size: 4.5vw;
+}
+
+.VerticalGoogle {
+    width: 100%;
+    border: 1px solid var(--outline);
+    border-radius: 15px;
+    display: flex; align-items: center; 
+    justify-content: center; 
+    font-size: 5vw; 
+    font-weight: 500;
+}
+
+.VerticalIoLogoGoogle{
+    width: 4.15vh; 
+    margin-right: 5px;
+    width: 5.65vw; 
+    margin-right: 5px
+}
