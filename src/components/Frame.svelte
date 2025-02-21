@@ -1,9 +1,19 @@
 <script lang="ts">
-	let className = "";
+	export let style: Record<string, string> = {};
+	export let className = "";
+
 	export { className as class };
+
+	const formatToHTMLStyleFromObject = (styleObj: Record<string, string>) => {
+		return Object.entries(styleObj)
+			.map(([key, value]) => `${key}: ${value};`)
+			.join(" ");
+	};
+
+	$: styleHTML = formatToHTMLStyleFromObject(style);
 </script>
 
-<div class={className}>
+<div class={className} style={styleHTML}>
 	<slot></slot>
 </div>
 
