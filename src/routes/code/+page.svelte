@@ -138,17 +138,7 @@
         white-space: nowrap;
         overflow: auto;
     }
-    .CodeInput::-webkit-scrollbar{
-        width: 1vh;
-        height: 1vh;
-    }
-    .CodeInput::-webkit-scrollbar-thumb {
-        background: var(--darker);
-        border-radius: 10px;
-    }
-    .CodeInput::-webkit-scrollbar-thumb:hover {
-        background: var(--darker-50);
-    }
+
     .CodeInput:focus{
         border: 2px solid var(--outline);
         border-top: none;
@@ -200,16 +190,7 @@
         word-break: break-word;
         overflow: auto;
     }
-    .ProblemDescription::-webkit-scrollbar{
-        width: 1vh;
-    }
-    .ProblemDescription::-webkit-scrollbar-thumb {
-        background: var(--darker);
-        border-radius: 10px;
-    }
-    .ProblemDescription::-webkit-scrollbar-thumb:hover {
-        background: var(--darker-50);
-    }
+    
     .TestcaseBox{
         display: flex;
         flex-direction: column;
@@ -226,16 +207,7 @@
         word-break: break-word;
         overflow: auto;
     }
-    .TestcaseBox::-webkit-scrollbar{
-        width: 1vh;
-    }
-    .TestcaseBox::-webkit-scrollbar-thumb {
-        background: var(--darker);
-        border-radius: 10px;
-    }
-    .TestcaseBox::-webkit-scrollbar-thumb:hover {
-        background: var(--darker-50);
-    }
+    
     .TestcaseNo{
         font-size: 2.25vh;
         font-weight: 600;
