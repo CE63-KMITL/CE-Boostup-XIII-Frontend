@@ -4,19 +4,43 @@
 
 	import { onMount } from "svelte";
 
-	onMount(() => {
-		const URL_Params = new URLSearchParams(window.location.search);
-
-		if (URL_Params.get("dark")) {
-			localStorage.setItem("dark", URL_Params.get("dark"));
-		}
-
-		if (localStorage.getItem("dark") === "true") {
-			document.documentElement.setAttribute("dark", "");
-		} else {
-			document.documentElement.removeAttribute("dark");
-		}
-	});
+	onMount(() => {});
 </script>
 
 {@render children()}
+
+<style lang="scss">
+	:global(.list) {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		overflow-y: auto;
+		overflow-x: hidden;
+		gap: 5px;
+	}
+
+	:global(.wrap),
+	:global(.wrap-hidden) {
+		display: flex;
+		flex-direction: row;
+		overflow-y: auto;
+		overflow-x: hidden;
+		flex-wrap: wrap;
+		overflow: hidden;
+	}
+
+	:global(.wrap-hidden) {
+		height: 100%;
+	}
+
+	:global(.list > div) {
+		height: 100%;
+		display: flex;
+	}
+
+	:global(.center) {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+</style>
