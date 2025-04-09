@@ -2,7 +2,10 @@
 	"/": [],
 	"/Login": [],
 	"/Menu": [],
+	"/Problem": [],
 	"/Problem/Create": [],
 	"/code": [],
-	"/home_score": []
+	"/home_score": [
+		"src/routes/home_score/+page.server.js"
+	]
 }
