@@ -1,1 +1,0 @@
-import{a as t,t as p}from"../chunks/disclose-version.jDRZ-Uhl.js";import"../chunks/legacy.BB78Cu0g.js";var r=p("<div>ว้าวหน้าหลักสุดยอดไปเลย</div>");function m(a){var o=r();t(a,o)}export{m as component};
