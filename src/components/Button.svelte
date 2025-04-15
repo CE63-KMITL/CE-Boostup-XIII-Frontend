@@ -1,17 +1,8 @@
 <script lang="ts">
-	export let style: Record<string, string> = {};
-	export let className = "";
 	export let hoverColor = "255, 255, 255, 0.1";
-
 	export { className as class };
 
-	const formatToHTMLStyleFromObject = (styleObj: Record<string, string>) => {
-		return Object.entries(styleObj)
-			.map(([key, value]) => `${key}: ${value};`)
-			.join(" ");
-	};
-
-	$: styleHTML = formatToHTMLStyleFromObject(style);
+	$$restProps.style += `--hoverColor: rgba(${hoverColor});`;
 
 	//--------------------------------------------------------
 
@@ -36,12 +27,7 @@
 	});
 </script>
 
-<button
-	style={`--hoverColor: rgba(${hoverColor}); ${styleHTML}`}
-	class={`animation ${className}`}
-	on:click
-	bind:this={This_Button}
->
+<button {...$$restProps} on:click bind:this={This_Button}>
 	<slot></slot>
 	<div class="full animation button-filter"></div>
 </button>
