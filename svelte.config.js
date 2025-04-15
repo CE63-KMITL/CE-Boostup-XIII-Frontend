@@ -8,6 +8,13 @@ const config = {
 	kit: {
 		adapter: adapter(),
 	},
+
+	vitePlugin: {
+		hot:{
+			preserveLocalState: true,
+		},
+	}
+
 };
 
 export default config;
