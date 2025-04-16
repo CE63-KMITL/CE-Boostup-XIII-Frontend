@@ -1,67 +1,76 @@
 <script lang="ts">
   import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
-  import IoLogoGoogle from "svelte-icons/io/IoLogoGoogle.svelte";
-  import "./horizonmobile.scss";
-  import "./verticalmobile.scss";
   import "../../app.css";
   import Button from "../../components/Button.svelte";
 </script>
 
-<div class={"Container"}>
-  <div class={"LoginBox"}>
-    <h1 class={"LoginHead"}>Login</h1>
-    <div class={"InputBox"}>
-      <input class={"Email"} type="email" />
-      <div class={"PasswordBox"}>
-        <input class={"Password"} type="password" />
-        <Button>
-          <div class={"IoIosEyeOff"}>
-            <IoIosEyeOff />
+<div class="Container">
+  <h1 class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
+  <div class="LoginBox">
+    <h1 class="LoginHead">เข้าสู่ระบบ</h1>
+    <div class="InputBox">
+      <div class="EmailBox">
+        <p class="Text">อีเมล</p>
+        <input class="Email" type="email" placeholder="อีเมล" />
+      </div>
+      <div class="PasswordBox">
+        <p class="Text">รหัสผ่าน</p>
+        <div class="WrapPasswordInput">
+          <input class="Password" type="password" placeholder="รหัสผ่าน" />
+          <div class="IoIosEyeOff">
+            <IoIosEyeOff/>
           </div>
-        </Button>
+        </div>
       </div>
-      <Button class={"Text"}>Forget password?</Button>
+      <p class="ForgetPassword">ลืมรหัสผ่าน</p>
     </div>
-    <Button class={"Text"}>Login</Button>
-    <p class={"Text"}>or</p>
-    <Button class={"Text"}>
-      <div class={"IoLogoGoogle"}>
-        <IoLogoGoogle />
-      </div>
-      Login with Google
-    </Button>
+    <Button class="Login">Login</Button>
   </div>
 </div>
 
 <style lang="scss">
-    .Container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        width: 100%;
-        background-position: center;
-        background-attachment: fixed;
-    }
-    .LoginBox{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: auto;
-        min-width: fit-content;
-        padding: 1rem;
-        padding-top: 0px;
-        margin-left: 0.75rem;
-        margin-right: 0.75rem;
-        gap: 1rem;
-        border: 2px solid var(--outline);
-        border-radius: 25px;
-        backdrop-filter: blur(15px);
-    }
+  .Container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      min-height: 100%;
+      width: 100%;
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
+  }
+
+  .Head {
+    color: var(--tag-text);
+    text-shadow:0px 4px var(--list-shadow);
+    text-align: center;
+    font-size: 3.5rem;
+    font-weight: 700;
+  }
+
+  .LoginBox{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: auto;
+      min-width: fit-content;
+      width: 25%;
+      padding: 1rem;
+      padding-top: 0px;
+      margin-left: 0.75rem;
+      margin-right: 0.75rem;
+      border: 1px solid var(--theme-dark-text);
+      border-radius: 15px;
+      background-color: var(--bg-50);
+      opacity: 50;
+  }
 
   .LoginHead {
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: 700;
+    margin-top: 3rem;
+    color: var(--theme-dark-text);
   }
 
   .InputBox {
@@ -70,52 +79,84 @@
     flex-direction: column;
     justify-content: center;
     width: 100%;
-    margin-top: 1rem;
     gap: 10px;
   }
 
-  .PasswordBox {
+  .WrapPasswordInput {
     display: flex;
     align-items: center;
     justify-content: start;
     width: 100%;
-    margin-top: 10px;
+    gap: 5px;
   }
 
   .Email {
+    padding: 0.125rem;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
+    width: 100%;
+    max-width: 25rem;
     background-color: transparent;
-    border: 1px solid var(--outline);
+    border: 1px solid var(--theme-dark-text);
     border-radius: 5px;
-    font-size: 1.5rem;
+    font-size: 1.125rem;
+  }
+
+  .Email::placeholder{
+    color: var(--theme-dark-text);
+    font-weight: 400;
   }
 
   .Password {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0.125rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
     width: 100%;
+    max-width: 25rem;
     background-color: transparent;
-    border: 1px solid var(--outline);
-    border-right: 0px;
+    border: 1px solid var(--theme-dark-text);
     border-radius: 5px;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    font-size: 1.5rem;
+    font-size: 1.125rem;
   }
 
+  .Password::placeholder{
+    color: var(--theme-dark-text);
+    font-weight: 400;
+  }
+  
   .IoIosEyeOff {
     width: 2rem;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    cursor: pointer;
+  }
+
+  .IoIosEyeOff :global(svg) {
+  fill: var(--theme-dark-text);
+}
+
+  .ForgetPassword {
+    color: var(--theme-dark-text);
+    cursor: pointer;
+    font-size: 1.125rem;
+    text-decoration: underline;
+  }
+
+  :global(.Login) {
+    margin-bottom: 3rem;
+    border: none;
   }
 
   .Text {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--theme-dark-text);
   }
 
-  .IoLogoGoogle {
-    width: 3rem;
-    margin-right: 5px;
+  @media only screen and (max-width: 500px){
+    .Container{
+      padding: 0px;
+      padding-top: 2rem;
+      justify-content: flex-start;
+      gap: 1.5rem;
+    }
   }
 </style>
