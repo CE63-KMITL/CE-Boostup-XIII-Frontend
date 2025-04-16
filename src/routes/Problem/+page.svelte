@@ -54,7 +54,7 @@
 
 <Fullscreen>
 	<div id="problem">
-		<Frame id="left" full="">
+		<Frame id="left" full="" blur-bg>
 			<Frame id="search-frame">
 				<svg
 					id="search-icon"
@@ -81,7 +81,7 @@
 			</Frame>
 			<ProblemTable problems={filteredProblems} />
 		</Frame>
-		<Frame id="right">
+		<Frame id="right" blur-bg>
 			<div class="placeholder">Select a problem to view details</div>
 		</Frame>
 	</div>

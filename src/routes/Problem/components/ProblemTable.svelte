@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import List from "../../../components/List.svelte";
 	import type { Problem } from "../problem";
 	import ProblemRow from "./ProblemRow.svelte";
 
@@ -7,7 +8,7 @@
 
 	onMount(() => {
 		const problem_table = document.getElementById("problem-table");
-		const head_list: HTMLElement = document.querySelector("#problem-table .header");
+		const head_list: HTMLElement = document.querySelector("#problem-table #header");
 
 		function updateScroll() {
 			console.log(problem_table.scrollTop);
@@ -30,124 +31,140 @@
 </script>
 
 <div id="problem-table">
-	<div class="header problem-list">
+	<List id="header" class="problem-list">
 		<div>ข้อที่</div>
 		<div>โจทย์</div>
-		<div>ประเภท</div>
-		<div>ความยาก</div>
+		<div class="problem-mini-info">
+			<div id="tags">ประเภท</div>
+			<div id="difficulty">ความยาก</div>
+			<div id="tags-difficulty">ประเภท/ความยาก</div>
+		</div>
 		<div>สถานะ</div>
-	</div>
-	<div id="problem-container">
-		{#each problems as problem}
-			<ProblemRow {problem} />
-		{/each}
-	</div>
+	</List>
+	{#each problems as problem}
+		<ProblemRow {problem} />
+	{/each}
 </div>
 
 <style lang="scss">
-	#problem-table {
+	:global([dark] #header) {
+		backdrop-filter: blur(10px);
+	}
+
+	:global(#problem-table) {
 		overflow-y: auto;
 		height: calc(100% - 60px);
 		margin-top: 10px;
 		padding: 0px 10px 10px 10px;
-	}
-
-	#problem-container {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.header {
-		position: sticky;
-		top: 0;
-		z-index: 1;
-		border-radius: 0px 0px var(--n-border-radius) var(--n-border-radius);
-		height: 50px;
-
-		div {
-			align-content: center;
-		}
-	}
-
-	:global([dark] .header) {
-		backdrop-filter: blur(10px);
-	}
-
-	:global(.problem-list) {
-		display: flex;
-		width: 100%;
-		transition: all 0.2s ease-out;
-		height: 60px;
-		filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.1));
-		border-radius: var(--n-border-radius);
-		container-type: inline-size;
+		display: grid;
 		gap: 10px;
 
-		:global(> div) {
-			&:nth-child(1) {
-				width: 5%;
-				min-width: 70px;
-				text-align: center;
-			}
-			&:nth-child(2) {
-				width: 20%;
-			}
-			&:nth-child(3) {
-				width: 30%;
-				text-align: center;
-			}
-			&:nth-child(4) {
-				width: 20%;
-				text-align: center;
-			}
-			&:nth-child(5) {
-				width: 20%;
-				text-align: center;
+		:global(#header) {
+			position: sticky;
+			top: 0;
+			z-index: 1;
+			border-radius: 0px 0px var(--n-border-radius) var(--n-border-radius);
+			height: 50px;
+			font-weight: 600;
+
+			div {
+				align-content: center;
 			}
 		}
 
-		@container (max-width: 600px) {
+		:global(#tags-difficulty) {
+			display: none;
+		}
+
+		:global(.problem-list) {
+			display: flex;
+			width: 100%;
+			transition: all 0.2s ease-out;
+
+			:global(.problem-mini-info) {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+
+				:global(> div) {
+					&:nth-child(1) {
+						width: 50%;
+					}
+					&:nth-child(2) {
+						width: 50%;
+					}
+				}
+			}
+
 			:global(> div) {
 				&:nth-child(1) {
-					width: 10%;
+					width: 5%;
+					min-width: 70px;
 					text-align: center;
 				}
 				&:nth-child(2) {
-					width: 20%;
-				}
-				&:nth-child(3) {
-					display: none;
-				}
-				&:nth-child(4) {
 					width: 30%;
 				}
-				&:nth-child(5) {
-					width: 20%;
-				}
-			}
-		}
-
-		@container (max-width: 400px) {
-			:global(> div) {
-				&:nth-child(1) {
-					max-width: 50px;
-					min-width: 50px;
+				&:nth-child(3) {
+					width: 50%;
 					text-align: center;
 				}
-				&:nth-child(2) {
-					max-width: 45%;
-					min-width: 45%;
-				}
-				&:nth-child(3) {
-					display: none;
-				}
 				&:nth-child(4) {
+					width: 20%;
+					text-align: center;
+				}
+			}
+
+			@container (max-width:700px) {
+				:global(#tags),
+				:global(#difficulty) {
 					display: none;
 				}
-				&:nth-child(5) {
-					max-width: 35%;
-					min-width: 35%;
+
+				:global(div) {
+					font-size: 0.8rem;
+				}
+
+				:global(#tags-difficulty) {
+					display: block;
+				}
+
+				:global(.problem-mini-info) {
+					:global(> div) {
+						&:nth-child(1) {
+							width: 100%;
+						}
+						&:nth-child(2) {
+							width: 100%;
+						}
+					}
+				}
+
+				:global(> div) {
+					&:nth-child(3) {
+						flex-direction: column;
+						min-width: 60px;
+						width: 5%;
+						overflow: visible;
+
+						div {
+							overflow: visible;
+						}
+					}
+					&:nth-child(4) {
+						min-width: 100px;
+					}
+				}
+			}
+
+			@container (max-width:300px) {
+				:global(> div) {
+					&:nth-child(2) {
+						width: 50%;
+					}
+					&:nth-child(3) {
+						display: none;
+					}
 				}
 			}
 		}

@@ -9,6 +9,9 @@
 		border-radius: 10px;
 		padding: 5px;
 		margin: 5px;
+	}
+
+	div[blur-bg="true"] {
 		backdrop-filter: blur(5px);
 	}
 </style>
