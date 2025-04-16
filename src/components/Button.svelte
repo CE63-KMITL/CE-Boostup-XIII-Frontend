@@ -1,8 +1,5 @@
 <script lang="ts">
-    export let style: Record<string, string> = {};
-    export let className = "";
-
-    export { className as class };
+	export let hoverColor = "255, 255, 255, 0.1";
 
     const formatToHTMLStyleFromObject = (styleObj: Record<string, string>) => {
         return Object.entries(styleObj)

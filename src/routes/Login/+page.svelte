@@ -100,65 +100,56 @@
     }
 </script>
 
-<div class={Dynamic1}>
-    <div class={Dynamic2}>
-        <h1 class={Dynamic3}>
-            Login
-        </h1>
-        <div class={Dynamic4}>
-            <input class ={Dynamic5} type="email">
-            <div class={Dynamic6}>
-                <input class = {Dynamic7} type="password">
-                <Button style={seePassword}>
-                    <div class={Dynamic8}>
-                        <IoIosEyeOff/>
-                    </div>
-                </Button>
-            </div>
-            <Button class={Dynamic9} style={forgetPassword}>
-                Forget password?
-            </Button>
-        </div>
-        <Button class={Dynamic10} style={logIn}>
-            Login
+<div class={"Container"}>
+  <div class={"LoginBox"}>
+    <h1 class={"LoginHead"}>Login</h1>
+    <div class={Dynamic4}>
+      <input class={Dynamic5} type="email" />
+      <div class={Dynamic6}>
+        <input class={Dynamic7} type="password" />
+        <Button style={seePassword}>
+          <div class={Dynamic8}>
+            <IoIosEyeOff />
+          </div>
         </Button>
-        <p class={Dynamic11}>
-            or
-        </p>
-        <Button class={Dynamic12} style={logInWithGoogle}>
-            <div  class={Dynamic13}>
-                <IoLogoGoogle/>
-            </div>
-            Login with Google
-        </Button>
+      </div>
+      <Button class={Dynamic9} style={forgetPassword}>Forget password?</Button>
     </div>
+    <Button class={Dynamic10} style={logIn}>Login</Button>
+    <p class={Dynamic11}>or</p>
+    <Button class={Dynamic12} style={logInWithGoogle}>
+      <div class={Dynamic13}>
+        <IoLogoGoogle />
+      </div>
+      Login with Google
+    </Button>
+  </div>
 </div>
 
 <style lang="scss">
-    .Container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        width: 100%;
-        background-color: var(--bg);
-        background-position: center;
-        background-attachment: fixed;
-    }
-    .LoginBox{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: auto    ;
-        width: 20vw;
-        min-width: fit-content;
-        padding: 20px;
-        padding-top: 0px;
-        gap: 15px;
-        border: 2px solid var(--outline);
-        border-radius: 25px;
-        backdrop-filter: blur(15px);
-    }
+  .Container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-attachment: fixed;
+  }
+  .LoginBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    width: 20vw;
+    min-width: fit-content;
+    padding: 20px;
+    padding-top: 0px;
+    gap: 15px;
+    border: 2px solid var(--outline);
+    border-radius: 25px;
+    backdrop-filter: blur(15px);
+  }
 
     .LoginHead{
         font-size: 7.5vh; 
