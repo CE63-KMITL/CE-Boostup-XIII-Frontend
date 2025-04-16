@@ -3,45 +3,119 @@
 @import "tailwindcss/utilities";
 
 html {
+	--n-border-radius: 10px;
+
+	font-family: "Noto Sans Thai";
 	margin: 0;
 	width: 100%;
 	height: 100%;
 }
 
 html:not([dark]) {
-	--text: rgb(0, 0, 0);
+	--theme-text: rgb(212, 181, 124);
+	--theme-dark-text: rgb(150, 125, 79);
+
+	--list-shadow: rgba(0, 0, 0, 0.5);
+	--list-outline: rgba(0, 0, 0, 0);
+
+	--hover-list-bg: rgb(240, 240, 240);
+	--hover-list-outline: rgb(100, 100, 100);
+
+	--selected-list-bg: rgb(255, 249, 230);
+	--selected-list-outline: var(--theme-text);
+
+	--tag-text: rgb(255, 255, 255);
+
+	--status-done: rgb(51, 156, 51);
+	--status-in-progress: rgb(151, 134, 38);
+	--status-not-started: rgb(199, 65, 65);
+
+	--place-holder: #3f2e3e83;
+
+	--text: #3f2e3e;
 	--description: rgb(66, 66, 66);
 	--normal: rgb(255, 255, 255);
 	--normal-50: rgba(255, 255, 255, 0.5);
 	--darker: rgb(194, 194, 194);
 	--darker-50: rgba(194, 194, 194, 0.5);
 	--outline: rgb(0, 0, 0);
-	--button-bg: radial-gradient(at center top, rgb(255, 255, 255), rgba(85, 85, 85, 0.5));
+	--button-bg: radial-gradient(at center top, rgb(255, 255, 255), rgba(197, 197, 197, 0.5));
 	--bg: rgb(255, 255, 255);
-	--bg-50: rgba(255, 255, 255, 0.5);
+	--bg-50: rgba(255, 255, 255, 0.8);
 }
 
 html[dark] {
-	background: black;
+	--theme-text: rgb(212, 181, 124);
+	--theme-dark-text: rgb(241, 211, 156);
 
-	--text: rgb(238, 238, 238);
+	--list-shadow: rgba(68, 27, 61, 0.4);
+	--list-outline: rgba(255, 255, 255, 0.1);
+
+	--hover-list-bg: rgba(37, 37, 37, 0.8);
+	--hover-list-outline: rgb(60, 60, 60);
+
+	--selected-list-bg: rgb(65, 63, 52);
+	--selected-list-outline: var(--theme-text);
+
+	--tag-text: rgb(255, 255, 255);
+
+	--status-done: rgb(141, 255, 141);
+	--status-in-progress: rgb(255, 255, 132);
+	--status-not-started: rgb(255, 123, 123);
+
+	--text: #fff1fe;
 	--description: rgb(185, 185, 185);
 	--normal: rgb(48, 48, 48);
 	--normal-50: rgba(48, 48, 48, 0.5);
 	--darker: rgb(22, 22, 22);
 	--darker-50: rgba(22, 22, 22, 0.5);
 	--outline: rgb(125, 125, 125);
-	--button-bg: radial-gradient(at center top, rgb(128, 128, 128), rgba(85, 85, 85, 0.5));
-	--bg: rgb(0, 0, 0);
-	--bg-50: rgba(0, 0, 0, 0.5);
+	--button-bg: radial-gradient(at center top, rgb(78, 78, 78), rgba(85, 85, 85, 0.5));
+	--bg: rgba(0, 0, 0, 0.6);
+	--bg-50: rgba(0, 0, 0, 0.7);
+
+	background: black;
+}
+
+*::-webkit-scrollbar {
+	width: 5px;
+	height: 3px;
+}
+*::-webkit-scrollbar-thumb {
+	background: var(--outline);
+	border-radius: 10px;
+	width: 1px;
+	padding: 0px;
+	margin: 2px;
+	transition: all 0.2s;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background: var(--text);
 }
 
 body {
 	margin: 0;
+	padding: 0;
 	width: 100%;
 	height: 100%;
 }
 
+html[dark] > body > #bg {
+	opacity: 0.5;
+}
+
 * {
 	color: var(--text);
+}
+
+.animation {
+	transition: all 0.2s;
+}
+
+.full {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
 }

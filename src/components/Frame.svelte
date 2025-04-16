@@ -1,9 +1,4 @@
-<script lang="ts">
-	let className = "";
-	export { className as class };
-</script>
-
-<div class={className}>
+<div {...$$restProps}>
 	<slot></slot>
 </div>
 
@@ -14,6 +9,9 @@
 		border-radius: 10px;
 		padding: 5px;
 		margin: 5px;
+	}
+
+	div[blur-bg="true"] {
 		backdrop-filter: blur(5px);
 	}
 </style>
