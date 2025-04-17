@@ -11,13 +11,13 @@
 
 	let searchTerm = "";
 
-	$: filteredProblems = testProblems.filter(
-		(p) =>
-			p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			p.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			p.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
-			p.id.includes(searchTerm)
-	);
+	// $: filteredProblems = testProblems.filter(
+	// 	(p) =>
+	// 		p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+	// 		p.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+	// 		p.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
+	// 		p.id.includes(searchTerm)
+	// );
 
 	let problemSelector;
 	let problemDetails;
@@ -61,7 +61,7 @@
 
 				<input id="search" placeholder="ค้นหา" bind:value={searchTerm} />
 			</Frame>
-			<ProblemTable problems={filteredProblems} />
+			<ProblemTable problems={testProblems} />
 		</Frame>
 		<Frame id="right" blur-bg>
 			<div class="placeholder">Select a problem to view details</div>

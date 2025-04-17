@@ -5,14 +5,19 @@
 	import Filter from "../../../components/Icons/Filter.svelte";
 	import Sort from "../../../components/Icons/Sort.svelte";
 	import List from "../../../components/List.svelte";
+	import Loading from "../../../components/Loading.svelte";
+	import LoadingList from "../../../components/LoadingList.svelte";
+	import RadioButton from "../../../components/RadioButton.svelte";
 	import type { Problem } from "../problem";
-	import { statusText } from "../problem";
+	import { searchParams, statusColors, statusText, tagsColors } from "../problem";
 	import ProblemRow from "./ProblemRow.svelte";
 
 	let tagsElement;
+	let difficultyElement;
+	let difficultyTagsElement;
 	let statusElement;
 
-	export let problems: Problem[];
+	export let problems: (Problem | string)[];
 	onMount(() => {
 		const problem_table = document.getElementById("problem-table");
 		const head_list: HTMLElement = document.querySelector("#problem-table #header");
@@ -20,18 +25,6 @@
 		function updateScroll() {
 			console.log(problem_table.scrollTop);
 			head_list.setAttribute("top", problem_table.scrollTop > 0 ? "false" : "true");
-
-			// if (problem_table.scrollTop > 0) {
-			// 	head_list.style.background = "var(--bg)";
-			// 	head_list.style.backdropFilter = "";
-			// 	head_list.style.outlineColor = "";
-			// 	head_list.style.filter = "";
-			// } else {
-			// 	head_list.style.background = "transparent";
-			// 	head_list.style.backdropFilter = "none";
-			// 	head_list.style.outlineColor = "transparent";
-			// 	head_list.style.filter = "none";
-			// }
 		}
 
 		if (problem_table) {
@@ -54,22 +47,39 @@
 					ประเภท <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={tagsElement}>
-					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
+					<RadioButton
+						name="tag"
+						onclick={() => {
+							searchParams["tag"] = "";
+						}}
+						selected={true}
+						>อะไรก็ได้เอามาให้หมด
+					</RadioButton>
+					{#each Object.keys(tagsColors) as tag}
+						<RadioButton
+							name="tag"
+							color={tagsColors[tag]}
+							onclick={() => {
+								searchParams["tag"] = tag;
+							}}
+							>{tag}
+						</RadioButton>
+					{/each}
 				</HeaderSelection>
 			</div>
 			<div id="difficulty">
-				<div>
+				<div bind:this={difficultyElement}>
 					ความยาก <Filter></Filter>
 				</div>
-				<HeaderSelection toggleSelector={tagsElement}>
+				<HeaderSelection toggleSelector={difficultyElement}>
 					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
 				</HeaderSelection>
 			</div>
 			<div id="tags-difficulty">
-				<div>
+				<div bind:this={difficultyTagsElement}>
 					ประเภท/ความยาก <Filter></Filter>
 				</div>
-				<HeaderSelection toggleSelector={tagsElement}>
+				<HeaderSelection toggleSelector={difficultyTagsElement}>
 					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
 				</HeaderSelection>
 			</div>
@@ -79,14 +89,47 @@
 				สถานะ <Filter></Filter>
 			</div>
 			<HeaderSelection toggleSelector={statusElement}>
-				<Checkbox value="Done">{statusText["Done"]}</Checkbox>
-				<Checkbox value="In Progress">{statusText["In Progress"]}</Checkbox>
-				<Checkbox value="Not Started">{statusText["Not Started"]}</Checkbox>
+				<RadioButton
+					name="status"
+					onclick={() => {
+						searchParams["status"] = "";
+					}}
+					selected={true}
+					>ทั้งหมด
+				</RadioButton>
+				<RadioButton
+					name="status"
+					color={statusColors["Done"]}
+					onclick={() => {
+						searchParams["status"] = "Done";
+					}}
+					>{statusText["Done"]}
+				</RadioButton>
+				<RadioButton
+					name="status"
+					color={statusColors["In Progress"]}
+					onclick={() => {
+						searchParams["status"] = "In Progress";
+					}}
+					>{statusText["In Progress"]}
+				</RadioButton>
+				<RadioButton
+					name="status"
+					color={statusColors["Not Started"]}
+					onclick={() => {
+						searchParams["status"] = "Not Started";
+					}}
+					>{statusText["Not Started"]}
+				</RadioButton>
 			</HeaderSelection>
 		</div>
 	</List>
 	{#each problems as problem}
-		<ProblemRow {problem} />
+		{#if problem == "loading"}
+			<LoadingList></LoadingList>
+		{:else}
+			<ProblemRow problem={problem as Problem} />
+		{/if}
 	{/each}
 </div>
 
@@ -99,6 +142,7 @@
 		display: grid;
 		gap: 10px;
 		container-type: size;
+		position: relative;
 
 		:global([dark] #header) {
 			backdrop-filter: blur(10px);

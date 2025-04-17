@@ -1,17 +1,27 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { sleep } from "../lib/normalFunction";
 
 	export let toggleSelector;
 
 	let ThisHeaderSelection: HTMLElement;
 
-	$: {
-		ThisHeaderSelection;
-	}
-
 	onMount(() => {
-		const selectorList: any = ThisHeaderSelection.children;
+		const selectorList: any = [];
+
+		for (const selector of ThisHeaderSelection.children) {
+			console.log(selector.tagName);
+			switch (selector.tagName) {
+				case "FORM":
+					selectorList.push(...selector.children);
+					break;
+
+				default:
+					selectorList.push(selector);
+					break;
+			}
+		}
+
+		console.log(selectorList);
 
 		async function show() {
 			ThisHeaderSelection.setAttribute("open", "true");
@@ -23,7 +33,7 @@
 
 		async function hide() {
 			ThisHeaderSelection.setAttribute("open", "false");
-			for (const selector of selectorList as NodeListOf<HTMLElement>) {
+			for (const selector of selectorList) {
 				selector.style.animation = "";
 			}
 		}
@@ -74,9 +84,16 @@
 	}
 
 	:global(.header-selection) {
-		:global(> div) {
+		:global(> div),
+		:global(> :not(div) > div) {
 			transition: all 0.2s ease-out;
 			opacity: 0;
+		}
+
+		:global(> form) {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
 		}
 	}
 

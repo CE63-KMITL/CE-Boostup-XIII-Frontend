@@ -12,7 +12,7 @@ export interface Problem {
 Problems data
 -------------------------------------------------------
 */
-export const testProblems: Problem[] = [
+export const testProblems: (Problem | string)[] = [
 	{
 		id: "P001",
 		title: "Sum of Two Numbers",
@@ -173,6 +173,7 @@ export const testProblems: Problem[] = [
 		difficulty: 1.5,
 		status: "In Progress",
 	},
+	"loading",
 ];
 
 export const testDetail = {
@@ -210,7 +211,8 @@ import { writable } from "svelte/store";
 
 /*
 -------------------------------------------------------
-Selected Problem Store
+Problem Store
 -------------------------------------------------------
 */
 export const selectedProblemId = writable<string | null>(null);
+export const searchParams = writable({});
