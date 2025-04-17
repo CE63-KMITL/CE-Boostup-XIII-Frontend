@@ -1,27 +1,30 @@
 <script lang="ts">
+	export let data;
+
+	const API_HOST = import.meta.env.VITE_API_HOST;
+	import { onMount } from "svelte";
 	import Frame from "../../components/Frame.svelte";
 	import Fullscreen from "../../components/Fullscreen.svelte";
-	import { selectedProblemId } from "./problem";
-	// Import the store
-
-	import { onMount } from "svelte";
 	import Search from "../../components/Icons/Search.svelte";
+	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { testProblems } from "./problem";
+	import { selectedProblemId, testProblems } from "./problem";
+
+	function requestProblems() {
+		fetch(`${API_HOST}/problem`);
+	}
+
+	let allProblems = testProblems;
+	let selectedProblem = null;
 
 	let searchTerm = "";
-
-	// $: filteredProblems = testProblems.filter(
-	// 	(p) =>
-	// 		p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-	// 		p.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-	// 		p.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
-	// 		p.id.includes(searchTerm)
-	// );
 
 	let problemSelector;
 	let problemDetails;
 	onMount(() => {
+		alert(API_HOST);
+		alert(JSON.stringify(data));
+
 		problemSelector = document.querySelector("#problem #left");
 		problemDetails = document.querySelector("#problem #right");
 	});
@@ -50,6 +53,11 @@
 			}
 			previousSelectedId = $selectedProblemId;
 		}
+
+		selectedProblem = allProblems.find(
+			(problem) => typeof problem === "object" && problem.id === $selectedProblemId
+		);
+		console.log($selectedProblemId, selectedProblem);
 	}
 </script>
 
@@ -58,13 +66,12 @@
 		<Frame id="left" full="" blur-bg>
 			<Frame id="search-frame">
 				<Search></Search>
-
 				<input id="search" placeholder="ค้นหา" bind:value={searchTerm} />
 			</Frame>
-			<ProblemTable problems={testProblems} />
+			<ProblemTable problems={allProblems} />
 		</Frame>
 		<Frame id="right" blur-bg>
-			<div class="placeholder">Select a problem to view details</div>
+			<ProblemDetail problem={selectedProblem} />
 		</Frame>
 	</div>
 </Fullscreen>
