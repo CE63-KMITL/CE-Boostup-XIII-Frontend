@@ -15,6 +15,7 @@ html:not([dark]) {
 	--theme-text: rgb(212, 181, 124);
 	--theme-dark-text: rgb(150, 125, 79);
 
+	--list-bg: rgb(255, 255, 255);
 	--list-shadow: rgba(0, 0, 0, 0.5);
 	--list-outline: rgba(0, 0, 0, 0);
 
@@ -48,6 +49,7 @@ html[dark] {
 	--theme-text: rgb(212, 181, 124);
 	--theme-dark-text: rgb(241, 211, 156);
 
+	--list-bg: rgba(0, 0, 0, 0.6);
 	--list-shadow: rgba(68, 27, 61, 0.4);
 	--list-outline: rgba(255, 255, 255, 0.1);
 
@@ -71,7 +73,7 @@ html[dark] {
 	--darker-50: rgba(22, 22, 22, 0.5);
 	--outline: rgb(125, 125, 125);
 	--button-bg: radial-gradient(at center top, rgb(78, 78, 78), rgba(85, 85, 85, 0.5));
-	--bg: rgba(0, 0, 0, 0.6);
+	--bg: rgba(0, 0, 0, 0.8);
 	--bg-50: rgba(0, 0, 0, 0.7);
 
 	background: black;
@@ -118,4 +120,22 @@ html[dark] > body > #bg {
 	height: 100%;
 	top: 0;
 	left: 0;
+}
+
+.stroke-icon path,
+.stroke-icon circle {
+	stroke: var(--text);
+}
+
+.fill-icon path,
+.fill-icon circle {
+	fill: var(--text);
+}
+
+#header div:has(> svg) {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+	flex-wrap: nowrap;
 }

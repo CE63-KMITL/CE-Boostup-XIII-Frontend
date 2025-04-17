@@ -5,6 +5,7 @@
 	// Import the store
 
 	import { onMount } from "svelte";
+	import Search from "../../components/Icons/Search.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
 	import { testProblems } from "./problem";
 
@@ -56,27 +57,8 @@
 	<div id="problem">
 		<Frame id="left" full="" blur-bg>
 			<Frame id="search-frame">
-				<svg
-					id="search-icon"
-					fill="none"
-					width="35"
-					height="36"
-					viewBox="0 0 35 36"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<path
-						d="M16.0417 28.2083C22.485 28.2083 27.7083 22.985 27.7083 16.5417C27.7083 10.0983 22.485 4.875 16.0417 4.875C9.59834 4.875 4.375 10.0983 4.375 16.5417C4.375 22.985 9.59834 28.2083 16.0417 28.2083Z"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					/>
-					<path
-						d="M30.625 31.125L24.2812 24.7812"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					/>
-				</svg>
+				<Search></Search>
+
 				<input id="search" placeholder="ค้นหา" bind:value={searchTerm} />
 			</Frame>
 			<ProblemTable problems={filteredProblems} />
@@ -96,7 +78,7 @@
 		gap: 0px;
 		padding: 15px;
 		box-sizing: border-box;
-		container-type: inline-size;
+		container-type: size;
 
 		:global(#left) {
 			transition: all 0.3s ease;
@@ -181,6 +163,10 @@
 		&::placeholder {
 			color: var(--place-holder);
 		}
+
+		@container (max-width: 500px) or (max-height: 600px) {
+			font-size: 0.8rem;
+		}
 	}
 
 	:global(#search-frame) {
@@ -188,9 +174,5 @@
 		flex-direction: row;
 		align-items: center;
 		padding-inline: 10px;
-	}
-
-	#search-icon path {
-		stroke: var(--text);
 	}
 </style>
