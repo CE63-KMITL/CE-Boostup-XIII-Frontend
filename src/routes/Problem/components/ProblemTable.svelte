@@ -1,25 +1,30 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import Checkbox from "../../../components/Checkbox.svelte";
+	import HeaderSelection from "../../../components/HeaderSelection.svelte";
+	import Filter from "../../../components/Icons/Filter.svelte";
+	import Sort from "../../../components/Icons/Sort.svelte";
 	import List from "../../../components/List.svelte";
+	import Loading from "../../../components/Loading.svelte";
+	import LoadingList from "../../../components/LoadingList.svelte";
+	import RadioButton from "../../../components/RadioButton.svelte";
 	import type { Problem } from "../problem";
+	import { searchParams, statusColors, statusText, tagsColors } from "../problem";
 	import ProblemRow from "./ProblemRow.svelte";
 
-	export let problems: Problem[];
+	let tagsElement;
+	let difficultyElement;
+	let difficultyTagsElement;
+	let statusElement;
 
+	export let problems: (Problem | string)[];
 	onMount(() => {
 		const problem_table = document.getElementById("problem-table");
 		const head_list: HTMLElement = document.querySelector("#problem-table #header");
 
 		function updateScroll() {
 			console.log(problem_table.scrollTop);
-
-			if (problem_table.scrollTop > 0) {
-				head_list.style.background = "var(--bg)";
-				head_list.style.backdropFilter = "";
-			} else {
-				head_list.style.background = "transparent";
-				head_list.style.backdropFilter = "none";
-			}
+			head_list.setAttribute("top", problem_table.scrollTop > 0 ? "false" : "true");
 		}
 
 		if (problem_table) {
@@ -32,25 +37,103 @@
 
 <div id="problem-table">
 	<List id="header" class="problem-list">
-		<div>ข้อที่</div>
+		<div>
+			ข้อที่ <Sort></Sort>
+		</div>
 		<div>โจทย์</div>
 		<div class="problem-mini-info">
-			<div id="tags">ประเภท</div>
-			<div id="difficulty">ความยาก</div>
-			<div id="tags-difficulty">ประเภท/ความยาก</div>
+			<div id="tags">
+				<div bind:this={tagsElement}>
+					ประเภท <Filter></Filter>
+				</div>
+				<HeaderSelection toggleSelector={tagsElement}>
+					<RadioButton
+						name="tag"
+						onclick={() => {
+							searchParams["tag"] = "";
+						}}
+						selected={true}
+						>อะไรก็ได้เอามาให้หมด
+					</RadioButton>
+					{#each Object.keys(tagsColors) as tag}
+						<RadioButton
+							name="tag"
+							color={tagsColors[tag]}
+							onclick={() => {
+								searchParams["tag"] = tag;
+							}}
+							>{tag}
+						</RadioButton>
+					{/each}
+				</HeaderSelection>
+			</div>
+			<div id="difficulty">
+				<div bind:this={difficultyElement}>
+					ความยาก <Filter></Filter>
+				</div>
+				<HeaderSelection toggleSelector={difficultyElement}>
+					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
+				</HeaderSelection>
+			</div>
+			<div id="tags-difficulty">
+				<div bind:this={difficultyTagsElement}>
+					ประเภท/ความยาก <Filter></Filter>
+				</div>
+				<HeaderSelection toggleSelector={difficultyTagsElement}>
+					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
+				</HeaderSelection>
+			</div>
 		</div>
-		<div>สถานะ</div>
+		<div>
+			<div bind:this={statusElement}>
+				สถานะ <Filter></Filter>
+			</div>
+			<HeaderSelection toggleSelector={statusElement}>
+				<RadioButton
+					name="status"
+					onclick={() => {
+						searchParams["status"] = "";
+					}}
+					selected={true}
+					>ทั้งหมด
+				</RadioButton>
+				<RadioButton
+					name="status"
+					color={statusColors["Done"]}
+					onclick={() => {
+						searchParams["status"] = "Done";
+					}}
+					>{statusText["Done"]}
+				</RadioButton>
+				<RadioButton
+					name="status"
+					color={statusColors["In Progress"]}
+					onclick={() => {
+						searchParams["status"] = "In Progress";
+					}}
+					>{statusText["In Progress"]}
+				</RadioButton>
+				<RadioButton
+					name="status"
+					color={statusColors["Not Started"]}
+					onclick={() => {
+						searchParams["status"] = "Not Started";
+					}}
+					>{statusText["Not Started"]}
+				</RadioButton>
+			</HeaderSelection>
+		</div>
 	</List>
 	{#each problems as problem}
-		<ProblemRow {problem} />
+		{#if problem == "loading"}
+			<LoadingList></LoadingList>
+		{:else}
+			<ProblemRow problem={problem as Problem} />
+		{/if}
 	{/each}
 </div>
 
 <style lang="scss">
-	:global([dark] #header) {
-		backdrop-filter: blur(10px);
-	}
-
 	:global(#problem-table) {
 		overflow-y: auto;
 		height: calc(100% - 60px);
@@ -58,6 +141,22 @@
 		padding: 0px 10px 10px 10px;
 		display: grid;
 		gap: 10px;
+		container-type: size;
+		position: relative;
+
+		:global([dark] #header) {
+			backdrop-filter: blur(10px);
+		}
+
+		:global(#header[top="true"]) {
+			background: transparent;
+		}
+
+		:global(#header[top="true"]:not(:has([open="true"]))) {
+			background: transparent;
+			outline-color: transparent;
+			filter: none;
+		}
 
 		:global(#header) {
 			position: sticky;
@@ -66,14 +165,34 @@
 			border-radius: 0px 0px var(--n-border-radius) var(--n-border-radius);
 			height: 50px;
 			font-weight: 600;
+			padding: 0;
+			background: var(--bg);
 
 			div {
 				align-content: center;
+				position: relative;
+			}
+
+			:global(div:has(> .header-selection)) {
+				flex-direction: column;
+				border-radius: var(--n-border-radius) var(--n-border-radius) 0px 0px;
+				height: 100%;
+				transition: all 0.2s ease-out;
+
+				:first-child {
+					height: 100%;
+				}
+			}
+
+			:global(div:has(> .header-selection[open="true"])) {
+				background: var(--bg);
 			}
 		}
 
-		:global(#tags-difficulty) {
-			display: none;
+		@container (min-width: 700px) {
+			:global(#tags-difficulty) {
+				display: none;
+			}
 		}
 
 		:global(.problem-list) {
@@ -85,6 +204,7 @@
 				display: flex;
 				flex-direction: row;
 				align-items: center;
+				gap: 10px;
 
 				:global(> div) {
 					&:nth-child(1) {
@@ -115,21 +235,34 @@
 				}
 			}
 
+			@container (max-width:500px) or (max-height:500px) {
+				:global(div) {
+					font-size: 0.7rem;
+				}
+
+				:global(.tag) {
+					font-size: 0.5rem;
+				}
+
+				:global(.difficulty) {
+					font-size: 1rem;
+				}
+			}
+
 			@container (max-width:700px) {
+				gap: 1px;
+
 				:global(#tags),
 				:global(#difficulty) {
 					display: none;
 				}
 
-				:global(div) {
-					font-size: 0.8rem;
-				}
-
-				:global(#tags-difficulty) {
-					display: block;
+				:global(svg) {
+					width: 15px;
 				}
 
 				:global(.problem-mini-info) {
+					gap: 0px;
 					:global(> div) {
 						&:nth-child(1) {
 							width: 100%;
@@ -141,10 +274,17 @@
 				}
 
 				:global(> div) {
+					&:nth-child(1) {
+						width: 1%;
+						min-width: 50px;
+					}
+					&:nth-child(2) {
+						width: 40%;
+					}
 					&:nth-child(3) {
 						flex-direction: column;
-						min-width: 60px;
-						width: 5%;
+						min-width: 105px;
+						width: 30%;
 						overflow: visible;
 
 						div {
@@ -152,7 +292,7 @@
 						}
 					}
 					&:nth-child(4) {
-						min-width: 100px;
+						min-width: 80px;
 					}
 				}
 			}

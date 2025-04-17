@@ -11,6 +11,7 @@
 		"strict": true,
 		"moduleResolution": "bundler",
 		"strictNullChecks": false,
-		"noImplicitAny": false
+		"noImplicitAny": false,
+		"types": ["node"]
 	}
 }
