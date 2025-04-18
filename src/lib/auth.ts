@@ -1,4 +1,4 @@
-const backendApiUrl = "YOUR_BACKEND_API/validate-token";
+const BACK_HOST = import.meta.env.VITE_BACK_HOST;
 const tokenCookieName = "authToken";
 
 export const getUserData = async ({ cookies, fetch }) => {
@@ -10,7 +10,7 @@ export const getUserData = async ({ cookies, fetch }) => {
 
 	if (token) {
 		try {
-			const response = await fetch(backendApiUrl, {
+			const response = await fetch(`${BACK_HOST}/auth/role`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
