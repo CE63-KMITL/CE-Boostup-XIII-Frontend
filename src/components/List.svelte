@@ -9,13 +9,13 @@
 		cursor: pointer;
 		user-select: none;
 		border-radius: var(--n-border-radius);
-		container-type: inline-size;
 		gap: 10px;
 		padding-block: 10px;
+		container-type: inline-size;
+		filter: drop-shadow(0 2px 4px var(--list-shadow));
 
 		&:not(#header) {
-			filter: drop-shadow(0 2px 4px var(--list-shadow));
-			background: var(--bg);
+			background: var(--list-bg);
 
 			&:hover:not([selected]) {
 				background-color: var(--hover-list-bg);

@@ -2,6 +2,7 @@ export interface Problem {
 	id: string;
 	title: string;
 	author: string;
+	description?: string;
 	tags: string[];
 	difficulty: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 4.5 | 5;
 	status: "Done" | "In Progress" | "Not Started";
@@ -12,7 +13,7 @@ export interface Problem {
 Problems data
 -------------------------------------------------------
 */
-export const testProblems: Problem[] = [
+export const testProblems: (Problem | string)[] = [
 	{
 		id: "P001",
 		title: "Sum of Two Numbers",
@@ -173,6 +174,7 @@ export const testProblems: Problem[] = [
 		difficulty: 1.5,
 		status: "In Progress",
 	},
+	"loading",
 ];
 
 export const testDetail = {
@@ -210,7 +212,8 @@ import { writable } from "svelte/store";
 
 /*
 -------------------------------------------------------
-Selected Problem Store
+Problem Store
 -------------------------------------------------------
 */
 export const selectedProblemId = writable<string | null>(null);
+export const searchParams = writable({});
