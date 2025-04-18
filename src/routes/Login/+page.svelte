@@ -2,6 +2,30 @@
   import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
   import "../../app.css";
   import Button from "../../components/Button.svelte";
+
+  const API_HOST = import.meta.env.VITE_API_HOST;
+  let email: string = '';
+  let password: string = '';
+
+  async function Login() {
+    const res = await fetch(`${API_HOST}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log('Login success:', data);
+    } else {
+      console.error('Login failed');
+    }
+  }
 </script>
 
 <div class="Container">
@@ -11,12 +35,12 @@
     <div class="InputBox">
       <div class="EmailBox">
         <p class="Text">อีเมล</p>
-        <input class="Email" type="email" placeholder="อีเมล" />
+        <input class="Email" type="email" placeholder="อีเมล" bind:value={email}/>
       </div>
       <div class="PasswordBox">
         <p class="Text">รหัสผ่าน</p>
         <div class="WrapPasswordInput">
-          <input class="Password" type="password" placeholder="รหัสผ่าน" />
+          <input class="Password" type="password" placeholder="รหัสผ่าน" bind:value={password}/>
           <div class="IoIosEyeOff">
             <IoIosEyeOff/>
           </div>
@@ -24,7 +48,7 @@
       </div>
       <p class="ForgetPassword">ลืมรหัสผ่าน</p>
     </div>
-    <Button class="Login">Login</Button>
+    <Button class="Login" on:click={() => Login()}>Login</Button>
   </div>
 </div>
 
