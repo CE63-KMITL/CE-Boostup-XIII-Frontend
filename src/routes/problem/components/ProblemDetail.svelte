@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Frame from "../../../components/Frame.svelte";
+
 	export let problem: any = null;
+	export let detail: any = null;
 </script>
 
 <Frame full>
@@ -16,7 +18,7 @@
 				</div>
 			</div>
 			<div class="label">Basic I/O</div>
-			<div class="description">{problem.description || "รายละเอียดโจทย์..."}</div>
+			<div class="description">{detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
 			<button class="submit-btn">ทำโจทย์</button>
 		{:else}
 			<div class="placeholder">กรุณาเลือกโจทย์เพื่อดูรายละเอียด</div>

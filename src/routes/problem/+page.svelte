@@ -4,33 +4,43 @@
 	const API_HOST = import.meta.env.VITE_API_HOST;
 	const BACK_HOST = import.meta.env.VITE_BACK_HOST;
 
+	import * as api from "$lib/API";
+	import { sleep } from "$lib/normalFunction";
 	import { onMount } from "svelte";
 	import Frame from "../../components/Frame.svelte";
 	import Fullscreen from "../../components/Fullscreen.svelte";
 	import Search from "../../components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { selectedProblemId, testProblems } from "./problem";
+	import { selectedProblemId, testProblems, type Problem } from "./problem";
 
-	function requestProblems() {
-		fetch(`${API_HOST}/problem`);
+	let allProblems: (Problem | string)[] = ["loading"];
+	let selectedProblem = null;
+	let searchString = "";
+	let problemDetail = "";
+
+	let problemSelectorElement;
+	let problemDetailsElement;
+
+	async function updateProblems() {
+		allProblems = await api.call(`/problem`);
 	}
 
-	let allProblems = testProblems;
-	let selectedProblem = null;
+	async function updateProblemDetail() {
+		if (!$selectedProblemId) return;
+		problemDetail = await api.call(`/problem/detail/${$selectedProblemId}`);
+	}
 
-	let searchTerm = "";
-
-	let problemSelector;
-	let problemDetails;
 	onMount(() => {
+		updateProblems();
 		alert(API_HOST);
-		alert(BACK_HOST);
+		// alert(BACK_HOST);
 
-		alert(JSON.stringify(data));
+		// alert(JSON.stringify(data));
+		console.log(data);
 
-		problemSelector = document.querySelector("#problem #left");
-		problemDetails = document.querySelector("#problem #right");
+		problemSelectorElement = document.querySelector("#problem #left");
+		problemDetailsElement = document.querySelector("#problem #right");
 	});
 
 	let previousSelectedId: string | null = null;
@@ -49,20 +59,21 @@
 					newProblemElement.setAttribute("selected", "");
 				}
 
-				problemDetails?.setAttribute("show", "");
-				problemSelector?.removeAttribute("full");
+				problemDetailsElement?.setAttribute("show", "");
+				problemSelectorElement?.removeAttribute("full");
 			} else {
-				problemDetails?.removeAttribute("show");
-				problemSelector?.setAttribute("full", "");
+				problemDetailsElement?.removeAttribute("show");
+				problemSelectorElement?.setAttribute("full", "");
 			}
+
+			updateProblemDetail();
 			previousSelectedId = $selectedProblemId;
 		}
-
-		selectedProblem = allProblems.find(
-			(problem) => typeof problem === "object" && problem.id === $selectedProblemId
-		);
-		console.log($selectedProblemId, selectedProblem);
 	}
+
+	$: selectedProblem = allProblems.find(
+		(problem) => typeof problem === "object" && problem.id === $selectedProblemId
+	);
 </script>
 
 <Fullscreen>
@@ -70,12 +81,12 @@
 		<Frame id="left" full="" blur-bg>
 			<Frame id="search-frame">
 				<Search></Search>
-				<input id="search" placeholder="ค้นหา" bind:value={searchTerm} />
+				<input id="search" placeholder="ค้นหา" bind:value={searchString} />
 			</Frame>
 			<ProblemTable problems={allProblems} />
 		</Frame>
 		<Frame id="right" blur-bg>
-			<ProblemDetail problem={selectedProblem} />
+			<ProblemDetail problem={selectedProblem} detail={problemDetail} />
 		</Frame>
 	</div>
 </Fullscreen>
