@@ -1,285 +1,200 @@
 <script lang="ts">
-  import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
-  import IoLogoGoogle from "svelte-icons/io/IoLogoGoogle.svelte";
-  import "./horizonmobile.scss";
-  import "./verticalmobile.scss";
-  import "../../app.css";
-  import { onMount, onDestroy } from "svelte";
-  import Button from "../../components/Button.svelte";
+	import * as api from "$lib/fetchApi.ts";
+	import { onMount } from "svelte";
+	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
+	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
+	import "../../app.css";
+	import Button from "../../components/Button.svelte";
 
-  let isHorizonMobile = false;
-  let isVerticalMobile = false;
+	const API_HOST = import.meta.env.VITE_API_HOST;
+	onMount(() => {
+		const data = localStorage.getItem("login_data");
+		if (data) {
+			const parsed_data = JSON.parse(data);
+			console.log(parsed_data.token);
+		}
+	});
 
-  let Dynamic1,
-    Dynamic2,
-    Dynamic3,
-    Dynamic4,
-    Dynamic5,
-    Dynamic6,
-    Dynamic7,
-    Dynamic8;
-  let Dynamic9, Dynamic10, Dynamic11, Dynamic12, Dynamic13;
+	let email: string = "";
+	let password: string = "";
+	let see_password: boolean = false;
+	let type: string = "password";
 
-  function checkWidthAndHeight() {
-    if (typeof window === "undefined") return;
+	async function Login() {
+		const res = await api.call("/auth/login", "POST", { email, password });
+		if (res.token) {
+			alert(`Login success\n\n${JSON.stringify(res)}`);
+			localStorage["token"] = JSON.stringify(res);
+		} else {
+			alert(`Login failed\n\n${JSON.stringify(res.message)}`);
+		}
+	}
 
-    let mobile = false;
-    let horizon = false;
-    let vertical = false;
-
-    if (window.innerWidth <= 1000) {
-      mobile = true;
-    }
-    if (window.innerWidth > window.innerHeight) {
-      horizon = true;
-    }
-    if (window.innerHeight > window.innerWidth && window.innerHeight <= 1000) {
-      vertical = true;
-    }
-
-    isHorizonMobile = mobile && horizon;
-    isVerticalMobile = mobile && vertical;
-  }
-
-  onMount(() => {
-    if (typeof window === "undefined") return;
-    checkWidthAndHeight();
-    window.addEventListener("resize", checkWidthAndHeight);
-    window.addEventListener("orientationchange", checkWidthAndHeight);
-  });
-
-  onDestroy(() => {
-    if (typeof window === "undefined") return;
-    window.removeEventListener("resize", checkWidthAndHeight);
-    window.removeEventListener("orientationchange", checkWidthAndHeight);
-  });
-
-  $: Dynamic1 = isHorizonMobile
-    ? "HorizonContainer"
-    : isVerticalMobile
-      ? "VerticalContainer"
-      : "Container";
-  $: Dynamic2 = isHorizonMobile
-    ? "HorizonLoginBox"
-    : isVerticalMobile
-      ? "VerticalLoginBox"
-      : "LoginBox";
-  $: Dynamic3 = isHorizonMobile
-    ? "HorizonLoginHead"
-    : isVerticalMobile
-      ? "VerticalLoginHead"
-      : "LoginHead";
-  $: Dynamic4 = isHorizonMobile
-    ? "HorizonInputBox"
-    : isVerticalMobile
-      ? "VerticalInputBox"
-      : "InputBox";
-  $: Dynamic5 = isHorizonMobile
-    ? "HorizonEmail"
-    : isVerticalMobile
-      ? "VerticalEmail"
-      : "Email";
-  $: Dynamic6 = isHorizonMobile
-    ? "HorizonPasswordBox"
-    : isVerticalMobile
-      ? "VerticalPasswordBox"
-      : "PasswordBox";
-  $: Dynamic7 = isHorizonMobile
-    ? "HorizonPassword"
-    : isVerticalMobile
-      ? "VerticalPassword"
-      : "Password";
-  $: Dynamic8 = isHorizonMobile
-    ? "HorizonIoIosEyeOff"
-    : isVerticalMobile
-      ? "VerticalIoIosEyeOff"
-      : "IoIosEyeOff";
-  $: Dynamic9 = isHorizonMobile
-    ? "HorizonForgetPassword"
-    : isVerticalMobile
-      ? "VerticalForgetPassword"
-      : "ForgetPassword";
-  $: Dynamic10 = isHorizonMobile
-    ? "HorizonLogin"
-    : isVerticalMobile
-      ? "VerticalLogin"
-      : "Login";
-  $: Dynamic11 = isHorizonMobile
-    ? "HorizonText"
-    : isVerticalMobile
-      ? "VerticalText"
-      : "Text";
-  $: Dynamic12 = isHorizonMobile
-    ? "HorizonGoogle"
-    : isVerticalMobile
-      ? "VerticalGoogle"
-      : "Google";
-  $: Dynamic13 = isHorizonMobile
-    ? "HorizonIoLogoGoogle"
-    : isVerticalMobile
-      ? "VerticalIoLogoGoogle"
-      : "IoLogoGoogle";
-  $: dynamicFontSize1 = isHorizonMobile
-    ? "3vh"
-    : isVerticalMobile
-      ? "3vw"
-      : "2vh";
-  $: dynamicFontSize2 = isHorizonMobile
-    ? "5.5vh"
-    : isVerticalMobile
-      ? "5.5vw"
-      : "4vh";
-  $: dynamicFontSize3 = isHorizonMobile
-    ? "5vh"
-    : isVerticalMobile
-      ? "5vw"
-      : "3.5vh";
-
-  const seePassword = {
-    padding: "0px",
-    "border-radius": "5px",
-    "border-top-left-radius": "0px",
-    "border-bottom-left-radius": "0px",
-  };
-
-  $: forgetPassword = {
-    display: "flex",
-    padding: "0px",
-    border: "none",
-    background: "none",
-    "border-radius": "0px",
-    "font-size": dynamicFontSize1,
-  };
-
-  $: logIn = {
-    width: "100%",
-    "border-radius": "15px",
-    "font-size": dynamicFontSize2,
-    "font-weight": "500",
-    padding: "0px",
-  };
-
-  $: logInWithGoogle = {
-    width: "100%",
-    "border-radius": "15px",
-    display: "flex",
-    padding: "0px",
-    "align-items": "center",
-    "justify-content": "center",
-    "font-size": dynamicFontSize3,
-    "font-weight": "500",
-  };
+	function SeePassword() {
+		see_password = !see_password;
+		if (see_password) {
+			type = "text";
+			return;
+		}
+		type = "password";
+	}
 </script>
 
-<div class={Dynamic1}>
-  <div class={Dynamic2}>
-    <h1 class={Dynamic3}>Login</h1>
-    <div class={Dynamic4}>
-      <input class={Dynamic5} type="email" />
-      <div class={Dynamic6}>
-        <input class={Dynamic7} type="password" />
-        <Button style={seePassword}>
-          <div class={Dynamic8}>
-            <IoIosEyeOff />
-          </div>
-        </Button>
-      </div>
-      <Button class={Dynamic9} style={forgetPassword}>Forget password?</Button>
-    </div>
-    <Button class={Dynamic10} style={logIn}>Login</Button>
-    <p class={Dynamic11}>or</p>
-    <Button class={Dynamic12} style={logInWithGoogle}>
-      <div class={Dynamic13}>
-        <IoLogoGoogle />
-      </div>
-      Login with Google
-    </Button>
-  </div>
+<div class="Container">
+	<h1 class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
+	<div class="LoginBox">
+		<h1 class="LoginHead">เข้าสู่ระบบ</h1>
+		<div class="InputBox">
+			<div class="EmailBox">
+				<p class="Text">อีเมล</p>
+				<input class="Email" type="email" placeholder="อีเมล" bind:value={email} />
+			</div>
+			<div class="PasswordBox">
+				<p class="Text">รหัสผ่าน</p>
+				<div class="WrapPasswordInput">
+					<input class="Password" id="Password" {type} placeholder="รหัสผ่าน" bind:value={password} />
+					<button class="IoIosEyeOff" on:click={() => SeePassword()}>
+						{#if see_password}
+							<IoIosEye />
+						{:else}
+							<IoIosEyeOff />
+						{/if}
+					</button>
+				</div>
+			</div>
+			<p class="ForgetPassword">ลืมรหัสผ่าน</p>
+		</div>
+		<Button class="Login" on:click={() => Login()}>Login</Button>
+	</div>
 </div>
 
 <style lang="scss">
-  .Container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-    background-color: var(--bg);
-    background-position: center;
-    background-attachment: fixed;
-  }
-  .LoginBox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: auto;
-    width: 20vw;
-    min-width: fit-content;
-    padding: 20px;
-    padding-top: 0px;
-    gap: 15px;
-    border: 2px solid var(--outline);
-    border-radius: 25px;
-    backdrop-filter: blur(15px);
-  }
+	.Container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 3rem;
+		min-height: 100%;
+		width: 100%;
+		padding-top: 2.5rem;
+		padding-bottom: 2.5rem;
+	}
 
-  .LoginHead {
-    font-size: 7.5vh;
-    font-weight: 700;
-  }
+	.Head {
+		color: var(--tag-text);
+		text-shadow: 0px 4px var(--list-shadow);
+		text-align: center;
+		font-size: 3.5rem;
+		font-weight: 700;
+	}
 
-  .InputBox {
-    display: flex;
-    align-self: self-start;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    margin-top: 20px;
-    gap: 10px;
-  }
+	.LoginBox {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		height: auto;
+		min-width: fit-content;
+		width: 25%;
+		padding: 1rem;
+		padding-top: 0px;
+		margin-left: 0.75rem;
+		margin-right: 0.75rem;
+		border: 1px solid var(--theme-dark-text);
+		border-radius: 15px;
+		background-color: var(--bg-50);
+		opacity: 50;
+	}
 
-  .PasswordBox {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    width: 100%;
-    margin-top: 10px;
-  }
+	.LoginHead {
+		font-size: 3.5rem;
+		font-weight: 700;
+		margin-top: 3rem;
+		color: var(--theme-dark-text);
+	}
 
-  .Email {
-    padding-left: 10px;
-    padding-right: 10px;
-    background-color: transparent;
-    border: 1px solid var(--outline);
-    border-radius: 5px;
-    font-size: 3vh;
-  }
+	.InputBox {
+		display: flex;
+		align-self: self-start;
+		flex-direction: column;
+		justify-content: center;
+		width: 100%;
+		gap: 10px;
+	}
 
-  .Password {
-    padding-left: 10px;
-    padding-right: 10px;
-    width: 100%;
-    background-color: transparent;
-    border: 1px solid var(--outline);
-    border-right: 0px;
-    border-radius: 5px;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    font-size: 3vh;
-  }
+	.WrapPasswordInput {
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		width: 100%;
+		gap: 5px;
+	}
 
-  .IoIosEyeOff {
-    width: 4.5vh;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-  }
+	.Email {
+		padding: 0.125rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: 100%;
+		max-width: 25rem;
+		background-color: transparent;
+		border: 1px solid var(--theme-dark-text);
+		border-radius: 5px;
+		font-size: 1.125rem;
+	}
 
-  .Text {
-    font-size: 3vh;
-  }
+	.Email::placeholder {
+		color: var(--theme-dark-text);
+		font-weight: 400;
+	}
 
-  .IoLogoGoogle {
-    width: 4.15vh;
-    margin-right: 5px;
-  }
+	.Password {
+		padding: 0.125rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: 100%;
+		max-width: 25rem;
+		background-color: transparent;
+		border: 1px solid var(--theme-dark-text);
+		border-radius: 5px;
+		font-size: 1.125rem;
+	}
+
+	.Password::placeholder {
+		color: var(--theme-dark-text);
+		font-weight: 400;
+	}
+
+	.IoIosEyeOff {
+		width: 2rem;
+	}
+
+	.IoIosEyeOff :global(svg) {
+		fill: var(--theme-dark-text);
+	}
+
+	.ForgetPassword {
+		color: var(--theme-dark-text);
+		cursor: pointer;
+		font-size: 1.125rem;
+		text-decoration: underline;
+	}
+
+	:global(.Login) {
+		margin-bottom: 3rem;
+	}
+
+	.Text {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: var(--theme-dark-text);
+	}
+
+	@media only screen and (max-width: 500px) {
+		.Container {
+			padding: 0px;
+			padding-top: 2rem;
+			justify-content: flex-start;
+			gap: 1.5rem;
+		}
+	}
 </style>
