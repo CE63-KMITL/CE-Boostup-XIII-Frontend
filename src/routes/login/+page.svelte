@@ -14,6 +14,7 @@
 	let email: string = "";
 	let password: string = "";
 	let see_password: boolean = false ;
+	let type: string = "password"
 
 	async function Login() {
 		try {
@@ -41,6 +42,11 @@
 
 	function SeePassword() {
 		see_password = !see_password;
+		if(see_password){
+			type = "text"
+			return
+		}
+		type = "password"
 	}
 </script>
 
@@ -56,7 +62,7 @@
 			<div class="PasswordBox">
 				<p class="Text">รหัสผ่าน</p>
 				<div class="WrapPasswordInput">
-					<input class="Password" type="password" placeholder="รหัสผ่าน" bind:value={password} />
+					<input class="Password" id="Password" type={type} placeholder="รหัสผ่าน" bind:value={password} />
 					<button class="IoIosEyeOff" on:click={() => SeePassword()}>
 						{#if see_password}
 							<IoIosEye />
