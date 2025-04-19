@@ -24,7 +24,7 @@
 		const res = await api.call("/auth/login", "POST", { email, password });
 		if (res.token) {
 			alert(`Login success\n\n${JSON.stringify(res)}`);
-			localStorage.setItem("login_data", JSON.stringify(res));
+			localStorage["token"] = JSON.stringify(res);
 		} else {
 			alert(`Login failed\n\n${JSON.stringify(res.message)}`);
 		}
