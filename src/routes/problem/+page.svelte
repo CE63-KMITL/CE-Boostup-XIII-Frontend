@@ -4,8 +4,7 @@
 	const API_HOST = import.meta.env.VITE_API_HOST;
 	const BACK_HOST = import.meta.env.VITE_BACK_HOST;
 
-	import * as api from "$lib/API";
-	import { sleep } from "$lib/normalFunction";
+	import * as api from "$lib/fetchApi.ts";
 	import { onMount } from "svelte";
 	import Frame from "../../components/Frame.svelte";
 	import Fullscreen from "../../components/Fullscreen.svelte";
