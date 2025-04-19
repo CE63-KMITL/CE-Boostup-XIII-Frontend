@@ -1,30 +1,33 @@
 <script lang="ts">
 	import Frame from "../../../components/Frame.svelte";
+	import Stars from "./Stars.svelte";
+	import Tag from "./Tag.svelte";
 
 	export let problem: any = null;
 	export let detail: any = null;
 </script>
 
-<Frame full>
-	<div class="problem-detail">
-		{#if problem}
-			<div class="title-section">
-				<div class="problem-id">{problem.id}</div>
-				<div class="title">{problem.title}</div>
-				<div class="stars">
-					{#each Array(5) as _, i}
-						<span class="star {i < problem.difficulty ? 'active' : ''}">★</span>
-					{/each}
-				</div>
-			</div>
-			<div class="label">Basic I/O</div>
-			<div class="description">{detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
-			<button class="submit-btn">ทำโจทย์</button>
-		{:else}
-			<div class="placeholder">กรุณาเลือกโจทย์เพื่อดูรายละเอียด</div>
-		{/if}
-	</div>
-</Frame>
+<div class="problem-detail">
+	{#if problem}
+		<div class="title-section">
+			<div class="title">{problem.title}</div>
+			<div class="problem-id">{problem.id}</div>
+		</div>
+		<div>
+			{#each problem.tags as tag}
+				<Tag {tag} />
+			{/each}
+		</div>
+		<div class="stars">
+			<Stars difficulty={problem.difficulty} />
+		</div>
+
+		<div class="description">{detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
+		<button class="submit-btn">ทำโจทย์</button>
+	{:else}
+		<div class="placeholder">กรุณาเลือกโจทย์เพื่อดูรายละเอียด</div>
+	{/if}
+</div>
 
 <style lang="scss">
 	/*
@@ -33,11 +36,9 @@ Layout & Container
 -------------------------------------------------------
 */
 	.problem-detail {
-		padding: 20px;
 		height: 100%;
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
+		width: 100%;
+		padding: 10px;
 	}
 
 	/*
@@ -54,6 +55,7 @@ Title Section
 	.problem-id {
 		font-size: 0.9rem;
 		color: var(--place-holder);
+		width: 10px;
 	}
 
 	.title {
@@ -61,39 +63,11 @@ Title Section
 		font-weight: 600;
 		color: var(--text);
 	}
-
-	/*
--------------------------------------------------------
-Stars Rating
--------------------------------------------------------
-*/
-	.stars {
-		display: flex;
-		gap: 5px;
-	}
-
-	.star {
-		color: var(--place-holder);
-		font-size: 1.2rem;
-
-		&.active {
-			color: #c19a6b;
-		}
-	}
-
 	/*
 -------------------------------------------------------
 Content Elements
 -------------------------------------------------------
 */
-	.label {
-		font-size: 0.9rem;
-		color: #c19a6b;
-		background: rgba(193, 154, 107, 0.1);
-		padding: 5px 10px;
-		border-radius: 5px;
-		width: fit-content;
-	}
 
 	.description {
 		color: var(--text);
