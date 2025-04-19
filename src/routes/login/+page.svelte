@@ -4,6 +4,7 @@
 	import IoIosEye from 'svelte-icons/io/IoIosEye.svelte'
 	import "../../app.css";
 	import Button from "../../components/Button.svelte";
+	import * as api from "../../lib/fetchApi.ts" ;
 
 	const API_HOST = import.meta.env.VITE_API_HOST;
 	onMount(() => {
@@ -20,27 +21,12 @@
 	let type: string = "password"
 
 	async function Login() {
-		try {
-			const res = await fetch(`${API_HOST}/auth/login`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email,
-					password,
-				}),
-			});
-
-			if (res.ok) {
-				const data = await res.json();
-				alert(`Login success\n\n${JSON.stringify(data)}`);
-				localStorage.setItem("login_data", JSON.stringify(data))
-			} else {
-				alert(`Login failed\n\n${JSON.stringify(res)}}`);
-			}
-		} catch (error) {
-			alert(`Login failed\n\n${error}`);
+		const res = await api.call("/auth/login", "POST", {email, password})
+		if (res.token) {
+			alert(`Login success\n\n${JSON.stringify(res)}`);
+			localStorage.setItem("login_data", JSON.stringify(res))
+		} else {
+			alert(`Login failed\n\n${JSON.stringify(res.message)}}`);
 		}
 	}
 
