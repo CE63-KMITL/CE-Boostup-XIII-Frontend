@@ -1,3 +1,5 @@
+import { redirect } from "@sveltejs/kit";
+
 const BACK_HOST = import.meta.env.VITE_BACK_HOST;
 const tokenCookieName = "authToken";
 
@@ -33,6 +35,7 @@ export const getUserData = async ({ cookies, fetch }) => {
 		}
 	} else {
 		console.log("No auth token cookie found.");
+		redirect(307, "/login");
 	}
 
 	return userData;

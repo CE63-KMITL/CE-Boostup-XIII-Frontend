@@ -1,9 +1,6 @@
 <script lang="ts">
 	export let data;
 
-	const API_HOST = import.meta.env.VITE_API_HOST;
-	const BACK_HOST = import.meta.env.VITE_BACK_HOST;
-
 	import * as api from "$lib/fetchApi";
 	import { onMount } from "svelte";
 	import Frame from "../../components/Frame.svelte";

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as api from "$lib/fetchApi.ts";
+	import * as api from "$lib/fetchApi";
 	import { onMount } from "svelte";
 	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
