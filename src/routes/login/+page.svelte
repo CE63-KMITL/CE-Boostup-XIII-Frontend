@@ -6,10 +6,13 @@
 	import Button from "../../components/Button.svelte";
 
 	const API_HOST = import.meta.env.VITE_API_HOST;
-
 	onMount(() => {
-		alert(API_HOST);
-	});
+		const data = localStorage.getItem("login_data");
+		if (data) {
+			const parsed_data = JSON.parse(data);
+			console.log(parsed_data.token);
+		}
+	});	
 
 	let email: string = "";
 	let password: string = "";
@@ -32,6 +35,7 @@
 			if (res.ok) {
 				const data = await res.json();
 				alert(`Login success\n\n${JSON.stringify(data)}`);
+				localStorage.setItem("login_data", JSON.stringify(data))
 			} else {
 				alert(`Login failed\n\n${JSON.stringify(res)}}`);
 			}
