@@ -1,19 +1,16 @@
 <script lang="ts">
 	export let data;
 
-	const API_HOST = import.meta.env.VITE_API_HOST;
-	const BACK_HOST = import.meta.env.VITE_BACK_HOST;
-
-	import * as api from "$lib/fetchApi.ts";
+	import * as api from "$lib/fetchApi";
 	import { onMount } from "svelte";
 	import Frame from "../../components/Frame.svelte";
 	import Fullscreen from "../../components/Fullscreen.svelte";
 	import Search from "../../components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { selectedProblemId, testProblems, type Problem } from "./problem";
+	import { selectedProblemId, type Problem } from "./problem";
 
-	let allProblems: (Problem | string)[] = ["loading"];
+	let allProblems: (Problem | string)[] = [];
 	let selectedProblem = null;
 	let searchString = "";
 	let problemDetail = "";
@@ -22,7 +19,7 @@
 	let problemDetailsElement;
 
 	async function updateProblems() {
-		allProblems = await api.call(`/problem`);
+		allProblems = await api.call(`/problem?search=${searchString}&`);
 	}
 
 	async function updateProblemDetail() {
@@ -30,16 +27,14 @@
 		problemDetail = await api.call(`/problem/detail/${$selectedProblemId}`);
 	}
 
-	onMount(() => {
-		updateProblems();
-		alert(API_HOST);
-		// alert(BACK_HOST);
-
-		// alert(JSON.stringify(data));
+	onMount(async () => {
+		console.log(import.meta.env);
 		console.log(data);
 
 		problemSelectorElement = document.querySelector("#problem #left");
 		problemDetailsElement = document.querySelector("#problem #right");
+
+		await updateProblems();
 	});
 
 	let previousSelectedId: string | null = null;
@@ -82,7 +77,7 @@
 				<Search></Search>
 				<input id="search" placeholder="ค้นหา" bind:value={searchString} />
 			</Frame>
-			<ProblemTable problems={allProblems} />
+			<ProblemTable problems={allProblems} loading={allProblems.length === 0} />
 		</Frame>
 		<Frame id="right" blur-bg>
 			<ProblemDetail problem={selectedProblem} detail={problemDetail} />

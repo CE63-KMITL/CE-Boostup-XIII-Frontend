@@ -12,6 +12,8 @@
 	import { searchParams, statusColors, statusText, tagsColors } from "../problem";
 	import ProblemRow from "./ProblemRow.svelte";
 
+	export let loading = false;
+
 	let tagsElement;
 	let difficultyElement;
 	let difficultyTagsElement;
@@ -124,6 +126,9 @@
 			</HeaderSelection>
 		</div>
 	</List>
+	{#if loading}
+		<Loading></Loading>
+	{/if}
 	{#each problems as problem}
 		{#if problem == "loading"}
 			<LoadingList></LoadingList>
