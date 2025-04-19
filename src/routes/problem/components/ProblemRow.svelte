@@ -1,21 +1,13 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { selectedProblemId, statusColors, statusText } from "../problem";
-	// Changed import
+
 	import List from "../../../components/List.svelte";
-	import { tagsColors, type Problem } from "../problem";
+	import { type Problem } from "../problem";
+	import Stars from "./Stars.svelte";
+	import Tag from "./Tag.svelte";
 
 	export let problem: Problem;
-
-	const maxDifficulty = 5;
-
-	function getDifficultyStars(difficulty: number): string {
-		return (
-			"★".repeat(Math.floor(difficulty)) +
-			"⯪".repeat(Math.ceil(difficulty) - Math.floor(difficulty)) +
-			"☆".repeat(maxDifficulty - Math.ceil(difficulty))
-		);
-	}
 
 	onMount(() => {
 		let element: HTMLDivElement = document.querySelector(`[data-problem-id="${problem.id}"]`);
@@ -38,10 +30,10 @@
 	<div class="problem-mini-info">
 		<div class="tags">
 			{#each problem.tags as tag}
-				<span class="tag" style="background-color: {tagsColors[tag] ?? '#808080'};">{tag}</span>
+				<Tag {tag} />
 			{/each}
 		</div>
-		<div class="difficulty">{getDifficultyStars(problem.difficulty)}</div>
+		<Stars difficulty={problem.difficulty} />
 	</div>
 
 	<div class="status" style="color: {statusColors[problem.status] ?? '#808080'};">{statusText[problem.status]}</div>
@@ -77,22 +69,6 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 5px;
-
-		.tag {
-			display: inline-block;
-			padding: 4px 10px;
-			border-radius: 12px;
-			font-size: 0.7em;
-			color: var(--tag-text);
-			font-weight: 800;
-			text-shadow: 1px 1px 2px black;
-		}
-	}
-
-	.difficulty {
-		color: #d4b977;
-		font-size: 1.5rem;
-		letter-spacing: 2px;
 	}
 
 	.status {
