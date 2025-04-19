@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
+	import IoIosEye from 'svelte-icons/io/IoIosEye.svelte'
 	import "../../app.css";
 	import Button from "../../components/Button.svelte";
 
@@ -12,6 +13,7 @@
 
 	let email: string = "";
 	let password: string = "";
+	let see_password: boolean = false ;
 
 	async function Login() {
 		try {
@@ -36,6 +38,10 @@
 			alert(`Login failed\n\n${error}`);
 		}
 	}
+
+	function SeePassword() {
+		see_password = !see_password;
+	}
 </script>
 
 <div class="Container">
@@ -51,9 +57,13 @@
 				<p class="Text">รหัสผ่าน</p>
 				<div class="WrapPasswordInput">
 					<input class="Password" type="password" placeholder="รหัสผ่าน" bind:value={password} />
-					<div class="IoIosEyeOff">
-						<IoIosEyeOff />
-					</div>
+					<button class="IoIosEyeOff" on:click={() => SeePassword()}>
+						{#if see_password}
+							<IoIosEye />
+						{:else}
+							<IoIosEyeOff />
+						{/if}
+					</button>
 				</div>
 			</div>
 			<p class="ForgetPassword">ลืมรหัสผ่าน</p>
@@ -160,7 +170,6 @@
 
 	.IoIosEyeOff {
 		width: 2rem;
-		cursor: pointer;
 	}
 
 	.IoIosEyeOff :global(svg) {
@@ -176,7 +185,6 @@
 
 	:global(.Login) {
 		margin-bottom: 3rem;
-		border: none;
 	}
 
 	.Text {
