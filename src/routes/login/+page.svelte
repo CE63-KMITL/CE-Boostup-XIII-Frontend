@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
+	import { setCookie } from "$lib/cookie";
 	import * as api from "$lib/fetchApi";
 	import { onMount } from "svelte";
 	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
@@ -6,23 +8,15 @@
 	import "../../app.css";
 	import Button from "../../components/Button.svelte";
 
-	onMount(() => {
-		const data = localStorage.getItem("login_data");
-		if (data) {
-			const parsed_data = JSON.parse(data);
-			console.log(parsed_data.token);
-		}
-	});
-
 	let email: string = "";
 	let password: string = "";
 	let see_password: boolean = false;
 
 	async function Login() {
-		const res = await api.call("/auth/login", "POST", { email, password });
+		const res = await api.call("/auth/login", { method: "POST", data: { email, password } });
 		if (res.token) {
-			alert(`Login success\n\n${JSON.stringify(res)}`);
-			localStorage["token"] = JSON.stringify(res);
+			setCookie("token", res.token);
+			goto("/menu");
 		} else {
 			alert(`Login failed\n\n${JSON.stringify(res.message)}`);
 		}
@@ -41,8 +35,19 @@
 			<div class="PasswordBox">
 				<p class="Text">รหัสผ่าน</p>
 				<div class="WrapPasswordInput">
-					<input class="Password" id="Password" type={see_password ? "text" : "password"} placeholder="รหัสผ่าน" bind:value={password} />
-					<button class="IoIosEyeOff" on:click={() => {see_password = !see_password}}>
+					<input
+						class="Password"
+						id="Password"
+						type={see_password ? "text" : "password"}
+						placeholder="รหัสผ่าน"
+						bind:value={password}
+					/>
+					<button
+						class="IoIosEyeOff"
+						on:click={() => {
+							see_password = !see_password;
+						}}
+					>
 						{#if see_password}
 							<IoIosEye />
 						{:else}

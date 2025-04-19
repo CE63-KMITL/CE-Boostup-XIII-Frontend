@@ -1,9 +1,9 @@
 import { redirect } from "@sveltejs/kit";
 
 const BACK_HOST = import.meta.env.VITE_BACK_HOST;
-const tokenCookieName = "authToken";
+const tokenCookieName = "token";
 
-export const getUserData = async ({ cookies, fetch }) => {
+export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 	const token = cookies.get(tokenCookieName);
 
 	let userData = {
@@ -26,7 +26,7 @@ export const getUserData = async ({ cookies, fetch }) => {
 				cookies.delete(tokenCookieName, { path: "/" });
 				userData.role = null;
 			} else {
-				console.error(`Backend API error: ${response.status}`);
+				console.error(`Backend API error: ${response.status}\n${await response.text()}`);
 				userData.role = null;
 			}
 		} catch (err) {
@@ -35,7 +35,7 @@ export const getUserData = async ({ cookies, fetch }) => {
 		}
 	} else {
 		console.log("No auth token cookie found.");
-		redirect(307, "/login");
+		if (autoRedirect) redirect(307, "/login");
 	}
 
 	return userData;

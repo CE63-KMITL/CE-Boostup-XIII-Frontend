@@ -1,13 +1,19 @@
+import { getCookie } from "./cookie";
+
 const API_HOST = import.meta.env.VITE_API_HOST;
 
-export async function call(route: string, method: string = "GET", data: any = null) {
+export async function call(
+	route: string,
+	options: { method: string; data?: any; withToken?: boolean } = { method: "GET", data: null, withToken: false }
+) {
 	try {
 		const response = await fetch(`${API_HOST}${route}`, {
-			method,
+			method: options.method,
 			headers: {
 				"Content-Type": "application/json",
+				Authorization: options.withToken ? `Bearer ${getCookie("token")}` : null,
 			},
-			body: data ? JSON.stringify(data) : null,
+			body: options.data ? JSON.stringify(options.data) : null,
 		});
 
 		const contentType = response.headers.get("content-type");
