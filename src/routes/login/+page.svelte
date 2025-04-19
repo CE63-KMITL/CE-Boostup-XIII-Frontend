@@ -1,10 +1,10 @@
 <script lang="ts">
+	import * as api from "$lib/fetchApi.ts";
 	import { onMount } from "svelte";
+	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
-	import IoIosEye from 'svelte-icons/io/IoIosEye.svelte'
 	import "../../app.css";
 	import Button from "../../components/Button.svelte";
-	import * as api from "../../lib/fetchApi.ts" ;
 
 	const API_HOST = import.meta.env.VITE_API_HOST;
 	onMount(() => {
@@ -13,30 +13,30 @@
 			const parsed_data = JSON.parse(data);
 			console.log(parsed_data.token);
 		}
-	});	
+	});
 
 	let email: string = "";
 	let password: string = "";
-	let see_password: boolean = false ;
-	let type: string = "password"
+	let see_password: boolean = false;
+	let type: string = "password";
 
 	async function Login() {
-		const res = await api.call("/auth/login", "POST", {email, password})
+		const res = await api.call("/auth/login", "POST", { email, password });
 		if (res.token) {
 			alert(`Login success\n\n${JSON.stringify(res)}`);
-			localStorage.setItem("login_data", JSON.stringify(res))
+			localStorage.setItem("login_data", JSON.stringify(res));
 		} else {
-			alert(`Login failed\n\n${JSON.stringify(res.message)}}`);
+			alert(`Login failed\n\n${JSON.stringify(res.message)}`);
 		}
 	}
 
 	function SeePassword() {
 		see_password = !see_password;
-		if(see_password){
-			type = "text"
-			return
+		if (see_password) {
+			type = "text";
+			return;
 		}
-		type = "password"
+		type = "password";
 	}
 </script>
 
@@ -52,7 +52,7 @@
 			<div class="PasswordBox">
 				<p class="Text">รหัสผ่าน</p>
 				<div class="WrapPasswordInput">
-					<input class="Password" id="Password" type={type} placeholder="รหัสผ่าน" bind:value={password} />
+					<input class="Password" id="Password" {type} placeholder="รหัสผ่าน" bind:value={password} />
 					<button class="IoIosEyeOff" on:click={() => SeePassword()}>
 						{#if see_password}
 							<IoIosEye />
