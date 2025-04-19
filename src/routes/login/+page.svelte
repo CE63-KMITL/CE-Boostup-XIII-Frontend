@@ -6,7 +6,6 @@
 	import "../../app.css";
 	import Button from "../../components/Button.svelte";
 
-	const API_HOST = import.meta.env.VITE_API_HOST;
 	onMount(() => {
 		const data = localStorage.getItem("login_data");
 		if (data) {
