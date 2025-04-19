@@ -17,7 +17,6 @@
 	let email: string = "";
 	let password: string = "";
 	let see_password: boolean = false;
-	let type: string = "password";
 
 	async function Login() {
 		const res = await api.call("/auth/login", "POST", { email, password });
@@ -27,15 +26,6 @@
 		} else {
 			alert(`Login failed\n\n${JSON.stringify(res.message)}`);
 		}
-	}
-
-	function SeePassword() {
-		see_password = !see_password;
-		if (see_password) {
-			type = "text";
-			return;
-		}
-		type = "password";
 	}
 </script>
 
@@ -51,8 +41,8 @@
 			<div class="PasswordBox">
 				<p class="Text">รหัสผ่าน</p>
 				<div class="WrapPasswordInput">
-					<input class="Password" id="Password" {type} placeholder="รหัสผ่าน" bind:value={password} />
-					<button class="IoIosEyeOff" on:click={() => SeePassword()}>
+					<input class="Password" id="Password" type={see_password ? "text" : "password"} placeholder="รหัสผ่าน" bind:value={password} />
+					<button class="IoIosEyeOff" on:click={() => {see_password = !see_password}}>
 						{#if see_password}
 							<IoIosEye />
 						{:else}
