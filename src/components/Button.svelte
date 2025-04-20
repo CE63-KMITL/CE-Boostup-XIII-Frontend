@@ -32,7 +32,7 @@
 </button>
 
 <style lang="scss">
-	button {
+    button {
 		border: 1px solid var(--outline);
 		background: var(--button-bg);
 		border-radius: 10px;

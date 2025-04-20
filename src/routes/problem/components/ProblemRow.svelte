@@ -36,7 +36,9 @@
 		<Stars difficulty={problem.difficulty} />
 	</div>
 
-	<div class="status" style="color: {statusColors[problem.status] ?? '#808080'};">{statusText[problem.status]}</div>
+	<div class="status" style="color: {statusColors[problem.status] ?? '#808080'};">
+		{statusText[problem.status] ?? "ไม่ทราบ"}
+	</div>
 </List>
 
 <style lang="scss">
