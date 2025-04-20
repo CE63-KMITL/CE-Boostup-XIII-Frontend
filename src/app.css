@@ -12,6 +12,12 @@ html {
 }
 
 html:not([dark]) {
+	--top-bar-selected: var(--top-bar-right);
+	--top-bar-hover: var(--top-bar-left);
+	--top-bar-text: rgb(255, 255, 255);
+	--top-bar-left: rgb(128, 122, 156);
+	--top-bar-right: rgb(63, 46, 62);
+
 	--theme-text: rgb(212, 181, 124);
 	--theme-dark-text: rgb(150, 125, 79);
 
@@ -46,6 +52,12 @@ html:not([dark]) {
 }
 
 html[dark] {
+	--top-bar-selected: rgb(139, 120, 57);
+	--top-bar-hover: rgba(107, 94, 35, 0.274);
+	--top-bar-text: rgb(255, 255, 255);
+	--top-bar-left: rgb(0, 0, 0);
+	--top-bar-right: rgb(43, 43, 25);
+
 	--theme-text: rgb(212, 181, 124);
 	--theme-dark-text: rgb(241, 211, 156);
 
@@ -96,13 +108,6 @@ html[dark] {
 	background: var(--text);
 }
 
-body {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
-}
-
 html[dark] > body > #bg {
 	opacity: 0.5;
 }
@@ -138,4 +143,8 @@ html[dark] > body > #bg {
 	align-items: center;
 	gap: 5px;
 	flex-wrap: nowrap;
+}
+
+svg {
+	user-select: none;
 }

@@ -25,7 +25,7 @@
 		const head_list: HTMLElement = document.querySelector("#problem-table #header");
 
 		function updateScroll() {
-			console.log(problem_table.scrollTop);
+			console.log(Math.abs(problem_table.scrollHeight - problem_table.clientHeight));
 			head_list.setAttribute("top", problem_table.scrollTop > 0 ? "false" : "true");
 		}
 
@@ -38,7 +38,7 @@
 </script>
 
 <div id="problem-table">
-	<List id="header" class="problem-list">
+	<List id="header" class="problem-list" top="true">
 		<div>
 			ข้อที่ <Sort></Sort>
 		</div>
@@ -130,6 +130,7 @@
 		<Loading></Loading>
 	{/if}
 	{#each problems as problem}
+		{console.log(problem)}
 		{#if problem == "loading"}
 			<LoadingList></LoadingList>
 		{:else}
@@ -144,7 +145,8 @@
 		height: calc(100% - 60px);
 		margin-top: 10px;
 		padding: 0px 10px 10px 10px;
-		display: grid;
+		display: flex;
+		flex-direction: column;
 		gap: 10px;
 		container-type: size;
 		position: relative;

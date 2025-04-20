@@ -12,19 +12,34 @@
 
 	let allProblems: (Problem | string)[] = [];
 	let selectedProblem = null;
-	let searchString = "";
 	let problemDetail = "";
 
 	let problemSelectorElement;
 	let problemDetailsElement;
 
-	async function updateProblems() {
-		allProblems = await api.call(`/problem?search=${searchString}&`);
+	let loaded = false;
+
+	async function updateProblems(searchString = "") {
+		allProblems = [];
+		loaded = false;
+
+		const getAllProblems = await api.call(`/problem/search?searchText=${searchString}`, {
+			withToken: true,
+		});
+
+		console.log(getAllProblems);
+
+		if (getAllProblems) {
+			allProblems = getAllProblems.items;
+			loaded = true;
+		}
 	}
 
 	async function updateProblemDetail() {
 		if (!$selectedProblemId) return;
-		problemDetail = await api.call(`/problem/detail/${$selectedProblemId}`);
+		problemDetail = await api.call(`/problem/detail/${$selectedProblemId}`, {
+			withToken: true,
+		});
 	}
 
 	onMount(async () => {
@@ -70,20 +85,24 @@
 	);
 </script>
 
-<Fullscreen>
-	<div id="problem">
-		<Frame id="left" full="" blur-bg>
-			<Frame id="search-frame">
-				<Search></Search>
-				<input id="search" placeholder="ค้นหา" bind:value={searchString} />
-			</Frame>
-			<ProblemTable problems={allProblems} loading={allProblems.length === 0} />
+<div id="problem">
+	<Frame id="left" full="" blur-bg>
+		<Frame id="search-frame">
+			<Search></Search>
+			<input
+				id="search"
+				placeholder="ค้นหา"
+				oninput={(e: any) => {
+					updateProblems(e.target.value);
+				}}
+			/>
 		</Frame>
-		<Frame id="right" blur-bg>
-			<ProblemDetail problem={selectedProblem} detail={problemDetail} />
-		</Frame>
-	</div>
-</Fullscreen>
+		<ProblemTable problems={allProblems} loading={!loaded} />
+	</Frame>
+	<Frame id="right" blur-bg>
+		<ProblemDetail problem={selectedProblem} detail={problemDetail} />
+	</Frame>
+</div>
 
 <style lang="scss">
 	#problem {

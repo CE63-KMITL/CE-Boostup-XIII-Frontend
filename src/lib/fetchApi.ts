@@ -4,7 +4,7 @@ const API_HOST = import.meta.env.VITE_API_HOST;
 
 export async function call(
 	route: string,
-	options: { method: string; data?: any; withToken?: boolean } = { method: "GET", data: null, withToken: false }
+	options: { method?: string; data?: any; withToken?: boolean } = { method: "GET", data: null, withToken: false }
 ) {
 	try {
 		const response = await fetch(`${API_HOST}${route}`, {

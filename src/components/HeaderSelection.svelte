@@ -27,7 +27,7 @@
 			ThisHeaderSelection.setAttribute("open", "true");
 			for (var i = 0; i < selectorList.length; i++) {
 				const selector = selectorList[i];
-				selector.style.animation = `slide-in 0.2s ${(i + 1) * 0.1}s ease-out forwards`;
+				selector.style.animation = `slide-in 0.2s ${(i + 1) * 0.07}s ease-out forwards`;
 			}
 		}
 
