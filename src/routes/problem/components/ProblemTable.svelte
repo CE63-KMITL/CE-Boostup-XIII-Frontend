@@ -8,6 +8,7 @@
 	import Loading from "../../../components/Loading.svelte";
 	import LoadingList from "../../../components/LoadingList.svelte";
 	import RadioButton from "../../../components/RadioButton.svelte";
+	import TableRenderer from "../../../components/TableRenderer.svelte";
 	import type { Problem } from "../problem";
 	import { searchParams, statusColors, statusText, tagsColors } from "../problem";
 	import ProblemRow from "./ProblemRow.svelte";
@@ -37,7 +38,7 @@
 	});
 </script>
 
-<div id="problem-table">
+<TableRenderer id="problem-table">
 	<List id="header" class="problem-list" top="true">
 		<div>
 			ข้อที่ <Sort></Sort>
@@ -49,23 +50,20 @@
 					ประเภท <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={tagsElement}>
-					<RadioButton
-						name="tag"
-						onclick={() => {
-							$searchParams.tag = [];
-						}}
-						selected={true}
-						>อะไรก็ได้เอามาให้หมด
-					</RadioButton>
 					{#each Object.keys(tagsColors) as tag}
-						<RadioButton
+						<Checkbox
 							name="tag"
 							color={tagsColors[tag]}
-							onclick={() => {
-								$searchParams.tag = [tag];
+							onSelect={() => {
+								const tempTag = $searchParams.tag;
+								tempTag.push(tag);
+								$searchParams.tag = tempTag;
+							}}
+							onUnselect={() => {
+								$searchParams.tag = $searchParams.tag.filter((t) => t !== tag);
 							}}
 							>{tag}
-						</RadioButton>
+						</Checkbox>
 					{/each}
 				</HeaderSelection>
 			</div>
@@ -279,165 +277,13 @@
 			<ProblemRow problem={problem as Problem} />
 		{/if}
 	{/each}
-</div>
+</TableRenderer>
 
 <style lang="scss">
-	/*
--------------------------------------------------------
-Difficulty Controls Styles
--------------------------------------------------------
-*/
-	:global(.difficulty-controls) {
-		padding: 10px;
-		display: flex;
-		flex-direction: column;
-		gap: 15px;
-
-		.sort-controls,
-		.range-controls {
-			display: flex;
-			flex-direction: column;
-			gap: 8px;
-
-			span {
-				font-size: 0.9rem;
-				color: var(--text-secondary);
-			}
-		}
-
-		.range-controls {
-			.range-inputs {
-				display: flex;
-				flex-direction: column;
-				gap: 10px;
-
-				input[type="range"] {
-					width: 100%;
-					height: 4px;
-					-webkit-appearance: none;
-					background: var(--accent);
-					border-radius: 2px;
-					outline: none;
-
-					&::-webkit-slider-thumb {
-						-webkit-appearance: none;
-						width: 15px;
-						height: 15px;
-						background: var(--accent);
-						border-radius: 50%;
-						cursor: pointer;
-						transition: all 0.2s ease;
-
-						&:hover {
-							transform: scale(1.2);
-						}
-					}
-				}
-
-				.range-values {
-					display: flex;
-					justify-content: center;
-					gap: 8px;
-					font-size: 0.9rem;
-					color: var(--text);
-
-					span:nth-child(2) {
-						color: var(--text-secondary);
-					}
-				}
-			}
-		}
-	}
-
-	/*
--------------------------------------------------------
-Tags-Difficulty Controls Styles
--------------------------------------------------------
-*/
-	:global(.tags-difficulty-controls) {
-		padding: 10px;
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-
-		.tags-section,
-		.difficulty-section {
-			display: flex;
-			flex-direction: column;
-			gap: 15px;
-			padding: 15px;
-			border-radius: var(--n-border-radius);
-			background: var(--bg-secondary);
-
-			span {
-				font-size: 0.9rem;
-				color: var(--text-secondary);
-			}
-		}
-
-		.difficulty-section {
-			.sort-controls,
-			.range-controls {
-				display: flex;
-				flex-direction: column;
-				gap: 8px;
-			}
-
-			.range-controls {
-				.range-inputs {
-					display: flex;
-					flex-direction: column;
-					gap: 10px;
-
-					input[type="range"] {
-						width: 100%;
-						height: 4px;
-						-webkit-appearance: none;
-						background: var(--accent);
-						border-radius: 2px;
-						outline: none;
-
-						&::-webkit-slider-thumb {
-							-webkit-appearance: none;
-							width: 15px;
-							height: 15px;
-							background: var(--accent);
-							border-radius: 50%;
-							cursor: pointer;
-							transition: all 0.2s ease;
-
-							&:hover {
-								transform: scale(1.2);
-							}
-						}
-					}
-
-					.range-values {
-						display: flex;
-						justify-content: center;
-						gap: 8px;
-						font-size: 0.9rem;
-						color: var(--text);
-
-						span:nth-child(2) {
-							color: var(--text-secondary);
-						}
-					}
-				}
-			}
-		}
-	}
-
 	:global(#problem-table) {
-		overflow-y: auto;
 		height: calc(100% - 60px);
 		margin-top: 10px;
 		padding: 0px 10px 10px 10px;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		container-type: size;
-		position: relative;
 
 		:global([dark] #header) {
 			backdrop-filter: blur(10px);
