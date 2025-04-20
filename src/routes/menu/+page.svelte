@@ -8,17 +8,29 @@
 	const items = { problem: "โจทย์", score: "คะแนน" };
 
 	if (data.role == "staff") {
-		items["create_problem"] = "โปรไฟล์";
+		items["create_problem"] = "สร้างโจทย์";
 	}
 
-	let selected = "problem";
+	let currentPage;
 	const updatePage = (name) => {
-		if (name === selected) return;
+		if (name == currentPage) return;
 		let url = new URL(window.location.href);
 		url.searchParams.set("page", name);
-		selected = name;
+		currentPage = name;
 		pushState(url, null);
+		document.title = items[currentPage];
 	};
+
+	onMount(() => {
+		let url = new URL(window.location.href);
+		if (!url.searchParams.get("page")) {
+			url.searchParams.append("page", "problem");
+			console.log(url);
+			window.history.pushState(null, null, url);
+		}
+		currentPage = url.searchParams.get("page");
+		document.title = items[currentPage];
+	});
 </script>
 
 <Fullscreen>
@@ -29,7 +41,11 @@
 		</div>
 		<div id="page-selector-container">
 			{#each Object.keys(items) as item}
-				<button class="page-selector" data-selected={selected == item} onclick={() => updatePage(item)}>
+				<button
+					class="page-selector"
+					data-currentPage={currentPage == item}
+					onclick={() => updatePage(item)}
+				>
 					{items[item]}
 				</button>
 			{/each}
@@ -37,7 +53,7 @@
 		<dir id="end"></dir>
 	</div>
 	<div id="content">
-		<ProblemInMenu {data}></ProblemInMenu>
+		<ProblemInMenu {data} show={currentPage == "problem"}></ProblemInMenu>
 	</div>
 </Fullscreen>
 
@@ -72,9 +88,13 @@
 		padding-inline: 20px;
 		padding-block: 10px;
 
-		background: linear-gradient(90deg, var(--top-bar-left), var(--top-bar-right));
+		background: linear-gradient(var(--top-bar-deg), var(--top-bar-left), var(--top-bar-right));
 		user-select: none;
 		container-type: size;
+	}
+
+	:global([dark] #topbar) {
+		backdrop-filter: blur(5px);
 	}
 
 	#page-selector-container {
@@ -93,13 +113,13 @@
 			font-size: 1.2rem;
 			transition: all 0.2s ease-out;
 
-			&:hover:not([data-selected="true"]) {
+			&:hover:not([data-currentPage="true"]) {
 				cursor: pointer;
 				background: var(--top-bar-hover);
 				filter: drop-shadow(0 2px 4px var(--list-shadow));
 			}
 
-			&[data-selected="true"] {
+			&[data-currentPage="true"] {
 				background: var(--top-bar-selected);
 			}
 		}

@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import { getCookie } from "./cookie";
 
 const API_HOST = import.meta.env.VITE_API_HOST;
@@ -18,12 +19,22 @@ export async function call(
 
 		const contentType = response.headers.get("content-type");
 		if (contentType && contentType.indexOf("application/json") !== -1) {
-			return await response.json();
+			const responseData = await response.json();
+
+			if (responseData.message == "User not found") {
+				alert("⚠️ เกิดข้อผิดพลาด\n\nไม่พบข้อมูลผู้ใช้ หรือ เซสชั่นหมดอายุ\n\nกรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+				goto("/login?clear");
+				return;
+			}
+
+			return await responseData;
 		} else {
 			return await response.text();
 		}
 	} catch (error) {
-		alert(`${route}\n\n${error}`);
+		try {
+			alert(`${route}\n\n${error}`);
+		} catch (error) {}
 		return null;
 	}
 }

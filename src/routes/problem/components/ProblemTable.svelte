@@ -130,7 +130,6 @@
 		<Loading></Loading>
 	{/if}
 	{#each problems as problem}
-		{console.log(problem)}
 		{#if problem == "loading"}
 			<LoadingList></LoadingList>
 		{:else}

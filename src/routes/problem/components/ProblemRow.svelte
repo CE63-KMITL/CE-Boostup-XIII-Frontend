@@ -24,7 +24,7 @@
 	<div class="id">{problem.id}</div>
 	<div>
 		<div class="title">{problem.title}</div>
-		<div class="author">{problem.author}</div>
+		<div class="author">{problem.author?.name}</div>
 	</div>
 
 	<div class="problem-mini-info">

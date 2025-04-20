@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let data;
+	export let show;
 
 	import * as api from "$lib/fetchApi";
 	import { onMount } from "svelte";
@@ -8,7 +9,7 @@
 	import Search from "../../components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { selectedProblemId, type Problem } from "./problem";
+	import { searchParams, selectedProblemId, type Problem } from "./problem";
 
 	let allProblems: (Problem | string)[] = [];
 	let selectedProblem = null;
@@ -19,11 +20,31 @@
 
 	let loaded = false;
 
-	async function updateProblems(searchString = "") {
+	async function updateProblems() {
 		allProblems = [];
 		loaded = false;
 
-		const getAllProblems = await api.call(`/problem/search?searchText=${searchString}`, {
+		const tags = searchParams["tag"] || [];
+		const searchQuery = {
+			searchText: searchParams["searchText"] || "",
+			idReverse: Boolean(searchParams["idReverse"]),
+			tag: tags,
+			difficulty: Number(searchParams["difficulty"]) || undefined,
+			status: Number(searchParams["status"]) || undefined,
+			page: Number(searchParams["page"]) || 1,
+		};
+
+		const queryString = Object.entries(searchQuery)
+			.filter(([_, value]) => value !== undefined)
+			.map(([key, value]) => {
+				if (Array.isArray(value)) {
+					return value.map((v) => `${key}=${v}`).join("&");
+				}
+				return `${key}=${value}`;
+			})
+			.join("&");
+
+		const getAllProblems = await api.call(`/problem/search?${queryString}`, {
 			withToken: true,
 		});
 
@@ -32,6 +53,8 @@
 		if (getAllProblems) {
 			allProblems = getAllProblems.items;
 			loaded = true;
+		} else {
+			allProblems = [];
 		}
 	}
 
@@ -85,7 +108,7 @@
 	);
 </script>
 
-<div id="problem">
+<div id="problem" data-show={show}>
 	<Frame id="left" full="" blur-bg>
 		<Frame id="search-frame">
 			<Search></Search>
@@ -93,7 +116,7 @@
 				id="search"
 				placeholder="ค้นหา"
 				oninput={(e: any) => {
-					updateProblems(e.target.value);
+					searchParams["searchText"] = e.target.value = e.target.value;
 				}}
 			/>
 		</Frame>
@@ -105,6 +128,47 @@
 </div>
 
 <style lang="scss">
+	@keyframes show {
+		0% {
+			transform: scale(0.95);
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes hide {
+		0% {
+			pointer-events: none;
+			transform: scale(1);
+		}
+
+		100% {
+			pointer-events: none;
+			transform: scale(0.95);
+			display: none;
+		}
+	}
+
+	@keyframes -global-show-opacity {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+
+	@keyframes -global-hide-opacity {
+		0% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
 	#problem {
 		width: 100%;
 		height: 100%;
@@ -116,18 +180,35 @@
 		container-type: size;
 
 		:global(#left) {
-			transition: all 0.3s ease;
+			animation: all 0.3s ease-in-out;
 			display: flex;
 			flex-direction: column;
 			overflow: hidden;
 		}
 
 		:global(#right) {
-			transition: all 0.3s ease;
+			animation: all 0.3s ease-in-out;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			opacity: 0;
+		}
+
+		&[data-show="true"] {
+			animation: show 0.3s ease forwards;
+
+			:global(#left),
+			:global(#right[show]) {
+				animation: show-opacity 0.3s ease-in-out forwards;
+			}
+		}
+
+		&[data-show="false"] {
+			animation: hide 0.3s ease forwards;
+
+			:global(#left),
+			:global(#right[show]) {
+				animation: hide-opacity 0.3s ease-in-out forwards;
+			}
 		}
 	}
 
@@ -145,11 +226,13 @@
 				width: 0;
 				padding-inline: 0;
 				margin-inline: 0;
+				animation: hide-opacity 0.3s ease-in-out forwards;
 			}
 
 			:global(#right[show]) {
 				width: 35%;
 				opacity: 1;
+				animation: show-opacity 0.3s ease-in-out forwards;
 			}
 		}
 	}

@@ -15,6 +15,8 @@ html:not([dark]) {
 	--top-bar-selected: var(--top-bar-right);
 	--top-bar-hover: var(--top-bar-left);
 	--top-bar-text: rgb(255, 255, 255);
+
+	--top-bar-deg: 90deg;
 	--top-bar-left: rgb(128, 122, 156);
 	--top-bar-right: rgb(63, 46, 62);
 
@@ -55,8 +57,10 @@ html[dark] {
 	--top-bar-selected: rgb(139, 120, 57);
 	--top-bar-hover: rgba(107, 94, 35, 0.274);
 	--top-bar-text: rgb(255, 255, 255);
-	--top-bar-left: rgb(0, 0, 0);
-	--top-bar-right: rgb(43, 43, 25);
+
+	--top-bar-deg: 0deg;
+	--top-bar-left: rgba(0, 0, 0, 0.4);
+	--top-bar-right: rgb(22, 22, 22);
 
 	--theme-text: rgb(212, 181, 124);
 	--theme-dark-text: rgb(241, 211, 156);

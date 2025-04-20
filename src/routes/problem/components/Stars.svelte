@@ -15,7 +15,7 @@
 <style lang="scss">
 	.difficulty {
 		color: #d4b977;
-		font-size: 1.5rem;
+		font-size: 2rem;
 		letter-spacing: 2px;
 	}
 </style>
