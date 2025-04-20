@@ -52,7 +52,7 @@
 					<RadioButton
 						name="tag"
 						onclick={() => {
-							searchParams["tag"] = "";
+							$searchParams.tag = [];
 						}}
 						selected={true}
 						>อะไรก็ได้เอามาให้หมด
@@ -62,7 +62,7 @@
 							name="tag"
 							color={tagsColors[tag]}
 							onclick={() => {
-								searchParams["tag"] = tag;
+								$searchParams.tag = [tag];
 							}}
 							>{tag}
 						</RadioButton>
@@ -74,7 +74,67 @@
 					ความยาก <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={difficultyElement}>
-					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
+					<div class="difficulty-controls">
+						<div class="sort-controls">
+							<span>เรียงลำดับ:</span>
+							<RadioButton
+								name="difficulty-sort"
+								onclick={() => {
+									$searchParams.difficultySortBy = null;
+								}}
+								selected={true}
+								>ไม่เรียง
+							</RadioButton>
+							<RadioButton
+								name="difficulty-sort"
+								onclick={() => {
+									$searchParams.difficultySortBy = "ASC";
+								}}
+								>น้อยไปมาก
+							</RadioButton>
+							<RadioButton
+								name="difficulty-sort"
+								onclick={() => {
+									$searchParams.difficultySortBy = "DESC";
+								}}
+								>มากไปน้อย
+							</RadioButton>
+						</div>
+						<div class="range-controls">
+							<span>ช่วงความยาก:</span>
+							<div class="range-inputs">
+								<input
+									type="range"
+									min="0"
+									max="5"
+									step="0.5"
+									bind:value={$searchParams.difficultyMin}
+									on:input={() => {
+										if ($searchParams.difficultyMin > $searchParams.difficultyMax) {
+											$searchParams.difficultyMax = $searchParams.difficultyMin;
+										}
+									}}
+								/>
+								<input
+									type="range"
+									min="0"
+									max="5"
+									step="0.5"
+									bind:value={$searchParams.difficultyMax}
+									on:input={() => {
+										if ($searchParams.difficultyMax < $searchParams.difficultyMin) {
+											$searchParams.difficultyMin = $searchParams.difficultyMax;
+										}
+									}}
+								/>
+								<div class="range-values">
+									<span>{$searchParams.difficultyMin}</span>
+									<span>ถึง</span>
+									<span>{$searchParams.difficultyMax}</span>
+								</div>
+							</div>
+						</div>
+					</div>
 				</HeaderSelection>
 			</div>
 			<div id="tags-difficulty">
@@ -82,7 +142,90 @@
 					ประเภท/ความยาก <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={difficultyTagsElement}>
-					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
+					<div class="tags-difficulty-controls">
+						<div class="tags-section">
+							<span>ประเภท:</span>
+							<RadioButton
+								name="tag-mobile"
+								onclick={() => {
+									$searchParams.tag = [];
+								}}
+								selected={true}
+								>อะไรก็ได้เอามาให้หมด
+							</RadioButton>
+							{#each Object.keys(tagsColors) as tag}
+								<RadioButton
+									name="tag-mobile"
+									color={tagsColors[tag]}
+									onclick={() => {
+										$searchParams.tag = [tag];
+									}}
+									>{tag}
+								</RadioButton>
+							{/each}
+						</div>
+						<div class="difficulty-section">
+							<div class="sort-controls">
+								<span>เรียงลำดับ:</span>
+								<RadioButton
+									name="difficulty-sort-mobile"
+									onclick={() => {
+										searchParams["difficultySortBy"] = null;
+									}}
+									selected={true}
+									>ไม่เรียง
+								</RadioButton>
+								<RadioButton
+									name="difficulty-sort-mobile"
+									onclick={() => {
+										searchParams["difficultySortBy"] = "ASC";
+									}}
+									>น้อยไปมาก
+								</RadioButton>
+								<RadioButton
+									name="difficulty-sort-mobile"
+									onclick={() => {
+										searchParams["difficultySortBy"] = "DESC";
+									}}
+									>มากไปน้อย
+								</RadioButton>
+							</div>
+							<div class="range-controls">
+								<span>ช่วงความยาก:</span>
+								<div class="range-inputs">
+									<input
+										type="range"
+										min="0"
+										max="5"
+										step="0.5"
+										bind:value={$searchParams.difficultyMin}
+										on:input={() => {
+											if ($searchParams.difficultyMin > $searchParams.difficultyMax) {
+												$searchParams.difficultyMax = $searchParams.difficultyMin;
+											}
+										}}
+									/>
+									<input
+										type="range"
+										min="0"
+										max="5"
+										step="0.5"
+										bind:value={$searchParams.difficultyMax}
+										on:input={() => {
+											if ($searchParams.difficultyMax < $searchParams.difficultyMin) {
+												$searchParams.difficultyMin = $searchParams.difficultyMax;
+											}
+										}}
+									/>
+									<div class="range-values">
+										<span>{$searchParams.difficultyMin}</span>
+										<span>ถึง</span>
+										<span>{$searchParams.difficultyMax}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</HeaderSelection>
 			</div>
 		</div>
@@ -139,6 +282,152 @@
 </div>
 
 <style lang="scss">
+	/*
+-------------------------------------------------------
+Difficulty Controls Styles
+-------------------------------------------------------
+*/
+	:global(.difficulty-controls) {
+		padding: 10px;
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+
+		.sort-controls,
+		.range-controls {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+
+			span {
+				font-size: 0.9rem;
+				color: var(--text-secondary);
+			}
+		}
+
+		.range-controls {
+			.range-inputs {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+
+				input[type="range"] {
+					width: 100%;
+					height: 4px;
+					-webkit-appearance: none;
+					background: var(--accent);
+					border-radius: 2px;
+					outline: none;
+
+					&::-webkit-slider-thumb {
+						-webkit-appearance: none;
+						width: 15px;
+						height: 15px;
+						background: var(--accent);
+						border-radius: 50%;
+						cursor: pointer;
+						transition: all 0.2s ease;
+
+						&:hover {
+							transform: scale(1.2);
+						}
+					}
+				}
+
+				.range-values {
+					display: flex;
+					justify-content: center;
+					gap: 8px;
+					font-size: 0.9rem;
+					color: var(--text);
+
+					span:nth-child(2) {
+						color: var(--text-secondary);
+					}
+				}
+			}
+		}
+	}
+
+	/*
+-------------------------------------------------------
+Tags-Difficulty Controls Styles
+-------------------------------------------------------
+*/
+	:global(.tags-difficulty-controls) {
+		padding: 10px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+
+		.tags-section,
+		.difficulty-section {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+			padding: 15px;
+			border-radius: var(--n-border-radius);
+			background: var(--bg-secondary);
+
+			span {
+				font-size: 0.9rem;
+				color: var(--text-secondary);
+			}
+		}
+
+		.difficulty-section {
+			.sort-controls,
+			.range-controls {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+
+			.range-controls {
+				.range-inputs {
+					display: flex;
+					flex-direction: column;
+					gap: 10px;
+
+					input[type="range"] {
+						width: 100%;
+						height: 4px;
+						-webkit-appearance: none;
+						background: var(--accent);
+						border-radius: 2px;
+						outline: none;
+
+						&::-webkit-slider-thumb {
+							-webkit-appearance: none;
+							width: 15px;
+							height: 15px;
+							background: var(--accent);
+							border-radius: 50%;
+							cursor: pointer;
+							transition: all 0.2s ease;
+
+							&:hover {
+								transform: scale(1.2);
+							}
+						}
+					}
+
+					.range-values {
+						display: flex;
+						justify-content: center;
+						gap: 8px;
+						font-size: 0.9rem;
+						color: var(--text);
+
+						span:nth-child(2) {
+							color: var(--text-secondary);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	:global(#problem-table) {
 		overflow-y: auto;
 		height: calc(100% - 60px);

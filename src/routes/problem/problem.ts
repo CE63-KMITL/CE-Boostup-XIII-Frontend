@@ -41,8 +41,9 @@ export const searchParams = writable({
 	idReverse: false,
 	tag: [],
 	difficulty: null,
+	difficultyMin: 0,
+	difficultyMax: 5,
+	difficultySortBy: "ASC",
 	status: null,
 	page: 1,
 });
-
-// export let updateProblems = writable(() => {});

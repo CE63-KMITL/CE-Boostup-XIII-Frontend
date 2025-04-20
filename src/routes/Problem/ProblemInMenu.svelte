@@ -24,21 +24,20 @@
 		allProblems = [];
 		loaded = false;
 
-		const tags = searchParams["tag"] || [];
 		const searchQuery = {
-			searchText: searchParams["searchText"] || "",
-			idReverse: Boolean(searchParams["idReverse"]),
-			tag: tags,
-			difficulty: Number(searchParams["difficulty"]) || undefined,
-			status: Number(searchParams["status"]) || undefined,
-			page: Number(searchParams["page"]) || 1,
+			searchText: $searchParams["searchText"] || "",
+			idReverse: Boolean($searchParams["idReverse"]),
+			tags: $searchParams.tag || [],
+			difficultySortBy: $searchParams.difficultySortBy,
+			status: Number($searchParams["status"]) || null,
+			page: Number($searchParams["page"]) || 1,
 		};
 
 		const queryString = Object.entries(searchQuery)
-			.filter(([_, value]) => value !== undefined)
+			.filter(([_, value]) => value !== null)
 			.map(([key, value]) => {
 				if (Array.isArray(value)) {
-					return value.map((v) => `${key}=${v}`).join("&");
+					return `${key}=${JSON.stringify(value)}`;
 				}
 				return `${key}=${value}`;
 			})
@@ -57,6 +56,10 @@
 			allProblems = [];
 		}
 	}
+
+	searchParams.subscribe(() => {
+		updateProblems();
+	});
 
 	async function updateProblemDetail() {
 		if (!$selectedProblemId) return;
@@ -116,7 +119,7 @@
 				id="search"
 				placeholder="ค้นหา"
 				oninput={(e: any) => {
-					searchParams["searchText"] = e.target.value = e.target.value;
+					$searchParams["searchText"] = e.target.value;
 				}}
 			/>
 		</Frame>
