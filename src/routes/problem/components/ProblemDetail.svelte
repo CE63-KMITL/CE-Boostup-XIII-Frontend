@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from "../../../components/Button.svelte";
 	import Frame from "../../../components/Frame.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
@@ -23,7 +24,7 @@
 		</div>
 
 		<div class="description">{detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
-		<button class="submit-btn">ทำโจทย์</button>
+		<Button class="submit-btn">ทำโจทย์</Button>
 	{:else}
 		<div class="placeholder">กรุณาเลือกโจทย์เพื่อดูรายละเอียด</div>
 	{/if}
@@ -73,23 +74,6 @@ Content Elements
 		color: var(--text);
 		line-height: 1.6;
 		flex-grow: 1;
-	}
-
-	.submit-btn {
-		width: 100%;
-		padding: 12px;
-		background: #c19a6b;
-		color: white;
-		border: none;
-		border-radius: 5px;
-		font-size: 1rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-
-		&:hover {
-			background: darken(#c19a6b, 10%);
-		}
 	}
 
 	.placeholder {

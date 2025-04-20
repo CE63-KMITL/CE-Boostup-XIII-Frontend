@@ -3,9 +3,9 @@
 	export let show;
 
 	import * as api from "$lib/fetchApi";
+	import { sleep } from "$lib/normalFunction";
 	import { onMount } from "svelte";
 	import Frame from "../../components/Frame.svelte";
-	import Fullscreen from "../../components/Fullscreen.svelte";
 	import Search from "../../components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
@@ -20,17 +20,26 @@
 
 	let loaded = false;
 
-	async function updateProblems() {
-		allProblems = [];
-		loaded = false;
+	async function runProblemListAnimation(dataIds: string[]) {
+		for (let i = 0; i < dataIds.length; i++) {
+			const dataId = dataIds[i];
+			const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
+			if (element) {
+				element.style.animation = `slide-in 0.2s ease-out forwards`;
+				await sleep(70);
+			}
+		}
+	}
 
+	async function getQueryString() {
 		const searchQuery = {
 			searchText: $searchParams["searchText"] || "",
 			idReverse: Boolean($searchParams["idReverse"]),
 			tags: $searchParams.tag || [],
 			difficultySortBy: $searchParams.difficultySortBy,
-			status: Number($searchParams["status"]) || null,
-			page: Number($searchParams["page"]) || 1,
+			minDifficulty: Number($searchParams.minDifficulty),
+			maxDifficulty: Number($searchParams.maxDifficulty),
+			status: $searchParams.status,
 		};
 
 		const queryString = Object.entries(searchQuery)
@@ -43,18 +52,67 @@
 			})
 			.join("&");
 
-		const getAllProblems = await api.call(`/problem/search?${queryString}`, {
-			withToken: true,
-		});
+		return queryString;
+	}
+
+	let maxPage;
+	let oldQueryString = "";
+	async function updateProblems(isLoadMore = false) {
+		const queryString = await getQueryString();
+		if (queryString === oldQueryString && (!isLoadMore || maxPage <= $searchParams.page)) return;
+		oldQueryString = queryString;
+
+		if (isLoadMore) {
+			$searchParams.page++;
+			allProblems = [...allProblems, "loading"];
+		} else {
+			$searchParams.page = 1;
+			loaded = false;
+			allProblems = [];
+		}
+
+		const getAllProblems = await api.call(
+			`/problem/search?${queryString}&page=${Number($searchParams.page) || 1}`,
+			{
+				withToken: true,
+			}
+		);
 
 		console.log(getAllProblems);
 
-		if (getAllProblems) {
-			allProblems = getAllProblems.items;
-			loaded = true;
+		if (getAllProblems && getAllProblems.items.length > 0) {
+			if (isLoadMore) {
+				allProblems = [...allProblems.slice(0, -1), ...getAllProblems.items];
+				requestAnimationFrame(() => {
+					runProblemListAnimation(getAllProblems.items.map((item) => item.id));
+				});
+			} else {
+				allProblems = getAllProblems.items;
+				requestAnimationFrame(() => {
+					runProblemListAnimation(getAllProblems.items.map((item) => item.id));
+				});
+				maxPage = getAllProblems.pageCount;
+				loaded = true;
+			}
 		} else {
-			allProblems = [];
+			if (isLoadMore) {
+				allProblems = allProblems.slice(0, -1);
+				$searchParams.page--;
+			} else {
+				maxPage = null;
+				allProblems = [];
+				loaded = true;
+			}
 		}
+	}
+
+	let loadingMore = false;
+	async function loadMore() {
+		if (loadingMore) return;
+		console.log("load more");
+		loadingMore = true;
+		await updateProblems(true);
+		loadingMore = false;
 	}
 
 	searchParams.subscribe(() => {
@@ -123,7 +181,7 @@
 				}}
 			/>
 		</Frame>
-		<ProblemTable problems={allProblems} loading={!loaded} />
+		<ProblemTable problems={allProblems} loading={!loaded} {loadMore} />
 	</Frame>
 	<Frame id="right" blur-bg>
 		<ProblemDetail problem={selectedProblem} detail={problemDetail} />
@@ -154,24 +212,6 @@
 		}
 	}
 
-	@keyframes -global-show-opacity {
-		0% {
-			opacity: 0;
-		}
-		100% {
-			opacity: 1;
-		}
-	}
-
-	@keyframes -global-hide-opacity {
-		0% {
-			opacity: 1;
-		}
-		100% {
-			opacity: 0;
-		}
-	}
-
 	#problem {
 		width: 100%;
 		height: 100%;
@@ -183,17 +223,18 @@
 		container-type: size;
 
 		:global(#left) {
-			animation: all 0.3s ease-in-out;
+			transition: all 0.25s ease;
 			display: flex;
 			flex-direction: column;
 			overflow: hidden;
 		}
 
 		:global(#right) {
-			animation: all 0.3s ease-in-out;
+			transition: all 0.25s ease;
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			overflow: hidden;
 		}
 
 		&[data-show="true"] {
@@ -201,7 +242,7 @@
 
 			:global(#left),
 			:global(#right[show]) {
-				animation: show-opacity 0.3s ease-in-out forwards;
+				animation: fade-in 0.3s ease-in-out forwards;
 			}
 		}
 
@@ -210,8 +251,16 @@
 
 			:global(#left),
 			:global(#right[show]) {
-				animation: hide-opacity 0.3s ease-in-out forwards;
+				animation: fade-out 0.3s ease-in-out forwards;
 			}
+		}
+
+		:global(.problem-list) {
+			opacity: 0;
+		}
+
+		:global(#header) {
+			animation: fade-in 0.3s 1s ease-in-out forwards;
 		}
 	}
 
@@ -223,19 +272,20 @@
 
 			:global(#left[full]) {
 				width: 100%;
+				margin-right: -5px;
 			}
 
 			:global(#right:not([show])) {
 				width: 0;
 				padding-inline: 0;
 				margin-inline: 0;
-				animation: hide-opacity 0.3s ease-in-out forwards;
+				animation: fade-out 0.3s ease-in-out forwards;
 			}
 
 			:global(#right[show]) {
 				width: 35%;
 				opacity: 1;
-				animation: show-opacity 0.3s ease-in-out forwards;
+				animation: fade-in 0.3s ease-in-out forwards;
 			}
 		}
 	}

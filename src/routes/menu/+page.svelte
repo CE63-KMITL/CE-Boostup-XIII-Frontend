@@ -52,9 +52,11 @@
 		</div>
 		<dir id="end"></dir>
 	</div>
-	<div id="content">
-		<ProblemInMenu {data} show={currentPage == "problem"}></ProblemInMenu>
-	</div>
+	{#if currentPage}
+		<div id="content">
+			<ProblemInMenu {data} show={currentPage == "problem"}></ProblemInMenu>
+		</div>
+	{/if}
 </Fullscreen>
 
 <style lang="scss">

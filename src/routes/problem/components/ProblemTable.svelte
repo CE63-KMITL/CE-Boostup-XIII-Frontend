@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import Checkbox from "../../../components/Checkbox.svelte";
 	import HeaderSelection from "../../../components/HeaderSelection.svelte";
 	import Filter from "../../../components/Icons/Filter.svelte";
 	import Sort from "../../../components/Icons/Sort.svelte";
@@ -10,10 +9,13 @@
 	import RadioButton from "../../../components/RadioButton.svelte";
 	import TableRenderer from "../../../components/TableRenderer.svelte";
 	import type { Problem } from "../problem";
-	import { searchParams, statusColors, statusText, tagsColors } from "../problem";
+	import { searchParams, statusColors, statusText } from "../problem";
+	import HeaderDifficulty from "./Header-Difficulty.svelte";
+	import HeaderTags from "./Header-Tags.svelte";
 	import ProblemRow from "./ProblemRow.svelte";
 
 	export let loading = false;
+	export let loadMore;
 
 	let tagsElement;
 	let difficultyElement;
@@ -26,8 +28,11 @@
 		const head_list: HTMLElement = document.querySelector("#problem-table #header");
 
 		function updateScroll() {
-			console.log(Math.abs(problem_table.scrollHeight - problem_table.clientHeight));
 			head_list.setAttribute("top", problem_table.scrollTop > 0 ? "false" : "true");
+
+			if (!loading && problem_table.scrollHeight - problem_table.scrollTop - problem_table.clientHeight < 20) {
+				loadMore();
+			}
 		}
 
 		if (problem_table) {
@@ -50,21 +55,7 @@
 					ประเภท <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={tagsElement}>
-					{#each Object.keys(tagsColors) as tag}
-						<Checkbox
-							name="tag"
-							color={tagsColors[tag]}
-							onSelect={() => {
-								const tempTag = $searchParams.tag;
-								tempTag.push(tag);
-								$searchParams.tag = tempTag;
-							}}
-							onUnselect={() => {
-								$searchParams.tag = $searchParams.tag.filter((t) => t !== tag);
-							}}
-							>{tag}
-						</Checkbox>
-					{/each}
+					<HeaderTags />
 				</HeaderSelection>
 			</div>
 			<div id="difficulty">
@@ -72,67 +63,7 @@
 					ความยาก <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={difficultyElement}>
-					<div class="difficulty-controls">
-						<div class="sort-controls">
-							<span>เรียงลำดับ:</span>
-							<RadioButton
-								name="difficulty-sort"
-								onclick={() => {
-									$searchParams.difficultySortBy = null;
-								}}
-								selected={true}
-								>ไม่เรียง
-							</RadioButton>
-							<RadioButton
-								name="difficulty-sort"
-								onclick={() => {
-									$searchParams.difficultySortBy = "ASC";
-								}}
-								>น้อยไปมาก
-							</RadioButton>
-							<RadioButton
-								name="difficulty-sort"
-								onclick={() => {
-									$searchParams.difficultySortBy = "DESC";
-								}}
-								>มากไปน้อย
-							</RadioButton>
-						</div>
-						<div class="range-controls">
-							<span>ช่วงความยาก:</span>
-							<div class="range-inputs">
-								<input
-									type="range"
-									min="0"
-									max="5"
-									step="0.5"
-									bind:value={$searchParams.difficultyMin}
-									on:input={() => {
-										if ($searchParams.difficultyMin > $searchParams.difficultyMax) {
-											$searchParams.difficultyMax = $searchParams.difficultyMin;
-										}
-									}}
-								/>
-								<input
-									type="range"
-									min="0"
-									max="5"
-									step="0.5"
-									bind:value={$searchParams.difficultyMax}
-									on:input={() => {
-										if ($searchParams.difficultyMax < $searchParams.difficultyMin) {
-											$searchParams.difficultyMin = $searchParams.difficultyMax;
-										}
-									}}
-								/>
-								<div class="range-values">
-									<span>{$searchParams.difficultyMin}</span>
-									<span>ถึง</span>
-									<span>{$searchParams.difficultyMax}</span>
-								</div>
-							</div>
-						</div>
-					</div>
+					<HeaderDifficulty />
 				</HeaderSelection>
 			</div>
 			<div id="tags-difficulty">
@@ -140,90 +71,10 @@
 					ประเภท/ความยาก <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={difficultyTagsElement}>
-					<div class="tags-difficulty-controls">
-						<div class="tags-section">
-							<span>ประเภท:</span>
-							<RadioButton
-								name="tag-mobile"
-								onclick={() => {
-									$searchParams.tag = [];
-								}}
-								selected={true}
-								>อะไรก็ได้เอามาให้หมด
-							</RadioButton>
-							{#each Object.keys(tagsColors) as tag}
-								<RadioButton
-									name="tag-mobile"
-									color={tagsColors[tag]}
-									onclick={() => {
-										$searchParams.tag = [tag];
-									}}
-									>{tag}
-								</RadioButton>
-							{/each}
-						</div>
-						<div class="difficulty-section">
-							<div class="sort-controls">
-								<span>เรียงลำดับ:</span>
-								<RadioButton
-									name="difficulty-sort-mobile"
-									onclick={() => {
-										searchParams["difficultySortBy"] = null;
-									}}
-									selected={true}
-									>ไม่เรียง
-								</RadioButton>
-								<RadioButton
-									name="difficulty-sort-mobile"
-									onclick={() => {
-										searchParams["difficultySortBy"] = "ASC";
-									}}
-									>น้อยไปมาก
-								</RadioButton>
-								<RadioButton
-									name="difficulty-sort-mobile"
-									onclick={() => {
-										searchParams["difficultySortBy"] = "DESC";
-									}}
-									>มากไปน้อย
-								</RadioButton>
-							</div>
-							<div class="range-controls">
-								<span>ช่วงความยาก:</span>
-								<div class="range-inputs">
-									<input
-										type="range"
-										min="0"
-										max="5"
-										step="0.5"
-										bind:value={$searchParams.difficultyMin}
-										on:input={() => {
-											if ($searchParams.difficultyMin > $searchParams.difficultyMax) {
-												$searchParams.difficultyMax = $searchParams.difficultyMin;
-											}
-										}}
-									/>
-									<input
-										type="range"
-										min="0"
-										max="5"
-										step="0.5"
-										bind:value={$searchParams.difficultyMax}
-										on:input={() => {
-											if ($searchParams.difficultyMax < $searchParams.difficultyMin) {
-												$searchParams.difficultyMin = $searchParams.difficultyMax;
-											}
-										}}
-									/>
-									<div class="range-values">
-										<span>{$searchParams.difficultyMin}</span>
-										<span>ถึง</span>
-										<span>{$searchParams.difficultyMax}</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+					<div class="header-saperator">ประเภท</div>
+					<HeaderTags />
+					<div class="header-saperator">ความยาก</div>
+					<HeaderDifficulty />
 				</HeaderSelection>
 			</div>
 		</div>
@@ -235,7 +86,7 @@
 				<RadioButton
 					name="status"
 					onclick={() => {
-						searchParams["status"] = "";
+						$searchParams.status = null;
 					}}
 					selected={true}
 					>ทั้งหมด
@@ -244,7 +95,7 @@
 					name="status"
 					color={statusColors["Done"]}
 					onclick={() => {
-						searchParams["status"] = "Done";
+						$searchParams.status = "Done";
 					}}
 					>{statusText["Done"]}
 				</RadioButton>
@@ -252,7 +103,7 @@
 					name="status"
 					color={statusColors["In Progress"]}
 					onclick={() => {
-						searchParams["status"] = "In Progress";
+						$searchParams.status = "In Progress";
 					}}
 					>{statusText["In Progress"]}
 				</RadioButton>
@@ -260,16 +111,14 @@
 					name="status"
 					color={statusColors["Not Started"]}
 					onclick={() => {
-						searchParams["status"] = "Not Started";
+						$searchParams.status = "Not Started";
 					}}
 					>{statusText["Not Started"]}
 				</RadioButton>
 			</HeaderSelection>
 		</div>
+		<div class="do-now"></div>
 	</List>
-	{#if loading}
-		<Loading></Loading>
-	{/if}
 	{#each problems as problem}
 		{#if problem == "loading"}
 			<LoadingList></LoadingList>
@@ -277,6 +126,9 @@
 			<ProblemRow problem={problem as Problem} />
 		{/if}
 	{/each}
+	{#if loading}
+		<Loading></Loading>
+	{/if}
 </TableRenderer>
 
 <style lang="scss">
@@ -328,6 +180,12 @@
 			:global(div:has(> .header-selection[open="true"])) {
 				background: var(--bg);
 			}
+
+			:global(.header-saperator) {
+				border-radius: 10px;
+				background: var(--text);
+				color: var(--bg);
+			}
 		}
 
 		@container (min-width: 700px) {
@@ -374,6 +232,10 @@
 					width: 20%;
 					text-align: center;
 				}
+				&:nth-child(5) {
+					width: 15%;
+					text-align: center;
+				}
 			}
 
 			@container (max-width:500px) or (max-height:500px) {
@@ -390,7 +252,7 @@
 				}
 			}
 
-			@container (max-width:700px) {
+			@container (max-width:800px) {
 				gap: 1px;
 
 				:global(#tags),
@@ -434,6 +296,9 @@
 					}
 					&:nth-child(4) {
 						min-width: 80px;
+					}
+					&:nth-child(5) {
+						display: none;
 					}
 				}
 			}

@@ -2,6 +2,8 @@
 	import { onMount } from "svelte";
 	import { selectedProblemId, statusColors, statusText } from "../problem";
 
+	import { preventDefault } from "svelte/legacy";
+	import Button from "../../../components/Button.svelte";
 	import List from "../../../components/List.svelte";
 	import { type Problem } from "../problem";
 	import Stars from "./Stars.svelte";
@@ -9,18 +11,12 @@
 
 	export let problem: Problem;
 
-	onMount(() => {
-		let element: HTMLDivElement = document.querySelector(`[data-problem-id="${problem.id}"]`);
-
-		if (element) {
-			element.addEventListener("click", () => {
-				$selectedProblemId = $selectedProblemId === problem.id ? null : problem.id;
-			});
-		}
-	});
+	function selectProblem() {
+		$selectedProblemId = $selectedProblemId === problem.id ? null : problem.id;
+	}
 </script>
 
-<List class="problem-list" data-problem-id={problem.id}>
+<List class="problem-list" data-problem-id={problem.id} onclick={selectProblem}>
 	<div class="id">{problem.id}</div>
 	<div>
 		<div class="title">{problem.title}</div>
@@ -38,6 +34,9 @@
 
 	<div class="status" style="color: {statusColors[problem.status] ?? '#808080'};">
 		{statusText[problem.status] ?? "ไม่ทราบ"}
+	</div>
+	<div class="do-now">
+		<a href="/code/{problem.id}" title="สามารถกดเมาส์กลางได้" on:click|stopPropagation>ทำโจทย์</a>
 	</div>
 </List>
 
@@ -75,5 +74,25 @@
 
 	.status {
 		font-weight: 500;
+	}
+
+	.do-now a {
+		width: 100%;
+		padding: 5px;
+		padding-inline: 15px;
+		background: #c19a6b;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		font-size: 1rem;
+		font-weight: 500;
+		transition: all 0.2s ease;
+		border-radius: 99rem;
+
+		&:hover {
+			background: #967145;
+			border: #ffb356 1px solid;
+			translate: 0 -2px;
+		}
 	}
 </style>
