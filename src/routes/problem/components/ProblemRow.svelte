@@ -54,12 +54,12 @@
 	}
 
 	.id {
-		color: var(--theme-dark-text);
+		color: var(--theme);
 	}
 
 	.title {
 		font-weight: 500;
-		color: var(--theme-dark-text);
+		color: var(--theme);
 		width: 100%;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -86,7 +86,7 @@
 		width: 100%;
 		padding: 5px;
 		padding-inline: 15px;
-		background: #c19a6b;
+		background: var(--theme);
 		color: white;
 		border: none;
 		border-radius: 5px;
@@ -94,10 +94,11 @@
 		font-weight: 500;
 		transition: all 0.2s ease;
 		border-radius: 99rem;
+		border: transparent 1px solid;
 
 		&:hover {
-			background: #967145;
-			border: #ffb356 1px solid;
+			background: var(--theme-dark);
+			border: var(--text) 1px solid;
 			translate: 0 -2px;
 		}
 	}

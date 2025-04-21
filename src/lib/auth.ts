@@ -8,6 +8,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 
 	let userData = {
 		role: null,
+		icon: null,
 	};
 
 	if (token) {
@@ -22,8 +23,9 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 			});
 
 			if (response.ok) {
-				userData = (await response.json()) || userData;
-				console.log(userData);
+				for (const [key, value] of await response.json()) {
+					userData[key] = value;
+				}
 			} else if (response.status === 401 || response.status === 403) {
 				cookies.delete(tokenCookieName, { path: "/" });
 				userData.role = null;

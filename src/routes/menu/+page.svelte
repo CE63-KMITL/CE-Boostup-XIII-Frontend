@@ -1,13 +1,16 @@
 <script lang="ts">
+	export let data;
+
 	import { pushState } from "$app/navigation";
 	import { IsRole } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
 	import Fullscreen from "../../components/Fullscreen.svelte";
-	import ProblemInMenu from "../problem/ProblemInMenu.svelte";
+	import Setting from "../../components/Icons/Setting.svelte";
+	import User from "../../components/Icons/User.svelte";
+	import ProblemInMenu from "../problem/Menu-Problem.svelte";
 
-	export let data;
 	const items = { problem: "โจทย์", score: "คะแนน" };
 
 	if (IsRole(Role.STAFF, data)) {
@@ -53,7 +56,18 @@
 				</button>
 			{/each}
 		</div>
-		<dir id="end"></dir>
+		<dir id="end">
+			<div class="circle-bg">
+				{#if data.icon}
+					<img src={data.icon} alt="Icon" class="circular-icon" />
+				{:else}
+					<User></User>
+				{/if}
+			</div>
+			<div class="circle-bg">
+				<Setting></Setting>
+			</div>
+		</dir>
 	</div>
 	<div id="content">
 		{#if currentPage == "problem"}
@@ -65,6 +79,21 @@
 </Fullscreen>
 
 <style lang="scss">
+	.circle-bg {
+		min-height: 90%;
+		min-width: auto;
+		aspect-ratio: 1/1;
+		background: var(--bg);
+		padding: 10px;
+		border-radius: 50%;
+	}
+
+	#end {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+	}
+
 	#content {
 		position: relative;
 		height: calc(100% - 70px);
