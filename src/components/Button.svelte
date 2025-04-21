@@ -28,14 +28,13 @@
 
 <button {...$$restProps} bind:this={This_Button}>
 	<slot></slot>
-	<div class="full animation button-filter"></div>
 </button>
 
 <style lang="scss">
 	button {
 		width: 100%;
 		padding: 12px;
-		background: #c19a6b;
+		background: var(--theme-text);
 		color: white;
 		border: none;
 		border-radius: 5px;
@@ -47,19 +46,5 @@
 		&:hover {
 			background: #a78459;
 		}
-	}
-
-	button:hover {
-		// transform: scale(1.02);
-
-		.button-filter {
-			opacity: 1;
-		}
-	}
-
-	.button-filter {
-		opacity: 0;
-		position: absolute;
-		background-color: var(--hoverColor);
 	}
 </style>

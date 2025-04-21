@@ -33,7 +33,11 @@ export async function call(
 		}
 	} catch (error) {
 		try {
-			alert(`${route}\n\n${error}`);
+			if (error.toString().includes("Failed to fetch")) {
+				alert("⚠️ เกิดข้อผิดพลาด\n\nไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ โปรดติดต่อ CE63@KMITL");
+			} else {
+				alert(`${route}\n\n${error}`);
+			}
 		} catch (error) {}
 		return null;
 	}

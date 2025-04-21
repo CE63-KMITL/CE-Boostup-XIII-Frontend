@@ -28,8 +28,8 @@
 	});
 </script>
 
-<div class="checkbox-container" style="--color : {color};" bind:this={thisElement}>
-	<input type="checkbox" {...$$restProps} bind:this={thisCheckbox} />
+<div class="checkbox-container" style="--color : {color};" {...$$restProps} bind:this={thisElement}>
+	<input type="checkbox" bind:this={thisCheckbox} />
 	<span><slot></slot></span>
 </div>
 
@@ -38,6 +38,8 @@
 		display: flex;
 		flex-direction: row;
 		gap: 5px;
+		cursor: pointer;
+		user-select: none;
 
 		input {
 			position: absolute;

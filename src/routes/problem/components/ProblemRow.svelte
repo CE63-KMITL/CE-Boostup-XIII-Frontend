@@ -36,7 +36,13 @@
 		{statusText[problem.status] ?? "ไม่ทราบ"}
 	</div>
 	<div class="do-now">
-		<a href="/code/{problem.id}" title="สามารถกดเมาส์กลางได้" on:click|stopPropagation>ทำโจทย์</a>
+		<a
+			href="/code/{problem.id}"
+			title="สามารถกดเมาส์กลางได้"
+			on:click|stopPropagation|preventDefault={(event) => window.open(`/code/${problem.id}`, "_blank")}
+		>
+			ทำโจทย์
+		</a>
 	</div>
 </List>
 

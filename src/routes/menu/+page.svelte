@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { pushState } from "$app/navigation";
+	import { IsRole } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
+	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
 	import Fullscreen from "../../components/Fullscreen.svelte";
 	import ProblemInMenu from "../problem/ProblemInMenu.svelte";
@@ -7,7 +10,7 @@
 	export let data;
 	const items = { problem: "โจทย์", score: "คะแนน" };
 
-	if (data.role == "staff") {
+	if (IsRole(Role.STAFF, data)) {
 		items["create_problem"] = "สร้างโจทย์";
 	}
 
@@ -52,11 +55,13 @@
 		</div>
 		<dir id="end"></dir>
 	</div>
-	{#if currentPage}
-		<div id="content">
-			<ProblemInMenu {data} show={currentPage == "problem"}></ProblemInMenu>
-		</div>
-	{/if}
+	<div id="content">
+		{#if currentPage == "problem"}
+			<div class="full" in:azScale out:azScale>
+				<ProblemInMenu {data}></ProblemInMenu>
+			</div>
+		{/if}
+	</div>
 </Fullscreen>
 
 <style lang="scss">

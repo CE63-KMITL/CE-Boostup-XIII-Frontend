@@ -1,10 +1,12 @@
 <script lang="ts">
 	export let data;
-	export let show;
 
+	import { IsRole } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
 	import * as api from "$lib/fetchApi";
 	import { sleep } from "$lib/normalFunction";
 	import { onMount } from "svelte";
+	import Checkbox from "../../components/Checkbox.svelte";
 	import Frame from "../../components/Frame.svelte";
 	import Search from "../../components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
@@ -127,9 +129,6 @@
 	}
 
 	onMount(async () => {
-		console.log(import.meta.env);
-		console.log(data);
-
 		problemSelectorElement = document.querySelector("#problem #left");
 		problemDetailsElement = document.querySelector("#problem #right");
 
@@ -164,23 +163,30 @@
 		}
 	}
 
-	$: selectedProblem = allProblems.find(
-		(problem) => typeof problem === "object" && problem.id === $selectedProblemId
-	);
+	$: {
+		selectedProblem =
+			allProblems.find((problem) => typeof problem === "object" && problem.id === $selectedProblemId) ||
+			selectedProblem;
+	}
 </script>
 
-<div id="problem" data-show={show}>
+<div id="problem">
 	<Frame id="left" full="" blur-bg>
-		<Frame id="search-frame">
-			<Search></Search>
-			<input
-				id="search"
-				placeholder="ค้นหา"
-				oninput={(e: any) => {
-					$searchParams["searchText"] = e.target.value;
-				}}
-			/>
-		</Frame>
+		<div class="top-frame">
+			<Frame id="search-frame">
+				<Search></Search>
+				<input
+					id="search"
+					placeholder="ค้นหา"
+					oninput={(e: any) => {
+						$searchParams["searchText"] = e.target.value;
+					}}
+				/>
+			</Frame>
+			{#if IsRole(Role.STAFF, data)}
+				<Checkbox id="staff-mode">โหมดแก้ไข</Checkbox>
+			{/if}
+		</div>
 		<ProblemTable problems={allProblems} loading={!loaded} {loadMore} />
 	</Frame>
 	<Frame id="right" blur-bg>
@@ -189,29 +195,6 @@
 </div>
 
 <style lang="scss">
-	@keyframes show {
-		0% {
-			transform: scale(0.95);
-		}
-
-		100% {
-			transform: scale(1);
-		}
-	}
-
-	@keyframes hide {
-		0% {
-			pointer-events: none;
-			transform: scale(1);
-		}
-
-		100% {
-			pointer-events: none;
-			transform: scale(0.95);
-			display: none;
-		}
-	}
-
 	#problem {
 		width: 100%;
 		height: 100%;
@@ -237,31 +220,26 @@
 			overflow: hidden;
 		}
 
-		&[data-show="true"] {
-			animation: show 0.3s ease forwards;
-
-			:global(#left),
-			:global(#right[show]) {
-				animation: fade-in 0.3s ease-in-out forwards;
-			}
-		}
-
-		&[data-show="false"] {
-			animation: hide 0.3s ease forwards;
-
-			:global(#left),
-			:global(#right[show]) {
-				animation: fade-out 0.3s ease-in-out forwards;
-			}
-		}
-
 		:global(.problem-list) {
 			opacity: 0;
 		}
 
 		:global(#header) {
-			animation: fade-in 0.3s 1s ease-in-out forwards;
+			animation: fade-in 0.3s 0.3s ease-in-out forwards;
 		}
+
+		:global(#staff-mode) {
+			min-width: max-content;
+			padding: 10px;
+		}
+	}
+
+	.top-frame {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		align-content: center;
+		justify-content: space-between;
 	}
 
 	@media (min-width: 800px) {
@@ -345,5 +323,6 @@
 		flex-direction: row;
 		align-items: center;
 		padding-inline: 10px;
+		width: 100%;
 	}
 </style>

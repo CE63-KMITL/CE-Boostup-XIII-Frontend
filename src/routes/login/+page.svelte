@@ -58,7 +58,7 @@
 			</div>
 			<p class="ForgetPassword">ลืมรหัสผ่าน</p>
 		</div>
-		<Button class="Login" on:click={() => Login()}>Login</Button>
+		<Button class="Login" onclick={() => Login()}>Login</Button>
 	</div>
 </div>
 

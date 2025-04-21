@@ -20,7 +20,7 @@ html:not([dark]) {
 	--top-bar-left: rgb(128, 122, 156);
 	--top-bar-right: rgb(63, 46, 62);
 
-	--theme-text: rgb(212, 181, 124);
+	--theme-text: #a9844d;
 	--theme-dark-text: rgb(150, 125, 79);
 
 	--list-bg: rgb(255, 255, 255);
