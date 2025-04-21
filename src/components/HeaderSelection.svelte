@@ -96,16 +96,4 @@
 			gap: 5px;
 		}
 	}
-
-	@keyframes -global-slide-in {
-		0% {
-			margin-left: 10px;
-			opacity: 0;
-		}
-
-		100% {
-			margin-left: 0px;
-			opacity: 1;
-		}
-	}
 </style>

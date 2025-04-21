@@ -9,6 +9,7 @@
 		border-radius: 10px;
 		padding: 5px;
 		margin: 5px;
+		transition: all 0.2s ease-out;
 	}
 
 	div[blur-bg="true"] {
