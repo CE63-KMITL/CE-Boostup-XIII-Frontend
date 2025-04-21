@@ -1,6 +1,7 @@
 <script lang="ts">
 	import "../../../app.css";
 	import Button from "../../../components/Button.svelte";
+	import Fullscreen from "../../../components/Fullscreen.svelte";
 
 	//Test data
 	let user = {
@@ -62,24 +63,28 @@
 	}
 
 	function enableVerticalScroll(node: HTMLElement) {
+		let isScrolling = false;
+
 		function onWheel(e: WheelEvent) {
 			if (node.getAttribute("disabled") == "") return;
-			e.deltaY > 0
-				? node.scrollTo({
-						top: node.scrollTop + node.clientHeight / 1.25,
-						left: 0,
-						behavior: "smooth",
-					})
-				: node.scrollTo({
-						top: node.scrollTop - node.clientHeight / 1.25,
-						left: 0,
-						behavior: "smooth",
-					});
+
+			if (!isScrolling) {
+				isScrolling = true;
+				let direction = e.deltaY > 0 ? 1 : -1;
+				let nextScrollTop = node.scrollTop + direction * node.clientHeight;
+
+				node.scrollTo({
+					top: nextScrollTop,
+					behavior: "smooth",
+				});
+
+				setTimeout(() => {
+					isScrolling = false;
+				}, 1200);
+			}
 			e.preventDefault();
 		}
-
 		node.addEventListener("wheel", onWheel, { passive: false });
-
 		return {
 			destroy() {
 				node.removeEventListener("wheel", onWheel);
@@ -96,87 +101,88 @@
 	}
 </script>
 
-<div class="ProblemCreateContianer">
-	<div class="Navbar"></div>
-	<div id="MainScroll" class="ScrollSnap" use:enableVerticalScroll>
-		<div class="ProblemInfo">
-			<div class="ProblemWrap">
-				<div class="ProblemHead">
-					<h1 class="HeadText">Exercise Name</h1>
-					<textarea class="ProblemNameInput" placeholder="Exercise Name"></textarea>
-				</div>
-				<div class="UserAndExDetails">
-					<div class="Username">
-						<h1 class="Avatar" style="color: green; font-weight:600">//Add avatar icon</h1>
-						<h1 class="HeadText">{user.name}</h1>
+<Fullscreen>
+	<div class="ProblemCreateContianer">
+		<div id="MainScroll" class="ScrollSnap" use:enableVerticalScroll>
+			<div class="ProblemInfo">
+				<div class="ProblemWrap">
+					<div class="ProblemHead">
+						<h1 class="HeadText">Exercise Name</h1>
+						<textarea class="ProblemNameInput" placeholder="Exercise Name"></textarea>
 					</div>
-					<div class="TagsBox">
-						<h1 class="HeadText">Tags</h1>
-						<select class="Tags" bind:value={first_option}>
-							{#each options as option}
-								<option value={option.id}>{option.value}</option>
-							{/each}
-						</select>
-					</div>
-					<textarea class="ProblemDetailsInput" placeholder="Type exercise's detail here"></textarea>
-				</div>
-			</div>
-			<Button class="DoneButton">Done</Button>
-		</div>
-		<div class="CodeInputandOutput">
-			<div class="CodeInputandOutputWrap">
-				<div class="CodeInputBox">
-					<div class="CodeInputHead">
-						<h1 class="HeadText">Code</h1>
-						<Button class="Run">Run</Button>
-					</div>
-					<textarea class="CodeInput" placeholder="Code here"></textarea>
-				</div>
-				<div class="TerminalBox">
-					<h1 class="HeadText">Terminal</h1>
-					<textarea class="Output" placeholder="Output here"></textarea>
-				</div>
-			</div>
-			<Button class="DoneButton">Done</Button>
-		</div>
-		<div class="TestCase">
-			<div class="TestCaseBoxWrap">
-				<div
-					class="TestCaseBox"
-					role="region"
-					use:enableHorizontalScroll
-					on:mouseenter={() => Disable_Node(document.getElementById("MainScroll"))}
-					on:mouseleave={() => Enable_Node(document.getElementById("MainScroll"))}
-				>
-					{#each test_cases as test_case, i}
-						<div class="TestCaseContainer">
-							<div class="TestCaseCover">
-								<h1 class="HeadText">Test Case {i + 1}</h1>
-								<div class="HiddenTestcaseBox">
-									<input class="CheckBox" type="checkbox" bind:checked={test_case.hidden} />
-									<p>Hidden Test Case</p>
-								</div>
-								<textarea class="TestCaseInput" placeholder="Input here" bind:value={test_case.input}
-								></textarea>
-								<textarea
-									class="TestCaseOutput"
-									placeholder="Output here"
-									bind:value={test_case.output}
-								></textarea>
-							</div>
-							<Button class="Delete" on:click={() => deleteTestCase(i)}>Delete</Button>
+					<div class="UserAndExDetails">
+						<div class="Username">
+							<h1 class="Avatar" style="color: green; font-weight:600">//Add avatar icon</h1>
+							<h1 class="HeadText">{user.name}</h1>
 						</div>
-					{/each}
-					<Button class="AddTestCase" on:click={addTestCase}>+</Button>
+						<div class="TagsBox">
+							<h1 class="HeadText">Tags</h1>
+							<select class="Tags" bind:value={first_option}>
+								{#each options as option}
+									<option value={option.id}>{option.value}</option>
+								{/each}
+							</select>
+						</div>
+						<textarea class="ProblemDetailsInput" placeholder="Type exercise's detail here"></textarea>
+					</div>
 				</div>
-			</div>
-			<div class="ButtonWrap">
-				<Button class="RunAll">Run All</Button>
 				<Button class="DoneButton">Done</Button>
+			</div>
+			<div class="CodeInputandOutput">
+				<div class="CodeInputandOutputWrap">
+					<div class="CodeInputBox">
+						<div class="CodeInputHead">
+							<h1 class="HeadText">Code</h1>
+							<Button class="Run">Run</Button>
+						</div>
+						<textarea class="CodeInput" placeholder="Code here"></textarea>
+					</div>
+					<div class="TerminalBox">
+						<h1 class="HeadText">Terminal</h1>
+						<textarea class="Output" placeholder="Output here"></textarea>
+					</div>
+				</div>
+				<Button class="DoneButton">Done</Button>
+			</div>
+			<div class="TestCase">
+				<div class="TestCaseBoxWrap">
+					<div
+						class="TestCaseBox"
+						role="region"
+						use:enableHorizontalScroll
+						on:mouseenter={() => Disable_Node(document.getElementById("MainScroll"))}
+						on:mouseleave={() => Enable_Node(document.getElementById("MainScroll"))}
+					>
+						{#each test_cases as test_case, i}
+							<div class="TestCaseContainer">
+								<div class="TestCaseCover">
+									<h1 class="HeadText">Test Case {i + 1}</h1>
+									<div class="HiddenTestcaseBox">
+										<input class="CheckBox" type="checkbox" bind:checked={test_case.hidden} />
+										<p>Hidden Test Case</p>
+									</div>
+									<textarea class="TestCaseInput" placeholder="Input here" bind:value={test_case.input}
+									></textarea>
+									<textarea
+										class="TestCaseOutput"
+										placeholder="Output here"
+										bind:value={test_case.output}
+									></textarea>
+								</div>
+								<Button class="Delete" on:click={() => deleteTestCase(i)}>Delete</Button>
+							</div>
+						{/each}
+						<Button class="AddTestCase" on:click={addTestCase}>+</Button>
+					</div>
+				</div>
+				<div class="ButtonWrap">
+					<Button class="RunAll">Run All</Button>
+					<Button class="DoneButton">Done</Button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</Fullscreen>
 
 <style lang="scss">
 	.ProblemCreateContianer {
@@ -190,23 +196,16 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 	}
-	.Navbar {
-		position: fixed;
-		top: 0px;
-		height: 5rem;
-		width: 100%;
-		background-color: gray;
-	}
 	.ScrollSnap {
-		margin-top: 5rem;
-		height: calc(100vh - 5rem);
+		height: 100vh;
 		width: 100%;
 		overflow-y: auto;
 		scroll-snap-type: y mandatory;
+		scroll-behavior: smooth;
 	}
 	.ProblemInfo {
 		width: 100%;
-		height: calc(100vh - 5rem);
+		height: 100vh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -281,7 +280,7 @@
 	}
 	.CodeInputandOutput {
 		width: 100%;
-		height: calc(100vh - 5rem);
+		height: 100vh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -361,7 +360,7 @@
 	}
 	.TestCase {
 		width: 100%;
-		height: calc(100vh - 5rem);
+		height: 100vh;
 		gap: 1rem;
 		display: flex;
 		flex-direction: column;
@@ -382,12 +381,11 @@
 	.TestCaseBox {
 		display: flex;
 		align-items: center;
-		gap: 16px;
+		gap: 1rem;
 		overflow-x: auto;
 		white-space: nowrap;
 		scroll-behavior: smooth;
-		max-width: 100%;	
-		padding-bottom: 1rem;
+		max-width: 100%;
 		padding: 1.5rem;
 		scroll-padding-right: 2rem;
 		scroll-snap-type: x mandatory;
@@ -412,19 +410,19 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 12px;
+		gap: 1rem;
 		scroll-snap-align: end;
 	}
 	.TestCaseCover {
 		display: flex;
 		width: 100%;
 		flex-direction: column;
-		gap: 12px;
+		gap: 1rem;
 	}
 	.HiddenTestcaseBox {
 		display: flex;
 		align-items: center;
-		gap: 6px;
+		gap: 0.5rem;
 		color: var(--text);
 		font-size: 1rem;
 		line-height: 1.75rem;
@@ -447,7 +445,7 @@
 		font-size: 1rem;
 	}
 	.TestCaseInput {
-		height: 32.5vh;
+		height: 15rem;
 		width: 100%;
 		border: 1px solid var(--outline);
 		border-radius: 5px;
@@ -472,7 +470,7 @@
 		box-shadow: none;
 	}
 	.TestCaseOutput {
-		height: 22.5vh;
+		height: 12rem;
 		width: 100%;
 		border: 1px solid var(--outline);
 		border-radius: 5px;
@@ -498,8 +496,8 @@
 	}
 	:global(.AddTestCase){
 		position: relative;
-		top: 16px;
-		height: 56.5vh;
+		top: 1.125rem;
+		height: 28rem;
 		min-width: 7.5rem;
 		max-width: 7.5rem;
 		scroll-snap-align: end;
@@ -513,20 +511,35 @@
 	:global(.RunAll){
 		margin-left: 10%;
 	}
+
 	@media (max-width: 1000px) {
+		.ProblemInfo {
+			gap: 0.5rem;
+		}
 		.CodeInputandOutput {
 			flex-direction: column;
-			gap: 12px;
+			gap: 0.5rem;
+			margin-top: 1.125rem;
+		}
+		.CodeInputandOutputWrap {
+			flex-direction: column;
+			gap: 1rem;
 		}
 		.CodeInputBox {
 			width: 90%;
+			height: 20rem;
 		}
 		.TerminalBox {
 			width: 90%;
+			height: 20rem;
 		}
 		.TestCaseContainer {
 			min-width: 15.5rem;
 			max-width: 15.5rem;
+		}
+		.TestCase {
+			margin-top: 1.125rem;
+			gap: 0.5rem;
 		}
 	}
 
@@ -541,17 +554,17 @@
 		}
 		.CodeInputandOutput {
 			height: auto;
-			margin-top: 9rem;
+			margin-top: 5rem;
 			scroll-snap-align: none;
 		}
 		.TestCase {
 			height: auto;
-			margin-top: 9rem;
+			margin-top: 5rem;
 			scroll-snap-align: none;
+			margin-bottom: 1.125rem;
 		}
 		.TestCaseBox {
 			scroll-snap-type: none;
-			padding-right: 2px;
 		}
 	}
 </style>
