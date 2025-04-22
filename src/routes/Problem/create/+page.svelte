@@ -175,10 +175,10 @@
 										bind:value={test_case.output}
 									></textarea>
 								</div>
-								<Button class="Delete" on:click={() => deleteTestCase(i)}>Delete</Button>
+								<Button class="Delete" onclick={() => deleteTestCase(i)}>Delete</Button>
 							</div>
 						{/each}
-						<Button class="AddTestCase" on:click={addTestCase}>+</Button>
+						<Button class="AddTestCase" onclick={addTestCase}>+</Button>
 					</div>
 				</div>
 				<div class="ButtonWrap">
