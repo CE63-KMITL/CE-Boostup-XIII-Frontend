@@ -91,6 +91,7 @@
 		width: 25%;
 		padding: 1rem;
 		padding-top: 0px;
+		gap: 1rem;
 		margin-left: 0.75rem;
 		margin-right: 0.75rem;
 		border: 1px solid var(--theme-dark-text);
@@ -101,7 +102,7 @@
 	.LoginHead {
 		font-size: 3.5rem;
 		font-weight: 700;
-		margin-top: 3rem;
+		margin-top: 2rem;
 		color: var(--theme-dark-text);
 	}
 
@@ -172,7 +173,7 @@
 	}
 
 	:global(.Login) {
-		margin-bottom: 3rem;
+		margin-bottom: 2rem;
 	}
 
 	.Text {

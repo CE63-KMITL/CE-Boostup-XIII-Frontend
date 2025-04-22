@@ -126,14 +126,18 @@
 						<textarea class="ProblemDetailsInput" placeholder="Type exercise's detail here"></textarea>
 					</div>
 				</div>
-				<Button class="DoneButton">Done</Button>
+				<div class="Width">
+					<Button class="DoneButton">Done</Button>
+				</div>
 			</div>
 			<div class="CodeInputandOutput">
 				<div class="CodeInputandOutputWrap">
 					<div class="CodeInputBox">
 						<div class="CodeInputHead">
 							<h1 class="HeadText">Code</h1>
-							<Button class="Run">Run</Button>
+							<div class="RunWidth">
+								<Button class="Run">Run</Button>
+							</div>
 						</div>
 						<textarea class="CodeInput" placeholder="Code here"></textarea>
 					</div>
@@ -142,7 +146,9 @@
 						<textarea class="Output" placeholder="Output here"></textarea>
 					</div>
 				</div>
-				<Button class="DoneButton">Done</Button>
+				<div class="Width">
+					<Button class="DoneButton">Done</Button>
+				</div>
 			</div>
 			<div class="TestCase">
 				<div class="TestCaseBoxWrap">
@@ -176,8 +182,12 @@
 					</div>
 				</div>
 				<div class="ButtonWrap">
-					<Button class="RunAll">Run All</Button>
-					<Button class="DoneButton">Done</Button>
+					<div class="Width">
+						<Button class="RunAll">Run All</Button>
+					</div>
+					<div class="Width">
+						<Button class="DoneButton">Done</Button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -185,6 +195,15 @@
 </Fullscreen>
 
 <style lang="scss">
+	.RunWidth{
+		width: 5rem;
+	}
+	.Width{
+		width: 5rem;
+		margin-left: 10%;
+		margin-right: 10%;
+		align-self: self-end;
+	}
 	.ProblemCreateContianer {
 		width: 100%;
 		max-height: 100vh;
@@ -273,10 +292,6 @@
 		font-size: 1rem;
 		line-height: 1.75rem;
 		resize: none;
-	}
-	:global(.DoneButton){
-		align-self: self-end;
-		margin-right: 10%;
 	}
 	.CodeInputandOutput {
 		width: 100%;
@@ -496,7 +511,7 @@
 	}
 	:global(.AddTestCase){
 		position: relative;
-		top: 1.125rem;
+		top: 0.75rem;
 		height: 28rem;
 		min-width: 7.5rem;
 		max-width: 7.5rem;
@@ -507,9 +522,6 @@
 		width: 100%;
 		align-items: center;
 		justify-content: space-between;
-	}
-	:global(.RunAll){
-		margin-left: 10%;
 	}
 
 	@media (max-width: 1000px) {
