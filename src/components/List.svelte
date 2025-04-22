@@ -1,9 +1,9 @@
-<div data-list {...$$restProps}>
+<div {...$$restProps}>
 	<slot></slot>
 </div>
 
 <style lang="scss">
-	[data-list] {
+	div {
 		transition: all 0.2s ease-out;
 		outline: 1px solid var(--list-outline);
 		cursor: pointer;
