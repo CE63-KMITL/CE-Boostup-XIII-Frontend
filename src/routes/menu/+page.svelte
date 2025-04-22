@@ -80,9 +80,9 @@
 
 <style lang="scss">
 	.circle-bg {
-		min-height: 90%;
-		min-width: auto;
-		aspect-ratio: 1/1;
+		height: 40px;
+		width: auto;
+		aspect-ratio: 1/1 !important;
 		background: var(--bg);
 		padding: 10px;
 		border-radius: 50%;
@@ -137,8 +137,9 @@
 		display: flex;
 		flex-direction: row;
 		gap: 20px;
-		width: 50%;
+		width: 100%;
 		justify-content: center;
+		position: absolute;
 
 		.page-selector {
 			color: var(--top-bar-text);
@@ -161,14 +162,10 @@
 		}
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 800px) {
 		#topbar {
 			height: 50px;
 			padding-inline: 5px;
-		}
-
-		#logo-text {
-			display: none;
 		}
 
 		#page-selector-container {
@@ -182,6 +179,17 @@
 
 		#content {
 			height: calc(100% - 50px);
+		}
+
+		.circle-bg {
+			height: 30px;
+			padding: 5px;
+		}
+	}
+
+	@media (max-width: 300px) {
+		#logo-text {
+			display: none;
 		}
 	}
 </style>

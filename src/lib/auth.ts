@@ -23,7 +23,8 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 			});
 
 			if (response.ok) {
-				for (const [key, value] of await response.json()) {
+				const data = await response.json();
+				for (const [key, value] of Object.entries(data)) {
 					userData[key] = value;
 				}
 			} else if (response.status === 401 || response.status === 403) {
@@ -41,6 +42,8 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 		console.log("No auth token cookie found.");
 		if (autoRedirect) redirect(307, "/login");
 	}
+
+	console.log("User data", userData);
 
 	return userData;
 };
