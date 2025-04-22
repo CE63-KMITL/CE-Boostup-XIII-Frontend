@@ -17,7 +17,7 @@
 					clearTimeout(clickedTimeout);
 				}
 
-				This_Button.style.transform = "scale(0.9)";
+				This_Button.style.transform = "scale(0.95)";
 				clickedTimeout = setTimeout(() => {
 					This_Button.style.transform = "";
 				}, 100);
@@ -26,46 +26,25 @@
 	});
 </script>
 
-<button {...$$restProps} on:click bind:this={This_Button}>
+<button {...$$restProps} bind:this={This_Button}>
 	<slot></slot>
-	<div class="full animation button-filter"></div>
 </button>
 
 <style lang="scss">
-    button {
-		border: 1px solid var(--outline);
-		background: var(--button-bg);
-		border-radius: 10px;
-		padding: 5px;
-		user-select: none;
-		position: relative;
-		overflow: hidden;
-	}
+	button {
+		width: 100%;
+		padding: 12px;
+		background: var(--theme-text);
+		color: white;
+		border: none;
+		border-radius: 5px;
+		font-size: 1rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
 
-	button:hover {
-		// transform: scale(1.02);
-
-		.button-filter {
-			opacity: 1;
+		&:hover {
+			background: #a78459;
 		}
 	}
-
-	.button-filter {
-		opacity: 0;
-		position: absolute;
-		background-color: var(--hoverColor);
-	}
-
-	/* -global- */
-	// @keyframes -global-click {
-	// 	0% {
-	// 		transform: scale(1);
-	// 	}
-	// 	50% {
-	// 		transform: scale(0.9);
-	// 	}
-	// 	100% {
-	// 		transform: scale(1);
-	// 	}
-	// }
 </style>

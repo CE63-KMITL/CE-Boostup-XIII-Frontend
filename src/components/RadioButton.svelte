@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-	export let onclick;
+	export let onclick = null;
 	export let color = "var(--text)";
 	export let selected = false;
 

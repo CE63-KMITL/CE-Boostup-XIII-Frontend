@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from "../../../components/Button.svelte";
 	import Frame from "../../../components/Frame.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
@@ -8,44 +9,54 @@
 </script>
 
 <div class="problem-detail">
-	{#if problem}
+	<div class="title-container">
 		<div class="title-section">
-			<div class="title">{problem.title}</div>
-			<div class="problem-id">{problem.id}</div>
+			<div class="title">{problem?.title}</div>
+			<div class="author">{problem?.author?.name}</div>
 		</div>
-		<div>
-			{#each problem.tags as tag}
+		<div class="problem-id">{problem?.id}</div>
+	</div>
+	<div class="problem-info">
+		<div class="tags">
+			{#each problem?.tags as tag}
 				<Tag {tag} />
 			{/each}
 		</div>
 		<div class="stars">
-			<Stars difficulty={problem.difficulty} />
+			<Stars difficulty={problem?.difficulty} />
 		</div>
+	</div>
 
-		<div class="description">{detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
-		<button class="submit-btn">ทำโจทย์</button>
-	{:else}
-		<div class="placeholder">กรุณาเลือกโจทย์เพื่อดูรายละเอียด</div>
-	{/if}
+	<div class="description">{detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
+	<Button class="submit-btn">ทำโจทย์</Button>
 </div>
 
 <style lang="scss">
 	/*
--------------------------------------------------------
-Layout & Container
--------------------------------------------------------
-*/
+     -------------------------------------------------------
+     Layout & Container
+     -------------------------------------------------------
+     */
 	.problem-detail {
 		height: 100%;
 		width: 100%;
 		padding: 10px;
+		display: flex;
+		flex-direction: column;
 	}
 
 	/*
--------------------------------------------------------
-Title Section
--------------------------------------------------------
-*/
+     -------------------------------------------------------
+     Title Section
+     -------------------------------------------------------
+     */
+
+	.title-container {
+		display: flex;
+		justify-content: space-between;
+		flex-direction: row;
+	}
+
 	.title-section {
 		display: flex;
 		flex-direction: column;
@@ -53,8 +64,8 @@ Title Section
 	}
 
 	.problem-id {
-		font-size: 0.9rem;
-		color: var(--place-holder);
+		font-size: 1.5rem;
+		color: var(--theme-text);
 		width: 10px;
 	}
 
@@ -63,38 +74,44 @@ Title Section
 		font-weight: 600;
 		color: var(--text);
 	}
+
+	.problem-info {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding-block: 10px;
+	}
+
+	.tags {
+		flex-direction: row;
+		gap: 5px;
+		text-align: center;
+		width: 70%;
+		display: flex;
+		flex-wrap: wrap;
+	}
 	/*
--------------------------------------------------------
-Content Elements
--------------------------------------------------------
-*/
+     -------------------------------------------------------
+     Content Elements
+     -------------------------------------------------------
+     */
 
 	.description {
 		color: var(--text);
 		line-height: 1.6;
 		flex-grow: 1;
+		height: 100%;
+		border: 1px solid var(--outline);
+		background: var(--bg);
+		padding: 10px;
+		border-radius: 10px;
+		margin-bottom: 10px;
 	}
 
-	.submit-btn {
-		width: 100%;
-		padding: 12px;
-		background: #c19a6b;
-		color: white;
-		border: none;
-		border-radius: 5px;
-		font-size: 1rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-
-		&:hover {
-			background: darken(#c19a6b, 10%);
-		}
-	}
-
-	.placeholder {
-		color: var(--place-holder);
-		text-align: center;
-		width: 100%;
-	}
+	// .placeholder {
+	// 	color: var(--place-holder);
+	// 	text-align: center;
+	// 	width: 100%;
+	// }
 </style>

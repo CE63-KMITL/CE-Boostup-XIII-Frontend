@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
-	import Checkbox from "../../../components/Checkbox.svelte";
+	import { fade } from "svelte/transition";
 	import HeaderSelection from "../../../components/HeaderSelection.svelte";
 	import Filter from "../../../components/Icons/Filter.svelte";
 	import Sort from "../../../components/Icons/Sort.svelte";
@@ -8,11 +9,15 @@
 	import Loading from "../../../components/Loading.svelte";
 	import LoadingList from "../../../components/LoadingList.svelte";
 	import RadioButton from "../../../components/RadioButton.svelte";
+	import TableRenderer from "../../../components/TableRenderer.svelte";
 	import type { Problem } from "../problem";
-	import { searchParams, statusColors, statusText, tagsColors } from "../problem";
+	import { searchParams, statusColors, statusText } from "../problem";
+	import HeaderDifficulty from "./Header-Difficulty.svelte";
+	import HeaderTags from "./Header-Tags.svelte";
 	import ProblemRow from "./ProblemRow.svelte";
 
 	export let loading = false;
+	export let loadMore;
 
 	let tagsElement;
 	let difficultyElement;
@@ -25,8 +30,11 @@
 		const head_list: HTMLElement = document.querySelector("#problem-table #header");
 
 		function updateScroll() {
-			console.log(Math.abs(problem_table.scrollHeight - problem_table.clientHeight));
 			head_list.setAttribute("top", problem_table.scrollTop > 0 ? "false" : "true");
+
+			if (!loading && problem_table.scrollHeight - problem_table.scrollTop - problem_table.clientHeight < 20) {
+				loadMore();
+			}
 		}
 
 		if (problem_table) {
@@ -37,7 +45,7 @@
 	});
 </script>
 
-<div id="problem-table">
+<TableRenderer id="problem-table">
 	<List id="header" class="problem-list" top="true">
 		<div>
 			ข้อที่ <Sort></Sort>
@@ -49,24 +57,7 @@
 					ประเภท <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={tagsElement}>
-					<RadioButton
-						name="tag"
-						onclick={() => {
-							searchParams["tag"] = "";
-						}}
-						selected={true}
-						>อะไรก็ได้เอามาให้หมด
-					</RadioButton>
-					{#each Object.keys(tagsColors) as tag}
-						<RadioButton
-							name="tag"
-							color={tagsColors[tag]}
-							onclick={() => {
-								searchParams["tag"] = tag;
-							}}
-							>{tag}
-						</RadioButton>
-					{/each}
+					<HeaderTags />
 				</HeaderSelection>
 			</div>
 			<div id="difficulty">
@@ -74,7 +65,7 @@
 					ความยาก <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={difficultyElement}>
-					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
+					<HeaderDifficulty />
 				</HeaderSelection>
 			</div>
 			<div id="tags-difficulty">
@@ -82,7 +73,10 @@
 					ประเภท/ความยาก <Filter></Filter>
 				</div>
 				<HeaderSelection toggleSelector={difficultyTagsElement}>
-					<Checkbox value="Done">{statusText["Done"]}</Checkbox>
+					<div class="header-saperator">ประเภท</div>
+					<HeaderTags />
+					<div class="header-saperator">ความยาก</div>
+					<HeaderDifficulty />
 				</HeaderSelection>
 			</div>
 		</div>
@@ -94,7 +88,7 @@
 				<RadioButton
 					name="status"
 					onclick={() => {
-						searchParams["status"] = "";
+						$searchParams.status = null;
 					}}
 					selected={true}
 					>ทั้งหมด
@@ -103,7 +97,7 @@
 					name="status"
 					color={statusColors["Done"]}
 					onclick={() => {
-						searchParams["status"] = "Done";
+						$searchParams.status = "Done";
 					}}
 					>{statusText["Done"]}
 				</RadioButton>
@@ -111,7 +105,7 @@
 					name="status"
 					color={statusColors["In Progress"]}
 					onclick={() => {
-						searchParams["status"] = "In Progress";
+						$searchParams.status = "In Progress";
 					}}
 					>{statusText["In Progress"]}
 				</RadioButton>
@@ -119,37 +113,33 @@
 					name="status"
 					color={statusColors["Not Started"]}
 					onclick={() => {
-						searchParams["status"] = "Not Started";
+						$searchParams.status = "Not Started";
 					}}
 					>{statusText["Not Started"]}
 				</RadioButton>
 			</HeaderSelection>
 		</div>
+		<div class="do-now"></div>
 	</List>
-	{#if loading}
-		<Loading></Loading>
-	{/if}
 	{#each problems as problem}
-		{console.log(problem)}
 		{#if problem == "loading"}
 			<LoadingList></LoadingList>
 		{:else}
 			<ProblemRow problem={problem as Problem} />
 		{/if}
 	{/each}
-</div>
+	{#if loading}
+		<div class="full" in:fade out:fade>
+			<Loading></Loading>
+		</div>
+	{/if}
+</TableRenderer>
 
 <style lang="scss">
 	:global(#problem-table) {
-		overflow-y: auto;
 		height: calc(100% - 60px);
 		margin-top: 10px;
 		padding: 0px 10px 10px 10px;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		container-type: size;
-		position: relative;
 
 		:global([dark] #header) {
 			backdrop-filter: blur(10px);
@@ -193,6 +183,12 @@
 
 			:global(div:has(> .header-selection[open="true"])) {
 				background: var(--bg);
+			}
+
+			:global(.header-saperator) {
+				border-radius: 10px;
+				background: var(--text);
+				color: var(--bg);
 			}
 		}
 
@@ -240,6 +236,10 @@
 					width: 20%;
 					text-align: center;
 				}
+				&:nth-child(5) {
+					width: 15%;
+					text-align: center;
+				}
 			}
 
 			@container (max-width:500px) or (max-height:500px) {
@@ -256,7 +256,7 @@
 				}
 			}
 
-			@container (max-width:700px) {
+			@container (max-width:800px) {
 				gap: 1px;
 
 				:global(#tags),
@@ -300,6 +300,9 @@
 					}
 					&:nth-child(4) {
 						min-width: 80px;
+					}
+					&:nth-child(5) {
+						display: none;
 					}
 				}
 			}

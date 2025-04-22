@@ -11,6 +11,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 	};
 
 	if (token) {
+		console.log(token);
 		try {
 			const response = await fetch(`${BACK_HOST}/auth/role`, {
 				method: "GET",
@@ -22,6 +23,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 
 			if (response.ok) {
 				userData = (await response.json()) || userData;
+				console.log(userData);
 			} else if (response.status === 401 || response.status === 403) {
 				cookies.delete(tokenCookieName, { path: "/" });
 				userData.role = null;
