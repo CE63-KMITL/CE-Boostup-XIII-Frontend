@@ -34,10 +34,10 @@
         </div>
 
         <div>
-         <div CLASS="personal_info">
+          <div CLASS="personal_info">
             <div>(EMAIL)</div>
             <div>(HOUSE)</div>
-         </div>
+          </div>
         </div>
       </div>
     </div>
@@ -63,7 +63,7 @@
     height: 80vh;
     background-color: var(--profile-bg);
     border-radius: 20px;
-    border: 2px solid;
+    outline: 2px solid;
     border-color: var(--list-border);
   }
 
@@ -76,7 +76,7 @@
     height: 80vh;
     background-color: var(--profile-bg);
     border-radius: 20px;
-    border: 2px solid;
+    outline: 2px solid;
     border-color: var(--list-border);
   }
   .profile .header {
@@ -102,17 +102,21 @@
   }
 
   .profile .score_header {
+    font-size: 1vw;
     background: var(--light-yellow, #f1d5a1);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    outline: 1px solid;
   }
 
   .profile .score_body {
+    font-size: 1vw;
     background-color: var(--list-bg);
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     padding-top: 2vh;
     padding-bottom: 2vh;
+    outline: 1px solid;
   }
 
   .profile_info {
@@ -121,13 +125,13 @@
     margin-left: 2.5vw;
     margin-top: 5vh;
     border-radius: 20px;
-    border: 1px solid;
+    outline: 1px solid;
     border-color: var(--list-border);
     background-color: var(--profile-bg);
   }
 
   .bio_info {
-   display:flex;
+    display: flex;
   }
 
   .bio_info .icon {
@@ -139,9 +143,9 @@
   }
 
   .bio_info .name_id {
-      font-size: 1vw;
-      margin-top: 3vh;
-      margin-left: 1vw;
+    font-size: 1vw;
+    margin-top: 3vh;
+    margin-left: 1vw;
   }
 
   .bio_info .name_id .id {
