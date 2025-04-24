@@ -5,7 +5,7 @@
 
 <div class="Container">
   <div class="profile">
-    <h1 class="header">ข้อมูลนักผจญภัย</h1>
+    <h1>ข้อมูลนักผจญภัย</h1>
     <div class="profile_box">
       <div>
         <img src={icon} alt="การ์ดนักผจญภัย" class="icon" />
@@ -15,7 +15,6 @@
               <th class="score_header">คะแนนนักผจญภัย</th>
             </tr>
           </thead>
-
           <tbody>
             <tr>
               <td class="score_body">(score)</td>
@@ -43,10 +42,27 @@
     </div>
   </div>
 
-  <div class="score_history"></div>
+  <div class="score_history">
+    <h2>ประวัติคะแนน</h2>
+  </div>
 </div>
 
 <style lang="scss">
+  h1 {
+    font-size: 2vw;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 4.5vh;
+  }
+
+  h2{
+    font-size: 1.3vw;
+    font-weight: 4000;
+    text-align: left;
+    margin-top: 3vh;
+    margin-left:2vw;
+  }
+
   .Container {
     display: flex;
     align-items: center;
@@ -69,6 +85,7 @@
 
   .profile_box {
     display: flex;
+    margin-top:2vh;
   }
 
   .score_history {
@@ -79,26 +96,20 @@
     outline: 2px solid;
     border-color: var(--list-border);
   }
-  .profile .header {
-    font-size: 2vw;
-    font-weight: 700;
-    text-align: center;
-    margin-top: 2vh;
-  }
 
   .profile .icon {
-    width: 14vw;
+    width: 13vw;
     height: 40vh;
     margin-top: 5vh;
     margin-left: 4vw;
     border-radius: 15px;
   }
   .profile .score_table {
-    height: 10vh;
-    width: 10vw;
     margin-top: 2vh;
-    margin-left: 5.8vw;
+    margin-left: 4vw;
     text-align: center;
+    height: 10vh;
+    width: 13vw;
   }
 
   .profile .score_header {
