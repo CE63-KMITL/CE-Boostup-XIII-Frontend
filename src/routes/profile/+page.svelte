@@ -55,12 +55,12 @@
     margin-top: 4.5vh;
   }
 
-  h2{
+  h2 {
     font-size: 1.3vw;
     font-weight: 4000;
     text-align: left;
     margin-top: 3vh;
-    margin-left:2vw;
+    margin-left: 2vw;
   }
 
   .Container {
@@ -85,7 +85,7 @@
 
   .profile_box {
     display: flex;
-    margin-top:2vh;
+    margin-top: 2vh;
   }
 
   .score_history {
@@ -167,5 +167,140 @@
     font-size: 1vw;
     margin-top: 3vh;
     margin-left: 2vw;
+  }
+  @media only screen and (max-width: 500px) {
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700; /* Changed from 4000 which is invalid */
+      text-align: left;
+      margin-top: 15px;
+      margin-left: 10px;
+    }
+
+    .Container {
+      display: flex;
+      flex-direction: column; /* Stack items vertically on mobile */
+      align-items: center;
+      justify-content: flex-start; /* Changed from center for better mobile flow */
+      gap: 15px;
+      min-height: 100vh;
+      width: 100%;
+      padding: 15px 10px;
+      box-sizing: border-box;
+    }
+
+    .profile {
+      width: 100%;
+      max-width: 480px;
+      height: auto;
+      min-height: 300px;
+      background-color: var(--profile-bg);
+      border-radius: 15px;
+      outline: 2px solid;
+      border-color: var(--list-border);
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .profile_box {
+      display: flex;
+      flex-direction: column; /* Stack items vertically */
+      margin-top: 10px;
+    }
+
+    .score_history {
+      width: 100%;
+      max-width: 480px;
+      height: auto;
+      min-height: 300px;
+      background-color: var(--profile-bg);
+      border-radius: 15px;
+      outline: 2px solid;
+      border-color: var(--list-border);
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .profile .icon {
+      width: 98px;
+      height: 147px;
+      margin: 15px auto; /* Centered */
+      border-radius: 15px;
+    }
+
+    .profile .score_table {
+      margin: 15px auto;
+      text-align: center;
+      height: auto;
+      width: 80%;
+    }
+
+    .profile .score_header {
+      font-size: 14px;
+      background: var(--light-yellow, #f1d5a1);
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      outline: 1px solid;
+      padding: 8px;
+    }
+
+    .profile .score_body {
+      font-size: 14px;
+      background-color: var(--list-bg);
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      padding: 10px;
+      outline: 1px solid;
+    }
+
+    .profile_info {
+      width: 100%;
+      height: auto;
+      margin: 15px 0;
+      border-radius: 15px;
+      outline: 1px solid;
+      border-color: var(--list-border);
+      background-color: var(--profile-bg);
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .bio_info {
+      display: flex;
+      flex-direction: column; /* Stack items vertically */
+      align-items: center;
+    }
+
+    .bio_info .icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 10px auto;
+    }
+
+    .bio_info .name_id {
+      font-size: 16px;
+      margin: 10px auto;
+      text-align: center;
+    }
+
+    .bio_info .name_id .id {
+      color: var(--theme-dark-text);
+      display: block;
+      margin-top: 5px;
+    }
+
+    .personal_info {
+      font-size: 14px;
+      margin: 15px 10px;
+      line-height: 1.5;
+    }
   }
 </style>
