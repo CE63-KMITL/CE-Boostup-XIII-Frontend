@@ -5,9 +5,20 @@ export const load = async () => {
         return data.users;
     };
 
-    const users = await fetchusers(); 
+    const users = await fetchusers();
+    const houseScores = [
+        { houseName: 'Priest', score: 1200 },
+        { houseName: 'Knight', score: 1100 },
+        { houseName: 'Mage', score: 900 },
+        { houseName: 'Warlock', score: 1000000 }
+    ];
+    const myHouseName = 'Warlock';
+    const myHouseMembers = users.filter(u => u.house === myHouseName);
 
     return {
-        users
+        users,
+        houseScores,
+        myHouseMembers,
+        myHouseName
     };
 };

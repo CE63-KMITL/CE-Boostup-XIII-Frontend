@@ -26,7 +26,7 @@
 	});
 </script>
 
-<button {...$$restProps} bind:this={This_Button}>
+<button {...$$restProps} bind:this={This_Button} on:click>
 	<slot></slot>
 </button>
 
