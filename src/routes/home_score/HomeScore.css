@@ -1,144 +1,10 @@
-h1{
-   color: #333;
-   font-size: 2.5em;
-   margin: 10px 0;
-}
+:global(*) {
+	font-family: "Noto Sans Thai", sans-serif;
+   --n-border-radius: 10px;
 
-p {
-   color: #666;
-   font-size: 1.1em;
-   line-height: 1.5;
-   margin: 10px 0;
-   text-align: justify;
-}
-
-.Leaderboard {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   height: 20vh;
-   background-color: #ffffff;
-   font-family: Arial, sans-serif;
-}
-
-.MenuBar {
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-   background-color: #333;
-   font-family: Arial, sans-serif;
-   padding: 10px;
-}
-
-.OptionsMenu {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: space-between;
-   font-family: Arial, sans-serif;
-   padding: 10px;
-   border: 1px solid #333;
-   border-radius: 100px;
-   background-color: #f9f9f9;
-   width: 350px;
-   margin: auto;
-}
-
-.circular-icon {
-   width: 20px;
-   height: 20px;
-   border-radius: 50%;
-   vertical-align: middle;
-   margin-right: 10px;
-}
-
-.ce-boostup{
-   color: #fff;
-   font-size: 1.5em;
-   margin: 10px 0;
-}
-
-.left-section {
-   display: flex;
-   align-items: center;
-   justify-content: flex-start;
-}
-
-.menuleft {
-   flex-grow: 1;
-   margin-left: 30px;
-}
-
-.menuleft ul {
-   list-style-type: none;
-   padding: 0;
-   display: flex;
-   gap: 20px;
-}
-
-.menuleft ul li {
-   display: inline;
-}
-
-.menuleft ul li a {
-   text-decoration: none;
-   color: #fff;
-   padding: 10px 15px;
-   border-radius: 100px;
-   transition: background-color 0.3s, box-shadow 0.3s;
-   box-shadow: 10 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.menuleft ul li a:hover {
-   background-color: #ffeb3b;
-   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.menu {
-   flex-grow: 1;
-   margin-left: 5px;
-}
-
-.menu ul {
-   list-style-type: none;
-   padding: 0;
-   display: flex;
-   gap: 20px;
-}
-
-.menu ul li {
-   display: inline;
-}
-
-.menu ul li a {
-   text-decoration: none;
-   color: #333;
-   padding: 10px 15px;
-   border-radius: 100px;
-   transition: background-color 0.3s, box-shadow 0.3s;
-   box-shadow: 10 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.menu ul li a:hover {
-   background-color: #aaa;
-   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.login-button {
-   padding: 10px 15px;
-   border: none;
-   border-radius: 5px;
-   background-color: #dddddd;
-   color: #555;
-   cursor: pointer;
-   transition: background-color 0.3s, box-shadow 0.3s;
-   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.login-button:hover {
-   background-color: #ffeb3b;
-   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	margin: 0;
+	width: 100%;
+	height: 100%;
 }
 
 .main-leaderboard-container {
@@ -155,9 +21,9 @@ p {
 }
 
 .profile-card {
-   background: #fff;
+   background: var(--normal, #fff);
    border-radius: 24px;
-   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+   box-shadow: 0 4px 24px var(--list-shadow, rgba(0,0,0,0.08));
    padding: 24px 16px;
    display: flex;
    flex-direction: column;
@@ -181,7 +47,7 @@ p {
 }
 
 .profile-rank-box, .profile-house-box {
-   background: #f7e6c4;
+   background: var(--selected-list-bg, #f7e6c4);
    border-radius: 12px;
    padding: 8px 12px;
    margin-bottom: 10px;
@@ -190,7 +56,7 @@ p {
 
 .profile-history-btn {
    width: 100%;
-   background: #f7e6c4;
+   background: var(--selected-list-bg, #f7e6c4);
    border: none;
    border-radius: 12px;
    padding: 10px 0;
@@ -200,58 +66,126 @@ p {
 
 .leaderboard-section {
    flex: 1 1 0;
-   background: #fff;
+   background: var(--normal-50, rgba(255,255,255,0.65));
+   backdrop-filter: blur(12px);
    border-radius: 24px;
-   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+   box-shadow: 0 4px 24px var(--list-shadow, rgba(0,0,0,0.08));
    padding: 24px;
 }
 
 .leaderboard-tabs {
    display: flex;
-   gap: 8px;
+   width: 100%;
+   background: var(--normal, #fff);
+   border-radius: 20px;
+   overflow: hidden;
+   border: 1.5px solid var(--darker, #b7a7c7);
    margin-bottom: 16px;
+   height: 32px;
 }
 
 .tab {
    flex: 1;
-   background: #e5e5e5;
+   font-family: "Noto Sans Thai", sans-serif;
+   font-size: 1rem;
+   color: var(--theme-text, #6d5a7e);
+   background: transparent;
    border: none;
-   border-radius: 16px 16px 0 0;
-   padding: 12px 0;
-   font-weight: bold;
+   outline: none;
    cursor: pointer;
+   padding: 0;
+   margin: 0;
+   transition: background 0.2s, color 0.2s;
+   height: 32px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-weight: 500;
 }
 
+/* ปุ่มแรก (Overall) */
+.tab:first-child {
+   border-top-left-radius: 20px;
+   border-bottom-left-radius: 20px;
+}
+
+/* ปุ่มสุดท้าย (My House) */
+.tab:last-child {
+   border-top-right-radius: 20px;
+   border-bottom-right-radius: 20px;
+}
+
+/* ปุ่ม active */
 .tab.active {
-   background: #fff;
-   border-bottom: 2px solid #a58c5c;
+   background: var(--top-bar-left, #6d5a7e);
+   color: var(--top-bar-text, #fff);
 }
 
 .leaderboard-table {
    width: 100%;
+   background: transparent;
+   border: none;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
 }
 
 .leaderboard-row {
    display: flex;
    justify-content: space-between;
    align-items: center;
-   padding: 12px 0;
-   border-bottom: 1px solid #eee;
+   background: var(--normal-50, rgba(255,255,255,0.85));
+   backdrop-filter: blur(12px);
+   border-radius: 18px;
+   box-shadow: 0 2px 2px 0 var(--list-shadow, rgba(0,0,0,0.5));
+   font-size: 1.05rem;
+   color: var(--text, #3f2e3e);
+   font-family: "Noto Sans Thai", sans-serif;
+   border: none;
+   min-height: 48px;
+   padding: 0 20px;
+   transition: box-shadow 0.2s, background 0.2s;
 }
 
 .leaderboard-row.header {
+   background: var(--normal-50, rgba(255,255,255,0.5));
+   color: var(--text, #3f2e3e);
    font-weight: bold;
-   background: #f7e6c4;
-   border-radius: 12px 12px 0 0;
+   border-radius: 16px;
+   box-shadow: none;
+   border: 1.5px solid var(--darker, #c2c2c2);
+   margin-bottom: 16px;
 }
 
 .leaderboard-row.top3 {
-   background: #fffbe6;
+   background: var(--selected-list-bg, #fffbe6);
+   backdrop-filter: blur(12px);
+   box-shadow: 0 2px 2px 0 var(--list-shadow, rgba(0,0,0,0.5));
+   font-weight: bold;
+   min-height: 64px;
+   padding: 0 28px;
+}
+
+.leaderboard-row span {
+   flex: 1;
+   text-align: center;
+   color: var(--text, #3f2e3e);
+   font-family: "Noto Sans Thai", sans-serif;
+   font-size: 1.08rem;
+}
+
+.leaderboard-row span:first-child {
+   flex: 0.7;
+}
+
+.leaderboard-row span:last-child {
+   flex: 0.7;
 }
 
 .medal {
-   width: 28px;
+   width: 32px;
    vertical-align: middle;
+   margin-right: 4px;
 }
 
 .header-bar {
@@ -259,78 +193,97 @@ p {
    display: flex;
    align-items: center;
    justify-content: space-between;
-   padding: 0 40px;
-   height: 64px;
-   background: rgba(255,255,255,0.7);
-   backdrop-filter: blur(8px);
+   padding: 0 24px;
+   height: 44px;
+   background: linear-gradient(90deg, var(--top-bar-left, #807a9c) 0%, var(--top-bar-right, #3f2e3e) 100%);
    position: sticky;
    top: 0;
    z-index: 100;
-   border-radius: 0 0 24px 24px;
    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+
 }
 
 .header-left {
    display: flex;
    align-items: center;
-   gap: 12px;
+   gap: 8px;
 }
 
 .header-logo {
-   height: 48px;
-   width: 48px;
+   height: 32px;
+   width: 32px;
    border-radius: 50%;
-   background: #fff;
-   object-fit: contain;
+   background: var(--normal, #fff);
+   object-fit: cover;
+   box-shadow: 0 1px 4px var(--list-shadow, rgba(0,0,0,0.08));
+}
+
+.ce-boostup {
+   color: var(--top-bar-text, #fff);
+   font-size: 1.1rem;
+   font-family: "Noto Sans Thai", sans-serif;
+   font-weight: 600;
+   margin-left: 4px;
+   letter-spacing: 1px;
 }
 
 .header-logo-text {
-   height: 32px;
-   margin-left: 8px;
+   height: 20px;
+   margin-left: 4px;
 }
 
 .header-center {
    display: flex;
-   gap: 24px;
+   gap: 8px;
 }
 
 .header-menu {
-   font-size: 1.2rem;
-   color: #fff;
-   padding: 8px 32px;
-   border-radius: 16px 16px 0 0;
+   font-family: "Noto Sans Thai", sans-serif;
+   font-size: 1rem;
+   color: var(--top-bar-text, #fff);
+   padding: 1px 60px;
+   border-radius: 20px;
    background: transparent;
    text-decoration: none;
    font-weight: 600;
    transition: background 0.2s, color 0.2s;
+   margin: 0 2px;
+   height: 32px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
 
 .header-menu.active {
-   background: #6d4c2f;
-   color: #fff;
+   background: var(--top-bar-right, #3a2a3d);
+   color: var(--top-bar-text, #fff);
+   box-shadow: 0 2px 8px var(--list-shadow, rgba(0,0,0,0.10));
+   border-radius: 20px;
 }
 
 .header-right {
    display: flex;
    align-items: center;
-   gap: 16px;
+   gap: 8px;
 }
 
 .header-icon-btn {
-   background: none;
+   background: var(--normal, #fff);
    border: none;
    padding: 0;
    border-radius: 50%;
-   width: 40px;
-   height: 40px;
+   width: 32px;
+   height: 32px;
    display: flex;
    align-items: center;
    justify-content: center;
+   box-shadow: 0 1px 4px var(--list-shadow, rgba(0,0,0,0.08));
    transition: background 0.2s;
 }
 
 .header-icon-btn img {
-   width: 32px;
-   height: 32px;
+   width: 20px;
+   height: 20px;
    object-fit: contain;
+   border-radius: 50%;
 }
