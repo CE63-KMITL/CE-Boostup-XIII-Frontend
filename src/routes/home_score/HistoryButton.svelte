@@ -29,22 +29,3 @@
 <button {...$$restProps} bind:this={This_Button} on:click>
 	<slot></slot>
 </button>
-
-<style lang="scss">
-	button {
-		width: 100%;
-		padding: 12px;
-		background: var(--theme-text);
-		color: var(--text);
-		border: none;
-		border-radius: 5px;
-		font-size: 1rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-
-		&:hover {
-			background: #a78459;
-		}
-	}
-</style>

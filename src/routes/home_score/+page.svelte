@@ -4,6 +4,7 @@
    import { goto } from '$app/navigation';
    import { page } from '$app/stores';
    import Button from '../../components/Button.svelte';
+   import HistoryButton from './HistoryButton.svelte'
    import Fullscreen from '../../components/Fullscreen.svelte';
    $: query = $page.url.searchParams.get('page') || 'overall';
    export let data;
@@ -51,15 +52,15 @@
                   <span class="profile-name">{profile.name}</span>
                   <span class="profile-id">{profile.studentId}</span>
                </div>
-               <div class="profile-rank-box highlight-box">
+               <div class="profile-rank-box">
                   <div class="profile-rank-title">นักผจญภัยอันดับที่ {profile.rank}</div>
                   <div class="profile-rank-score">{profile.score}</div>
                </div>
-               <div class="profile-house-box highlight-box">
+               <div class="profile-house-box">
                   <div class="profile-house-title">บ้านอันดับที่ {profile.houseRank}</div>
                   <div class="profile-house-score">{profile.houseScore}</div>
                </div>
-               <Button class="profile-history-btn">ประวัติคะแนน</Button>
+               <HistoryButton class="profile-history-btn">ประวัติคะแนน</HistoryButton>
             </div>
          </div>
       </div>
