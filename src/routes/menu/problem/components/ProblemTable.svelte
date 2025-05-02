@@ -1,16 +1,16 @@
 <script lang="ts">
+	import { statusColors, statusText, type Problem } from "$lib/constants/problem";
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
-	import HeaderSelection from "../../../components/HeaderSelection.svelte";
-	import Filter from "../../../components/Icons/Filter.svelte";
-	import Sort from "../../../components/Icons/Sort.svelte";
-	import List from "../../../components/List.svelte";
-	import Loading from "../../../components/Loading.svelte";
-	import LoadingList from "../../../components/LoadingList.svelte";
-	import RadioButton from "../../../components/RadioButton.svelte";
-	import TableRenderer from "../../../components/TableRenderer.svelte";
-	import type { Problem } from "../problem";
-	import { searchParams, statusColors, statusText } from "../problem";
+	import HeaderSelection from "../../../../components/HeaderSelection.svelte";
+	import Filter from "../../../../components/Icons/Filter.svelte";
+	import Sort from "../../../../components/Icons/Sort.svelte";
+	import List from "../../../../components/List.svelte";
+	import Loading from "../../../../components/Loading.svelte";
+	import LoadingList from "../../../../components/LoadingList.svelte";
+	import RadioButton from "../../../../components/RadioButton.svelte";
+	import TableRenderer from "../../../../components/TableRenderer.svelte";
+	import { searchParams } from "../problem";
 	import HeaderDifficulty from "./Header-Difficulty.svelte";
 	import HeaderTags from "./Header-Tags.svelte";
 	import ProblemRow from "./ProblemRow.svelte";

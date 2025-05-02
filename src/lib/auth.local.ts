@@ -8,6 +8,7 @@ export const userData = writable({
 
 export function IsRole(role: Role) {
 	const currentData = get(userData);
+
 	if (currentData.role == role || currentData.role == Role.DEV) {
 		return true;
 	}

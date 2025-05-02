@@ -1,19 +1,16 @@
 <script lang="ts">
-	export let data;
-
-	import { IsRole, userData } from "$lib/auth.local";
+	import { IsRole } from "$lib/auth.local";
+	import { type Problem } from "$lib/constants/problem";
 	import { Role } from "$lib/enum/role";
 	import * as api from "$lib/fetchApi";
 	import { sleep } from "$lib/normalFunction";
 	import { onMount } from "svelte";
-	import Checkbox from "../../components/Checkbox.svelte";
-	import Frame from "../../components/Frame.svelte";
-	import Search from "../../components/Icons/Search.svelte";
+	import Checkbox from "../../../components/Checkbox.svelte";
+	import Frame from "../../../components/Frame.svelte";
+	import Search from "../../../components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { searchParams, selectedProblemId, type Problem } from "./problem";
-
-	$userData = data;
+	import { searchParams, selectedProblemId } from "./problem";
 
 	let allProblems: (Problem | string)[] = [];
 	let selectedProblem = null;
@@ -186,7 +183,9 @@
 				/>
 			</Frame>
 			{#if IsRole(Role.STAFF)}
-				<Checkbox id="staff-mode">โหมดแก้ไข</Checkbox>
+				<Checkbox id="staff-mode" onclick={() => ($searchParams.staff = !$searchParams.staff)}
+					>โหมดแก้ไข</Checkbox
+				>
 			{/if}
 		</div>
 		<ProblemTable problems={allProblems} loading={!loaded} {loadMore} />

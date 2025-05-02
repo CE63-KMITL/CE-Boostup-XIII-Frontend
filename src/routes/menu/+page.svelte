@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let data;
+	$userData = data;
 
 	import { pushState } from "$app/navigation";
 	import { IsRole, userData } from "$lib/auth.local";
@@ -9,11 +10,13 @@
 	import Fullscreen from "../../components/Fullscreen.svelte";
 	import Setting from "../../components/Icons/Setting.svelte";
 	import User from "../../components/Icons/User.svelte";
-	import ProblemInMenu from "../problem/Menu-Problem.svelte";
+	import MenuCreateProblem from "./create_problem/MenuCreateProblem.svelte";
+	import ProblemInMenu from "./problem/MenuProblem.svelte";
 
 	const items = { problem: "โจทย์", score: "คะแนน" };
 
 	if (IsRole(Role.STAFF)) {
+		console.log("yo");
 		items["create_problem"] = "สร้างโจทย์";
 	}
 
@@ -45,7 +48,8 @@
 			<img id="logo" src="/logo.png" alt="LOGO" />
 			<img id="logo-text" src="/logo-text.png" alt="CE BOOSTUP" />
 		</div>
-		<div id="page-selector-container">
+
+		<div id="page-selector-container" data-pc="true">
 			{#each Object.keys(items) as item}
 				<button
 					class="page-selector"
@@ -56,15 +60,28 @@
 				</button>
 			{/each}
 		</div>
+		<div id="page-selector-container" data-mobile="true">
+			{#each Object.keys(items) as item}
+				<button
+					class="page-selector"
+					data-currentPage={currentPage == item}
+					onclick={() => updatePage(item)}
+				>
+					{items[item]}
+				</button>
+			{/each}
+		</div>
+
 		<dir id="end">
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 			<div
+				data-currentPage={currentPage == "profile"}
 				class="circle-bg"
-				role="button"
-				tabindex="0"
 				onclick={(e) => {
 					if ($userData.role == null) {
 						window.location.href = "/login";
+					} else {
+						updatePage("profile");
 					}
 				}}
 			>
@@ -76,15 +93,27 @@
 					<User></User>
 				{/if}
 			</div>
-			<div class="circle-bg">
+
+			<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+			<div
+				data-currentPage={currentPage == "setting"}
+				class="circle-bg"
+				onclick={() => {
+					updatePage("setting");
+				}}
+			>
 				<Setting></Setting>
 			</div>
 		</dir>
 	</div>
 	<div id="content">
 		{#if currentPage == "problem"}
-			<div class="full" in:azScale out:azScale>
-				<ProblemInMenu {data}></ProblemInMenu>
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<ProblemInMenu></ProblemInMenu>
+			</div>
+		{:else if currentPage == "create_problem"}
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<MenuCreateProblem></MenuCreateProblem>
 			</div>
 		{/if}
 	</div>
@@ -98,6 +127,18 @@
 		background: var(--bg);
 		padding: 10px;
 		border-radius: 999px;
+		border: 1px solid transparent;
+		transition: all 0.2s ease-out;
+		cursor: pointer;
+
+		&:hover:not([data-currentPage="true"]) {
+			background: var(--top-bar-hover);
+			border: 1px solid var(--outline);
+		}
+
+		&[data-currentPage="true"] {
+			background: var(--top-bar-selected);
+		}
 	}
 
 	#start {
@@ -111,6 +152,7 @@
 	#content {
 		position: relative;
 		height: calc(100% - 70px);
+		z-index: -1;
 	}
 
 	#end {
@@ -141,6 +183,7 @@
 		background: linear-gradient(var(--top-bar-deg), var(--top-bar-left), var(--top-bar-right));
 		user-select: none;
 		container-type: size;
+		z-index: 1;
 	}
 
 	:global([dark] #topbar) {
@@ -151,7 +194,7 @@
 		display: flex;
 		flex-direction: row;
 		gap: 20px;
-		width: 100%;
+		width: calc(100% - 10px);
 		justify-content: center;
 		position: absolute;
 
@@ -176,7 +219,25 @@
 		}
 	}
 
-	@media (max-width: 800px) {
+	#page-selector-container[data-mobile] {
+		display: none;
+		top: 60px;
+		background: var(--bg-50);
+		border-radius: var(--n-border-radius);
+		padding-block: 10px;
+		backdrop-filter: blur(10px);
+		outline: 1px solid var(--outline);
+
+		.page-selector {
+			color: var(--text);
+
+			&[data-currentPage="true"] {
+				color: var(--bg);
+			}
+		}
+	}
+
+	@media (max-width: 1000px) or (max-height: 800px) {
 		#topbar {
 			height: 50px;
 			padding-inline: 5px;
@@ -201,9 +262,34 @@
 		}
 	}
 
-	@media (max-width: 300px) {
+	@media (max-width: 550px) {
+		#page-selector-container {
+			.page-selector {
+				width: 30%;
+				padding-inline: 5px;
+			}
+		}
+
+		#page-selector-container[data-pc] {
+			display: none;
+		}
+
+		#page-selector-container[data-mobile] {
+			display: flex;
+		}
+	}
+
+	@media (max-width: 350px) {
 		#logo-text {
 			display: none;
+		}
+
+		#page-selector-container {
+			.page-selector {
+				font-size: 0.7rem;
+				padding-inline: 0px;
+				height: 30px;
+			}
 		}
 	}
 </style>

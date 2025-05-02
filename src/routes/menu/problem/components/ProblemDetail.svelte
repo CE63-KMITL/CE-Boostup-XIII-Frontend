@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from "../../../components/Button.svelte";
-	import Frame from "../../../components/Frame.svelte";
+	import Button from "../../../../components/Button.svelte";
+	import Frame from "../../../../components/Frame.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
 

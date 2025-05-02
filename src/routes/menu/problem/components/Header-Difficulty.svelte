@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as api from "$lib/fetchApi";
 	import { onMount } from "svelte";
-	import RadioButton from "../../../components/RadioButton.svelte";
+	import RadioButton from "../../../../components/RadioButton.svelte";
 	import { searchParams } from "../problem";
 </script>
 
