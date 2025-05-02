@@ -20,8 +20,8 @@ html:not([dark]) {
 	--top-bar-left: rgb(128, 122, 156);
 	--top-bar-right: rgb(63, 46, 62);
 
-	--theme-text: #a9844d;
-	--theme-dark-text: rgb(150, 125, 79);
+	--theme: #a9844d;
+	--theme-dark: rgb(150, 125, 79);
 
 	--list-bg: rgb(255, 255, 255);
 	--list-shadow: rgba(0, 0, 0, 0.5);
@@ -31,7 +31,7 @@ html:not([dark]) {
 	--hover-list-outline: rgb(100, 100, 100);
 
 	--selected-list-bg: rgb(255, 249, 230);
-	--selected-list-outline: var(--theme-text);
+	--selected-list-outline: var(--theme);
 
 	--tag-text: rgb(255, 255, 255);
 
@@ -62,8 +62,8 @@ html[dark] {
 	--top-bar-left: rgba(0, 0, 0, 0.4);
 	--top-bar-right: rgb(22, 22, 22);
 
-	--theme-text: rgb(212, 181, 124);
-	--theme-dark-text: rgb(241, 211, 156);
+	--theme: #caa561;
+	--theme-dark: rgb(150, 125, 79);
 
 	--list-bg: rgba(0, 0, 0, 0.6);
 	--list-shadow: rgba(68, 27, 61, 0.4);
@@ -73,7 +73,7 @@ html[dark] {
 	--hover-list-outline: rgb(60, 60, 60);
 
 	--selected-list-bg: rgb(65, 63, 52);
-	--selected-list-outline: var(--theme-text);
+	--selected-list-outline: var(--theme);
 
 	--tag-text: rgb(255, 255, 255);
 

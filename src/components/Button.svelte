@@ -34,7 +34,7 @@
 	button {
 		width: 100%;
 		padding: 12px;
-		background: var(--theme-text);
+		background: var(--theme);
 		color: white;
 		border: none;
 		border-radius: 5px;

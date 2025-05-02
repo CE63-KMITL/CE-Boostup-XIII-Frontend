@@ -28,7 +28,12 @@
 	</div>
 
 	<div class="description">{detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
-	<Button class="submit-btn">ทำโจทย์</Button>
+	<Button
+		class="submit-btn"
+		onclick={() => {
+			window.open("/code/" + problem?.id, "_blank");
+		}}>ทำโจทย์</Button
+	>
 </div>
 
 <style lang="scss">
@@ -65,8 +70,9 @@
 
 	.problem-id {
 		font-size: 1.5rem;
-		color: var(--theme-text);
-		width: 10px;
+		color: var(--theme);
+		width: 10%;
+		text-align: end;
 	}
 
 	.title {
