@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let data;
 
-	import { IsRole } from "$lib/auth.local";
+	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
 	import * as api from "$lib/fetchApi";
 	import { sleep } from "$lib/normalFunction";
@@ -12,6 +12,8 @@
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
 	import { searchParams, selectedProblemId, type Problem } from "./problem";
+
+	$userData = data;
 
 	let allProblems: (Problem | string)[] = [];
 	let selectedProblem = null;
@@ -183,7 +185,7 @@
 					}}
 				/>
 			</Frame>
-			{#if IsRole(Role.STAFF, data)}
+			{#if IsRole(Role.STAFF)}
 				<Checkbox id="staff-mode">โหมดแก้ไข</Checkbox>
 			{/if}
 		</div>

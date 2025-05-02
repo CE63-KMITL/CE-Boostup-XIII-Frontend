@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { userData } from "$lib/auth.local";
 	import { selectedProblemId, statusColors, statusText } from "../problem";
 
-	import { preventDefault } from "svelte/legacy";
-	import Button from "../../../components/Button.svelte";
 	import List from "../../../components/List.svelte";
 	import { type Problem } from "../problem";
 	import Stars from "./Stars.svelte";
@@ -39,9 +37,14 @@
 		<a
 			href="/code/{problem.id}"
 			title="สามารถกดเมาส์กลางได้"
-			on:click|stopPropagation|preventDefault={(event) => window.open(`/code/${problem.id}`, "_blank")}
+			aria-disabled={$userData.role == null}
+			on:click|stopPropagation|preventDefault={() => window.open(`/code/${problem.id}`, "_blank")}
 		>
-			ทำโจทย์
+			{#if $userData.role == null}
+				กรุณาเข้าสู่ระบบ
+			{:else}
+				ทำโจทย์
+			{/if}
 		</a>
 	</div>
 </List>
@@ -100,6 +103,11 @@
 			background: var(--theme-dark);
 			border: var(--text) 1px solid;
 			translate: 0 -2px;
+		}
+
+		&[aria-disabled="true"] {
+			pointer-events: none;
+			opacity: 0.3;
 		}
 	}
 </style>

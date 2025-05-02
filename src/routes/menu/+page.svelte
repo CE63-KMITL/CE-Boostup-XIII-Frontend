@@ -2,7 +2,7 @@
 	export let data;
 
 	import { pushState } from "$app/navigation";
-	import { IsRole } from "$lib/auth.local";
+	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
@@ -13,7 +13,7 @@
 
 	const items = { problem: "โจทย์", score: "คะแนน" };
 
-	if (IsRole(Role.STAFF, data)) {
+	if (IsRole(Role.STAFF)) {
 		items["create_problem"] = "สร้างโจทย์";
 	}
 
@@ -57,8 +57,20 @@
 			{/each}
 		</div>
 		<dir id="end">
-			<div class="circle-bg">
-				{#if data.icon}
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<div
+				class="circle-bg"
+				role="button"
+				tabindex="0"
+				onclick={(e) => {
+					if ($userData.role == null) {
+						window.location.href = "/login";
+					}
+				}}
+			>
+				{#if $userData.role == null}
+					ล็อคอิน
+				{:else if data.icon}
 					<img src={data.icon} alt="Icon" class="circular-icon" />
 				{:else}
 					<User></User>
@@ -82,21 +94,10 @@
 	.circle-bg {
 		height: 40px;
 		width: auto;
-		aspect-ratio: 1/1 !important;
+		// aspect-ratio: 1/1 !important;
 		background: var(--bg);
 		padding: 10px;
-		border-radius: 50%;
-	}
-
-	#end {
-		display: flex;
-		flex-direction: row;
-		gap: 10px;
-	}
-
-	#content {
-		position: relative;
-		height: calc(100% - 70px);
+		border-radius: 999px;
 	}
 
 	#start {
@@ -104,6 +105,19 @@
 		flex-direction: row;
 		height: 100%;
 		align-items: center;
+		z-index: 2;
+	}
+
+	#content {
+		position: relative;
+		height: calc(100% - 70px);
+	}
+
+	#end {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+		z-index: 2;
 	}
 
 	#logo {
