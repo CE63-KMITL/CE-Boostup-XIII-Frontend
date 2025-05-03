@@ -44,7 +44,7 @@
 		};
 
 		const queryString = Object.entries(searchQuery)
-			.filter(([_, value]) => value !== null)
+			.filter(([_, value]) => value !== null && value !== "" && (!Array.isArray(value) || value.length > 0))
 			.map(([key, value]) => {
 				if (Array.isArray(value)) {
 					return `${key}=${JSON.stringify(value)}`;
@@ -81,16 +81,16 @@
 
 		console.log(getAllProblems);
 
-		if (getAllProblems && getAllProblems.items.length > 0) {
+		if (getAllProblems && getAllProblems.data.length > 0) {
 			if (isLoadMore) {
-				allProblems = [...allProblems.slice(0, -1), ...getAllProblems.items];
+				allProblems = [...allProblems.slice(0, -1), ...getAllProblems.data];
 				requestAnimationFrame(() => {
-					runProblemListAnimation(getAllProblems.items.map((item) => item.id));
+					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
 				});
 			} else {
-				allProblems = getAllProblems.items;
+				allProblems = getAllProblems.data;
 				requestAnimationFrame(() => {
-					runProblemListAnimation(getAllProblems.items.map((item) => item.id));
+					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
 				});
 				maxPage = getAllProblems.pageCount;
 				loaded = true;

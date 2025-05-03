@@ -36,6 +36,8 @@
      */
 	function enableVerticalScroll(node: HTMLElement) {
 		function onWheel(e: WheelEvent) {
+			console.log(e.target);
+			if ((e.target as HTMLElement).classList.contains("dropdown-option")) return;
 			if (node.getAttribute("disabled") === "true") return;
 			const scrollAmount = node.clientHeight * 0.8;
 			e.deltaY > 0
@@ -139,10 +141,10 @@
 	<div class="sectionPanel">
 		<Frame blur-bg class="sectionContainer codeInputandOutput">
 			<div class="codeInputBox">
-				<div class="codeInputHead">
-					<h1 class="headText">Code</h1>
-					<Button class="run">Run</Button>
+				<div class="codeButtonWrapper">
+					<Button class="run">▷ รัน</Button>
 				</div>
+
 				<CodeEditor></CodeEditor>
 			</div>
 			<div class="terminalBox">
@@ -430,6 +432,12 @@
 	.terminalBox .headText {
 		align-self: flex-start;
 		flex-shrink: 0;
+	}
+
+	.codeButtonWrapper {
+		display: flex;
+		align-self: end;
+		position: absolute;
 	}
 
 	.codeInputHead {

@@ -1,5 +1,3 @@
-
-
 import { writable } from "svelte/store";
 
 /*
@@ -13,7 +11,7 @@ export const searchParams = writable({
 	idReverse: false,
 	tag: [],
 	difficulty: null,
-	minDifficulty: 0,
+	minDifficulty: 0.5,
 	maxDifficulty: 5,
 	difficultySortBy: "ASC",
 	status: null,

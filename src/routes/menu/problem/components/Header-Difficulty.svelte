@@ -31,7 +31,7 @@
 <div>ช่วงความยาก:</div>
 <input
 	type="range"
-	min="0"
+	min="0.5"
 	max="5"
 	step="0.5"
 	bind:value={$searchParams.minDifficulty}
@@ -43,7 +43,7 @@
 />
 <input
 	type="range"
-	min="0"
+	min="0.5"
 	max="5"
 	step="0.5"
 	bind:value={$searchParams.maxDifficulty}
