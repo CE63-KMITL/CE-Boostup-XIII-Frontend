@@ -17,6 +17,8 @@ export async function call(
 			body: options.data ? JSON.stringify(options.data) : null,
 		});
 
+		console.log(route);
+
 		const contentType = response.headers.get("content-type");
 		if (contentType && contentType.indexOf("application/json") !== -1) {
 			const responseData = await response.json();
@@ -24,6 +26,18 @@ export async function call(
 			if (responseData.message == "User not found") {
 				alert("⚠️ เกิดข้อผิดพลาด\n\nไม่พบข้อมูลผู้ใช้ หรือ เซสชั่นหมดอายุ\n\nกรุณาเข้าสู่ระบบใหม่อีกครั้ง");
 				goto("/login?clear");
+				return;
+			}
+
+			// console.log(responseData);
+
+			if (responseData.error) {
+				alert(
+					`⚠️ เกิดข้อผิดพลาด ${route}\n\nโปรดติดต่อ CE63@KMITL\n\n${
+						responseData.error
+					}\n${JSON.stringify(responseData.message)}`
+				);
+
 				return;
 			}
 

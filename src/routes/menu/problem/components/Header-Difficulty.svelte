@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as api from "$lib/fetchApi";
 	import { onMount } from "svelte";
-	import RadioButton from "../../../components/RadioButton.svelte";
+	import RadioButton from "../../../../components/RadioButton.svelte";
 	import { searchParams } from "../problem";
 </script>
 
@@ -31,7 +31,7 @@
 <div>ช่วงความยาก:</div>
 <input
 	type="range"
-	min="0"
+	min="0.5"
 	max="5"
 	step="0.5"
 	bind:value={$searchParams.minDifficulty}
@@ -43,7 +43,7 @@
 />
 <input
 	type="range"
-	min="0"
+	min="0.5"
 	max="5"
 	step="0.5"
 	bind:value={$searchParams.maxDifficulty}

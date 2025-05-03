@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tagsColors } from "../problem";
+	import { tagsColors } from "$lib/constants/problem";
 
 	export let tag: string;
 </script>

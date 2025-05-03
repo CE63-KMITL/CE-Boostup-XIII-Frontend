@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { userData } from "$lib/auth.local";
-	import { selectedProblemId, statusColors, statusText } from "../problem";
+	import { selectedProblemId } from "../problem";
 
-	import List from "../../../components/List.svelte";
-	import { type Problem } from "../problem";
+	import { statusColors, statusText, type Problem } from "$lib/constants/problem";
+	import List from "../../../../components/List.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
 

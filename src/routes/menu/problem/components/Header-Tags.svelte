@@ -1,6 +1,7 @@
 <script lang="ts">
-	import Checkbox from "../../../components/Checkbox.svelte";
-	import { searchParams, tagsColors } from "../problem";
+	import { tagsColors } from "$lib/constants/problem";
+	import Checkbox from "../../../../components/Checkbox.svelte";
+	import { searchParams } from "../problem";
 </script>
 
 {#each Object.keys(tagsColors) as tag}

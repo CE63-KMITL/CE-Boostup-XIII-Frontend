@@ -1,19 +1,16 @@
 <script lang="ts">
-	export let data;
-
-	import { IsRole, userData } from "$lib/auth.local";
+	import { IsRole } from "$lib/auth.local";
+	import { type Problem } from "$lib/constants/problem";
 	import { Role } from "$lib/enum/role";
 	import * as api from "$lib/fetchApi";
 	import { sleep } from "$lib/normalFunction";
 	import { onMount } from "svelte";
-	import Checkbox from "../../components/Checkbox.svelte";
-	import Frame from "../../components/Frame.svelte";
-	import Search from "../../components/Icons/Search.svelte";
+	import Checkbox from "../../../components/Checkbox.svelte";
+	import Frame from "../../../components/Frame.svelte";
+	import Search from "../../../components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { searchParams, selectedProblemId, type Problem } from "./problem";
-
-	$userData = data;
+	import { searchParams, selectedProblemId } from "./problem";
 
 	let allProblems: (Problem | string)[] = [];
 	let selectedProblem = null;
@@ -47,7 +44,7 @@
 		};
 
 		const queryString = Object.entries(searchQuery)
-			.filter(([_, value]) => value !== null)
+			.filter(([_, value]) => value !== null && value !== "" && (!Array.isArray(value) || value.length > 0))
 			.map(([key, value]) => {
 				if (Array.isArray(value)) {
 					return `${key}=${JSON.stringify(value)}`;
@@ -84,16 +81,16 @@
 
 		console.log(getAllProblems);
 
-		if (getAllProblems && getAllProblems.items.length > 0) {
+		if (getAllProblems && getAllProblems.data.length > 0) {
 			if (isLoadMore) {
-				allProblems = [...allProblems.slice(0, -1), ...getAllProblems.items];
+				allProblems = [...allProblems.slice(0, -1), ...getAllProblems.data];
 				requestAnimationFrame(() => {
-					runProblemListAnimation(getAllProblems.items.map((item) => item.id));
+					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
 				});
 			} else {
-				allProblems = getAllProblems.items;
+				allProblems = getAllProblems.data;
 				requestAnimationFrame(() => {
-					runProblemListAnimation(getAllProblems.items.map((item) => item.id));
+					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
 				});
 				maxPage = getAllProblems.pageCount;
 				loaded = true;
@@ -186,7 +183,9 @@
 				/>
 			</Frame>
 			{#if IsRole(Role.STAFF)}
-				<Checkbox id="staff-mode">โหมดแก้ไข</Checkbox>
+				<Checkbox id="staff-mode" onclick={() => ($searchParams.staff = !$searchParams.staff)}
+					>โหมดแก้ไข</Checkbox
+				>
 			{/if}
 		</div>
 		<ProblemTable problems={allProblems} loading={!loaded} {loadMore} />

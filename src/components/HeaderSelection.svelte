@@ -9,7 +9,6 @@
 		const selectorList: any = [];
 
 		for (const selector of ThisHeaderSelection.children) {
-			console.log(selector.tagName);
 			switch (selector.tagName) {
 				case "FORM":
 					selectorList.push(...selector.children);

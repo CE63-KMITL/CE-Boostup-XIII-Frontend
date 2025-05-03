@@ -12,7 +12,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 	};
 
 	if (token) {
-		console.log(token);
+		// console.log(token);
 		try {
 			const response = await fetch(`${BACK_HOST}/auth/role`, {
 				method: "GET",
@@ -43,7 +43,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 		if (autoRedirect) redirect(307, "/login");
 	}
 
-	console.log("User data", userData);
+	// console.log("User data", userData);
 
 	return userData;
 };
