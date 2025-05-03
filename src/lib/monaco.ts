@@ -120,6 +120,8 @@ export const themes = [
 export let Monaco;
 
 export async function initMonaco() {
+	if (Monaco) return;
+
 	self.MonacoEnvironment = {
 		getWorker: function (_moduleId: any, label: string) {
 			return new editorWorker();
