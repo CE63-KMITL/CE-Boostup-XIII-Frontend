@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { tagsColors } from "$lib/constants/problem";
-	import { azFade } from "$lib/transition";
-	import { flip } from "svelte/animate";
-	import "../../../app.css";
 	import Button from "../../../components/Button.svelte";
 	import Checkbox from "../../../components/Checkbox.svelte";
+	import CodeEditor from "../../../components/CodeEditor.svelte";
 	import Frame from "../../../components/Frame.svelte";
 
 	let user = {
@@ -19,8 +17,11 @@
      Test Case State Handlers
      -------------------------------------------------------
      */
-	function handleAddTestCase() {
+	function handleAddTestCase(e) {
 		test_cases = [...test_cases, { input: "", output: "", hidden: false }];
+		requestAnimationFrame(() => {
+			e.target.scrollIntoView({ behavior: "smooth" });
+		});
 	}
 
 	function handleDeleteTestCase(event: CustomEvent<number>) {
@@ -142,7 +143,7 @@
 					<h1 class="headText">Code</h1>
 					<Button class="run">Run</Button>
 				</div>
-				<textarea class="codeInput" placeholder="Code here"></textarea>
+				<CodeEditor></CodeEditor>
 			</div>
 			<div class="terminalBox">
 				<h1 class="headText">Terminal</h1>
@@ -237,15 +238,30 @@
 		:global(.testCaseSectionWrapper) {
 			gap: 20px;
 
+			:global(.runAll) {
+				color: var(--bg);
+				background: var(--status-in-progress);
+			}
+
+			:global(.deleteButton) {
+				color: var(--bg);
+				background: var(--status-not-started);
+			}
+
 			:global(.addTestCaseButton) {
 				min-width: 30px;
 				max-width: 30px;
 				align-self: center;
-				height: 100%;
 
-				background: var(--bg);
-				color: var(--text);
+				height: 100%;
 				border: 1px solid var(--outline);
+
+				padding: 0;
+			}
+
+			:global(.doneButton) {
+				color: var(--bg);
+				background: var(--status-done);
 			}
 		}
 	}

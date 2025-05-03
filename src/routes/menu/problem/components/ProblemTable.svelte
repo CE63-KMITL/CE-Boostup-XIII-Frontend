@@ -140,6 +140,10 @@
 		margin-top: 10px;
 		padding: 0px 10px 10px 10px;
 
+		:global(#tags-difficulty) {
+			display: none;
+		}
+
 		:global([dark] #header) {
 			backdrop-filter: blur(10px);
 		}
@@ -188,12 +192,6 @@
 				border-radius: 10px;
 				background: var(--text);
 				color: var(--bg);
-			}
-		}
-
-		@container (min-width: 700px) {
-			:global(#tags-difficulty) {
-				display: none;
 			}
 		}
 
@@ -261,6 +259,10 @@
 				:global(#tags),
 				:global(#difficulty) {
 					display: none;
+				}
+
+				:global(#tags-difficulty) {
+					display: block;
 				}
 
 				:global(svg) {

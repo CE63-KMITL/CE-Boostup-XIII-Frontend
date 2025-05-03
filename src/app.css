@@ -12,6 +12,7 @@ html {
 }
 
 html:not([dark]) {
+	--top-bar-circle-selected: var(--theme);
 	--top-bar-selected: var(--top-bar-right);
 	--top-bar-hover: var(--top-bar-left);
 	--top-bar-text: rgb(255, 255, 255);
@@ -54,6 +55,7 @@ html:not([dark]) {
 }
 
 html[dark] {
+	--top-bar-circle-selected: var(--top-bar-selected);
 	--top-bar-selected: rgb(139, 120, 57);
 	--top-bar-hover: rgba(107, 94, 35, 0.274);
 	--top-bar-text: rgb(255, 255, 255);
@@ -114,6 +116,10 @@ html[dark] {
 
 html[dark] > body > #bg {
 	opacity: 0.5;
+}
+
+* {
+	color: var(--text);
 }
 
 * {

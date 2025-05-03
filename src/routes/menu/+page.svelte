@@ -7,20 +7,21 @@
 	import { Role } from "$lib/enum/role";
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
+	import { fly } from "svelte/transition";
 	import Fullscreen from "../../components/Fullscreen.svelte";
 	import Setting from "../../components/Icons/Setting.svelte";
 	import User from "../../components/Icons/User.svelte";
+	import MenuCode from "./code/MenuCode.svelte";
 	import MenuCreateProblem from "./create_problem/MenuCreateProblem.svelte";
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
 
-	const items = { problem: "โจทย์", score: "คะแนน" };
-
+	export const items = { code: "ทำโจทย์", problem: "โจทย์", score: "คะแนน" };
 	if (IsRole(Role.STAFF)) {
-		console.log("yo");
 		items["create_problem"] = "สร้างโจทย์";
 	}
 
-	let currentPage;
+	export let currentPage;
+	let redirectToMenu = false;
 	const updatePage = (name) => {
 		if (name == currentPage) return;
 		let url = new URL(window.location.href);
@@ -32,6 +33,9 @@
 
 	onMount(() => {
 		let url = new URL(window.location.href);
+		if (url.pathname != "/menu") {
+			redirectToMenu = true;
+		}
 		if (!url.searchParams.get("page")) {
 			url.searchParams.append("page", "problem");
 			console.log(url);
@@ -40,11 +44,17 @@
 		currentPage = url.searchParams.get("page");
 		document.title = items[currentPage];
 	});
+
+	let showMobileTopbar = false;
+	function toggleMobileTopbar() {
+		showMobileTopbar = !showMobileTopbar;
+	}
 </script>
 
 <Fullscreen>
 	<div id="topbar">
-		<div id="start">
+		<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+		<div id="start" onclick={() => (window.location.href = "/")}>
 			<img id="logo" src="/logo.png" alt="LOGO" />
 			<img id="logo-text" src="/logo-text.png" alt="CE BOOSTUP" />
 		</div>
@@ -60,17 +70,26 @@
 				</button>
 			{/each}
 		</div>
-		<div id="page-selector-container" data-mobile="true">
-			{#each Object.keys(items) as item}
-				<button
-					class="page-selector"
-					data-currentPage={currentPage == item}
-					onclick={() => updatePage(item)}
-				>
-					{items[item]}
-				</button>
-			{/each}
+
+		<div id="moblie-page-selector-container">
+			<button id="page-selector-toggle" data-selected={showMobileTopbar} onclick={toggleMobileTopbar}>
+				≡
+			</button>
 		</div>
+
+		{#if showMobileTopbar}
+			<div in:fly={{ y: 20 }} out:fly={{ y: 20 }} id="page-selector-container" data-mobile="true">
+				{#each Object.keys(items) as item}
+					<button
+						class="page-selector"
+						data-currentPage={currentPage == item}
+						onclick={() => updatePage(item)}
+					>
+						{items[item]}
+					</button>
+				{/each}
+			</div>
+		{/if}
 
 		<dir id="end">
 			<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
@@ -87,8 +106,8 @@
 			>
 				{#if $userData.role == null}
 					ล็อคอิน
-				{:else if data.icon}
-					<img src={data.icon} alt="Icon" class="circular-icon" />
+				{:else if $userData.icon}
+					<img src={$userData.icon} alt="Icon" class="circular-icon" />
 				{:else}
 					<User></User>
 				{/if}
@@ -107,11 +126,15 @@
 		</dir>
 	</div>
 	<div id="content">
-		{#if currentPage == "problem"}
+		{#if currentPage == "code"}
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<MenuCode></MenuCode>
+			</div>
+		{:else if currentPage == "problem"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<ProblemInMenu></ProblemInMenu>
 			</div>
-		{:else if currentPage == "create_problem"}
+		{:else if currentPage == "score"}{:else if currentPage == "create_problem"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<MenuCreateProblem></MenuCreateProblem>
 			</div>
@@ -120,6 +143,33 @@
 </Fullscreen>
 
 <style lang="scss">
+	#moblie-page-selector-container {
+		display: none;
+		width: 100%;
+		position: absolute;
+		justify-content: center;
+	}
+
+	#page-selector-toggle {
+		height: 100%;
+		color: var(--top-bar-text);
+		display: flex;
+		padding: 10px;
+		align-items: center;
+		border: 1px solid transparent;
+		border-radius: 999px;
+		width: auto;
+		aspect-ratio: 1/1;
+		text-align: center;
+		transition: all 0.2s;
+
+		&[data-selected="true"] {
+			color: var(--top-bar-selected);
+			border-color: var(--outline);
+			background: var(--bg);
+		}
+	}
+
 	.circle-bg {
 		height: 40px;
 		width: auto;
@@ -137,7 +187,7 @@
 		}
 
 		&[data-currentPage="true"] {
-			background: var(--top-bar-selected);
+			background: var(--top-bar-circle-selected);
 		}
 	}
 
@@ -147,6 +197,12 @@
 		height: 100%;
 		align-items: center;
 		z-index: 2;
+		cursor: pointer;
+		transition: all 0.2s;
+
+		&:hover {
+			transform: scale(1.1);
+		}
 	}
 
 	#content {
@@ -262,7 +318,7 @@
 		}
 	}
 
-	@media (max-width: 550px) {
+	@media (max-width: 600px) {
 		#page-selector-container {
 			.page-selector {
 				width: 30%;
@@ -275,6 +331,10 @@
 		}
 
 		#page-selector-container[data-mobile] {
+			display: flex;
+		}
+
+		#moblie-page-selector-container {
 			display: flex;
 		}
 	}
