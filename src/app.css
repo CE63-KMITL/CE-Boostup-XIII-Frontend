@@ -27,6 +27,8 @@ html:not([dark]) {
 	--list-bg: rgb(255, 255, 255);
 	--list-shadow: rgba(0, 0, 0, 0.5);
 	--list-outline: rgba(0, 0, 0, 0);
+	
+	--profile-bg: rgba(255, 255, 255, 0.9);
 
 	--hover-list-bg: rgb(240, 240, 240);
 	--hover-list-outline: rgb(100, 100, 100);
@@ -70,6 +72,8 @@ html[dark] {
 	--list-bg: rgba(0, 0, 0, 0.6);
 	--list-shadow: rgba(68, 27, 61, 0.4);
 	--list-outline: rgba(255, 255, 255, 0.1);
+
+	--profile-bg: rgba(0, 0, 0, 0.6);
 
 	--hover-list-bg: rgba(37, 37, 37, 0.8);
 	--hover-list-outline: rgb(60, 60, 60);
