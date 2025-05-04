@@ -5,7 +5,6 @@
 	import Tag from "./Tag.svelte";
 
 	export let problem: any = null;
-	export let detail: any = null;
 </script>
 
 <div class="problem-detail">
@@ -27,13 +26,7 @@
 		</div>
 	</div>
 
-	<div class="description">{detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
-	<Button
-		class="submit-btn"
-		onclick={() => {
-			window.open("/code/" + problem?.id, "_blank");
-		}}>ทำโจทย์</Button
-	>
+	<div class="description">{problem?.detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
 </div>
 
 <style lang="scss">

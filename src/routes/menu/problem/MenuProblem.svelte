@@ -5,6 +5,7 @@
 	import * as api from "$lib/fetchApi";
 	import { sleep } from "$lib/normalFunction";
 	import { onMount } from "svelte";
+	import Button from "../../../components/Button.svelte";
 	import Checkbox from "../../../components/Checkbox.svelte";
 	import Frame from "../../../components/Frame.svelte";
 	import Search from "../../../components/Icons/Search.svelte";
@@ -14,7 +15,6 @@
 
 	let allProblems: (Problem | string)[] = [];
 	let selectedProblem = null;
-	let problemDetail = "";
 
 	let problemSelectorElement;
 	let problemDetailsElement;
@@ -41,6 +41,7 @@
 			minDifficulty: Number($searchParams.minDifficulty),
 			maxDifficulty: Number($searchParams.maxDifficulty),
 			status: $searchParams.status,
+			staff: $searchParams.staff,
 		};
 
 		const queryString = Object.entries(searchQuery)
@@ -67,6 +68,7 @@
 			$searchParams.page++;
 			allProblems = [...allProblems, "loading"];
 		} else {
+			$selectedProblemId = null;
 			$searchParams.page = 1;
 			loaded = false;
 			allProblems = [];
@@ -92,7 +94,7 @@
 				requestAnimationFrame(() => {
 					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
 				});
-				maxPage = getAllProblems.pageCount;
+				maxPage = getAllProblems.totalPage;
 				loaded = true;
 			}
 		} else {
@@ -122,9 +124,11 @@
 
 	async function updateProblemDetail() {
 		if (!$selectedProblemId) return;
-		problemDetail = await api.call(`/problem/detail/${$selectedProblemId}`, {
-			withToken: true,
-		});
+		if (selectedProblem) {
+			selectedProblem.detail = await api.call(`/problem/detail/${$selectedProblemId}`, {
+				withToken: true,
+			});
+		}
 	}
 
 	onMount(async () => {
@@ -183,15 +187,23 @@
 				/>
 			</Frame>
 			{#if IsRole(Role.STAFF)}
-				<Checkbox id="staff-mode" onclick={() => ($searchParams.staff = !$searchParams.staff)}
-					>โหมดแก้ไข</Checkbox
+				<Checkbox
+					id="staff-mode"
+					selected={$searchParams.staff}
+					onclick={(value) => ($searchParams.staff = value)}>โหมดแก้ไข</Checkbox
 				>
 			{/if}
 		</div>
 		<ProblemTable problems={allProblems} loading={!loaded} {loadMore} />
 	</Frame>
 	<Frame id="right" blur-bg>
-		<ProblemDetail problem={selectedProblem} detail={problemDetail} />
+		<ProblemDetail problem={selectedProblem} />
+		<Button
+			class="submit-btn"
+			onclick={() => {
+				window.open("/code?id=" + selectedProblem?.id, "_blank");
+			}}>ทำโจทย์</Button
+		>
 	</Frame>
 </div>
 

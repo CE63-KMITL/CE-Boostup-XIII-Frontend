@@ -21,7 +21,7 @@
 				if (onUnselect) onUnselect();
 			}
 
-			if (onclick) onclick();
+			if (onclick) onclick(thisCheckbox.checked);
 		});
 
 		if (selected) thisElement.click();
