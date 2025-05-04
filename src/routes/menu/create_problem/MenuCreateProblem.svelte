@@ -115,16 +115,16 @@
 	<div class="sectionPanel">
 		<Frame blur-bg class="sectionContainer problemInfo">
 			<div class="problemHead">
-				<h1 class="headText">Exercise Name</h1>
-				<input class="problemNameInput" placeholder="Exercise Name" />
+				<h1 class="headText">ชื่อโจทย์</h1>
+				<input class="problemNameInput" placeholder="ชื่อโจทย์" />
 			</div>
 			<div class="userAndExDetails">
 				<div class="username">
-					<h1 class="headText">User Name</h1>
+					<h1 class="headText">ผู้สร้างโจทย์ :</h1>
 					<h1 class="headText">{user.name}</h1>
 				</div>
 				<div class="tagsBox">
-					<h1 class="headText">Tags</h1>
+					<h1 class="headText">ประเภท</h1>
 					<div class="tagsCheckboxGroup">
 						{#each Object.keys(tagsColors) as tag}
 							<Checkbox color={tagsColors[tag]} value={tag} bind:group={selectedTags}
@@ -133,7 +133,16 @@
 						{/each}
 					</div>
 				</div>
-				<textarea class="problemDetailsInput" placeholder="Type exercise's detail here"></textarea>
+				<textarea class="problemDetailsInput" placeholder="คำอธิบายโจทย์"></textarea>
+			</div>
+		</Frame>
+	</div>
+
+	<div class="sectionPanel">
+		<Frame blur-bg class="sectionContainer defaultCodeContainer">
+			<div class="defaultCodeHeader">Default code</div>
+			<div class="codeInputBox">
+				<CodeEditor></CodeEditor>
 			</div>
 		</Frame>
 	</div>
@@ -144,7 +153,6 @@
 				<div class="codeButtonWrapper">
 					<Button class="run">▷ รัน</Button>
 				</div>
-
 				<CodeEditor></CodeEditor>
 			</div>
 			<div class="terminalBox">
@@ -222,6 +230,10 @@
 			height: 100%;
 			width: 100%;
 			padding: 20px;
+		}
+
+		:global(.defaultCodeContainer) {
+			flex-direction: column;
 		}
 
 		:global(.problemInfo) {
@@ -414,6 +426,11 @@
 		font-size: 1rem;
 	}
 
+	.defaultCodeHeader {
+		font-size: 30px;
+		width: auto;
+		text-align: center;
+	}
 	/*
 	-------------------------------------------------------
 	Code Input and Terminal Styles

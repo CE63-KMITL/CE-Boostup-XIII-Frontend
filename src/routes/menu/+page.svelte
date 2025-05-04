@@ -293,6 +293,19 @@
 		}
 	}
 
+	@media (max-width: 1300px) {
+		#topbar {
+			height: 60px;
+		}
+
+		#page-selector-container {
+			.page-selector {
+				font-size: 0.9rem;
+				padding-inline: 30px;
+			}
+		}
+	}
+
 	@media (max-width: 1000px) or (max-height: 800px) {
 		#topbar {
 			height: 50px;
@@ -318,7 +331,7 @@
 		}
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 700px) {
 		#page-selector-container {
 			.page-selector {
 				width: 30%;

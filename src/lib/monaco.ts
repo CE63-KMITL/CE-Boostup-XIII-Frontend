@@ -56,6 +56,7 @@ import UpstreamSunburst from "Monaco-themes/themes/Upstream Sunburst.json";
 import VibrantInk from "Monaco-themes/themes/Vibrant Ink.json";
 import Xcodedefault from "Monaco-themes/themes/Xcode_default.json";
 import Zenburnesque from "Monaco-themes/themes/Zenburnesque.json";
+import { sleep } from "./normalFunction";
 
 export const themes = [
 	{ name: "VS Dark (Default)", id: "vs-dark" },
@@ -120,7 +121,17 @@ export const themes = [
 export let Monaco;
 
 export async function initMonaco() {
-	if (Monaco) return;
+	if (Monaco) {
+		try {
+			while (Monaco == "loading") {
+				console.log(Monaco);
+				await sleep(100);
+			}
+		} catch (error) {}
+
+		return;
+	}
+	Monaco = "loading";
 
 	self.MonacoEnvironment = {
 		getWorker: function (_moduleId: any, label: string) {
