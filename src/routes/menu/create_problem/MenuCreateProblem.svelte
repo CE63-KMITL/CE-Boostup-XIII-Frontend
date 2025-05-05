@@ -282,28 +282,6 @@
 
 	/*
 	-------------------------------------------------------
-	Common Input/Textarea Styles
-	-------------------------------------------------------
-	*/
-	.problemNameInput,
-	.problemDetailsInput,
-	.codeInput,
-	.output,
-	.testCaseInput,
-	.testCaseOutput {
-		border: 1px solid var(--outline);
-		border-radius: 5px;
-		font-size: 1rem;
-		line-height: 1.5rem;
-		resize: none;
-		background-color: var(--bg);
-		color: var(--text);
-		width: 100%;
-		box-sizing: border-box;
-	}
-
-	/*
-	-------------------------------------------------------
 	Specific Input/Textarea Styles
 	-------------------------------------------------------
 	*/
