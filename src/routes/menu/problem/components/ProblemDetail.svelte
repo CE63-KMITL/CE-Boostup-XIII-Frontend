@@ -1,19 +1,18 @@
 <script lang="ts">
-	import Button from "../../../../components/Button.svelte";
-	import Frame from "../../../../components/Frame.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
 
 	export let problem: any = null;
+	export let padding = true;
 </script>
 
-<div class="problem-detail">
+<div {...$$restProps} class={"problem-detail " + $$restProps.class} class:padding>
 	<div class="title-container">
 		<div class="title-section">
 			<div class="title">{problem?.title}</div>
-			<div class="author">{problem?.author?.name}</div>
+			<div class="problem-id">{problem?.id}</div>
 		</div>
-		<div class="problem-id">{problem?.id}</div>
+		<div class="author">{problem?.author?.name}</div>
 	</div>
 	<div class="problem-info">
 		<div class="tags">
@@ -38,9 +37,12 @@
 	.problem-detail {
 		height: 100%;
 		width: 100%;
-		padding: 10px;
 		display: flex;
 		flex-direction: column;
+
+		.padding {
+			padding: 10px;
+		}
 	}
 
 	/*
@@ -52,13 +54,15 @@
 	.title-container {
 		display: flex;
 		justify-content: space-between;
-		flex-direction: row;
+		flex-direction: column;
 	}
 
 	.title-section {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
+		justify-content: space-between;
 		gap: 5px;
+		width: 100%;
 	}
 
 	.problem-id {
@@ -69,6 +73,8 @@
 	}
 
 	.title {
+		text-overflow: ellipsis;
+		overflow: hidden;
 		font-size: 1.2rem;
 		font-weight: 600;
 		color: var(--text);
@@ -107,10 +113,4 @@
 		border-radius: 10px;
 		margin-bottom: 10px;
 	}
-
-	// .placeholder {
-	// 	color: var(--place-holder);
-	// 	text-align: center;
-	// 	width: 100%;
-	// }
 </style>

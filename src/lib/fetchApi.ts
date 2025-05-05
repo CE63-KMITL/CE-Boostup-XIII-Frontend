@@ -29,17 +29,23 @@ export async function call(
 				return;
 			}
 
-			// console.log(responseData);
+			console.log(response);
 
-			if (responseData.error) {
-				alert(
-					`⚠️ เกิดข้อผิดพลาด ${route}\n\nโปรดติดต่อ CE63@KMITL\n\n${
-						responseData.error
-					}\n${JSON.stringify(responseData.message)}`
-				);
-
+			if (responseData.message && responseData?.message.includes("Too Many Requests")) {
+				alert("ใจเย็นๆหน่อย ♪(´▽｀)\n\nคุณดูเหนื่อยๆนะดื่มน้ำหน่อยไหม");
 				return;
 			}
+
+			if (!response.ok) {
+				alert(
+					`⚠️ เกิดข้อผิดพลาด ${route}\n\nโปรดติดต่อ CE63@KMITL\n\n${
+						responseData.error ?? ""
+					}\n${JSON.stringify(responseData.message)}`
+				);
+				return;
+			}
+
+			console.log(responseData);
 
 			return await responseData;
 		} else {

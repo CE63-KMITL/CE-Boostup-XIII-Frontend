@@ -5,7 +5,7 @@
 	-------------------------------------------------------
 	*/
 	import { initMonaco, Monaco, themes, type monaco } from "$lib/monaco";
-	import { onMount } from "svelte";
+	import { onDestroy, onMount } from "svelte";
 	import Dropdown from "./Dropdown.svelte";
 
 	/*
@@ -20,6 +20,10 @@
 	let editorElement;
 
 	export let onChange = null;
+	export let loadCode = null;
+	export let saveCode = null;
+
+	let autoSaveTimeout = null;
 
 	/*
 	-------------------------------------------------------
@@ -42,13 +46,36 @@
 			if (onChange) {
 				onChange(editor.getValue());
 			}
+
+			if (autoSaveTimeout) {
+				clearTimeout(autoSaveTimeout);
+			}
+
+			autoSaveTimeout = setTimeout(
+				async () => {
+					if (saveCode) {
+						await saveCode(editor.getValue());
+					}
+				},
+				Number(localStorage.getItem("autoSaveDelay")) || 10000
+			);
 		});
+
+		if (loadCode) {
+			editor.setValue(await loadCode());
+		}
 
 		return () => {
 			editor?.dispose();
 			cCompletionProviderRegistration?.dispose();
 		};
 	});
+
+	onbeforeunload = () => {
+		if (saveCode) {
+			saveCode(editor.getValue());
+		}
+	};
 
 	/*
 	-------------------------------------------------------

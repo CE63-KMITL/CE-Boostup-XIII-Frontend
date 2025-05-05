@@ -1,14 +1,19 @@
 <script lang="ts">
+	import { page } from "$app/state";
+	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
 	import CodeEditor from "../../../components/CodeEditor.svelte";
 	import Frame from "../../../components/Frame.svelte";
 	import Tab from "../../../components/Tab.svelte";
+	import InputOutput from "../components/InputOutput.svelte";
 	import TestCase from "../components/TestCase.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
 
+	export let data;
+
 	/*
 	-------------------------------------------------------
-	Component State
+	Variables
 	-------------------------------------------------------
 	*/
 
@@ -26,12 +31,15 @@
 	];
 
 	const description = "รายละเอียดโจทย์...";
-
 	let activeTab = "details";
+
+	let codeText = "";
+	let inputText = "";
+	let outputText = "";
 
 	/*
 	-------------------------------------------------------
-	Event Handlers
+	Functions
 	-------------------------------------------------------
 	*/
 
@@ -39,6 +47,32 @@
 		return index % 2 === 0 ? "pass" : "fail";
 	}
 
+	async function loadCode() {
+		// api.call(`/user/getSaveCode?id=${$page.params.id}`, { method: "GET", withToken: true });
+		return localStorage.getItem("code");
+	}
+
+	async function saveCode(code) {
+		console.log("Saved");
+
+		localStorage.setItem("code", code);
+	}
+
+	async function onRunCode() {
+		outputText = "";
+
+		const result = await api.call("/run-code", {
+			method: "POST",
+			data: {
+				input: inputText,
+				code: codeText,
+				timeout: 1000,
+			},
+			withToken: true,
+		});
+
+		outputText = result.output;
+	}
 	/*
 	-------------------------------------------------------
 	Lifecycle
@@ -46,24 +80,28 @@
 	*/
 
 	function onEditorChange(text) {
-		console.log(text);
+		codeText = text;
 	}
 </script>
 
 <div class="full mainFrame">
 	<Frame blur-bg class="ProblemContainer">
-		<CodeEditor onChange={onEditorChange}></CodeEditor>
+		<CodeEditor onChange={onEditorChange} {saveCode} {loadCode}></CodeEditor>
 	</Frame>
 
 	<Tab
 		class="side"
-		headers={{ details: "รายละเอียดโจทย์", testcase: "Test case" }}
+		headers={{ details: "รายละเอียดโจทย์", inputOutput: "รันโค้ด", testcase: "Test case" }}
 		{activeTab}
 		OnChangeTab={(tab) => (activeTab = tab)}
 	>
 		{#if activeTab === "details"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-                    <ProblemDetail problem></ProblemDetail>
+				<ProblemDetail problem></ProblemDetail>
+			</div>
+		{:else if activeTab === "inputOutput"}
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<InputOutput {onRunCode} bind:inputText bind:outputText></InputOutput>
 			</div>
 		{:else if activeTab === "testcase"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
