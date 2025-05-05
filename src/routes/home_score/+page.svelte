@@ -1,97 +1,133 @@
-<script lang="ts">
-  import "./HomeScore.css";
-  import Score from "./Score.svelte";
-  import House from "./House.svelte"; // ใช้กับ House
-  import MyHouse from "./MyHouse.svelte"; // ใช้กับ MyHouse
-  import type { DataHouse } from "./House.svelte";
-  import type { DataMyhouse } from "./MyHouse.svelte";
-  import { onMount } from "svelte";
-  import type { Data } from "./Score.svelte";
-  import { page } from "$app/stores";
-  import { derived } from "svelte/store";
-  const query = derived(page, ($page) => $page.url.searchParams.get("page"));
-  let scoreData: Data[] = [
-    { name: "Veerapat Pirultham", id: "67010852", house: "bard", score: 700 },
-    { name: "Nattapong Suksiri", id: "67010853", house: "mage", score: 680 },
-    { name: "Kamonchai Lekbun", id: "67010854", house: "rogue", score: 660 },
-    {
-      name: "Somsak Pradchaphet",
-      id: "67010855",
-      house: "warrior",
-      score: 640,
-    },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-  ]; // ใช้กับ Overall
-  let houseData: DataHouse[] = [
-    { house: "bard", score: 2750 },
-    { house: "mage", score: 2600 },
-    { house: "rogue", score: 2480 },
-    { house: "warrior", score: 2405 },
-    { house: "healer", score: 2380 },
-  ]; // แสดง house และ score
-  let myHouseData: DataMyhouse[] = [
-    { name: "Veerapat Pirultham", id: "67010852", score: 720 },
-    { name: "Nattapong Suksiri", id: "67010853", score: 700 },
-    { name: "Kamonchai Lekbun", id: "67010854", score: 680 },
-    { name: "Somsak Pradchaphet", id: "67010855", score: 650 },
-    { name: "Patsorn Chaiyawan", id: "67010856", score: 640 },
-  ]; // แสดง name id score
+<script>
+   import './HomeScore.css';
+   import Score from '../../components/Score.svelte';
+   import { goto } from '$app/navigation';
+   import { page } from '$app/stores';
+   import Button from '../../components/Button.svelte';
+   import HistoryButton from './HistoryButton.svelte'
+   import Fullscreen from '../../components/Fullscreen.svelte';
+   $: query = $page.url.searchParams.get('page') || 'overall';
+   export let data;
+   const { users, houseScores, myHouseMembers, myHouseName } = data;
 
-  //  export let data
-  //  const { users }= data;
-  import Fullscreen from "../../components/Fullscreen.svelte";
-  import Nav from "./Nav.svelte";
-
-  onMount(async () => {
-    if ($query === "Overall") {
-      const res = await fetch("/api/score");
-      scoreData = await res.json();
-    } else if ($query === "House") {
-      const res = await fetch("/api/house");
-      houseData = await res.json();
-    } else if ($query === "My House") {
-      const res = await fetch("/api/myhouse");
-      myHouseData = await res.json();
-    }
-  });
+   // ตัวอย่างข้อมูลโปรไฟล์ (ควรดึงจาก backend จริง)
+   const profile = {
+      name: 'เพ็ญพิชชา ปานจันทร์',
+      studentId: '68010662',
+      rank: 23,
+      score: 300,
+      houseRank: 5,
+      houseScore: 1200,
+      cardImg: '/house/warlock.png'
+   };
 </script>
 
 <Fullscreen>
-  <div style="display: flex;justify-content:center; margin-top: 20px; ">
-    <div
-      style="width:95%; 
-   border:1px solid #767676; 
-   border-radius :20px; 
-   padding:20px; box-sizing: 
-   border-box; overflow:scroll; 
-   height:600px; 
-   background-color:rgba(255,255,255,0.8); "
-    >
-      <!-- ไม่ใส่ Nav ก็ได้ -->
-      <Nav />
-      {#if $query === "Overall" || $query === null}
-        {#each scoreData as user, i}
-          <Score index={i} data={user} />
-        {/each}
-      {:else if $query === "House"}
-        {#each houseData as house, i}
-          <House index={i} data={house} />
-        {/each}
-      {:else if $query === "My House"}
-        {#each myHouseData as user, i}
-          <MyHouse index={i} data={user} />
-        {/each}
-      {:else}
-        {#each scoreData as user, i}
-          <Score index={i} data={user} />
-        {/each}
-      {/if}
-    </div>
-  </div>
+   <div class="header-bar">
+      <div class="header-left">
+         <img src="/logo.png" alt="logo" class="header-logo" />
+         <img src="/logo-text.png" alt="CE BOOSTUP" class="header-logo-text" />
+      </div>
+      <div class="header-center">
+         <a class="header-menu {($page.url.pathname === '/Problem') ? 'active' : ''}" href="/Problem">โจทย์</a>
+         <a class="header-menu {($page.url.pathname === '/home_score') ? 'active' : ''}" href="/home_score">คะแนน</a>
+      </div>
+      <div class="header-right">
+         <Button class="header-icon-btn" on:click={() => goto('/home_score')}>
+            <img src="/favicon.png" alt="home_score" />
+         </Button>
+         <Button class="header-icon-btn" on:click={() => goto('/home_score')}>
+            <img src="/favicon.png" alt="home_score" />
+         </Button>
+      </div>
+   </div>
+
+   <div class="main-leaderboard-container">
+      <!-- ซ้าย: โปรไฟล์การ์ด -->
+      <div class="profile-section">
+         <div class="profile-card">
+            <img src={profile.cardImg} alt="profile-card" class="profile-card-img" />
+            <div class="profile-info">
+               <div class="profile-name-id">
+                  <span class="profile-name">{profile.name}</span>
+                  <span class="profile-id">{profile.studentId}</span>
+               </div>
+               <div class="profile-rank-box">
+                  <div class="profile-rank-title">นักผจญภัยอันดับที่ {profile.rank}</div>
+                  <div class="profile-rank-score">{profile.score}</div>
+               </div>
+               <div class="profile-house-box">
+                  <div class="profile-house-title">บ้านอันดับที่ {profile.houseRank}</div>
+                  <div class="profile-house-score">{profile.houseScore}</div>
+               </div>
+               <HistoryButton class="profile-history-btn">ประวัติคะแนน</HistoryButton>
+            </div>
+         </div>
+      </div>
+
+      <!-- ขวา: Leaderboard -->
+      <div class="leaderboard-section">
+         <div class="leaderboard-tabs">
+            <a class="tab {query === 'overall' ? 'active' : ''}" href="?page=overall">Overall</a>
+            <a class="tab {query === 'house_score' ? 'active' : ''}" href="?page=house_score">House</a>
+            <a class="tab {query === 'my_house_score' ? 'active' : ''}" href="?page=my_house_score">My House</a>
+         </div>
+         <div class="leaderboard-table" style="max-height: 420px; overflow-y: auto;">
+            {#if query === 'overall'}
+               {#each users as user, index}
+                  <div class="leaderboard-row {index < 3 ? 'top3' : ''}">
+                     <span>
+                        {#if index === 0}
+                           <img src="/path/to/gold-medal.png" class="medal" />
+                        {:else if index === 1}
+                           <img src="/path/to/silver-medal.png" class="medal" />
+                        {:else if index === 2}
+                           <img src="/path/to/bronze-medal.png" class="medal" />
+                        {:else}
+                           {String(index + 1).padStart(2, '0')}
+                        {/if}
+                     </span>
+                     <span>{user.firstName} {user.lastName}</span>
+                     <span>{user.studentId}</span>
+                     <span>{user.house}</span>
+                     <span>{user.score}</span>
+                  </div>
+               {/each}
+            {:else if query === 'house_score'}
+               {#each houseScores as house, index}
+                  <div class="leaderboard-row {index < 3 ? 'top3' : ''}">
+                     <span>
+                        {#if index === 0}
+                           <img src="/path/to/gold-medal.png" class="medal" />
+                        {:else if index === 1}
+                           <img src="/path/to/silver-medal.png" class="medal" />
+                        {:else if index === 2}
+                           <img src="/path/to/bronze-medal.png" class="medal" />
+                        {:else}
+                           {String(index + 1).padStart(2, '0')}
+                        {/if}
+                     </span>
+                     <span>{house.houseName}</span>
+                     <span>-</span>
+                     <span>-</span>
+                     <span>{house.score}</span>
+                  </div>
+               {/each}
+            {:else if query === 'my_house_score'}
+               <div class="leaderboard-row header" style="background: #fffbe6;">
+                  <div style="width:100%; text-align:center;">บ้าน {myHouseName}</div>
+               </div>
+               {#each myHouseMembers as user, index}
+                  <div class="leaderboard-row {index < 3 ? 'top3' : ''}">
+                     <span>{String(index + 1).padStart(2, '0')}</span>
+                     <span>{user.firstName} {user.lastName}</span>
+                     <span>{user.studentId}</span>
+                     <span>{user.house}</span>
+                     <span>{user.score}</span>
+                  </div>
+               {/each}
+            {/if}
+         </div>
+      </div>
+   </div>
 </Fullscreen>
