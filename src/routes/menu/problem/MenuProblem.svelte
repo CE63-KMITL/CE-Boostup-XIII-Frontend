@@ -44,6 +44,9 @@
 		for (let i = 0; i < dataIds.length; i++) {
 			const dataId = dataIds[i];
 			const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
+
+			console.log(element);
+
 			if (element) {
 				element.style.animation = `slide-in 0.2s ease-out forwards`;
 				await sleep(70);
@@ -114,17 +117,15 @@
 		if (getAllProblems && getAllProblems.data.length > 0) {
 			if (isLoadMore) {
 				allProblems = [...allProblems.slice(0, -1), ...getAllProblems.data];
-				requestAnimationFrame(() => {
-					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
-				});
 			} else {
 				allProblems = getAllProblems.data;
-				requestAnimationFrame(() => {
-					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
-				});
 				maxPage = getAllProblems.totalPage;
 				loaded = true;
 			}
+
+			requestAnimationFrame(() => {
+				runProblemListAnimation(getAllProblems.data.map((item) => item.id));
+			});
 		} else {
 			if (isLoadMore) {
 				allProblems = allProblems.slice(0, -1);

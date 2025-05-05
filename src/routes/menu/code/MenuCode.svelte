@@ -4,6 +4,7 @@
 	import Frame from "../../../components/Frame.svelte";
 	import Tab from "../../../components/Tab.svelte";
 	import TestCase from "../components/TestCase.svelte";
+	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
 
 	/*
 	-------------------------------------------------------
@@ -62,7 +63,7 @@
 	>
 		{#if activeTab === "details"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<p>{description}</p>
+                    <ProblemDetail problem></ProblemDetail>
 			</div>
 		{:else if activeTab === "testcase"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
