@@ -15,6 +15,8 @@
 	import MenuCreateProblem from "./create_problem/MenuCreateProblem.svelte";
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
 
+	console.log(data);
+
 	export const items = { code: "ทำโจทย์", problem: "โจทย์", score: "คะแนน" };
 	if (IsRole(Role.STAFF)) {
 		items["create_problem"] = "สร้างโจทย์";
