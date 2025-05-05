@@ -53,7 +53,6 @@
 
 <Fullscreen>
 	<div id="topbar">
-		<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 		<div id="start" onclick={() => (window.location.href = "/")}>
 			<img id="logo" src="/logo.png" alt="LOGO" />
 			<img id="logo-text" src="/logo-text.png" alt="CE BOOSTUP" />
@@ -92,7 +91,6 @@
 		{/if}
 
 		<dir id="end">
-			<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 			<div
 				data-currentPage={currentPage == "profile"}
 				class="circle-bg"
@@ -113,7 +111,6 @@
 				{/if}
 			</div>
 
-			<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 			<div
 				data-currentPage={currentPage == "setting"}
 				class="circle-bg"

@@ -1,10 +1,15 @@
 <script lang="ts">
+	/*
+     -------------------------------------------------------
+     Imports
+     -------------------------------------------------------
+     */
 	import { IsRole } from "$lib/auth.local";
 	import { type Problem } from "$lib/constants/problem";
 	import { Role } from "$lib/enum/role";
 	import * as api from "$lib/fetchApi";
 	import { sleep } from "$lib/normalFunction";
-	import { onMount } from "svelte";
+	import { onDestroy, onMount } from "svelte";
 	import Button from "../../../components/Button.svelte";
 	import Checkbox from "../../../components/Checkbox.svelte";
 	import Frame from "../../../components/Frame.svelte";
@@ -12,7 +17,13 @@
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
 	import { searchParams, selectedProblemId } from "./problem";
+	import type { Unsubscriber } from "svelte/store";
 
+	/*
+     -------------------------------------------------------
+     State Variables
+     -------------------------------------------------------
+     */
 	let allProblems: (Problem | string)[] = [];
 	let selectedProblem = null;
 
@@ -20,7 +31,15 @@
 	let problemDetailsElement;
 
 	let loaded = false;
+	let maxPage;
+	let oldQueryString = "";
+	let loadingMore = false;
 
+	/*
+     -------------------------------------------------------
+     Helper Functions
+     -------------------------------------------------------
+     */
 	async function runProblemListAnimation(dataIds: string[]) {
 		for (let i = 0; i < dataIds.length; i++) {
 			const dataId = dataIds[i];
@@ -45,10 +64,16 @@
 		};
 
 		const queryString = Object.entries(searchQuery)
-			.filter(([_, value]) => value !== null && value !== "" && (!Array.isArray(value) || value.length > 0))
+			.filter(
+				([_, value]) =>
+					value !== null &&
+					value !== false &&
+					value !== "" &&
+					(!Array.isArray(value) || value.length > 0)
+			)
 			.map(([key, value]) => {
 				if (Array.isArray(value)) {
-					return `${key}=${JSON.stringify(value)}`;
+					return `${key}=${value.join("&")}`;
 				}
 				return `${key}=${value}`;
 			})
@@ -57,8 +82,11 @@
 		return queryString;
 	}
 
-	let maxPage;
-	let oldQueryString = "";
+	/*
+     -------------------------------------------------------
+     Data Fetching and Updating
+     -------------------------------------------------------
+     */
 	async function updateProblems(isLoadMore = false) {
 		const queryString = await getQueryString();
 		if (queryString === oldQueryString && (!isLoadMore || maxPage <= $searchParams.page)) return;
@@ -109,7 +137,6 @@
 		}
 	}
 
-	let loadingMore = false;
 	async function loadMore() {
 		if (loadingMore) return;
 		console.log("load more");
@@ -117,10 +144,6 @@
 		await updateProblems(true);
 		loadingMore = false;
 	}
-
-	searchParams.subscribe(() => {
-		updateProblems();
-	});
 
 	async function updateProblemDetail() {
 		if (!$selectedProblemId) return;
@@ -131,13 +154,32 @@
 		}
 	}
 
+	/*
+     -------------------------------------------------------
+     Lifecycle Hooks
+     -------------------------------------------------------
+     */
+	let subscribeSearchParams: Unsubscriber;
 	onMount(async () => {
 		problemSelectorElement = document.querySelector("#problem #left");
 		problemDetailsElement = document.querySelector("#problem #right");
 
 		await updateProblems();
+
+		subscribeSearchParams = searchParams.subscribe(() => {
+			updateProblems();
+		});
 	});
 
+	onDestroy(() => {
+		subscribeSearchParams();
+	});
+
+	/*
+     -------------------------------------------------------
+     Reactive Statements
+     -------------------------------------------------------
+     */
 	let previousSelectedId: string | null = null;
 	$: {
 		if (previousSelectedId !== $selectedProblemId) {

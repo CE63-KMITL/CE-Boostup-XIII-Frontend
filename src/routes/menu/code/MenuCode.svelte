@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { azScale } from "$lib/transition";
-	import { onDestroy, onMount } from "svelte";
-	import Button from "../../../components/Button.svelte";
 	import CodeEditor from "../../../components/CodeEditor.svelte";
 	import Frame from "../../../components/Frame.svelte";
 	import Tab from "../../../components/Tab.svelte";
@@ -12,8 +10,6 @@
 	Component State
 	-------------------------------------------------------
 	*/
-	let isMobileHorizon = false;
-	let isVertical = false;
 
 	const testCases = [
 		{ input: "xx xx xx", output: "xx" },
@@ -37,17 +33,6 @@
 	Event Handlers
 	-------------------------------------------------------
 	*/
-	function checkVertical() {
-		let mobile = false,
-			horizon = false,
-			vertical = false;
-		window.innerHeight < 1000 && window.innerWidth < 1000 ? (mobile = true) : false;
-		window.innerWidth > window.innerHeight ? (horizon = true) : false;
-		window.innerWidth < 1100 && window.innerHeight > window.innerWidth ? (vertical = true) : false;
-
-		isMobileHorizon = mobile && horizon;
-		isVertical = vertical;
-	}
 
 	function getTestcaseStatus(index) {
 		return index % 2 === 0 ? "pass" : "fail";
@@ -58,18 +43,6 @@
 	Lifecycle
 	-------------------------------------------------------
 	*/
-	onMount(() => {
-		if (typeof window === "undefined") return;
-		checkVertical();
-		window.addEventListener("resize", checkVertical);
-		window.addEventListener("orientationchange", checkVertical);
-	});
-
-	onDestroy(() => {
-		if (typeof window === "undefined") return;
-		window.removeEventListener("resize", checkVertical);
-		window.removeEventListener("orientationchange", checkVertical);
-	});
 
 	function onEditorChange(text) {
 		console.log(text);

@@ -14,6 +14,7 @@
 	import HeaderDifficulty from "./Header-Difficulty.svelte";
 	import HeaderTags from "./Header-Tags.svelte";
 	import ProblemRow from "./ProblemRow.svelte";
+	import { azFade, azScale } from "$lib/transition";
 
 	export let loading = false;
 	export let loadMore;
@@ -46,8 +47,17 @@
 
 <TableRenderer id="problem-table">
 	<List id="header" class="problem-list" top="true">
-		<div>
-			ข้อที่ <Sort></Sort>
+		<div
+			class="problem-id-header"
+			onclick={() => {
+				$searchParams.idReverse = !$searchParams.idReverse;
+			}}
+		>
+			ข้อที่
+
+			<p id="sort" class:upsidedown={$searchParams.idReverse}>
+				<Sort></Sort>
+			</p>
 		</div>
 		<div>โจทย์</div>
 		<div class="problem-mini-info">
@@ -135,6 +145,22 @@
 </TableRenderer>
 
 <style lang="scss">
+	.problem-id-header {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		gap: 5px;
+	}
+
+	#sort {
+		transition: all 0.25s ease;
+	}
+
+	.upsidedown {
+		transform: rotate(180deg);
+	}
+
 	:global(#problem-table) {
 		height: calc(100% - 60px);
 		margin-top: 10px;
