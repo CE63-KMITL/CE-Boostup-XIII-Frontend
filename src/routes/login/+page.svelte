@@ -6,6 +6,7 @@
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 	import "../../app.css";
 	import Button from "../../components/Button.svelte";
+	import PopUp, { showPopup } from "../../components/PopUp.svelte";
 
 	let email: string = "";
 	let password: string = "";
@@ -18,11 +19,14 @@
 			goto("/menu");
 		} else {
 			alert(`Login failed\n\n${JSON.stringify(res.message)}`);
+			const massage = await showPopup(res.message, true)
+			console.log(massage)
 		}
 	}
 </script>
 
 <div class="Container">
+	<PopUp/>
 	<h1 class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
 	<div class="LoginBox">
 		<h1 class="LoginHead">เข้าสู่ระบบ</h1>
