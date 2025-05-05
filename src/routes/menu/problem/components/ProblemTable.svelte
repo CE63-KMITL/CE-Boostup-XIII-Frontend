@@ -267,7 +267,7 @@
 
 			@container (max-width:500px) or (max-height:500px) {
 				:global(div) {
-					font-size: 0.7rem;
+					font-size: 12px;
 				}
 
 				:global(.tag) {

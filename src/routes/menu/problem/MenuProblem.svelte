@@ -18,6 +18,9 @@
 	import ProblemTable from "./components/ProblemTable.svelte";
 	import { searchParams, selectedProblemId } from "./problem";
 	import type { Unsubscriber } from "svelte/store";
+	import Loading from "../../../components/Loading.svelte";
+	import { fade, fly } from "svelte/transition";
+	import { azScale } from "$lib/transition";
 
 	/*
      -------------------------------------------------------
@@ -44,8 +47,6 @@
 		for (let i = 0; i < dataIds.length; i++) {
 			const dataId = dataIds[i];
 			const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
-
-			console.log(element);
 
 			if (element) {
 				element.style.animation = `slide-in 0.2s ease-out forwards`;
@@ -148,11 +149,6 @@
 
 	async function updateProblemDetail() {
 		if (!$selectedProblemId) return;
-		if (selectedProblem) {
-			selectedProblem.detail = await api.call(`/problem/detail/${$selectedProblemId}`, {
-				withToken: true,
-			});
-		}
 	}
 
 	/*
@@ -160,6 +156,7 @@
      Lifecycle Hooks
      -------------------------------------------------------
      */
+	let subscribeSelectedProblemId: Unsubscriber;
 	let subscribeSearchParams: Unsubscriber;
 	onMount(async () => {
 		problemSelectorElement = document.querySelector("#problem #left");
@@ -170,10 +167,27 @@
 		subscribeSearchParams = searchParams.subscribe(() => {
 			updateProblems();
 		});
+
+		subscribeSelectedProblemId = selectedProblemId.subscribe(async () => {
+			selectedProblem = null;
+
+			const problemData =
+				allProblems.find((problem) => typeof problem === "object" && problem.id === $selectedProblemId) ||
+				selectedProblem;
+
+			if (problemData) {
+				problemData.detail = await api.call(`/problem/detail/${problemData.id}`, {
+					withToken: true,
+				});
+			}
+
+			selectedProblem = problemData;
+		});
 	});
 
 	onDestroy(() => {
 		subscribeSearchParams();
+		subscribeSelectedProblemId();
 	});
 
 	/*
@@ -208,12 +222,6 @@
 			previousSelectedId = $selectedProblemId;
 		}
 	}
-
-	$: {
-		selectedProblem =
-			allProblems.find((problem) => typeof problem === "object" && problem.id === $selectedProblemId) ||
-			selectedProblem;
-	}
 </script>
 
 <div id="problem">
@@ -240,13 +248,27 @@
 		<ProblemTable problems={allProblems} loading={!loaded} {loadMore} />
 	</Frame>
 	<Frame id="right" blur-bg>
-		<ProblemDetail problem={selectedProblem} />
-		<Button
-			class="submit-btn"
-			onclick={() => {
-				window.open("/code?id=" + selectedProblem?.id, "_blank");
-			}}>ทำโจทย์</Button
-		>
+		{#if selectedProblem}
+			<div class="full" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+				<Button
+					class="close-problem-detail"
+					onclick={() => {
+						$selectedProblemId = null;
+					}}>ปิด</Button
+				>
+				<ProblemDetail padding={false} problem={selectedProblem} />
+				<Button
+					class="submit-btn"
+					onclick={() => {
+						window.open("/code?id=" + selectedProblem?.id, "_blank");
+					}}>ทำโจทย์</Button
+				>
+			</div>
+		{:else}
+			<div class="full" in:fade={{ duration: 250, delay: 250 }} out:fade={{ duration: 250 }}>
+				<Loading></Loading>
+			</div>
+		{/if}
 	</Frame>
 </div>
 
@@ -270,10 +292,14 @@
 
 		:global(#right) {
 			transition: all 0.25s ease;
-			display: flex;
-			align-items: center;
-			justify-content: center;
+			display: block;
 			overflow: hidden;
+			padding: 10px;
+
+			:global(.close-problem-detail) {
+				display: none;
+				margin-bottom: 10px;
+			}
 		}
 
 		:global(.problem-list) {
@@ -324,7 +350,7 @@
 		}
 	}
 
-	@media (min-width: 0px) and (max-width: 800px) {
+	@media (max-width: 800px) {
 		#problem {
 			flex-direction: column;
 
@@ -338,13 +364,17 @@
 				bottom: 0;
 				width: 100%;
 				left: 0;
-				padding: 0;
 				margin: 0;
 				border-radius: var(--n-border-radius) var(--n-border-radius) 0px 0px;
+
+				:global(.close-problem-detail) {
+					display: block;
+				}
 			}
 
 			:global(#right:not([show])) {
 				height: 0;
+				padding: 0;
 			}
 
 			:global(#right[show]) {
