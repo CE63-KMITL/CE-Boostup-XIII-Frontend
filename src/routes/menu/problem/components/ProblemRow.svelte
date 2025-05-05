@@ -9,6 +9,12 @@
 
 	export let problem: Problem;
 
+	// $: {
+	// 	if (!problem.status) {
+	// 		problem.status = problem.devStatus;
+	// 	}
+	// }
+
 	function selectProblem() {
 		$selectedProblemId = $selectedProblemId === problem.id ? null : problem.id;
 	}

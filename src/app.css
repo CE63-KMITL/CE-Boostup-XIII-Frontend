@@ -27,7 +27,7 @@ html:not([dark]) {
 	--list-bg: rgb(255, 255, 255);
 	--list-shadow: rgba(0, 0, 0, 0.5);
 	--list-outline: rgba(0, 0, 0, 0);
-	
+
 	--profile-bg: rgba(255, 255, 255, 0.9);
 
 	--hover-list-bg: rgb(240, 240, 240);
@@ -99,6 +99,11 @@ html[dark] {
 	--bg-50: rgba(0, 0, 0, 0.7);
 
 	background: black;
+}
+
+::selection {
+	color: var(--bg);
+	background-color: var(--text);
 }
 
 *::-webkit-scrollbar {

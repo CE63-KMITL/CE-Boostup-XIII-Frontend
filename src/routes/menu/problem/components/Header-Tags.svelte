@@ -6,6 +6,7 @@
 
 {#each Object.keys(tagsColors) as tag}
 	<Checkbox
+		selected={$searchParams.tag.includes(tag)}
 		name="tag"
 		color={tagsColors[tag]}
 		onSelect={() => {
