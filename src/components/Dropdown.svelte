@@ -109,8 +109,8 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		width: 100%; /* Adjust as needed */
-		min-width: 150px; /* Example minimum width */
+		width: 100%;
+		min-width: 150px;
 		font-size: 1em;
 		transition: background-color 0.2s ease-out;
 

@@ -14,7 +14,6 @@
 		justify-content: center;
 		align-items: center;
 		position: relative;
-		// width: 100%;
 		height: 100%;
 		aspect-ratio: 1 / 1;
 		position: absolute;
@@ -31,7 +30,7 @@
 	*/
 	.loading div {
 		position: absolute;
-		border: 4px solid var(--text); /* Adjust color as needed */
+		border: 4px solid var(--text);
 		opacity: 1;
 		border-radius: 50%;
 		animation: loading-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
@@ -66,16 +65,4 @@
 			opacity: 0;
 		}
 	}
-
-	/* Keep original styles if they are still relevant */
-	/*
-	.loading {
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		z-index: 1;
-		top: 0;
-		left: 0;
-	}
-	*/
 </style>
