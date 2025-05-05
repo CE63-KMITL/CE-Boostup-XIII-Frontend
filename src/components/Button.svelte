@@ -7,12 +7,15 @@
 
 	let This_Button: HTMLElement;
 	let clickedTimeout;
+	export let onclick = null;
 
 	import { onMount } from "svelte";
 	// button click animation
 	onMount(() => {
 		if (This_Button) {
-			This_Button.addEventListener("click", () => {
+			This_Button.addEventListener("click", (e) => {
+				if (onclick) onclick(e);
+
 				if (clickedTimeout) {
 					clearTimeout(clickedTimeout);
 				}

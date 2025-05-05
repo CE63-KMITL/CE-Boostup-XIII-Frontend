@@ -14,7 +14,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 	if (token) {
 		// console.log(token);
 		try {
-			const response = await fetch(`${BACK_HOST}/auth/role`, {
+			const response = await fetch(`${BACK_HOST}/user/data`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
