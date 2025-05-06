@@ -1,6 +1,16 @@
 <script lang="ts">
   //import NavBar from '../../components/NavBar.svelte'
+  import { onMount } from 'svelte';
+  import * as api from "$lib/fetchApi";
   import icon from "./placeholder.jpg";
+
+  let user = null;
+
+  onMount(async () => {
+      // Fetch user data
+      user = await api.call('/user/me', { method: 'GET', withToken: true });
+      console.log(user);
+  })
 </script>
 
 <div class="Container">
@@ -17,7 +27,7 @@
           </thead>
           <tbody>
             <tr>
-              <td class="score_body">(score)</td>
+              <td class="score_body">{user?.score}</td>
             </tr>
           </tbody>
         </table>
@@ -27,15 +37,15 @@
         <div class="bio_info">
           <img src={icon} alt="รูปนักผจญภัย" class="icon" />
           <div class="name_id">
-            <div>(name)</div>
-            <div class="id">(id)</div>
+            <div>{user?.name}</div>
+            <div class="id">{user?.studentId}</div>
           </div>
         </div>
 
         <div>
           <div CLASS="personal_info">
-            <div>(EMAIL)</div>
-            <div>(HOUSE)</div>
+            <div>{user?.email}</div>
+            <div>{user?.house}</div>
           </div>
         </div>
       </div>
