@@ -113,7 +113,7 @@
 		/>
 	</div>
 
-	<div bind:this={editorElement} class="editor"></div>
+	<div bind:this={editorElement} class="monaco-editor editor"></div>
 </div>
 
 <style>
@@ -131,6 +131,7 @@
 	}
 
 	.editor {
+		padding-block: 10px;
 		width: 100%;
 		flex-grow: 1;
 		min-height: 0;
@@ -140,9 +141,5 @@
 
 	:global(.monaco-highlighted-label) {
 		color: white;
-	}
-
-	:global(.monaco-editor) {
-		padding-block: 10px;
 	}
 </style>

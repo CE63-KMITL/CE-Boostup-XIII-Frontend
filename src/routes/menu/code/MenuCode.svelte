@@ -9,8 +9,6 @@
 	import TestCase from "../components/TestCase.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
 
-	export let data;
-
 	/*
 	-------------------------------------------------------
 	Variables
