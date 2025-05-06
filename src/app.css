@@ -133,7 +133,7 @@ html[dark] > body > #bg {
 	opacity: 0.5;
 }
 
-* {
+div {
 	color: var(--text);
 	font-size: 15px;
 }

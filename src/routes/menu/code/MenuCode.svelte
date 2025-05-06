@@ -28,7 +28,8 @@
 		{ input: "xx xx xx", output: "xx" },
 	];
 
-	let activeTab = "details";
+	let headerTabs: { [key: string]: string } = { inputOutput: "รันโค้ด" };
+	let activeTab = "inputOutput";
 
 	let codeText = "";
 	let inputText = "";
@@ -87,6 +88,16 @@
 	function onEditorChange(text) {
 		codeText = text;
 	}
+
+	onMount(() => {
+		const url = new URL(window.location.href);
+		const problemId = url.searchParams.get("problemId");
+
+		if (problemId) {
+			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "Test case" };
+			activeTab = "details";
+		}
+	});
 </script>
 
 <div class="full mainFrame">
@@ -94,12 +105,7 @@
 		<CodeEditor onChange={onEditorChange} {saveCode} {loadCode}></CodeEditor>
 	</Frame>
 
-	<Tab
-		class="side"
-		headers={{ details: "รายละเอียดโจทย์", inputOutput: "รันโค้ด", testcase: "Test case" }}
-		{activeTab}
-		OnChangeTab={(tab) => (activeTab = tab)}
-	>
+	<Tab class="side" headers={headerTabs} {activeTab} OnChangeTab={(tab) => (activeTab = tab)}>
 		{#if activeTab === "details"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<ProblemDetail problem></ProblemDetail>

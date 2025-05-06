@@ -8,6 +8,7 @@
 	"scripts": {
 		"<--Main-->": "",
 		"dev": "vite dev",
+		"run": "npm run build && node build",
 		"build > create-image > run": "npm-run-all stop-container create-image run-container",
 		"<--Docker-->": "",
 		"run-container": "echo 'Server running at : \u001b[32mhttp://localhost:3001\u001b[39m' && docker run -p 3001:3001 ce-boostup-xiii-frontend",

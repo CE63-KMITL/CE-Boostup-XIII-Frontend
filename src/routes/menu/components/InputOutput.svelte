@@ -102,5 +102,6 @@
 
 	.output:not(.readable) {
 		line-height: 12px;
+		font-family: initial;
 	}
 </style>
