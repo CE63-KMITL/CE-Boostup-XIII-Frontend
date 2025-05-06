@@ -149,7 +149,7 @@
 
 	@media (max-width: 800px) {
 		.mainFrame {
-			flex-direction: column-reverse;
+			flex-direction: column;
 		}
 
 		:global(.ProblemContainer) {

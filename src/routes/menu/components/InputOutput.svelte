@@ -23,7 +23,7 @@
 <div class="full mainFrame">
 	<Button onclick={onRunCode} class="run">▷ รัน</Button>
 	<div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center">
-		<div style="display: flex; flex-direction: row; align-items: center; gap:10px;">
+		<div style="display: flex; flex-direction: row; align-items: center; gap:10px; font-size: 1rem">
 			<RunCodeStatus status={result.exit_status}></RunCodeStatus>
 			{result.exit_status}
 		</div>
@@ -55,6 +55,14 @@
 	.status-container {
 		display: flex;
 		gap: 10px;
+
+		div {
+			font-size: 1rem;
+		}
+	}
+
+	.headText {
+		font-size: 1rem;
 	}
 
 	.used-time,
@@ -85,7 +93,7 @@
 	.mainFrame {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: 5px;
 	}
 
 	.header {

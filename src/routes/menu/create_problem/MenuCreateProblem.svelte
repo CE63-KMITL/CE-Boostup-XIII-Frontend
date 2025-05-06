@@ -112,7 +112,7 @@
 </script>
 
 <div id="problemCreateContainer" use:enableVerticalScroll bind:this={mainScrollContainer}>
-	<div class="sectionPanel">
+	<!-- <div class="sectionPanel">
 		<Frame blur-bg class="sectionContainer problemInfo">
 			<div class="problemHead">
 				<h1 class="headText">ชื่อโจทย์</h1>
@@ -136,16 +136,7 @@
 				<textarea class="problemDetailsInput" placeholder="คำอธิบายโจทย์"></textarea>
 			</div>
 		</Frame>
-	</div>
-
-	<div class="sectionPanel">
-		<Frame blur-bg class="sectionContainer defaultCodeContainer">
-			<div class="defaultCodeHeader">Default code</div>
-			<div class="codeInputBox">
-				<CodeEditor></CodeEditor>
-			</div>
-		</Frame>
-	</div>
+	</div> -->
 
 	<div class="sectionPanel">
 		<Frame blur-bg class="sectionContainer codeInputandOutput">
@@ -163,6 +154,15 @@
 	</div>
 
 	<div class="sectionPanel">
+		<Frame blur-bg class="sectionContainer defaultCodeContainer">
+			<div class="defaultCodeHeader">Default code</div>
+			<div class="codeInputBox">
+				<CodeEditor></CodeEditor>
+			</div>
+		</Frame>
+	</div>
+
+	<!-- <div class="sectionPanel">
 		<Frame blur-bg class="sectionContainer testCaseSectionWrapper">
 			<Button class="runAll">Run All</Button>
 			<div
@@ -190,7 +190,7 @@
 			</div>
 			<Button class="doneButton">Done</Button>
 		</Frame>
-	</div>
+	</div> -->
 </div>
 
 <style lang="scss">
@@ -476,13 +476,6 @@
 		font-size: 1rem;
 		line-height: 1.5rem;
 	}
-
-	/*
-	-------------------------------------------------------
-	Button Styles (Global and Specific)
-	-------------------------------------------------------
-	*/
-
 	/*
 	-------------------------------------------------------
 	Media Queries

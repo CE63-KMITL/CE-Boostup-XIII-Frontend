@@ -135,7 +135,7 @@ html[dark] > body > #bg {
 
 div {
 	color: var(--text);
-	font-size: 15px;
+	font-size: 1rem;
 }
 
 @media (max-width: 800px) or (max-height: 600px) {

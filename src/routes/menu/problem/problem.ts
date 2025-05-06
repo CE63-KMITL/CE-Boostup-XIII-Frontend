@@ -1,4 +1,6 @@
+import { pushState } from "$app/navigation";
 import { writable } from "svelte/store";
+import { updatePage } from "../pageManager";
 
 /*
 -------------------------------------------------------
@@ -18,3 +20,14 @@ export const searchParams = writable({
 	page: 1,
 	staff: false,
 });
+
+export function getToProblemURL(id) {
+	return `/menu?page=code&problemId=${id}`;
+}
+
+export function goToProblemURL(id) {
+	const url = new URL(window.location.href);
+	url.searchParams.set("problemId", id);
+	pushState(url, null);
+	updatePage("code");
+}
