@@ -54,6 +54,9 @@ html:not([dark]) {
 	--button-bg: radial-gradient(at center top, rgb(255, 255, 255), rgba(197, 197, 197, 0.5));
 	--bg: rgb(255, 255, 255);
 	--bg-50: rgba(255, 255, 255, 0.8);
+
+	--sc-bg: rgb(241, 213, 161);
+	--sc-text: rgb(169, 132, 77);
 }
 
 html[dark] {
