@@ -67,7 +67,7 @@
 		height: 100%;
         display: flex;
 		flex-direction: row;
-        gap: 0%;
+        gap: 1.5%;
 		padding: 3%;
 		box-sizing: border-box;
 		container-type: size;
@@ -105,6 +105,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            height: 30%;
         }
 
         #scl-detail-bottom {
@@ -116,6 +117,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            height: 30%;
         }
 
         :global(Button.scl-btn) {
@@ -130,6 +132,7 @@
     // Right Side SC GUI
     // -------------------------------------------------------
         :global(#sc-right) { 
+            border-radius: 15px;
             box-shadow: 0 4px 24px var(--list-shadow); 
             padding: 1% 2%; 
             width: 60%;
@@ -141,91 +144,11 @@
             border: 1px solid var(--outline);
         }
 
-        :global(Button.scr-btn-Overall) { border-radius: 20px 0 0 20px; }
-        :global(Button.scr-btn-House) { border-radius: 0%;}
-        :global(Button.scr-btn-MyHouse) { border-radius: 0 20px 20px 0; }
+        :global(Button.scr-btn-Overall) { border-radius: 20px 0 0 20px; background-color: var(--bg);}
+        :global(Button.scr-btn-House) { border-radius: 0%; background-color: var(--bg);}
+        :global(Button.scr-btn-MyHouse) { border-radius: 0 20px 20px 0; background-color: var(--bg);}
     
     }
-    // #sc-left {
-    //     background: var(--bg-50);
-    //     border-radius: 3%;
-    //     box-shadow: 0 4px 24px var(--list-shadow);
-    //     padding: 1.4% 1.4%;
-    //     margin: 2.25% 0 3% 6%;
-    //     display: flex;
-    //     flex-direction: column;
-    //     align-items: center;
-    //     width: 30%;
-    //     height: 91%;
-    // }
-    
-    // .profile-info {
-    //     background: var(--bg);
-    //     border: 1px solid var(--outline);
-    //     border-radius: 3%;
-    //     padding: 5% 5%;
-    //     margin: 0 0.6% 0.9% 0.6%;
-    //     width: 100%;
-    //     height: 50.5%;
-    // }
 
-    // #scl-detail-top {
-    //     background-color: var(--sc-bg);
-    //     border: 1px solid var(--outline);
-    //     border-radius: 10px 10px 0 0;
-    //     margin: 5% 0 0 0;
-    //     padding: 2% 4%;
-    //     display: flex;
-    //     flex-direction: column;
-    //     align-items: center;
-    // }
-
-    // #scl-detail-bottom {
-    //     background-color: var(--bg);
-    //     border: 1px solid var(--outline);
-    //     border-top-width: 0;
-    //     border-radius: 0px 0px 10px 10px;
-    //     padding: 2% 4%;
-    //     display: flex;
-    //     flex-direction: column;
-    //     align-items: center;
-    // }
-        
-    // @media (min-width: 800px) {
-    //     #profile-section {
-    //         :global(.profile-id) {
-
-    //         }
-    //     }
-    // }
-
-    // -------------------------------------------------------
-    // Left Side Score GUI
-    // -------------------------------------------------------
-        // #sc-right {
-        //     width: 100%;
-		//     height: 100%;
-        //     display: flex;
-        //     flex-direction: row;
-        //     padding: 15px;
-        //     background: var(--bg-50);
-        //     border-radius: 3%;
-        //     box-shadow: 0 4px 24px var(--list-shadow);
-        // }
-
-// <!-- <div id="sc-left">
-//         <img src={profile.cardImg} alt="" id="profile-image">
-//         <div class="profile-info">
-//             <div id="profile-name-id-box">
-//                 <span>{profile.name}</span>
-//                 <span style="color: var(--sc-text)">{profile.studentId}</span>
-//             </div>
-//             <div id="profile-detail-top">นักผจญภัยอันดับที่ {profile.rank}</div> 
-//             <div id="profile-detail-bottom">{profile.score}</div>
-//             <div id="profile-detail-top">บ้านอันดับที่ {profile.houseRank}</div> 
-//             <div id="profile-detail-bottom">{profile.houseScore}</div>
-//             <Button class="profile-button">ประวัติคะแนน</Button>
-//         </div>
-//     </div> -->
 
 </style>
