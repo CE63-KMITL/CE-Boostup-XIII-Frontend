@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { page } from "$app/state";
 	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
+	import { onMount } from "svelte";
 	import CodeEditor from "../../../components/CodeEditor.svelte";
 	import Frame from "../../../components/Frame.svelte";
 	import Tab from "../../../components/Tab.svelte";
@@ -28,12 +28,16 @@
 		{ input: "xx xx xx", output: "xx" },
 	];
 
-	const description = "รายละเอียดโจทย์...";
 	let activeTab = "details";
 
 	let codeText = "";
 	let inputText = "";
-	let outputText = "";
+	let result = {
+		exit_code: null,
+		exit_status: null,
+		output: null,
+		used_time: null,
+	};
 
 	/*
 	-------------------------------------------------------
@@ -57,9 +61,14 @@
 	}
 
 	async function onRunCode() {
-		outputText = "";
+		result = {
+			exit_code: null,
+			exit_status: "RUNNING",
+			output: null,
+			used_time: null,
+		};
 
-		const result = await api.call("/run-code", {
+		result = await api.call("/run-code", {
 			method: "POST",
 			data: {
 				input: inputText,
@@ -68,8 +77,6 @@
 			},
 			withToken: true,
 		});
-
-		outputText = result.output;
 	}
 	/*
 	-------------------------------------------------------
@@ -99,7 +106,7 @@
 			</div>
 		{:else if activeTab === "inputOutput"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<InputOutput {onRunCode} bind:inputText bind:outputText></InputOutput>
+				<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
 			</div>
 		{:else if activeTab === "testcase"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>

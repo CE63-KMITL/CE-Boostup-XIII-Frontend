@@ -7,6 +7,10 @@
 	import { initMonaco, Monaco, themes, type monaco } from "$lib/monaco";
 	import { onDestroy, onMount } from "svelte";
 	import Dropdown from "./Dropdown.svelte";
+	import { flip } from "svelte/animate";
+	import { fly } from "svelte/transition";
+	import { azScale } from "$lib/transition";
+	import { cubicOut } from "svelte/easing";
 
 	/*
 	-------------------------------------------------------
@@ -30,9 +34,11 @@
      Component Lifecycle
 	-------------------------------------------------------
 	*/
+	let mounted = false;
 
 	// @ts-ignore
 	onMount(async () => {
+		mounted = true;
 		let cCompletionProviderRegistration = await initMonaco();
 
 		editor = Monaco.editor.create(editorElement, {
@@ -40,6 +46,7 @@
 			language: "c",
 			theme: selectedTheme,
 			automaticLayout: true,
+			smoothScrolling: true,
 		});
 
 		editor.onDidChangeModelContent(function () {
@@ -104,16 +111,22 @@
 </script>
 
 <div class="editorContainer">
-	<div class="controls">
-		<Dropdown
-			label="ธีม Code editor"
-			options={themes}
-			bind:selectedId={selectedTheme}
-			on:change={handleThemeChange}
-		/>
-	</div>
+	{#if mounted}
+		<div in:fly={{ x: -100, duration: 250, delay: 400, easing: cubicOut }} class="controls">
+			<Dropdown
+				label="ธีม Code editor"
+				options={themes}
+				bind:selectedId={selectedTheme}
+				on:change={handleThemeChange}
+			/>
+		</div>
 
-	<div bind:this={editorElement} class="monaco-editor editor"></div>
+		<div
+			in:azScale={{ duration: 300, delay: 500, easing: cubicOut }}
+			bind:this={editorElement}
+			class="monaco-editor editor"
+		></div>
+	{/if}
 </div>
 
 <style>

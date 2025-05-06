@@ -77,7 +77,11 @@
 			)
 			.map(([key, value]) => {
 				if (Array.isArray(value)) {
-					return `${key}=${value.join("&")}`;
+					let string = "";
+					value.forEach((element) => {
+						string += `&${key}=${element}`;
+					});
+					return string;
 				}
 				return `${key}=${value}`;
 			})
