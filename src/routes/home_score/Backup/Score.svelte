@@ -7,7 +7,7 @@
     score: number;
   };
   // let { number , name , score , highlight } = $props();
-  import List from "../../components/List.svelte";
+  import List from "../../../components/List.svelte";
   // import type { Scoredeaw } from "./scoredeaw";
   // export let homescore: Scoredeaw;
   import image1 from "./Badge_Disable.svg";

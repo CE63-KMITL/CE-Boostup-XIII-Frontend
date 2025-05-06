@@ -1,18 +1,17 @@
 <script lang="ts">
 
-    export type DataMyhouse = {
-      name: string;
-      id: string;
+    export type DataHouse = {
+      house: string;
       score: number;
     };
     // let { number , name , score , highlight } = $props();
-    import List from "../../components/List.svelte";
+    import List from "../../../components/List.svelte";
     // import type { Scoredeaw } from "./scoredeaw";
     // export let homescore: Scoredeaw;
     import image1 from "./Badge_Disable.svg";
     import image2 from "./Badge_Disable(1).svg";
     import image3 from "./Badge_Disable(2).svg";
-    let { index, data }: { index: number; data:DataMyhouse } = $props();
+    let { index, data }: { index: number; data:DataHouse } = $props();
   
   
   </script>
@@ -29,8 +28,8 @@
           {String(+index + 1).padStart(2, '0')}
         {/if}
     </div>
-    <div class="name">{data.name}</div>
-    <div class="id">{data.id}</div>
+    <div class="name">{data.house}</div>
+    <div class="id"></div>
     <div class="house"></div>
     <div class="score">{data.score}</div>
   </List>
