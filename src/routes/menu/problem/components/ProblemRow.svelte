@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { userData } from "$lib/auth.local";
-	import { selectedProblemId } from "../problem";
+	import { getToProblemURL, goToProblemURL, selectedProblemId } from "../problem";
 
 	import { statusColors, statusText, type Problem } from "$lib/constants/problem";
 	import List from "../../../../components/List.svelte";
@@ -9,11 +9,9 @@
 
 	export let problem: Problem;
 
-	// $: {
-	// 	if (!problem.status) {
-	// 		problem.status = problem.devStatus;
-	// 	}
-	// }
+	$: {
+		problem.status = $userData.role ? problem.status : "";
+	}
 
 	function selectProblem() {
 		$selectedProblemId = $selectedProblemId === problem.id ? null : problem.id;
@@ -41,10 +39,10 @@
 	</div>
 	<div class="do-now">
 		<a
-			href="/code/{problem.id}"
+			href={getToProblemURL(problem.id)}
 			title="สามารถกดเมาส์กลางได้"
 			aria-disabled={$userData.role == null}
-			on:click|stopPropagation|preventDefault={() => window.open(`/code/${problem.id}`, "_blank")}
+			on:click|stopPropagation|preventDefault={() => goToProblemURL(problem.id)}
 		>
 			{#if $userData.role == null}
 				กรุณาเข้าสู่ระบบ

@@ -16,7 +16,7 @@
 	import Search from "../../../components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { searchParams, selectedProblemId } from "./problem";
+	import { goToProblemURL, searchParams, selectedProblemId } from "./problem";
 	import type { Unsubscriber } from "svelte/store";
 	import Loading from "../../../components/Loading.svelte";
 	import { fade, fly } from "svelte/transition";
@@ -77,7 +77,11 @@
 			)
 			.map(([key, value]) => {
 				if (Array.isArray(value)) {
-					return `${key}=${value.join("&")}`;
+					let string = "";
+					value.forEach((element) => {
+						string += `&${key}=${element}`;
+					});
+					return string;
 				}
 				return `${key}=${value}`;
 			})
@@ -186,8 +190,8 @@
 	});
 
 	onDestroy(() => {
-		subscribeSearchParams();
-		subscribeSelectedProblemId();
+		if (subscribeSearchParams) subscribeSearchParams();
+		if (subscribeSelectedProblemId) subscribeSelectedProblemId();
 	});
 
 	/*
@@ -260,7 +264,7 @@
 				<Button
 					class="submit-btn"
 					onclick={() => {
-						window.open("/code?id=" + selectedProblem?.id, "_blank");
+						goToProblemURL(selectedProblem?.id);
 					}}>ทำโจทย์</Button
 				>
 			</div>

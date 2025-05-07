@@ -14,7 +14,6 @@
 	import HeaderDifficulty from "./Header-Difficulty.svelte";
 	import HeaderTags from "./Header-Tags.svelte";
 	import ProblemRow from "./ProblemRow.svelte";
-	import { azFade, azScale } from "$lib/transition";
 
 	export let loading = false;
 	export let loadMore;

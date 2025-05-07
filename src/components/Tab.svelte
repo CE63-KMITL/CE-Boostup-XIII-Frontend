@@ -4,11 +4,8 @@
 	export let headers = {};
 	export let activeTab: string;
 
-	export let OnChangeTab = null;
-
 	function selectTab(tabName: string) {
 		activeTab = tabName;
-		if (OnChangeTab) OnChangeTab(tabName);
 	}
 </script>
 
@@ -45,6 +42,7 @@
 		display: flex;
 		width: 100%;
 		flex-shrink: 0;
+		flex-wrap: wrap;
 	}
 
 	.tab-header {

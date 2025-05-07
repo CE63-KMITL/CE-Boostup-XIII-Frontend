@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let hoverColor = "255, 255, 255, 0.1";
 
+	if (!$$restProps.style) $$restProps.style = "";
 	$$restProps.style += `--hoverColor: rgba(${hoverColor});`;
 
 	//--------------------------------------------------------
