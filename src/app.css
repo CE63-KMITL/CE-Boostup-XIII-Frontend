@@ -57,6 +57,7 @@ html:not([dark]) {
 
 	--sc-bg: rgb(241, 213, 161);
 	--sc-text: rgb(169, 132, 77);
+	--sc-button: rgb(95, 75, 94);
 }
 
 html[dark] {
