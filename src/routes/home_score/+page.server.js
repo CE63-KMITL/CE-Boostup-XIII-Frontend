@@ -1,24 +1,32 @@
-export const load = async () => {
-    const fetchusers = async () => {
-        const res = await fetch('https://dummyjson.com/users'); // ดึงข้อมูลจาก API
-        const data = await res.json();
-        return data.users;
-    };
-
-    const users = await fetchusers();
-    const houseScores = [
-        { houseName: 'Priest', score: 1200 },
-        { houseName: 'Knight', score: 1100 },
-        { houseName: 'Mage', score: 900 },
-        { houseName: 'Warlock', score: 1000000 }
-    ];
-    const myHouseName = 'Warlock';
-    const myHouseMembers = users.filter(u => u.house === myHouseName);
-
-    return {
-        users,
-        houseScores,
-        myHouseMembers,
-        myHouseName
-    };
-};
+// export const load = async () => {
+//     const fetchoverall = async () => {
+//       const res = await fetch('https://example.com/api/overall'); // เปลี่ยน URL ให้ถูกต้อง
+//       const data = await res.json();
+//       return data.overall;
+//     };
+  
+//     const fetchhouse = async () => {
+//       const res = await fetch('https://example.com/api/house'); // เปลี่ยน URL ให้ถูกต้อง
+//       const data = await res.json();
+//       return data.house;
+//     };
+  
+//     const fetchmyhouse = async () => {
+//       const res = await fetch('https://example.com/api/myhouse'); // เปลี่ยน URL ให้ถูกต้อง
+//       const data = await res.json();
+//       return data.myhouse;
+//     };
+  
+//     // ดึงข้อมูลพร้อมกันทั้งหมด (รอพร้อมกัน)
+//     const [overall, house, myhouse] = await Promise.all([
+//       fetchoverall(),
+//       fetchhouse(),
+//       fetchmyhouse()
+//     ]);
+  
+//     return {
+//       overall,
+//       house,
+//       myhouse
+//     };
+//   };

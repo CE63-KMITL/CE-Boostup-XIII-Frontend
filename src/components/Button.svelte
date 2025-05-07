@@ -26,7 +26,7 @@
 	});
 </script>
 
-<button {...$$restProps} bind:this={This_Button} on:click>
+<button {...$$restProps} bind:this={This_Button}>
 	<slot></slot>
 </button>
 
@@ -34,8 +34,8 @@
 	button {
 		width: 100%;
 		padding: 12px;
-		background: var(--theme-text);
-		color: var(--text);
+		background: var(--theme);
+		color: white;
 		border: none;
 		border-radius: 5px;
 		font-size: 1rem;

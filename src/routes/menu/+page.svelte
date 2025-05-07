@@ -1,16 +1,19 @@
 <script lang="ts">
+	export let data;
+
 	import { pushState } from "$app/navigation";
-	import { IsRole } from "$lib/auth.local";
+	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
 	import Fullscreen from "../../components/Fullscreen.svelte";
-	import ProblemInMenu from "../problem/ProblemInMenu.svelte";
+	import Setting from "../../components/Icons/Setting.svelte";
+	import User from "../../components/Icons/User.svelte";
+	import ProblemInMenu from "../problem/Menu-Problem.svelte";
 
-	export let data;
 	const items = { problem: "โจทย์", score: "คะแนน" };
 
-	if (IsRole(Role.STAFF, data)) {
+	if (IsRole(Role.STAFF)) {
 		items["create_problem"] = "สร้างโจทย์";
 	}
 
@@ -53,7 +56,30 @@
 				</button>
 			{/each}
 		</div>
-		<dir id="end"></dir>
+		<dir id="end">
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<div
+				class="circle-bg"
+				role="button"
+				tabindex="0"
+				onclick={(e) => {
+					if ($userData.role == null) {
+						window.location.href = "/login";
+					}
+				}}
+			>
+				{#if $userData.role == null}
+					ล็อคอิน
+				{:else if data.icon}
+					<img src={data.icon} alt="Icon" class="circular-icon" />
+				{:else}
+					<User></User>
+				{/if}
+			</div>
+			<div class="circle-bg">
+				<Setting></Setting>
+			</div>
+		</dir>
 	</div>
 	<div id="content">
 		{#if currentPage == "problem"}
@@ -65,9 +91,13 @@
 </Fullscreen>
 
 <style lang="scss">
-	#content {
-		position: relative;
-		height: calc(100% - 70px);
+	.circle-bg {
+		height: 40px;
+		width: auto;
+		// aspect-ratio: 1/1 !important;
+		background: var(--bg);
+		padding: 10px;
+		border-radius: 999px;
 	}
 
 	#start {
@@ -75,6 +105,19 @@
 		flex-direction: row;
 		height: 100%;
 		align-items: center;
+		z-index: 2;
+	}
+
+	#content {
+		position: relative;
+		height: calc(100% - 70px);
+	}
+
+	#end {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+		z-index: 2;
 	}
 
 	#logo {
@@ -108,8 +151,9 @@
 		display: flex;
 		flex-direction: row;
 		gap: 20px;
-		width: 50%;
+		width: 100%;
 		justify-content: center;
+		position: absolute;
 
 		.page-selector {
 			color: var(--top-bar-text);
@@ -132,14 +176,10 @@
 		}
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 800px) {
 		#topbar {
 			height: 50px;
 			padding-inline: 5px;
-		}
-
-		#logo-text {
-			display: none;
 		}
 
 		#page-selector-container {
@@ -153,6 +193,17 @@
 
 		#content {
 			height: calc(100% - 50px);
+		}
+
+		.circle-bg {
+			height: 30px;
+			padding: 5px;
+		}
+	}
+
+	@media (max-width: 300px) {
+		#logo-text {
+			display: none;
 		}
 	}
 </style>

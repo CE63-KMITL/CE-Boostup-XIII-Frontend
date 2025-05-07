@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
 	import HeaderSelection from "../../../components/HeaderSelection.svelte";

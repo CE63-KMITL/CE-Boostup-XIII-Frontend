@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { userData } from "$lib/auth.local";
 	import { selectedProblemId, statusColors, statusText } from "../problem";
 
-	import { preventDefault } from "svelte/legacy";
-	import Button from "../../../components/Button.svelte";
 	import List from "../../../components/List.svelte";
 	import { type Problem } from "../problem";
 	import Stars from "./Stars.svelte";
@@ -39,9 +37,14 @@
 		<a
 			href="/code/{problem.id}"
 			title="สามารถกดเมาส์กลางได้"
-			on:click|stopPropagation|preventDefault={(event) => window.open(`/code/${problem.id}`, "_blank")}
+			aria-disabled={$userData.role == null}
+			on:click|stopPropagation|preventDefault={() => window.open(`/code/${problem.id}`, "_blank")}
 		>
-			ทำโจทย์
+			{#if $userData.role == null}
+				กรุณาเข้าสู่ระบบ
+			{:else}
+				ทำโจทย์
+			{/if}
 		</a>
 	</div>
 </List>
@@ -54,12 +57,12 @@
 	}
 
 	.id {
-		color: var(--theme-dark-text);
+		color: var(--theme);
 	}
 
 	.title {
 		font-weight: 500;
-		color: var(--theme-dark-text);
+		color: var(--theme);
 		width: 100%;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -86,7 +89,7 @@
 		width: 100%;
 		padding: 5px;
 		padding-inline: 15px;
-		background: #c19a6b;
+		background: var(--theme);
 		color: white;
 		border: none;
 		border-radius: 5px;
@@ -94,11 +97,17 @@
 		font-weight: 500;
 		transition: all 0.2s ease;
 		border-radius: 99rem;
+		border: transparent 1px solid;
 
 		&:hover {
-			background: #967145;
-			border: #ffb356 1px solid;
+			background: var(--theme-dark);
+			border: var(--text) 1px solid;
 			translate: 0 -2px;
+		}
+
+		&[aria-disabled="true"] {
+			pointer-events: none;
+			opacity: 0.3;
 		}
 	}
 </style>

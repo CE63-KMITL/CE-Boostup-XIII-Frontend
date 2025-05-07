@@ -1,7 +1,14 @@
+import { get, writable } from "svelte/store";
 import { Role } from "./enum/role";
 
-export function IsRole(role: Role, data) {
-	if (data.role == role || data.role == Role.DEV) {
+export const userData = writable({
+	role: null,
+	icon: null,
+});
+
+export function IsRole(role: Role) {
+	const currentData = get(userData);
+	if (currentData.role == role || currentData.role == Role.DEV) {
 		return true;
 	}
 	return false;

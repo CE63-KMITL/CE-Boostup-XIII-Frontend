@@ -8,6 +8,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 
 	let userData = {
 		role: null,
+		icon: null,
 	};
 
 	if (token) {
@@ -22,8 +23,10 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 			});
 
 			if (response.ok) {
-				userData = (await response.json()) || userData;
-				console.log(userData);
+				const data = await response.json();
+				for (const [key, value] of Object.entries(data)) {
+					userData[key] = value;
+				}
 			} else if (response.status === 401 || response.status === 403) {
 				cookies.delete(tokenCookieName, { path: "/" });
 				userData.role = null;
@@ -39,6 +42,8 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 		console.log("No auth token cookie found.");
 		if (autoRedirect) redirect(307, "/login");
 	}
+
+	console.log("User data", userData);
 
 	return userData;
 };
