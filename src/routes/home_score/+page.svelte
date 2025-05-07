@@ -1,4 +1,11 @@
 <script lang="ts">
+    import Fullscreen from "../../components/Fullscreen.svelte";
+    import Button from "../../components/Button.svelte";
+    import Frame from "../../components/Frame.svelte";
+    import ScoreTab from "./components/ScoreTab.svelte";
+    import BadgeGold from "../../components/Icons/Badge_Gold.svelte";
+    import BadgeSilver from "../../components/Icons/Badge_Silver.svelte";
+    import BadgeBronze from "../../components/Icons/Badge_Bronze.svelte";
 
     /*
      -------------------------------------------------------
@@ -6,15 +13,9 @@
      -------------------------------------------------------
      */
 
-    import Fullscreen from "../../components/Fullscreen.svelte";
-    import Button from "../../components/Button.svelte";
-    import Frame from "../../components/Frame.svelte";
-    import BadgeGold from "../../components/Icons/Badge_Gold.svelte";
-    import BadgeSilver from "../../components/Icons/Badge_Silver.svelte";
-    import BadgeBronze from "../../components/Icons/Badge_Bronze.svelte";
-
-    let headerTabs: { [key: string]: string } = { overall: "Overall", house: "House", myHouse: "MyHouse"};
-	let activeTab = "Overall";
+    let headerTabs: { [key: string]: string } = 
+        { overall: "Overall", house: "House", myHouse: "MyHouse"};
+	let activeTab = "overall";
 
     const profile = {
       name: 'เพ็ญพิชชา ปานจันทร์',
@@ -54,21 +55,6 @@
     { name: "Patsorn Chaiyawan", id: "67010856", score: 640 },
     ];
 
-    // const container = document.getElementById("myHouseTable");
-
-    // dataMyHouse.forEach((item, index) => {
-    //     const row = document.createElement("div");
-    //     row.className = "row";
-
-    //     row.innerHTML = `
-    //         <div class="rank">${String(index+1).padStart(2,"0")}</div>
-    //         <div class="name">${item.name}</div>
-    //         <div class="id">${item.id}</div>
-    //         <div class="score">${item.score}</div>
-    //     `;
-    //     container.appendChild(row);
-    // });
-
 </script>
 
 <Fullscreen>
@@ -92,11 +78,38 @@
         </Frame>
         <!-- SC-Right Side -->
         <Frame id="sc-right" full="" blur-bg>
-            <div class="scr-top">
-                <Button class="scr-btn-Overall">Overall</Button>
-                <Button class="scr-btn-House">House</Button>
-                <Button class="scr-btn-MyHouse">MyHouse</Button>
-            </div>
+            <ScoreTab class="scr-top" headers={headerTabs} bind:activeTab>
+                {activeTab}
+
+                {#if activeTab == "overall"}
+                    <div class="scr-bottom">
+                        overrrrrrrrrrrrrr
+                        overrrrrrrrrrrrrr
+                        overrrrrrrrrrrrrr
+                        overrrrrrrrrrrrrr
+                        overrrrrrrrrrrrrr
+                    </div>
+                {:else if activeTab == "house"}
+                    <div class="scr-bottom">
+                        houseeeeeeeeeeeeee
+                        houseeeeeeeeeeeeee
+                        houseeeeeeeeeeeeee
+                        houseeeeeeeeeeeeee
+                        houseeeeeeeeeeeeee
+                    </div>
+                {:else if activeTab == "myHouse"}
+                    <div class="scr-bottom">
+                        myhouseeeeeeeeeeeeee
+                        myhouseeeeeeeeeeeeee
+                        myhouseeeeeeeeeeeeee
+                        myhouseeeeeeeeeeeeee
+                        myhouseeeeeeeeeeeeee
+                    </div>
+                {/if}
+            </ScoreTab>
+            <!-- <div>
+                rgprgple[rpgl]
+            </div> -->
             <div class="scr-bottom">
                 <div id="myHouseTable"></div>
             </div>
@@ -188,42 +201,23 @@
             width: 60%;
         }
 
-        .scr-top { 
+        :global(.scr-top) { 
             display: flex; 
             border-radius: 20px;
             border: 1px solid var(--outline);
+        }
 
-            :global(Button.scr-btn-Overall) { 
-                border-radius: 20px 0 0 20px; 
-                background-color: var(--bg);
-                &:hover {
-			        background: var(--sc-button);
-                    color: var(--bg)
-		        }
-            }
-            :global(Button.scr-btn-House) { 
-                border-radius: 0%; 
-                background-color: var(--bg);
-                &:hover {
-			        background: var(--sc-button);
-                    color: var(--bg)
-		        }
-            }
-            :global(Button.scr-btn-MyHouse) { 
-                border-radius: 0 20px 20px 0; 
-                background-color: var(--bg);
-                &:hover { 
-                    background: var(--sc-button);
-                    color: var(--bg)
-		        }
-            }
+        .scr-bottom{
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
 
-            // .scr-bottom{
-            //     #myHouseTable{
-            //         display: flex;
-            //         flex-direction: column;
-            //         gap: 8px;
-            //     }
+            #myHouseTable{
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
 
             //     .row {
             //         display: flex;
@@ -238,9 +232,6 @@
             //         text-align: center;
             //     }
             // }
-        }
-
-        
     
     }
 
