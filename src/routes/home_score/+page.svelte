@@ -13,6 +13,9 @@
     import BadgeSilver from "../../components/Icons/Badge_Silver.svelte";
     import BadgeBronze from "../../components/Icons/Badge_Bronze.svelte";
 
+    let headerTabs: { [key: string]: string } = { overall: "Overall", house: "House", myHouse: "MyHouse"};
+	let activeTab = "Overall";
+
     const profile = {
       name: 'เพ็ญพิชชา ปานจันทร์',
       studentId: '68010662',
@@ -92,7 +95,7 @@
             <div class="scr-top">
                 <Button class="scr-btn-Overall">Overall</Button>
                 <Button class="scr-btn-House">House</Button>
-                <Button class="scr-btn-MyHouse">MyHouse</Button>      
+                <Button class="scr-btn-MyHouse">MyHouse</Button>
             </div>
             <div class="scr-bottom">
                 <div id="myHouseTable"></div>
