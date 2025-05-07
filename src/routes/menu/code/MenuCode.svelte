@@ -51,15 +51,33 @@
 	}
 
 	async function loadCode() {
-		// api.call(`/user/getSaveCode?id=${$page.params.id}`, { method: "GET", withToken: true });
-		return localStorage.getItem("code");
+		let code;
+		if (currentProblemId) {
+			code = await api.call(`/user/code/${currentProblemId}`, {
+				withToken: true,
+			});
+
+			console.log(code);
+		} else {
+			code = localStorage.getItem("code");
+		}
+		return code;
 	}
 
 	async function saveCode(code) {
+		if (currentProblemId) {
+			await api.call(`/user/code/${currentProblemId}`, {
+				method: "POST",
+				data: { code },
+				withToken: true,
+			});
+		} else {
+			localStorage.setItem("code", code);
+		}
 		console.log("Saved");
-
-		localStorage.setItem("code", code);
 	}
+
+	let currentProblemId = null;
 
 	async function onRunCode() {
 		result = {
@@ -69,15 +87,25 @@
 			used_time: null,
 		};
 
-		result = await api.call("/run-code", {
-			method: "POST",
-			data: {
-				input: inputText,
-				code: codeText,
-				timeout: 1000,
-			},
-			withToken: true,
-		});
+		if (currentProblemId) {
+			await saveCode(codeText);
+			result = await api.call(`/problem/run-code/${currentProblemId}`, {
+				method: "POST",
+				data: {
+					input: inputText,
+				},
+				withToken: true,
+			});
+		} else {
+			result = await api.call(`/run-code`, {
+				method: "POST",
+				data: {
+					input: inputText,
+					code: codeText,
+				},
+				withToken: true,
+			});
+		}
 	}
 	/*
 	-------------------------------------------------------
@@ -105,7 +133,7 @@
 		<CodeEditor onChange={onEditorChange} {saveCode} {loadCode}></CodeEditor>
 	</Frame>
 
-	<Tab class="side" headers={headerTabs} {activeTab} OnChangeTab={(tab) => (activeTab = tab)}>
+	<Tab class="side" headers={headerTabs} bind:activeTab>
 		{#if activeTab === "details"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<ProblemDetail problem></ProblemDetail>

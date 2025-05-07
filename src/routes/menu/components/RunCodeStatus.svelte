@@ -18,8 +18,8 @@
 		--SUCCESS: rgb(31, 156, 26);
 		--TIMEOUT: rgb(26, 147, 156);
 		--COMPILE_TIMEOUT: rgb(26, 147, 156);
-		--INTERNAL_SERVER_ERROR: rgb(156, 100, 26);
-		--RUNNING: rgb(156, 100, 26);
+		--INTERNAL_SERVER_ERROR: rgb(156, 26, 26);
+		--RUNNING: rgb(233, 215, 54);
 		--COMPILE_ERROR: rgb(156, 26, 26);
 		--RUNTIME_ERROR: rgb(156, 26, 26);
 		--REQUEST_ERROR: rgb(156, 26, 26);

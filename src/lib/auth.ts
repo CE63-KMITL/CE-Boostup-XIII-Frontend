@@ -6,15 +6,12 @@ const tokenCookieName = "token";
 export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 	const token = cookies.get(tokenCookieName);
 
-	let userData = {
-		role: null,
-		icon: null,
-	};
+	let userData;
 
 	if (token) {
 		// console.log(token);
 		try {
-			const response = await fetch(`http://${BACK_HOST}/auth/role`, {
+			const response = await fetch(`http://${BACK_HOST}/user/data`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -24,9 +21,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 
 			if (response.ok) {
 				const data = await response.json();
-				for (const [key, value] of Object.entries(data)) {
-					userData[key] = value;
-				}
+				userData = data;
 			} else if (response.status === 401 || response.status === 403) {
 				cookies.delete(tokenCookieName, { path: "/" });
 				userData.role = null;
@@ -43,7 +38,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 		if (autoRedirect) redirect(307, "/login");
 	}
 
-	// console.log("User data", userData);
+	console.log("User data", userData);
 
 	return userData;
 };

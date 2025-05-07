@@ -3,7 +3,7 @@ import { get, writable } from "svelte/store";
 
 export const items = writable({ code: "ทำโจทย์", problem: "โจทย์", score: "คะแนน" });
 
-export let currentPage = writable("problem");
+export let currentPage = writable("");
 
 export const updatePage = (name) => {
 	if (name == currentPage) return;

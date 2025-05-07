@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let data;
+	export let data: any;
 	$userData = data;
 
 	import { pushState } from "$app/navigation";

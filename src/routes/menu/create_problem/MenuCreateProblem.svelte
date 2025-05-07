@@ -1,16 +1,23 @@
 <script lang="ts">
+	import * as api from "$lib/fetchApi";
 	import { tagsColors } from "$lib/constants/problem";
+	import { azScale } from "$lib/transition";
+	import { onMount } from "svelte";
 	import Button from "../../../components/Button.svelte";
 	import Checkbox from "../../../components/Checkbox.svelte";
 	import CodeEditor from "../../../components/CodeEditor.svelte";
 	import Frame from "../../../components/Frame.svelte";
+	import Tab from "../../../components/Tab.svelte";
+	import InputOutput from "../components/InputOutput.svelte";
+	import TestCase from "../components/TestCase.svelte";
+	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
+	import Stars from "../problem/components/Stars.svelte";
+	import Tag from "../problem/components/Tag.svelte";
+	import { userData } from "$lib/auth.local";
 
-	let user = {
-		name: "John Doe",
-	};
-	let selectedTags: string[] = [];
 	let test_cases = [{ input: "", output: "", hidden: false }];
 	let mainScrollContainer: HTMLElement | null = null;
+	let activeTab: string = "details";
 
 	/*
      -------------------------------------------------------
@@ -61,34 +68,6 @@
 		};
 	}
 
-	function enableHorizontalScroll(node: HTMLElement) {
-		function onWheel(e: WheelEvent) {
-			if (node.getAttribute("disabled") === "true") return;
-
-			const scrollAmount = node.children[0].clientWidth * 0.8;
-
-			e.deltaY > 0
-				? node.scrollTo({
-						top: 0,
-						left: node.scrollLeft + scrollAmount,
-						behavior: "smooth",
-					})
-				: node.scrollTo({
-						top: 0,
-						left: node.scrollLeft - scrollAmount,
-						behavior: "smooth",
-					});
-
-			e.preventDefault();
-		}
-		node.addEventListener("wheel", onWheel, { passive: false });
-		return {
-			destroy() {
-				node.removeEventListener("wheel", onWheel);
-			},
-		};
-	}
-
 	/*
      -------------------------------------------------------
      DOM Manipulation Functions
@@ -109,6 +88,91 @@
 	function Enable_Main_Scroll() {
 		Enable_Node(mainScrollContainer);
 	}
+
+	const testCases = [
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+		{ input: "xx xx xx", output: "xx" },
+	];
+
+	let headerTabs: { [key: string]: string } = {
+		details: "รายละเอียดโจทย์",
+		inputOutput: "รันโค้ด",
+		testcase: "Test case",
+	};
+
+	let problem = null;
+	let selectedTags = {};
+
+	let codeText = "";
+	let inputText = "";
+	let result = {
+		exit_code: null,
+		exit_status: null,
+		output: null,
+		used_time: null,
+	};
+
+	/*
+	-------------------------------------------------------
+	Functions
+	-------------------------------------------------------
+	*/
+
+	function getTestcaseStatus(index) {
+		return index % 2 === 0 ? "pass" : "fail";
+	}
+
+	async function loadCode() {
+		// api.call(`/user/getSaveCode?id=${$page.params.id}`, { method: "GET", withToken: true });
+		return localStorage.getItem("code");
+	}
+
+	async function saveCode(code) {
+		console.log("Saved");
+
+		localStorage.setItem("code", code);
+	}
+
+	async function onRunCode() {
+		result = {
+			exit_code: null,
+			exit_status: "RUNNING",
+			output: null,
+			used_time: null,
+		};
+
+		result = await api.call("/run-code", {
+			method: "POST",
+			data: {
+				input: inputText,
+				code: codeText,
+				timeout: 1000,
+			},
+			withToken: true,
+		});
+	}
+	/*
+	-------------------------------------------------------
+	Lifecycle
+	-------------------------------------------------------
+	*/
+
+	function onEditorChange(text) {
+		codeText = text;
+	}
+
+	onMount(() => {
+		const url = new URL(window.location.href);
+		const problemId = url.searchParams.get("problemId");
+	});
 </script>
 
 <div id="problemCreateContainer" use:enableVerticalScroll bind:this={mainScrollContainer}>
@@ -139,22 +203,51 @@
 	</div> -->
 
 	<div class="sectionPanel">
-		<Frame blur-bg class="sectionContainer codeInputandOutput">
-			<div class="codeInputBox">
-				<div class="codeButtonWrapper">
-					<Button class="run">▷ รัน</Button>
-				</div>
-				<CodeEditor></CodeEditor>
-			</div>
-			<div class="terminalBox">
-				<h1 class="headText">Terminal</h1>
-				<textarea class="output" placeholder="Output here"></textarea>
-			</div>
-		</Frame>
+		<div class="full mainFrame">
+			<Frame blur-bg margin={false} class="ProblemContainer">
+				<CodeEditor onChange={onEditorChange} {saveCode} {loadCode}></CodeEditor>
+			</Frame>
+
+			<Tab class="side" margin={false} headers={headerTabs} bind:activeTab>
+				{#if activeTab === "details"}
+					<div class="full details" in:azScale={{ delay: 250 }} out:azScale>
+						<div class="problemCreate-input-container">
+							<div class="headText">ชื่อโจทย์ :</div>
+							<input class="title" value={problem?.title} />
+						</div>
+						<div class="problemCreate-input-container">
+							<div class="headText">ชื่อคนทำโจทย์ : {problem?.author.name || $userData?.name}</div>
+						</div>
+
+						<div class="headText">ประเภท</div>
+
+						<Frame class="tagsBox">
+							{#each Object.keys(tagsColors) as tag}
+								<Checkbox color={tagsColors[tag]} value={tag} bind:group={selectedTags}
+									>{tag}</Checkbox
+								>
+							{/each}
+						</Frame>
+
+						<textarea class="description">
+							{problem?.detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}
+						</textarea>
+					</div>
+				{:else if activeTab === "inputOutput"}
+					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+						<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
+					</div>
+				{:else if activeTab === "testcase"}
+					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+						<TestCase {testCases} />
+					</div>
+				{/if}
+			</Tab>
+		</div>
 	</div>
 
 	<div class="sectionPanel">
-		<Frame blur-bg class="sectionContainer defaultCodeContainer">
+		<Frame blur-bg margin={false} class="sectionContainer defaultCodeContainer">
 			<div class="defaultCodeHeader">Default code</div>
 			<div class="codeInputBox">
 				<CodeEditor></CodeEditor>
@@ -194,6 +287,30 @@
 </div>
 
 <style lang="scss">
+	.details {
+		display: flex;
+		gap: 10px;
+	}
+
+	.headText {
+		font-weight: 600;
+	}
+
+	.problemCreate-input-container {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		white-space: nowrap;
+	}
+
+	:global(.tagsBox) {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		padding: 10px;
+		gap: 10px;
+	}
+
 	/*
 	-------------------------------------------------------
 	Main Container and Section Panel
@@ -280,225 +397,38 @@
 		}
 	}
 
-	/*
-	-------------------------------------------------------
-	Specific Input/Textarea Styles
-	-------------------------------------------------------
-	*/
-	.problemNameInput {
-		padding: 8px 10px;
-		height: 2.5rem;
-		flex-shrink: 0;
-	}
-	.problemDetailsInput {
-		padding: 8px 10px;
-		height: auto;
-		min-height: 150px;
-		flex-grow: 1;
-	}
-	.codeInput,
-	.output {
-		padding: 8px 10px;
-		flex-grow: 1;
-		white-space: pre;
-		overflow: auto;
-		min-height: 100px;
-	}
-	.testCaseInput {
-		padding: 5px;
-		height: 35vh;
-		text-wrap: nowrap;
-		overflow: auto;
-	}
-	.testCaseOutput {
-		padding: 5px;
-		height: 25vh;
-		text-wrap: nowrap;
-		overflow: auto;
-	}
-
-	/*
-	-------------------------------------------------------
-	Scrollbar Styles
-	-------------------------------------------------------
-	*/
-	.codeInput,
-	.output,
-	.testCaseContainer,
-	.testCaseInput,
-	.testCaseOutput {
-		&::-webkit-scrollbar {
-			width: 8px;
-			height: 8px;
-		}
-		&::-webkit-scrollbar-thumb {
-			background: var(--darker);
-			border-radius: 10px;
-		}
-		&::-webkit-scrollbar-thumb:hover {
-			background: var(--darker-50);
-		}
-	}
-
-	/*
-	-------------------------------------------------------
-	Problem Info Section Styles
-	-------------------------------------------------------
-	*/
-	.problemHead {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-		gap: 8px;
-	}
-	.userAndExDetails {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-		gap: 15px;
-		flex-grow: 1;
-		overflow-y: auto;
-		padding-right: 5px;
-	}
-	.username {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		width: 100%;
-		flex-shrink: 0;
-	}
-	.tagsBox {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		width: 100%;
-		flex-shrink: 0;
-	}
-	.tagsCheckboxGroup {
-		background: var(--bg);
-		display: flex;
-		flex-wrap: wrap;
-		gap: 10px;
-		flex-grow: 1;
-		border-radius: var(--n-border-radius);
-		padding: 10px;
-		border: 1px solid var(--outline);
-	}
-
-	/*
-	-------------------------------------------------------
-	Heading Text Styles
-	-------------------------------------------------------
-	*/
-	.headText {
-		color: var(--text);
-		font-size: 1.2rem;
-		line-height: 1.5rem;
-		font-weight: 600;
-		white-space: nowrap;
-		margin: 0;
-		padding-top: 5px;
-	}
-
-	.username .headText:last-child {
-		font-size: 1rem;
-	}
-
-	.defaultCodeHeader {
-		font-size: 30px;
-		width: auto;
-		text-align: center;
-	}
-	/*
-	-------------------------------------------------------
-	Code Input and Terminal Styles
-	-------------------------------------------------------
-	*/
-	.codeInputBox,
-	.terminalBox {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		flex: 1;
-		min-width: 0;
-	}
-
-	.codeInputBox .headText,
-	.terminalBox .headText {
-		align-self: flex-start;
-		flex-shrink: 0;
-	}
-
-	.codeButtonWrapper {
-		display: flex;
-		align-self: end;
-		position: absolute;
-	}
-
-	.codeInputHead {
-		display: flex;
-		width: 100%;
-		justify-content: space-between;
-		align-items: center;
-		flex-shrink: 0;
-	}
-
-	/*
-	-------------------------------------------------------
-	Test Case Section Styles
-	-------------------------------------------------------
-	*/
-	.testCaseContainer {
+	.mainFrame {
 		display: flex;
 		flex-direction: row;
+		height: 100%;
+		width: 100%;
 		gap: 10px;
-		scroll-snap-type: x mandatory;
-		overflow-x: scroll;
-		padding-bottom: 10px;
 	}
 
-	.testCase {
-		height: 100%;
-		min-width: 25rem;
-		max-width: 25rem;
+	:global(.ProblemContainer) {
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
-		scroll-snap-align: start;
-		animation: fade-in 0.2s ease-out forwards;
+		width: 60%;
+		gap: 10px;
 	}
 
-	.hiddenTestcaseBox {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		color: var(--text);
-		font-size: 1rem;
-		line-height: 1.5rem;
+	:global(div.side) {
+		width: 40%;
 	}
-	/*
-	-------------------------------------------------------
-	Media Queries
-	-------------------------------------------------------
-	*/
-	@media (max-width: 768px) {
-		:global(.sectionContainer) {
-			padding: 15px;
-		}
-		:global(.codeInputandOutput) {
+
+	@media (max-width: 800px) {
+		.mainFrame {
 			flex-direction: column;
-			height: calc(100% - 30px);
 		}
-		.codeInputBox,
-		.terminalBox {
-			flex: 1;
-		}
-	}
 
-	@media (max-width: 1000px) {
-		.testCase {
-			min-width: 15.5rem;
-			max-width: 15.5rem;
+		:global(.ProblemContainer) {
+			width: auto;
+			height: 50%;
+		}
+
+		:global(div.side) {
+			width: auto;
+			height: 50%;
 		}
 	}
 </style>
