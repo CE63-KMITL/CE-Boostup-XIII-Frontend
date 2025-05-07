@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { page } from "$app/state";
 	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
+	import { onMount } from "svelte";
 	import CodeEditor from "../../../components/CodeEditor.svelte";
 	import Frame from "../../../components/Frame.svelte";
 	import Tab from "../../../components/Tab.svelte";
 	import InputOutput from "../components/InputOutput.svelte";
 	import TestCase from "../components/TestCase.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
-
-	export let data;
 
 	/*
 	-------------------------------------------------------
@@ -30,12 +28,17 @@
 		{ input: "xx xx xx", output: "xx" },
 	];
 
-	const description = "รายละเอียดโจทย์...";
-	let activeTab = "details";
+	let headerTabs: { [key: string]: string } = { inputOutput: "รันโค้ด" };
+	let activeTab = "inputOutput";
 
 	let codeText = "";
 	let inputText = "";
-	let outputText = "";
+	let result = {
+		exit_code: null,
+		exit_status: null,
+		output: null,
+		used_time: null,
+	};
 
 	/*
 	-------------------------------------------------------
@@ -48,30 +51,61 @@
 	}
 
 	async function loadCode() {
-		// api.call(`/user/getSaveCode?id=${$page.params.id}`, { method: "GET", withToken: true });
-		return localStorage.getItem("code");
+		let code;
+		if (currentProblemId) {
+			code = await api.call(`/user/code/${currentProblemId}`, {
+				withToken: true,
+			});
+
+			console.log(code);
+		} else {
+			code = localStorage.getItem("code");
+		}
+		return code;
 	}
 
 	async function saveCode(code) {
+		if (currentProblemId) {
+			await api.call(`/user/code/${currentProblemId}`, {
+				method: "POST",
+				data: { code },
+				withToken: true,
+			});
+		} else {
+			localStorage.setItem("code", code);
+		}
 		console.log("Saved");
-
-		localStorage.setItem("code", code);
 	}
 
+	let currentProblemId = null;
+
 	async function onRunCode() {
-		outputText = "";
+		result = {
+			exit_code: null,
+			exit_status: "RUNNING",
+			output: null,
+			used_time: null,
+		};
 
-		const result = await api.call("/run-code", {
-			method: "POST",
-			data: {
-				input: inputText,
-				code: codeText,
-				timeout: 1000,
-			},
-			withToken: true,
-		});
-
-		outputText = result.output;
+		if (currentProblemId) {
+			await saveCode(codeText);
+			result = await api.call(`/problem/run-code/${currentProblemId}`, {
+				method: "POST",
+				data: {
+					input: inputText,
+				},
+				withToken: true,
+			});
+		} else {
+			result = await api.call(`/run-code`, {
+				method: "POST",
+				data: {
+					input: inputText,
+					code: codeText,
+				},
+				withToken: true,
+			});
+		}
 	}
 	/*
 	-------------------------------------------------------
@@ -82,6 +116,16 @@
 	function onEditorChange(text) {
 		codeText = text;
 	}
+
+	onMount(() => {
+		const url = new URL(window.location.href);
+		const problemId = url.searchParams.get("problemId");
+
+		if (problemId) {
+			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "Test case" };
+			activeTab = "details";
+		}
+	});
 </script>
 
 <div class="full mainFrame">
@@ -89,19 +133,14 @@
 		<CodeEditor onChange={onEditorChange} {saveCode} {loadCode}></CodeEditor>
 	</Frame>
 
-	<Tab
-		class="side"
-		headers={{ details: "รายละเอียดโจทย์", inputOutput: "รันโค้ด", testcase: "Test case" }}
-		{activeTab}
-		OnChangeTab={(tab) => (activeTab = tab)}
-	>
+	<Tab class="side" headers={headerTabs} bind:activeTab>
 		{#if activeTab === "details"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<ProblemDetail problem></ProblemDetail>
 			</div>
 		{:else if activeTab === "inputOutput"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<InputOutput {onRunCode} bind:inputText bind:outputText></InputOutput>
+				<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
 			</div>
 		{:else if activeTab === "testcase"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
@@ -138,7 +177,7 @@
 
 	@media (max-width: 800px) {
 		.mainFrame {
-			flex-direction: column-reverse;
+			flex-direction: column;
 		}
 
 		:global(.ProblemContainer) {

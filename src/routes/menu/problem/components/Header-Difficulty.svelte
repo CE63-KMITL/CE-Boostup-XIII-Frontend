@@ -1,8 +1,19 @@
 <script lang="ts">
-	import * as api from "$lib/fetchApi";
-	import { onMount } from "svelte";
 	import RadioButton from "../../../../components/RadioButton.svelte";
 	import { searchParams } from "../problem";
+
+	let minDifficulty = $searchParams.minDifficulty;
+	let maxDifficulty = $searchParams.maxDifficulty;
+
+	let timeout;
+	$: {
+		if (timeout) clearTimeout(timeout);
+
+		timeout = setTimeout(() => {
+			$searchParams.minDifficulty = minDifficulty;
+			$searchParams.maxDifficulty = maxDifficulty;
+		}, 200);
+	}
 </script>
 
 <div>เรียงลำดับ:</div>
@@ -34,10 +45,10 @@
 	min="0.5"
 	max="5"
 	step="0.5"
-	bind:value={$searchParams.minDifficulty}
+	bind:value={minDifficulty}
 	on:input={() => {
-		if ($searchParams.minDifficulty > $searchParams.maxDifficulty) {
-			$searchParams.maxDifficulty = $searchParams.minDifficulty;
+		if (minDifficulty > maxDifficulty) {
+			maxDifficulty = minDifficulty;
 		}
 	}}
 />
@@ -46,15 +57,15 @@
 	min="0.5"
 	max="5"
 	step="0.5"
-	bind:value={$searchParams.maxDifficulty}
+	bind:value={maxDifficulty}
 	on:input={() => {
-		if ($searchParams.maxDifficulty < $searchParams.minDifficulty) {
-			$searchParams.minDifficulty = $searchParams.maxDifficulty;
+		if (maxDifficulty < minDifficulty) {
+			minDifficulty = maxDifficulty;
 		}
 	}}
 />
 <div class="range-values">
-	<span>{$searchParams.minDifficulty}</span>
+	<span>{minDifficulty}</span>
 	<span>ถึง</span>
-	<span>{$searchParams.maxDifficulty}</span>
+	<span>{maxDifficulty}</span>
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let data;
+	export let data: any;
 	$userData = data;
 
 	import { pushState } from "$app/navigation";
@@ -14,22 +14,13 @@
 	import MenuCode from "./code/MenuCode.svelte";
 	import MenuCreateProblem from "./create_problem/MenuCreateProblem.svelte";
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
+	import { items, currentPage, updatePage } from "./pageManager";
 
-	export const items = { code: "ทำโจทย์", problem: "โจทย์", score: "คะแนน" };
 	if (IsRole(Role.STAFF)) {
-		items["create_problem"] = "สร้างโจทย์";
+		$items["create_problem"] = "สร้างโจทย์";
 	}
 
-	export let currentPage;
 	let redirectToMenu = false;
-	const updatePage = (name) => {
-		if (name == currentPage) return;
-		let url = new URL(window.location.href);
-		url.searchParams.set("page", name);
-		currentPage = name;
-		pushState(url, null);
-		document.title = items[currentPage];
-	};
 
 	onMount(() => {
 		let url = new URL(window.location.href);
@@ -41,8 +32,8 @@
 			console.log(url);
 			window.history.pushState(null, null, url);
 		}
-		currentPage = url.searchParams.get("page");
-		document.title = items[currentPage];
+		$currentPage = url.searchParams.get("page");
+		document.title = $items[$currentPage];
 	});
 
 	let showMobileTopbar = false;
@@ -59,13 +50,13 @@
 		</div>
 
 		<div id="page-selector-container" data-pc="true">
-			{#each Object.keys(items) as item}
+			{#each Object.keys($items) as item}
 				<button
 					class="page-selector"
-					data-currentPage={currentPage == item}
+					data-currentPage={$currentPage == item}
 					onclick={() => updatePage(item)}
 				>
-					{items[item]}
+					{$items[item]}
 				</button>
 			{/each}
 		</div>
@@ -78,13 +69,13 @@
 
 		{#if showMobileTopbar}
 			<div in:fly={{ y: 20 }} out:fly={{ y: 20 }} id="page-selector-container" data-mobile="true">
-				{#each Object.keys(items) as item}
+				{#each Object.keys($items) as item}
 					<button
 						class="page-selector"
-						data-currentPage={currentPage == item}
+						data-currentPage={$currentPage == item}
 						onclick={() => updatePage(item)}
 					>
-						{items[item]}
+						{$items[item]}
 					</button>
 				{/each}
 			</div>
@@ -92,7 +83,7 @@
 
 		<dir id="end">
 			<div
-				data-currentPage={currentPage == "profile"}
+				data-currentPage={$currentPage == "profile"}
 				class="circle-bg"
 				onclick={(e) => {
 					if ($userData.role == null) {
@@ -112,7 +103,7 @@
 			</div>
 
 			<div
-				data-currentPage={currentPage == "setting"}
+				data-currentPage={$currentPage == "setting"}
 				class="circle-bg"
 				onclick={() => {
 					updatePage("setting");
@@ -123,15 +114,15 @@
 		</dir>
 	</div>
 	<div id="content">
-		{#if currentPage == "code"}
+		{#if $currentPage == "code"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<MenuCode></MenuCode>
 			</div>
-		{:else if currentPage == "problem"}
+		{:else if $currentPage == "problem"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<ProblemInMenu></ProblemInMenu>
 			</div>
-		{:else if currentPage == "score"}{:else if currentPage == "create_problem"}
+		{:else if $currentPage == "score"}{:else if $currentPage == "create_problem"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<MenuCreateProblem></MenuCreateProblem>
 			</div>
@@ -277,7 +268,7 @@
 		top: 60px;
 		background: var(--bg-50);
 		border-radius: var(--n-border-radius);
-		padding-block: 10px;
+		padding: 10px;
 		backdrop-filter: blur(10px);
 		outline: 1px solid var(--outline);
 

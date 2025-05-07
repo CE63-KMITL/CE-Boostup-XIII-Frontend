@@ -42,6 +42,9 @@ html:not([dark]) {
 	--status-in-progress: rgb(151, 134, 38);
 	--status-not-started: rgb(199, 65, 65);
 
+	--exit-code: rgb(216, 178, 54);
+	--used-time: rgb(72, 174, 192);
+
 	--place-holder: #3f2e3e83;
 
 	--text: #3f2e3e;
@@ -87,6 +90,9 @@ html[dark] {
 	--status-in-progress: rgb(255, 255, 132);
 	--status-not-started: rgb(255, 123, 123);
 
+	--exit-code: rgb(255, 228, 141);
+	--used-time: rgb(128, 224, 241);
+
 	--text: #fff1fe;
 	--description: rgb(185, 185, 185);
 	--normal: rgb(48, 48, 48);
@@ -127,9 +133,9 @@ html[dark] > body > #bg {
 	opacity: 0.5;
 }
 
-* {
+div {
 	color: var(--text);
-	font-size: 15px;
+	font-size: 1rem;
 }
 
 @media (max-width: 800px) or (max-height: 600px) {

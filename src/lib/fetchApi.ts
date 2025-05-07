@@ -1,5 +1,6 @@
 import { goto } from "$app/navigation";
 import { getCookie } from "./cookie";
+import { say } from "./normalFunction";
 
 const API_HOST = import.meta.env.VITE_API_HOST;
 
@@ -24,23 +25,36 @@ export async function call(
 			const responseData = await response.json();
 
 			if (responseData.message == "User not found") {
-				alert("⚠️ เกิดข้อผิดพลาด\n\nไม่พบข้อมูลผู้ใช้ หรือ เซสชั่นหมดอายุ\n\nกรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+				alert(
+					say(
+						"⚠️ เกิดข้อผิดพลาด\n\nไม่พบข้อมูลผู้ใช้ หรือ เซสชั่นหมดอายุ\n\nกรุณาเข้าสู่ระบบใหม่อีกครั้ง",
+						"(*￣3￣)╭"
+					)
+				);
 				goto("/login?clear");
 				return;
 			}
 
 			console.log(response);
 
-			if (responseData.message && responseData?.message.includes("Too Many Requests")) {
-				alert("ใจเย็นๆหน่อย ♪(´▽｀)\n\nคุณดูเหนื่อยๆนะดื่มน้ำหน่อยไหม");
-				return;
+			if (responseData.message) {
+				if (responseData.message.includes("Too Many Requests")) {
+					alert(say("ใจเย็นๆหน่อย~\n\nคุณดูเหนื่อยๆนะดื่มน้ำหน่อยไหม", "♪(´▽｀)"));
+					return;
+				} else if (responseData.message.includes("Unauthorized")) {
+					alert(say("กรุณาเข้าสู่ระบบก่อนใช้งาน", "( •̀ ω •́ )✧"));
+					return;
+				}
 			}
 
 			if (!response.ok) {
 				alert(
-					`⚠️ เกิดข้อผิดพลาด ${route}\n\nโปรดติดต่อ CE63@KMITL\n\n${
-						responseData.error ?? ""
-					}\n${JSON.stringify(responseData.message)}`
+					say(
+						`${route}\n\n⚠️ เกิดข้อผิดพลาด\n\nโปรดติดต่อ CE63@KMITL\n\n${
+							responseData.error ?? ""
+						}\n${JSON.stringify(responseData.message)}`,
+						"(┬┬﹏┬┬)"
+					)
 				);
 				return;
 			}
@@ -54,7 +68,12 @@ export async function call(
 	} catch (error) {
 		try {
 			if (error.toString().includes("Failed to fetch")) {
-				alert("⚠️ เกิดข้อผิดพลาด\n\nไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ โปรดติดต่อ CE63@KMITL");
+				alert(
+					say(
+						"⚠️ เกิดข้อผิดพลาด\n\nไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ โปรดติดต่อ CE63@KMITL",
+						"(˘･_･˘)"
+					)
+				);
 			} else {
 				alert(`${route}\n\n${error}`);
 			}
