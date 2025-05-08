@@ -5,8 +5,8 @@
 	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 	import "../../app.css";
-	import Button from "../../components/Button.svelte";
-	import PopUp, { showPopup } from "../../components/PopUp.svelte";
+	import Button from "../../lib/components/Button.svelte";
+	import PopUp, { showPopup } from "../../lib/components/PopUp.svelte";
 
 	let email: string = "";
 	let password: string = "";

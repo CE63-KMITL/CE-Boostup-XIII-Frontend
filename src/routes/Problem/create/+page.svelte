@@ -1,7 +1,7 @@
 <script lang="ts">
 	import "../../../app.css";
-	import Button from "../../../components/Button.svelte";
-	import Fullscreen from "../../../components/Fullscreen.svelte";
+	import Button from "../../../lib/components/Button.svelte";
+	import Fullscreen from "../../../lib/components/Fullscreen.svelte";
 
 	//Test data
 	let user = {
