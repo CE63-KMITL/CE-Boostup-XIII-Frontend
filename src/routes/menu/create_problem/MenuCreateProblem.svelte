@@ -65,7 +65,7 @@
 		inputOutput: "รันโค้ด",
 		testcase: "Test case",
 	};
-	let selectedTags = {}; // Used with Checkbox group binding
+	let selectedTags = {};
 
 	//-------------------------------------------------------
 	// Test Case State Handlers
@@ -124,8 +124,8 @@
 			method: "POST",
 			data: {
 				input: inputText,
-				code: solutionCodeText, // Use solutionCodeText for running
-				timeout: problemTimeLimit || 1000, // Use problemTimeLimit
+				code: solutionCodeText,
+				timeout: problemTimeLimit || 1000,
 			},
 			withToken: true,
 		});
@@ -137,7 +137,6 @@
 	onMount(() => {
 		const url = new URL(window.location.href);
 		const problemId = url.searchParams.get("problemId");
-		// TODO: If problemId exists, load problem data
 	});
 </script>
 
@@ -331,7 +330,7 @@
 		border: 1px solid var(--outline);
 		border-radius: 5px;
 		padding: 8px;
-		background-color: var(--bg-alt);
+		background-color: var(--bg);
 		color: var(--text-color);
 		font-family: inherit;
 		font-size: 0.9rem;
@@ -469,7 +468,7 @@
 		padding: 8px;
 		border: 1px solid var(--outline);
 		border-radius: 5px;
-		background-color: var(--bg-alt);
+		background-color: var(--bg);
 		color: var(--text-color);
 		font-size: 0.9rem;
 		width: 100%;
