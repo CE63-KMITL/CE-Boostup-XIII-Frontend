@@ -76,7 +76,6 @@
 		inputOutput: "รันโค้ด",
 		testcase: "Test case",
 	};
-	let selectedTags = {};
 
 	//-------------------------------------------------------
 	// Test Case State Handlers
@@ -345,12 +344,9 @@
 </div>
 
 <style lang="scss">
-	.difficultySlider {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
+	//-------------------------------------------------------
+	// Detail Pane Styles
+	//-------------------------------------------------------
 	.details {
 		display: flex;
 		flex-direction: column;
@@ -367,6 +363,12 @@
 		align-items: center;
 		gap: 10px;
 		white-space: nowrap;
+	}
+
+	.difficultySlider {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
 	}
 
 	.checkboxContainer {
@@ -388,6 +390,9 @@
 		font-size: 0.9rem;
 	}
 
+	//-------------------------------------------------------
+	// Global Styles
+	//-------------------------------------------------------
 	:global(.tagsBox) {
 		display: flex;
 		flex-direction: row;
@@ -396,11 +401,9 @@
 		gap: 10px;
 	}
 
-	/*
-	-------------------------------------------------------
-	Main Container and Section Panel
-	-------------------------------------------------------
-	*/
+	//-------------------------------------------------------
+	// Main Layout Styles
+	//-------------------------------------------------------
 	#problemCreateContainer {
 		width: 100%;
 		height: 100%;
@@ -415,71 +418,6 @@
 		padding: 20px;
 		height: 100%;
 		scroll-snap-align: start;
-	}
-
-	/*
-	-------------------------------------------------------
-	Global Section Container Styles (within Frame)
-	-------------------------------------------------------
-	*/
-	:global(#problemCreateContainer) {
-		:global(.sectionContainer) {
-			border-radius: 10px;
-			display: flex;
-			flex-direction: column;
-			position: relative;
-			box-sizing: border-box;
-			height: 100%;
-			width: 100%;
-			padding: 20px;
-		}
-
-		:global(.defaultCodeContainer) {
-			flex-direction: column;
-		}
-
-		:global(.problemInfo) {
-			justify-content: flex-start;
-			gap: 20px;
-		}
-
-		:global(.codeInputandOutput) {
-			gap: 20px;
-			flex-direction: row;
-			align-items: stretch;
-			overflow: hidden;
-			height: calc(100% - 50px);
-		}
-
-		:global(.testCaseSectionWrapper) {
-			gap: 20px;
-
-			:global(.runAll) {
-				color: var(--bg);
-				background: var(--status-in-progress);
-			}
-
-			:global(.deleteButton) {
-				color: var(--bg);
-				background: var(--status-not-started);
-			}
-
-			:global(.addTestCaseContainerButton) {
-				min-width: 30px;
-				max-width: 30px;
-				align-self: center;
-
-				height: 100%;
-				border: 1px solid var(--outline);
-
-				padding: 0;
-			}
-
-			:global(.doneButton) {
-				color: var(--bg);
-				background: var(--status-done);
-			}
-		}
 	}
 
 	.mainFrame {
@@ -501,6 +439,9 @@
 		width: 40%;
 	}
 
+	//-------------------------------------------------------
+	// Test Case Section Styles
+	//-------------------------------------------------------
 	.testcase-section {
 		display: flex;
 		flex-direction: column;
@@ -509,12 +450,9 @@
 		padding-right: 10px;
 	}
 
-	.addTestCaseContainerButtonFullWidth {
-		width: 100%;
-		margin-top: 10px;
-	}
-
-	input[type="text"],
+	//-------------------------------------------------------
+	// Form Element Styles
+	//-------------------------------------------------------
 	input[type="number"],
 	textarea {
 		padding: 8px;
@@ -532,6 +470,9 @@
 		}
 	}
 
+	//-------------------------------------------------------
+	// Responsive Styles
+	//-------------------------------------------------------
 	@media (max-width: 800px) {
 		.mainFrame {
 			flex-direction: column;

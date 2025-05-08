@@ -9,12 +9,33 @@
 	import TestCaseContainer from "../components/TestCaseContainer.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
 
-	/*
-	-------------------------------------------------------
-	Variables
-	-------------------------------------------------------
-	*/
+	//-------------------------------------------------------
+	// Component State
+	//-------------------------------------------------------
+	let activeTab = "inputOutput";
+	let headerTabs: { [key: string]: string } = { inputOutput: "รันโค้ด" };
 
+	//-------------------------------------------------------
+	// Code and Input/Output State
+	//-------------------------------------------------------
+	let codeText = "";
+	let inputText = "";
+	let result = {
+		exit_code: null,
+		exit_status: null,
+		output: null,
+		used_time: null,
+	};
+
+	//-------------------------------------------------------
+	// Problem Data State
+	//-------------------------------------------------------
+	let currentProblemId: string | null = null;
+	let problemData = null;
+
+	//-------------------------------------------------------
+	// Test Case State (Static or Placeholder)
+	//-------------------------------------------------------
 	const testCases = [
 		{
 			input: "",
@@ -32,43 +53,22 @@
 		},
 	];
 
-	let headerTabs: { [key: string]: string } = { inputOutput: "รันโค้ด" };
-	let activeTab = "inputOutput";
-
-	let codeText = "";
-	let inputText = "";
-	let result = {
-		exit_code: null,
-		exit_status: null,
-		output: null,
-		used_time: null,
-	};
-
-	/*
-	-------------------------------------------------------
-	Functions
-	-------------------------------------------------------
-	*/
-
-	function getTestcaseStatus(index) {
-		return index % 2 === 0 ? "pass" : "fail";
-	}
-
+	//-------------------------------------------------------
+	// Code Persistence Functions
+	//-------------------------------------------------------
 	async function loadCode() {
 		let code;
 		if (currentProblemId) {
 			code = await api.call(`/user/code/${currentProblemId}`, {
 				withToken: true,
 			});
-
-			console.log(code);
 		} else {
 			code = localStorage.getItem("code");
 		}
-		return code;
+		return code || "";
 	}
 
-	async function saveCode(code) {
+	async function saveCode(code: string) {
 		if (currentProblemId) {
 			await api.call(`/user/code/${currentProblemId}`, {
 				method: "POST",
@@ -78,11 +78,11 @@
 		} else {
 			localStorage.setItem("code", code);
 		}
-		console.log("Saved");
 	}
 
-	let currentProblemId = null;
-
+	//-------------------------------------------------------
+	// Code Execution Function
+	//-------------------------------------------------------
 	async function onRunCode() {
 		result = {
 			exit_code: null,
@@ -101,7 +101,6 @@
 				withToken: true,
 			});
 		} else {
-			console.log(codeText);
 			result = await api.call(`/run-code`, {
 				method: "POST",
 				data: {
@@ -112,20 +111,21 @@
 			});
 		}
 	}
-	/*
-	-------------------------------------------------------
-	Lifecycle
-	-------------------------------------------------------
-	*/
 
-	onMount(() => {
+	//-------------------------------------------------------
+	// Lifecycle
+	//-------------------------------------------------------
+	onMount(async () => {
 		const url = new URL(window.location.href);
-		const problemId = url.searchParams.get("problemId");
+		const problemIdFromUrl = url.searchParams.get("problemId");
 
-		if (problemId) {
+		if (problemIdFromUrl) {
+			currentProblemId = problemIdFromUrl;
 			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "Test case" };
 			activeTab = "details";
+			problemData = await api.call(`/problem/${currentProblemId}`, { withToken: true });
 		}
+		codeText = await loadCode();
 	});
 </script>
 
@@ -137,7 +137,7 @@
 	<Tab class="side" headers={headerTabs} bind:activeTab>
 		{#if activeTab === "details"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<ProblemDetail problem></ProblemDetail>
+				<ProblemDetail problem={problemData}></ProblemDetail>
 			</div>
 		{:else if activeTab === "inputOutput"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
@@ -151,20 +151,22 @@
 	</Tab>
 </div>
 
-<style>
-	/*
-	-------------------------------------------------------
-	Page Styles
-	-------------------------------------------------------
-	*/
+<style lang="scss">
+	//-------------------------------------------------------
+	// Main Layout Styles
+	//-------------------------------------------------------
 	.mainFrame {
 		display: flex;
 		flex-direction: row;
 		height: 100%;
 		width: 100%;
 		padding: 10px;
+		gap: 10px;
 	}
 
+	//-------------------------------------------------------
+	// Container Styles
+	//-------------------------------------------------------
 	:global(.ProblemContainer) {
 		display: flex;
 		flex-direction: column;
@@ -176,6 +178,9 @@
 		width: 40%;
 	}
 
+	//-------------------------------------------------------
+	// Responsive Styles
+	//-------------------------------------------------------
 	@media (max-width: 800px) {
 		.mainFrame {
 			flex-direction: column;
