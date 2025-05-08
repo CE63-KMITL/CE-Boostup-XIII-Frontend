@@ -1,11 +1,11 @@
 <script lang="ts">
-    import Fullscreen from "../../components/Fullscreen.svelte";
-    import Button from "../../components/Button.svelte";
-    import Frame from "../../components/Frame.svelte";
+    import Fullscreen from "$lib/components/Fullscreen.svelte";
+    import Button from "$lib/components/Button.svelte";
+    import Frame from "$lib/components/Frame.svelte";
     import ScoreTab from "./components/ScoreTab.svelte";
-    import BadgeGold from "../../components/Icons/Badge_Gold.svelte";
-    import BadgeSilver from "../../components/Icons/Badge_Silver.svelte";
-    import BadgeBronze from "../../components/Icons/Badge_Bronze.svelte";
+    import BadgeGold from "$lib/components/Icons/Badge_Gold.svelte";
+    import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
+    import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 
     /*
      -------------------------------------------------------
