@@ -19,8 +19,8 @@
 	import { goToProblemURL, searchParams, selectedProblemId } from "./problem";
 	import type { Unsubscriber } from "svelte/store";
 	import Loading from "$lib/components/Loading.svelte";
+	import { fade, fly } from "svelte/transition";
 	import { azScale } from "$lib/transition";
-	import { fade } from "svelte/transition";
 
 	/*
      -------------------------------------------------------
@@ -47,6 +47,7 @@
 		for (let i = 0; i < dataIds.length; i++) {
 			const dataId = dataIds[i];
 			const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
+
 			if (element) {
 				element.style.animation = `slide-in 0.2s ease-out forwards`;
 				await sleep(70);
@@ -76,7 +77,11 @@
 			)
 			.map(([key, value]) => {
 				if (Array.isArray(value)) {
-					return `${key}=${JSON.stringify(value)}`;
+					let string = "";
+					value.forEach((element) => {
+						string += `&${key}=${element}`;
+					});
+					return string;
 				}
 				return `${key}=${value}`;
 			})
@@ -117,17 +122,15 @@
 		if (getAllProblems && getAllProblems.data.length > 0) {
 			if (isLoadMore) {
 				allProblems = [...allProblems.slice(0, -1), ...getAllProblems.data];
-				requestAnimationFrame(() => {
-					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
-				});
 			} else {
 				allProblems = getAllProblems.data;
-				requestAnimationFrame(() => {
-					runProblemListAnimation(getAllProblems.data.map((item) => item.id));
-				});
 				maxPage = getAllProblems.totalPage;
 				loaded = true;
 			}
+
+			requestAnimationFrame(() => {
+				runProblemListAnimation(getAllProblems.data.map((item) => item.id));
+			});
 		} else {
 			if (isLoadMore) {
 				allProblems = allProblems.slice(0, -1);
@@ -150,11 +153,6 @@
 
 	async function updateProblemDetail() {
 		if (!$selectedProblemId) return;
-		if (selectedProblem) {
-			selectedProblem.detail = await api.call(`/problem/detail/${$selectedProblemId}`, {
-				withToken: true,
-			});
-		}
 	}
 
 	/*
@@ -162,6 +160,7 @@
      Lifecycle Hooks
      -------------------------------------------------------
      */
+	let subscribeSelectedProblemId: Unsubscriber;
 	let subscribeSearchParams: Unsubscriber;
 	onMount(async () => {
 		problemSelectorElement = document.querySelector("#problem #left");
@@ -172,10 +171,27 @@
 		subscribeSearchParams = searchParams.subscribe(() => {
 			updateProblems();
 		});
+
+		subscribeSelectedProblemId = selectedProblemId.subscribe(async () => {
+			selectedProblem = null;
+
+			const problemData =
+				allProblems.find((problem) => typeof problem === "object" && problem.id === $selectedProblemId) ||
+				selectedProblem;
+
+			if (problemData) {
+				problemData.detail = await api.call(`/problem/detail/${problemData.id}`, {
+					withToken: true,
+				});
+			}
+
+			selectedProblem = problemData;
+		});
 	});
 
 	onDestroy(() => {
-		subscribeSearchParams();
+		if (subscribeSearchParams) subscribeSearchParams();
+		if (subscribeSelectedProblemId) subscribeSelectedProblemId();
 	});
 
 	/*
@@ -209,12 +225,6 @@
 			updateProblemDetail();
 			previousSelectedId = $selectedProblemId;
 		}
-	}
-
-	$: {
-		selectedProblem =
-			allProblems.find((problem) => typeof problem === "object" && problem.id === $selectedProblemId) ||
-			selectedProblem;
 	}
 </script>
 
@@ -286,11 +296,14 @@
 
 		:global(#right) {
 			transition: all 0.25s ease;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
+			display: block;
 			overflow: hidden;
+			padding: 10px;
+
+			:global(.close-problem-detail) {
+				display: none;
+				margin-bottom: 10px;
+			}
 		}
 
 		:global(.problem-list) {
@@ -341,7 +354,7 @@
 		}
 	}
 
-	@media (min-width: 0px) and (max-width: 800px) {
+	@media (max-width: 800px) {
 		#problem {
 			flex-direction: column;
 
@@ -355,13 +368,17 @@
 				bottom: 0;
 				width: 100%;
 				left: 0;
-				padding: 0;
 				margin: 0;
 				border-radius: var(--n-border-radius) var(--n-border-radius) 0px 0px;
+
+				:global(.close-problem-detail) {
+					display: block;
+				}
 			}
 
 			:global(#right:not([show])) {
 				height: 0;
+				padding: 0;
 			}
 
 			:global(#right[show]) {
