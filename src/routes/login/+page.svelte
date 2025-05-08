@@ -98,7 +98,7 @@
 		gap: 1rem;
 		margin-left: 0.75rem;
 		margin-right: 0.75rem;
-		border: 1px solid var(--theme-dark-text);
+		border: 1px solid var(--theme-dark);
 		border-radius: 15px;
 		background-color: var(--bg-50);
 	}
@@ -134,13 +134,13 @@
 		width: 100%;
 		max-width: 25rem;
 		background-color: transparent;
-		border: 1px solid var(--theme-dark-text);
+		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
 	}
 
 	.Email::placeholder {
-		color: var(--theme-dark-text);
+		color: var(--theme-dark);
 		font-weight: 400;
 	}
 
@@ -151,13 +151,13 @@
 		width: 100%;
 		max-width: 25rem;
 		background-color: transparent;
-		border: 1px solid var(--theme-dark-text);
+		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
 	}
 
 	.Password::placeholder {
-		color: var(--theme-dark-text);
+		color: var(--theme-dark);
 		font-weight: 400;
 	}
 
@@ -166,11 +166,11 @@
 	}
 
 	.IoIosEyeOff :global(svg) {
-		fill: var(--theme-dark-text);
+		fill: var(--theme-dark);
 	}
 
 	.ForgetPassword {
-		color: var(--theme-dark-text);
+		color: var(--theme-dark);
 		cursor: pointer;
 		font-size: 1.125rem;
 		text-decoration: underline;
@@ -183,7 +183,7 @@
 	.Text {
 		font-size: 1.5rem;
 		font-weight: 600;
-		color: var(--theme-dark-text);
+		color: var(--theme-dark);
 	}
 
 	@media only screen and (max-width: 500px) {

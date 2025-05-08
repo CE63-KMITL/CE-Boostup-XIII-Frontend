@@ -5,15 +5,16 @@ import { cubicOut, quadInOut } from "svelte/easing";
 Scale Transition
 -------------------------------------------------------
 */
+
+function cal(t, target = 0.95) {
+	return 1 - (1 - target) * (1 - t);
+}
+
 export function azScale(
 	node: HTMLElement,
 	params: { delay?: number; duration?: number; size?: number; easing?: any } = {}
 ) {
 	const existingTransform = getComputedStyle(node).transform.replace("none", "");
-
-	function cal(t, target = 0.95) {
-		return 1 - (1 - target) * (1 - t);
-	}
 
 	return {
 		delay: params.delay || 0,
@@ -31,13 +32,15 @@ export function azScale(
 Fade Transition
 -------------------------------------------------------
 */
-export function azFade(node: HTMLElement, { delay = 0, duration = 400, easing = cubicOut } = {}) {
-	const o = +getComputedStyle(node).opacity;
-
+export function azFade(
+	node: Element,
+	{ from, to }: { from: DOMRect; to: DOMRect }, // Accept from/to as the first argument
+	{ delay = 0, duration = 400, easing = cubicOut } = {} // Accept optional parameters as the second argument
+) {
 	return {
 		delay,
 		duration,
 		easing,
-		css: (t) => `opacity: ${t * o}`,
+		css: (t) => `opacity: ${t}`, // Simple fade from 0 to 1
 	};
 }

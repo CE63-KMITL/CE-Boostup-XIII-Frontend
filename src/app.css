@@ -12,6 +12,7 @@ html {
 }
 
 html:not([dark]) {
+	--top-bar-circle-selected: var(--theme);
 	--top-bar-selected: var(--top-bar-right);
 	--top-bar-hover: var(--top-bar-left);
 	--top-bar-text: rgb(255, 255, 255);
@@ -20,24 +21,32 @@ html:not([dark]) {
 	--top-bar-left: rgb(128, 122, 156);
 	--top-bar-right: rgb(63, 46, 62);
 
-	--theme-text: #a9844d;
-	--theme-dark-text: rgb(150, 125, 79);
+	--button-bg: rgb(169, 132, 77);
+	--button-bg-text: var(--bg);
+
+	--theme: #a9844d;
+	--theme-dark: rgb(150, 125, 79);
 
 	--list-bg: rgb(255, 255, 255);
 	--list-shadow: rgba(0, 0, 0, 0.5);
 	--list-outline: rgba(0, 0, 0, 0);
 
+	--profile-bg: rgba(255, 255, 255, 0.9);
+
 	--hover-list-bg: rgb(240, 240, 240);
 	--hover-list-outline: rgb(100, 100, 100);
 
 	--selected-list-bg: rgb(255, 249, 230);
-	--selected-list-outline: var(--theme-text);
+	--selected-list-outline: var(--theme);
 
 	--tag-text: rgb(255, 255, 255);
 
 	--status-done: rgb(51, 156, 51);
 	--status-in-progress: rgb(151, 134, 38);
 	--status-not-started: rgb(199, 65, 65);
+
+	--exit-code: rgb(216, 178, 54);
+	--used-time: rgb(72, 174, 192);
 
 	--place-holder: #3f2e3e83;
 
@@ -48,12 +57,12 @@ html:not([dark]) {
 	--darker: rgb(194, 194, 194);
 	--darker-50: rgba(194, 194, 194, 0.5);
 	--outline: rgb(0, 0, 0);
-	--button-bg: radial-gradient(at center top, rgb(255, 255, 255), rgba(197, 197, 197, 0.5));
 	--bg: rgb(255, 255, 255);
 	--bg-50: rgba(255, 255, 255, 0.8);
 }
 
 html[dark] {
+	--top-bar-circle-selected: var(--top-bar-selected);
 	--top-bar-selected: rgb(139, 120, 57);
 	--top-bar-hover: rgba(107, 94, 35, 0.274);
 	--top-bar-text: rgb(255, 255, 255);
@@ -62,24 +71,32 @@ html[dark] {
 	--top-bar-left: rgba(0, 0, 0, 0.4);
 	--top-bar-right: rgb(22, 22, 22);
 
-	--theme-text: rgb(212, 181, 124);
-	--theme-dark-text: rgb(241, 211, 156);
+	--button-bg: rgb(207, 165, 85);
+	--button-bg-text: var(--text);
+
+	--theme: #caa561;
+	--theme-dark: rgb(150, 125, 79);
 
 	--list-bg: rgba(0, 0, 0, 0.6);
 	--list-shadow: rgba(68, 27, 61, 0.4);
 	--list-outline: rgba(255, 255, 255, 0.1);
 
+	--profile-bg: rgba(0, 0, 0, 0.6);
+
 	--hover-list-bg: rgba(37, 37, 37, 0.8);
 	--hover-list-outline: rgb(60, 60, 60);
 
 	--selected-list-bg: rgb(65, 63, 52);
-	--selected-list-outline: var(--theme-text);
+	--selected-list-outline: var(--theme);
 
 	--tag-text: rgb(255, 255, 255);
 
 	--status-done: rgb(141, 255, 141);
 	--status-in-progress: rgb(255, 255, 132);
 	--status-not-started: rgb(255, 123, 123);
+
+	--exit-code: rgb(255, 228, 141);
+	--used-time: rgb(128, 224, 241);
 
 	--text: #fff1fe;
 	--description: rgb(185, 185, 185);
@@ -88,11 +105,16 @@ html[dark] {
 	--darker: rgb(22, 22, 22);
 	--darker-50: rgba(22, 22, 22, 0.5);
 	--outline: rgb(125, 125, 125);
-	--button-bg: radial-gradient(at center top, rgb(78, 78, 78), rgba(85, 85, 85, 0.5));
+	--button-bg: radial-gradient(at center top, rgb(190, 152, 80), rgba(153, 120, 48, 0.925));
 	--bg: rgba(0, 0, 0, 0.8);
 	--bg-50: rgba(0, 0, 0, 0.7);
 
 	background: black;
+}
+
+::selection {
+	color: var(--bg);
+	background-color: var(--text);
 }
 
 *::-webkit-scrollbar {
@@ -116,8 +138,15 @@ html[dark] > body > #bg {
 	opacity: 0.5;
 }
 
-* {
+div:not(.view-line) {
 	color: var(--text);
+	font-size: 1rem;
+}
+
+@media (max-width: 800px) or (max-height: 600px) {
+	div:not(.view-line) {
+		font-size: 12px;
+	}
 }
 
 .animation {
@@ -129,6 +158,28 @@ html[dark] > body > #bg {
 	height: 100%;
 	top: 0;
 	left: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+input:not([type="checkbox"]),
+textarea,
+.output {
+	outline: none;
+	border: 1px solid var(--outline);
+	border-radius: 5px;
+	font-size: 1rem;
+	line-height: 1.5rem;
+	resize: none;
+	background-color: var(--bg);
+	color: var(--text);
+	width: 100%;
+	box-sizing: border-box;
+	padding: 10px;
+}
+
+textarea:focus {
+	outline: none !important;
 }
 
 .stroke-icon path,
