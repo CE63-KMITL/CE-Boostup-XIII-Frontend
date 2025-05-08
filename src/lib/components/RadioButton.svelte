@@ -2,48 +2,40 @@
 	import { onMount } from "svelte";
 
 	export let onclick = null;
-	export let onSelect = null;
-	export let onUnselect = null;
-
 	export let color = "var(--text)";
 	export let selected = false;
 
 	let thisElement: HTMLDivElement;
-	let thisCheckbox: HTMLInputElement;
+	let thisRadioButton: HTMLInputElement;
 
 	onMount(() => {
 		thisElement.addEventListener("click", () => {
-			thisCheckbox.checked = !thisCheckbox.checked;
-
-			if (thisCheckbox.checked) {
-				if (onSelect) onSelect();
-			} else {
-				if (onUnselect) onUnselect();
+			thisRadioButton.checked = true;
+			if (onclick) {
+				onclick();
 			}
-
-			if (onclick) onclick(thisCheckbox.checked);
 		});
 
 		if (selected) thisElement.click();
 	});
 </script>
 
-<div class="checkbox-container" style="--color : {color};" {...$$restProps} bind:this={thisElement}>
-	<input type="checkbox" bind:this={thisCheckbox} />
-	<span><slot></slot></span>
+<div class="radio-container" style="--color : {color};" bind:this={thisElement}>
+	<input type="radio" {...$$restProps} bind:this={thisRadioButton} />
+	<span>
+		<slot></slot>
+	</span>
 </div>
 
 <style lang="scss">
-	.checkbox-container {
+	.radio-container {
 		display: flex;
 		flex-direction: row;
-		gap: 5px;
-		cursor: pointer;
-		user-select: none;
 
 		input {
 			position: absolute;
 			left: -9999px;
+
 			&:checked + span {
 				background-color: color-mix(in srgb, var(--color) 10%, transparent 100%);
 				outline: 1px solid var(--color);
@@ -65,6 +57,7 @@
 			transition: 0.25s ease;
 			outline: 0px solid transparent;
 			color: var(--color);
+			white-space: nowrap;
 
 			&:hover {
 				background: var(--hover-list-bg);
@@ -78,16 +71,12 @@
 				background-color: var(--bg);
 				width: 1em;
 				height: 1em;
-				border-radius: 1px;
+				border-radius: 50%;
 				margin-right: 0.375em;
 				transition: 0.25s ease;
 				box-shadow: inset 0 0 0 0.125em var(--color);
 				outline: 0px solid transparent;
 			}
 		}
-	}
-
-	input {
-		pointer-events: none;
 	}
 </style>

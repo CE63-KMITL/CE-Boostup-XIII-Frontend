@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from "../../../components/Button.svelte";
+	import Button from "$lib/components/Button.svelte";
 	import RunCodeStatus from "./RunCodeStatus.svelte";
 
 	export let onRunCode = null;
@@ -109,7 +109,7 @@
 	}
 
 	.output:not(.readable) {
-		line-height: 12px;
+		line-height: 18px;
 		font-family: initial;
 	}
 </style>

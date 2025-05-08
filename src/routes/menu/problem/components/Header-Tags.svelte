@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { tagsColors } from "$lib/constants/problem";
-	import Checkbox from "../../../../components/Checkbox.svelte";
+	import Checkbox from "../$lib/components/Checkbox.svelte";
 	import { searchParams } from "../problem";
 </script>
 

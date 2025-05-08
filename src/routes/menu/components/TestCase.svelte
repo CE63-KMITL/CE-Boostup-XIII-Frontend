@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { flip } from "svelte/animate";
 	import { fly } from "svelte/transition";
-	import Button from "../../../components/Button.svelte";
+	import Button from "$lib/components/Button.svelte";
 
 	export let testCases;
 	export let editable = false;

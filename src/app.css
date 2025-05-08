@@ -21,6 +21,8 @@ html:not([dark]) {
 	--top-bar-left: rgb(128, 122, 156);
 	--top-bar-right: rgb(63, 46, 62);
 
+	--button-bg: rgb(224, 183, 106);
+
 	--theme: #a9844d;
 	--theme-dark: rgb(150, 125, 79);
 
@@ -54,7 +56,6 @@ html:not([dark]) {
 	--darker: rgb(194, 194, 194);
 	--darker-50: rgba(194, 194, 194, 0.5);
 	--outline: rgb(0, 0, 0);
-	--button-bg: radial-gradient(at center top, rgb(255, 255, 255), rgba(197, 197, 197, 0.5));
 	--bg: rgb(255, 255, 255);
 	--bg-50: rgba(255, 255, 255, 0.8);
 }
@@ -68,6 +69,8 @@ html[dark] {
 	--top-bar-deg: 0deg;
 	--top-bar-left: rgba(0, 0, 0, 0.4);
 	--top-bar-right: rgb(22, 22, 22);
+
+	--button-bg: rgb(207, 165, 85);
 
 	--theme: #caa561;
 	--theme-dark: rgb(150, 125, 79);
@@ -100,7 +103,7 @@ html[dark] {
 	--darker: rgb(22, 22, 22);
 	--darker-50: rgba(22, 22, 22, 0.5);
 	--outline: rgb(125, 125, 125);
-	--button-bg: radial-gradient(at center top, rgb(78, 78, 78), rgba(85, 85, 85, 0.5));
+	--button-bg: radial-gradient(at center top, rgb(190, 152, 80), rgba(153, 120, 48, 0.925));
 	--bg: rgba(0, 0, 0, 0.8);
 	--bg-50: rgba(0, 0, 0, 0.7);
 
