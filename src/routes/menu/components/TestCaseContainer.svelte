@@ -2,41 +2,55 @@
 	import { flip } from "svelte/animate";
 	import { fly } from "svelte/transition";
 	import Button from "$lib/components/Button.svelte";
+	import type { RunCodeResult } from "$lib/enum/runCode";
+	import RunCodeStatus from "./RunCodeStatus.svelte";
+	import Checkbox from "$lib/components/Checkbox.svelte";
 
-	export let testCases;
-	export let editable = false;
+	export let testCases: { input: string; hidden: boolean; result: RunCodeResult }[] = [];
 	export let runAll = null;
+	export let staff = false;
 </script>
 
 <div class="testcases-list">
 	<Button onclick={runAll}>▷ รันทั้งหมด</Button>
 	{#each testCases as testCase, index (testCase)}
 		<div in:fly|global={{ x: 200, duration: 300, delay: 250 + 100 * index }} class="testcase-item">
-			<div
-				class="status-dot"
-				class:pass={testCase.status == "Pass"}
-				class:fail={testCase.status == "Not Pass"}
-				class:error={testCase.status == "Error"}
-			></div>
-			<div class="testcase-details">
+			<RunCodeStatus result={testCase.result}></RunCodeStatus>
+			<div class="testcaseHeader">
 				<div class="testcase-label">Test case {index + 1}</div>
-				<div class="testcase-input">
-					Input :
-					{#if editable}
-						<textarea id="">
-							{testCase.input}
-						</textarea>
-					{:else}
-						{testCase.input}
-					{/if}
-				</div>
-				<div class="testcase-output">Output : {testCase.output}</div>
 			</div>
+			{#if staff}
+				<Checkbox
+					selected={testCase.hidden}
+					on:click={() => {
+						testCase.hidden = !testCase.hidden;
+					}}>Hidden testcase</Checkbox
+				>
+			{/if}
+			{#if !testCase.hidden || staff}
+				<div class="testcase-details" class:hidden={testCase.hidden}>
+					<div class="testcase-input">Input</div>
+					<textarea class="input" disabled={!staff}>{testCase.input}</textarea>
+					<div class="testcase-output">Output{testCase.result?.output}</div>
+					<textarea class="output" readonly>{testCase.result.output}</textarea>
+				</div>
+			{/if}
 		</div>
 	{/each}
 </div>
 
 <style lang="scss">
+	.output {
+		height: 100px;
+	}
+	textarea {
+		resize: vertical;
+	}
+	.testcaseHeader {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
 	.testcases-list {
 		display: flex;
 		flex-direction: column;
@@ -49,6 +63,7 @@
 	*/
 	.testcase-item {
 		display: flex;
+		flex-direction: column;
 		align-items: flex-start;
 		background-color: var(--list-bg);
 		border: 1px solid var(--outline);
@@ -65,28 +80,13 @@
 		margin-bottom: 10px;
 	}
 
-	.status-dot {
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		flex-shrink: 0;
-		margin-top: 5px;
-	}
-
-	.status-dot.pass {
-		background-color: var(--status-done);
-	}
-
-	.status-dot.fail {
-		background-color: var(--status-not-started);
-	}
-
 	.testcase-details {
 		display: flex;
 		flex-direction: column;
 		gap: 5px;
 		flex-grow: 1;
 		overflow: hidden;
+		width: 100%;
 	}
 
 	.testcase-label {

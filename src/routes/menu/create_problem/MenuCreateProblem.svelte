@@ -26,7 +26,7 @@
 	//-------------------------------------------------------
 	let problemTitle: string = "";
 	let problemDifficulty: number = 1;
-	let problemTimeLimit: number = 1000;
+	let problemTimeLimit: number = null;
 	let problemTags: string[] = [];
 	let problemHeaderMode: string = "disallowed";
 	let problemHeaders: string = "";
@@ -44,7 +44,18 @@
 	//-------------------------------------------------------
 	// Test Case State
 	//-------------------------------------------------------
-	let test_cases = [{ input: "", output: "", hidden: false }];
+	let test_cases = [
+		{
+			input: "",
+			hidden: false,
+			result: {
+				exit_code: null,
+				exit_status: null,
+				output: null,
+				used_time: null,
+			},
+		},
+	];
 
 	//-------------------------------------------------------
 	// Input/Output State
@@ -71,17 +82,24 @@
 	// Test Case State Handlers
 	//-------------------------------------------------------
 	function handleAddTestCaseContainer(e) {
-		test_cases = [...test_cases, { input: "", output: "", hidden: false }];
+		test_cases = [
+			...test_cases,
+			{
+				input: "",
+				hidden: false,
+				result: {
+					exit_code: null,
+					exit_status: null,
+					output: null,
+					used_time: null,
+				},
+			},
+		];
 		requestAnimationFrame(() => {
 			if (e.target && typeof e.target.scrollIntoView === "function") {
 				e.target.scrollIntoView({ behavior: "smooth" });
 			}
 		});
-	}
-
-	function handleDeleteTestCaseContainer(event: CustomEvent<number>) {
-		const index = event.detail;
-		test_cases = test_cases.filter((_, i) => i !== index);
 	}
 
 	//-------------------------------------------------------
@@ -126,6 +144,32 @@
 				input: inputText,
 				code: solutionCodeText,
 				timeout: problemTimeLimit || 1000,
+			},
+			withToken: true,
+		});
+	}
+
+	async function onCreateProblem() {
+		problem = await api.call("/problem/create", {
+			method: "POST",
+			data: {
+				title: problemTitle,
+				description: problemDescription,
+				timeLimit: problemTimeLimit,
+				headerMode: problemHeaderMode,
+				headers: problemHeaders,
+				functionMode: problemFunctionMode,
+				functions: problemFunctions,
+				defaultCode: defaultCodeText,
+				solutionCode: solutionCodeText,
+				difficulty: problemDifficulty,
+				tags: problemTags,
+				testCases: test_cases.map((testCase) => {
+					return {
+						input: testCase.input,
+						isHiddenTestcase: testCase.hidden,
+					};
+				}),
 			},
 			withToken: true,
 		});
@@ -203,8 +247,16 @@
 
 						<Frame class="tagsBox">
 							{#each Object.keys(tagsColors) as tag}
-								<Checkbox color={tagsColors[tag]} value={tag} bind:group={problemTags}
-									>{tag}</Checkbox
+								<Checkbox
+									color={tagsColors[tag]}
+									value={tag}
+									onSelect={() => {
+										problemTags.push(tag);
+										console.log(problemTags);
+									}}
+									onUnselect={() => {
+										problemTags = problemTags.filter((t) => t !== tag);
+									}}>{tag}</Checkbox
 								>
 							{/each}
 						</Frame>
@@ -281,7 +333,7 @@
 					</div>
 				{:else if rightActiveTab === "testcase"}
 					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer testCases={test_cases} />
+						<TestCaseContainer testCases={test_cases} staff={true} />
 						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
 							>เพิ่ม Test Case</Button
 						>

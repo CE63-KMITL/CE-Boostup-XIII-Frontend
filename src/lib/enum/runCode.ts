@@ -7,3 +7,10 @@ export enum RunCodeExitStatusEnum {
 	RUNTIME_ERROR = "RUNTIME_ERROR",
 	REQUEST_ERROR = "REQUEST_ERROR",
 }
+
+export type RunCodeResult = {
+	exit_code?: string;
+	exit_status?: RunCodeExitStatusEnum;
+	output?: string;
+	used_time?: number;
+};

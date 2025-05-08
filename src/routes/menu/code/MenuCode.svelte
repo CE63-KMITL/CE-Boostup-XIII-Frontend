@@ -16,16 +16,20 @@
 	*/
 
 	const testCases = [
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
+		{
+			input: "",
+			hidden: false,
+			result: {
+				exit_code: null,
+			},
+		},
+		{
+			input: "",
+			hidden: true,
+			result: {
+				exit_code: null,
+			},
+		},
 	];
 
 	let headerTabs: { [key: string]: string } = { inputOutput: "รันโค้ด" };
