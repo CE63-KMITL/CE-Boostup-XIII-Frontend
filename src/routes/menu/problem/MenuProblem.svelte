@@ -16,8 +16,11 @@
 	import Search from "$lib/components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { searchParams, selectedProblemId } from "./problem";
+	import { goToProblemURL, searchParams, selectedProblemId } from "./problem";
 	import type { Unsubscriber } from "svelte/store";
+	import Loading from "$lib/components/Loading.svelte";
+	import { azScale } from "$lib/transition";
+	import { fade } from "svelte/transition";
 
 	/*
      -------------------------------------------------------
@@ -239,13 +242,27 @@
 		<ProblemTable problems={allProblems} loading={!loaded} {loadMore} />
 	</Frame>
 	<Frame id="right" blur-bg>
-		<ProblemDetail problem={selectedProblem} />
-		<Button
-			class="submit-btn"
-			onclick={() => {
-				window.open("/code?id=" + selectedProblem?.id, "_blank");
-			}}>ทำโจทย์</Button
-		>
+		{#if selectedProblem}
+			<div class="full" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+				<Button
+					class="close-problem-detail"
+					onclick={() => {
+						$selectedProblemId = null;
+					}}>ปิด</Button
+				>
+				<ProblemDetail padding={false} problem={selectedProblem} />
+				<Button
+					class="submit-btn"
+					onclick={() => {
+						goToProblemURL(selectedProblem?.id);
+					}}>ทำโจทย์</Button
+				>
+			</div>
+		{:else}
+			<div class="full" in:fade={{ duration: 250, delay: 250 }} out:fade={{ duration: 250 }}>
+				<Loading></Loading>
+			</div>
+		{/if}
 	</Frame>
 </div>
 
@@ -270,7 +287,7 @@
 		:global(#right) {
 			transition: all 0.25s ease;
 			display: flex;
-               flex-direction: column;
+			flex-direction: column;
 			align-items: center;
 			justify-content: center;
 			overflow: hidden;
