@@ -188,32 +188,6 @@
 </script>
 
 <div id="problemCreateContainer" use:enableVerticalScroll bind:this={mainScrollContainer}>
-	<!-- <div class="sectionPanel">
-		<Frame blur-bg class="sectionContainer problemInfo">
-			<div class="problemHead">
-				<h1 class="headText">ชื่อโจทย์</h1>
-				<input class="problemNameInput" placeholder="ชื่อโจทย์" />
-			</div>
-			<div class="userAndExDetails">
-				<div class="username">
-					<h1 class="headText">ผู้สร้างโจทย์ :</h1>
-					<h1 class="headText">{user.name}</h1>
-				</div>
-				<div class="tagsBox">
-					<h1 class="headText">ประเภท</h1>
-					<div class="tagsCheckboxGroup">
-						{#each Object.keys(tagsColors) as tag}
-							<Checkbox color={tagsColors[tag]} value={tag} bind:group={selectedTags}
-								>{tag}</Checkbox
-							>
-						{/each}
-					</div>
-				</div>
-				<textarea class="problemDetailsInput" placeholder="คำอธิบายโจทย์"></textarea>
-			</div>
-		</Frame>
-	</div> -->
-
 	<div class="sectionPanel">
 		<div class="full mainFrame">
 			<Frame blur-bg margin={false} class="ProblemContainer">
@@ -340,36 +314,6 @@
 			</div>
 		</Frame>
 	</div>
-
-	<!-- <div class="sectionPanel">
-		<Frame blur-bg class="sectionContainer testCaseSectionWrapper">
-			<Button class="runAll">Run All</Button>
-			<div
-				class="testCaseContainer"
-				role="region"
-				use:enableHorizontalScroll
-				on:mouseleave={Enable_Main_Scroll}
-				on:mouseenter={Disable_Main_Scroll}
-			>
-				{#each test_cases as test_case, i (i)}
-					<div class="testCase">
-						<h1 class="headText">Test Case {i + 1}</h1>
-						<div class="hiddenTestcaseBox">
-							<Checkbox bind:checked={test_case.hidden}>Hidden Test Case</Checkbox>
-						</div>
-						<textarea class="testCaseInput" placeholder="Input here" bind:value={test_case.input}
-						></textarea>
-						<textarea class="testCaseOutput" placeholder="Output here" bind:value={test_case.output}
-						></textarea>
-						<Button class="deleteButton">Delete</Button>
-					</div>
-				{/each}
-
-				<Button class="addTestCaseButton" onclick={handleAddTestCase}>+</Button>
-			</div>
-			<Button class="doneButton">Done</Button>
-		</Frame>
-	</div> -->
 </div>
 
 <style lang="scss">
@@ -381,11 +325,12 @@
 
 	.details {
 		display: flex;
-		gap: 10px;
+		gap: 5px;
 	}
 
 	.headText {
 		font-weight: 600;
+		font-size: 0.9rem;
 	}
 
 	.problemCreateInputContainer {
