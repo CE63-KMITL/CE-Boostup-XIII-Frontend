@@ -218,20 +218,6 @@
                 gap: 8px;
             }
         }
-
-            //     .row {
-            //         display: flex;
-            //         justify-content: space-between;
-            //         background-color: var(--bg);
-            //         padding: 10px;
-            //         border-radius: 10px;
-            //         box-shadow: 0 2px 4px var(--list-shadow);
-            //     }
-            //     .rank, .name, .id, .score {
-            //         width: 25%;
-            //         text-align: center;
-            //     }
-            // }
     
     }
 
