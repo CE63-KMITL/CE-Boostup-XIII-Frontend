@@ -47,17 +47,18 @@
 	}
 
 	.tab-header {
+		width: 100%;
+		height: 100%;
 		flex-grow: 1;
 		padding: 10px;
-		border: none;
-		background-color: var(--list-bg);
+		background-color: var(--bg);
 		color: var(--text);
 		cursor: pointer;
-		font-size: 1em;
+		// font-size: 1em;
 		font-weight: 600;
 		transition: background-color 0.3s ease;
-		border-bottom: 2px solid transparent;
-		z-index: 1;
+		// border-bottom: 2px solid transparent;
+		// z-index: 1;
 	}
 
     .tab-header:hover {
