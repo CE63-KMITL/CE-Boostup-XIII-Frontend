@@ -36,6 +36,7 @@
 		border-radius: var(--n-border-radius);
 		overflow: hidden;
 		padding: 0;
+		overflow: clip;
 	}
 
 	.tab-headers {
@@ -75,5 +76,6 @@
 		padding: 10px;
 		border-top: none;
 		box-sizing: border-box;
+		overflow-y: scroll;
 	}
 </style>

@@ -24,8 +24,10 @@
 					selected={testCase.hidden}
 					on:click={() => {
 						testCase.hidden = !testCase.hidden;
-					}}>Hidden testcase</Checkbox
+					}}
 				>
+					Hidden testcase
+				</Checkbox>
 			{/if}
 			{#if !testCase.hidden || staff}
 				<div class="testcase-details" class:hidden={testCase.hidden}>
