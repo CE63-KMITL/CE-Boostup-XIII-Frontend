@@ -144,7 +144,7 @@ div:not(.view-line) {
 }
 
 @media (max-width: 800px) or (max-height: 600px) {
-	* {
+	div:not(.view-line) {
 		font-size: 12px;
 	}
 }
