@@ -2,20 +2,8 @@
     import Fullscreen from "$lib/components/Fullscreen.svelte";
     import Button from "$lib/components/Button.svelte";
     import Frame from "$lib/components/Frame.svelte";
+    import Tab from "$lib/components/Tab.svelte";
     import ScoreTab from "./components/ScoreTab.svelte";
-    import BadgeGold from "$lib/components/Icons/Badge_Gold.svelte";
-    import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
-    import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
-
-    /*
-     -------------------------------------------------------
-     Imports
-     -------------------------------------------------------
-     */
-
-    let headerTabs: { [key: string]: string } = 
-        { overall: "Overall", house: "House", myHouse: "MyHouse"};
-	let activeTab = "overall";
 
     const profile = {
       name: 'เพ็ญพิชชา ปานจันทร์',
@@ -26,34 +14,6 @@
       houseScore: 1200,
       cardImg: '/house/warlock.png'
     };
-
-    let dataScore = [
-    { name: "Veerapat Pirultham", id: "67010852", house: "bard", score: 700 },
-    { name: "Nattapong Suksiri", id: "67010853", house: "mage", score: 680 },
-    { name: "Kamonchai Lekbun", id: "67010854", house: "rogue", score: 660 },
-    { name: "Somsak Pradchaphet", id: "67010855", house: "warrior", score: 640 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
-    ];
-    let dataHouse = [
-    { house: "bard", score: 2750 },
-    { house: "mage", score: 2600 },
-    { house: "rogue", score: 2480 },
-    { house: "warrior", score: 2405 },
-    { house: "healer", score: 2380 },
-    ];
-    let dataMyHouse = [
-    { name: "Veerapat Pirultham", id: "67010852", score: 720 },
-    { name: "Nattapong Suksiri", id: "67010853", score: 700 },
-    { name: "Kamonchai Lekbun", id: "67010854", score: 680 },
-    { name: "Somsak Pradchaphet", id: "67010855", score: 650 },
-    { name: "Patsorn Chaiyawan", id: "67010856", score: 640 },
-    ];
 
 </script>
 
@@ -73,46 +33,13 @@
                 <div id="scl-detail-bottom">{profile.score}</div>
                 <Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
                 <div id="scl-detail-bottom">{profile.houseScore}</div>
-                <Button class="scl-btn">ประวัติคะแนน</Button>
+                <Button class="scl-btn" filter={false}>ประวัติคะแนน</Button>
             </div>
         </Frame>
+
         <!-- SC-Right Side -->
         <Frame id="sc-right" full="" blur-bg>
-            <ScoreTab class="scr-top" headers={headerTabs} bind:activeTab>
-                {activeTab}
-
-                {#if activeTab == "overall"}
-                    <div class="scr-bottom">
-                        overrrrrrrrrrrrrr
-                        overrrrrrrrrrrrrr
-                        overrrrrrrrrrrrrr
-                        overrrrrrrrrrrrrr
-                        overrrrrrrrrrrrrr
-                    </div>
-                {:else if activeTab == "house"}
-                    <div class="scr-bottom">
-                        houseeeeeeeeeeeeee
-                        houseeeeeeeeeeeeee
-                        houseeeeeeeeeeeeee
-                        houseeeeeeeeeeeeee
-                        houseeeeeeeeeeeeee
-                    </div>
-                {:else if activeTab == "myHouse"}
-                    <div class="scr-bottom">
-                        myhouseeeeeeeeeeeeee
-                        myhouseeeeeeeeeeeeee
-                        myhouseeeeeeeeeeeeee
-                        myhouseeeeeeeeeeeeee
-                        myhouseeeeeeeeeeeeee
-                    </div>
-                {/if}
-            </ScoreTab>
-            <!-- <div>
-                rgprgple[rpgl]
-            </div> -->
-            <div class="scr-bottom">
-                <div id="myHouseTable"></div>
-            </div>
+            <ScoreTab></ScoreTab>
         </Frame>
     </div>
 
@@ -154,8 +81,13 @@
             padding: 3% 4%;
             width: 87%;
             height: 100%;
-
-            .scl-top { display: flex; justify-content: space-between; }
+            
+            .scl-top { 
+                display: flex; 
+                justify-content: space-between; 
+                font-weight: 600;
+                font-size: 17.5px;
+            }
 
             :global(#scl-detail-top) {
                 background-color: var(--sc-bg);
@@ -167,6 +99,8 @@
                 flex-direction: column;
                 align-items: center;
                 height: 30%;
+                font-weight: 600;
+                font-size: 16.8px;
             }
 
             #scl-detail-bottom {
@@ -179,6 +113,7 @@
                 flex-direction: column;
                 align-items: center;
                 height: 30%;
+                font-size: 16.4px;
             }
 
             :global(Button.scl-btn) {
@@ -187,6 +122,8 @@
                 padding: 3%;
                 margin: 6% 0 0 0;
                 box-shadow: 0 3px 5px var(--list-shadow);
+                font-weight: 600;
+                color: var(--text)
             }
         }  
 
@@ -199,24 +136,6 @@
             box-shadow: 0 4px 24px var(--list-shadow); 
             padding: 1% 2%; 
             width: 60%;
-        }
-
-        :global(.scr-top) { 
-            display: flex; 
-            border-radius: 20px;
-            border: 1px solid var(--outline);
-        }
-
-        .scr-bottom{
-            display: flex;
-            flex-direction: row;
-            gap: 8px;
-
-            #myHouseTable{
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
         }
     
     }

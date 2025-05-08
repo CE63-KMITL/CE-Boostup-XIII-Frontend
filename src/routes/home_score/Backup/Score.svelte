@@ -5,10 +5,7 @@
 		house: string;
 		score: number;
 	};
-	// let { number , name , score , highlight } = $props();
 	import List from "$lib/components/List.svelte";
-	// import type { Scoredeaw } from "./scoredeaw";
-	// export let homescore: Scoredeaw;
 	import image1 from "./Badge_Disable.svg";
 	import image2 from "./Badge_Disable(1).svg";
 	import image3 from "./Badge_Disable(2).svg";
