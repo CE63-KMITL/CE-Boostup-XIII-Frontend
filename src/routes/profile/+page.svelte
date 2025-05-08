@@ -4,11 +4,23 @@
   import * as api from "$lib/fetchApi";
   import icon from "./placeholder.jpg";
 
+  // convert date to dd/mm format
+  function convertDate(dateString) {
+    const date = new Date(dateString);
+    const options = { day: '2-digit', month: '2-digit' };
+    return date.toLocaleDateString('th-TH', options);
+  }
+
   let user = null;
+  let scoreInfo = null;
+  let scoreLog = null;
 
   onMount(async () => {
       // Fetch user data
       user = await api.call('/user/me', { method: 'GET', withToken: true });
+      scoreInfo = await api.call('/user/me/scorelog', { method: 'GET', withToken: true });
+      scoreLog = scoreInfo.scoreLogs;
+      console.log(scoreLog)
       console.log(user);
   })
 </script>
@@ -37,15 +49,15 @@
         <div class="bio_info">
           <img src={icon} alt="รูปนักผจญภัย" class="icon" />
           <div class="name_id">
-            <div>{user?.name}</div>
+            <div class="name">{user?.name}</div>
             <div class="id">{user?.studentId}</div>
           </div>
         </div>
 
         <div>
           <div CLASS="personal_info">
-            <div>{user?.email}</div>
-            <div>{user?.house}</div>
+            <div>อีเมล : {user?.email?user?.email:"NULL"}</div>
+            <div>บ้าน : {user?.house?user?.house:"NULL"}</div>
           </div>
         </div>
       </div>
@@ -54,6 +66,17 @@
 
   <div class="score_history">
     <h2>ประวัติคะแนน</h2>
+    <div class="score_table">
+      {#each scoreLog as log, i}
+      <div class="score_body">
+        <div class="score_number">{scoreLog[i]?.amount}</div>
+        <div class="staff_and_time">
+          <div class="staff">{scoreLog[i]?.modifiedBy?.name}</div>
+          <div class="time">{convertDate(scoreLog[i]?.date)}</div>
+        </div>
+      </div>
+      {/each}
+    </div>
   </div>
 </div>
 
@@ -63,6 +86,7 @@
     font-weight: 700;
     text-align: center;
     margin-top: 4.5vh;
+    color:var(--text);
   }
 
   h2 {
@@ -71,6 +95,7 @@
     text-align: left;
     margin-top: 3vh;
     margin-left: 2vw;
+    color:var(--text);
   }
 
   .Container {
@@ -107,6 +132,51 @@
     border-color: var(--list-border);
   }
 
+  .score_history .score_table {
+    overflow-y:auto;
+    width: 45vw;
+    height: 70vh;
+    padding-bottom:1.2vh;
+    }
+
+  .score_history .score_table .score_body {
+    display:flex;
+    height:10vh;
+    width:40vw;
+    margin-top:3vh;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--list-bg);
+    border-radius: 10px;
+    outline: 1px solid;
+  }
+
+  .score_history .score_table .score_body .score_number {
+    font-size: 1.2vw;
+    color: green;
+    margin-top:auto;
+    margin-bottom:auto;
+    margin-left: 1.5vw;
+  }
+
+  .score_history .score_table .score_body .staff_and_time {
+    font-size: 1vw;
+    margin-top:auto;
+    margin-bottom:auto;
+    margin-left: 32vw;
+    text-align:center;
+  }
+
+  .score_history .score_table .score_body .staff_and_time .time {
+    font-weight:600;
+    color: var(--theme-dark-text);
+  }
+
+  .score_history .score_table .score_body .staff_and_time .staff {
+    font-weight:600;
+    color: var(--text);
+  }
+
   .profile .icon {
     width: 13vw;
     height: 40vh;
@@ -120,11 +190,12 @@
     text-align: center;
     height: 10vh;
     width: 13vw;
+    background-color: var(--profile-bg);
   }
 
   .profile .score_header {
     font-size: 1vw;
-    background: var(--light-yellow, #f1d5a1);
+    background: var(--light-yellow, #F1D5A1);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     outline: 1px solid;
@@ -156,27 +227,30 @@
   }
 
   .bio_info .icon {
-    width: 6vw;
-    height: 12vh;
+    width: 5vw;
+    height: 11vh;
     border-radius: 50%;
     margin-top: 2vh;
     margin-left: 2vw;
   }
 
   .bio_info .name_id {
-    font-size: 1vw;
-    margin-top: 3vh;
-    margin-left: 1vw;
+    font-size: 1.1vw;
+    margin-top: 4vh;
+    margin-left: 1.5vw;
   }
-
+  .bio_info .name_id .name {
+    color: var(--text);
+  }
   .bio_info .name_id .id {
     color: var(--theme-dark-text);
   }
-
+  
   .personal_info {
-    font-size: 1vw;
+    font-size: 1.1vw;
     margin-top: 3vh;
     margin-left: 2vw;
+    color: var(--text);
   }
   @media only screen and (max-width: 500px) {
     h1 {
@@ -252,15 +326,6 @@
       width: 80%;
     }
 
-    .profile .score_header {
-      font-size: 14px;
-      background: var(--light-yellow, #f1d5a1);
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      outline: 1px solid;
-      padding: 8px;
-    }
-
     .profile .score_body {
       font-size: 14px;
       background-color: var(--list-bg);
@@ -286,13 +351,6 @@
       display: flex;
       flex-direction: column; /* Stack items vertically */
       align-items: center;
-    }
-
-    .bio_info .icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin: 10px auto;
     }
 
     .bio_info .name_id {
