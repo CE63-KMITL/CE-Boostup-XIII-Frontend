@@ -21,8 +21,8 @@
     <div id="Score">
         <!-- SC-Left Side -->
         <Frame id="sc-left" blur-bg>
-            <div style="display: flex; justify-content: center;">
-                <img src={profile.cardImg} alt="" id="scl-image">
+            <div class="scl-image">
+                <img src={profile.cardImg} alt="">
             </div>
             <div id="scl-main">
                 <div class="scl-top">
@@ -70,7 +70,11 @@
             width: 38%;
         }
 
-        #scl-image { width: 50%;}
+        .scl-image { 
+            display: flex; 
+            justify-content: center;
+            width: 50%;
+        }
 
         #scl-main { 
             display: flex; 
@@ -81,7 +85,7 @@
             padding: 3% 4%;
             width: 87%;
             height: 100%;
-            
+
             .scl-top { 
                 display: flex; 
                 justify-content: space-between; 
@@ -140,5 +144,31 @@
     
     }
 
+    @media (max-width: 800px) {
+        #Score {
+            flex-direction: column;
 
+            :global(#sc-left) {
+                width: 100%;
+                height: 40%;
+                flex-direction: row;
+
+                :global(#scl-image) {
+                    width: 25%;
+                }
+                :global(#scl-main) {
+                    width: 100%;
+                }
+
+            }
+
+            :global(#sc-right) {
+                width: auto;
+                height: 60%
+            }
+        }
+
+
+        
+    }
 </style>
