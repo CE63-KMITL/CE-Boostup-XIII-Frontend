@@ -6,7 +6,7 @@
 	import Frame from "$lib/components/Frame.svelte";
 	import Tab from "$lib/components/Tab.svelte";
 	import InputOutput from "../components/InputOutput.svelte";
-	import TestCase from "../components/TestCase.svelte";
+	import TestCaseContainer from "../components/TestCaseContainer.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
 
 	/*
@@ -97,6 +97,7 @@
 				withToken: true,
 			});
 		} else {
+			console.log(codeText);
 			result = await api.call(`/run-code`, {
 				method: "POST",
 				data: {
@@ -113,10 +114,6 @@
 	-------------------------------------------------------
 	*/
 
-	function onEditorChange(text) {
-		codeText = text;
-	}
-
 	onMount(() => {
 		const url = new URL(window.location.href);
 		const problemId = url.searchParams.get("problemId");
@@ -130,7 +127,7 @@
 
 <div class="full mainFrame">
 	<Frame blur-bg class="ProblemContainer">
-		<CodeEditor onChange={onEditorChange} {saveCode} {loadCode}></CodeEditor>
+		<CodeEditor bind:value={codeText} {saveCode} {loadCode}></CodeEditor>
 	</Frame>
 
 	<Tab class="side" headers={headerTabs} bind:activeTab>
@@ -144,7 +141,7 @@
 			</div>
 		{:else if activeTab === "testcase"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<TestCase {testCases} />
+				<TestCaseContainer {testCases} />
 			</div>
 		{/if}
 	</Tab>

@@ -23,9 +23,9 @@
 	let editor: monaco.editor.IStandaloneCodeEditor;
 	let editorElement;
 
-	export let onChange = null;
 	export let loadCode = null;
 	export let saveCode = null;
+	export let value = "";
 
 	let autoSaveTimeout = null;
 
@@ -42,7 +42,7 @@
 		let cCompletionProviderRegistration = await initMonaco();
 
 		editor = Monaco.editor.create(editorElement, {
-			value: "",
+			value: value,
 			language: "c",
 			theme: selectedTheme,
 			automaticLayout: true,
@@ -50,9 +50,7 @@
 		});
 
 		editor.onDidChangeModelContent(function () {
-			if (onChange) {
-				onChange(editor.getValue());
-			}
+			value = editor.getValue();
 
 			if (autoSaveTimeout) {
 				clearTimeout(autoSaveTimeout);

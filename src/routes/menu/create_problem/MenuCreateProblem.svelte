@@ -9,122 +9,47 @@
 	import Frame from "$lib/components/Frame.svelte";
 	import Tab from "$lib/components/Tab.svelte";
 	import InputOutput from "../components/InputOutput.svelte";
-	import TestCase from "../components/TestCase.svelte";
-	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
+	import TestCaseContainer from "../components/TestCaseContainer.svelte";
 	import Stars from "../problem/components/Stars.svelte";
-	import Tag from "../problem/components/Tag.svelte";
 	import { userData } from "$lib/auth.local";
 	import RadioButton from "$lib/components/RadioButton.svelte";
 
-	let test_cases = [{ input: "", output: "", hidden: false }];
+	//-------------------------------------------------------
+	// Component State
+	//-------------------------------------------------------
 	let mainScrollContainer: HTMLElement | null = null;
-	let activeTab: string = "details";
+	let rightActiveTab: string = "details";
+	let leftActiveTab: string = "solutionCode";
 
+	//-------------------------------------------------------
+	// Problem Data State
+	//-------------------------------------------------------
 	let problemTitle: string = "";
 	let problemDifficulty: number = 1;
-	let problemTimeLimit: number = null;
+	let problemTimeLimit: number = 1000;
 	let problemTags: string[] = [];
 	let problemHeaderMode: string = "disallowed";
 	let problemHeaders: string = "";
 	let problemFunctionMode: string = "disallowed";
 	let problemFunctions: string = "";
 	let problemDescription: string = "";
-
-	/*
-     -------------------------------------------------------
-     Test Case State Handlers
-     -------------------------------------------------------
-     */
-	function handleAddTestCase(e) {
-		test_cases = [...test_cases, { input: "", output: "", hidden: false }];
-		requestAnimationFrame(() => {
-			e.target.scrollIntoView({ behavior: "smooth" });
-		});
-	}
-
-	function handleDeleteTestCase(event: CustomEvent<number>) {
-		const index = event.detail;
-		test_cases = test_cases.filter((_, i) => i !== index);
-	}
-
-	/*
-     -------------------------------------------------------
-     Scroll Handling Functions
-     -------------------------------------------------------
-     */
-	function enableVerticalScroll(node: HTMLElement) {
-		function onWheel(e: WheelEvent) {
-			console.log(e.target);
-			if ((e.target as HTMLElement).classList.contains("dropdown-option")) return;
-			if (node.getAttribute("disabled") === "true") return;
-			const scrollAmount = node.clientHeight * 0.8;
-			e.deltaY > 0
-				? node.scrollTo({
-						top: node.scrollTop + scrollAmount,
-						left: 0,
-						behavior: "smooth",
-					})
-				: node.scrollTo({
-						top: node.scrollTop - scrollAmount,
-						left: 0,
-						behavior: "smooth",
-					});
-			e.preventDefault();
-		}
-		node.addEventListener("wheel", onWheel, { passive: false });
-		return {
-			destroy() {
-				node.removeEventListener("wheel", onWheel);
-			},
-		};
-	}
-
-	/*
-     -------------------------------------------------------
-     DOM Manipulation Functions
-     -------------------------------------------------------
-     */
-	function Disable_Node(target_node: HTMLElement | null) {
-		if (target_node) target_node.setAttribute("disabled", "true");
-	}
-
-	function Enable_Node(target_node: HTMLElement | null) {
-		if (target_node) target_node.removeAttribute("disabled");
-	}
-
-	function Disable_Main_Scroll() {
-		Disable_Node(mainScrollContainer);
-	}
-
-	function Enable_Main_Scroll() {
-		Enable_Node(mainScrollContainer);
-	}
-
-	const testCases = [
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-		{ input: "xx xx xx", output: "xx" },
-	];
-
-	let headerTabs: { [key: string]: string } = {
-		details: "รายละเอียดโจทย์",
-		inputOutput: "รันโค้ด",
-		testcase: "Test case",
-	};
-
 	let problem = null;
-	let selectedTags = {};
-	let selected = true;
 
-	let codeText = "";
-	let inputText = "";
+	//-------------------------------------------------------
+	// Code Editor State
+	//-------------------------------------------------------
+	let solutionCodeText: string = "";
+	let defaultCodeText: string = "";
+
+	//-------------------------------------------------------
+	// Test Case State
+	//-------------------------------------------------------
+	let test_cases = [{ input: "", output: "", hidden: false }];
+
+	//-------------------------------------------------------
+	// Input/Output State
+	//-------------------------------------------------------
+	let inputText: string = "";
 	let result = {
 		exit_code: null,
 		exit_status: null,
@@ -132,27 +57,61 @@
 		used_time: null,
 	};
 
-	/*
-	-------------------------------------------------------
-	Functions
-	-------------------------------------------------------
-	*/
+	//-------------------------------------------------------
+	// UI State
+	//-------------------------------------------------------
+	let headerTabs: { [key: string]: string } = {
+		details: "รายละเอียดโจทย์",
+		inputOutput: "รันโค้ด",
+		testcase: "Test case",
+	};
+	let selectedTags = {}; // Used with Checkbox group binding
 
-	function getTestcaseStatus(index) {
-		return index % 2 === 0 ? "pass" : "fail";
+	//-------------------------------------------------------
+	// Test Case State Handlers
+	//-------------------------------------------------------
+	function handleAddTestCaseContainer(e) {
+		test_cases = [...test_cases, { input: "", output: "", hidden: false }];
+		requestAnimationFrame(() => {
+			if (e.target && typeof e.target.scrollIntoView === "function") {
+				e.target.scrollIntoView({ behavior: "smooth" });
+			}
+		});
 	}
 
-	async function loadCode() {
-		// api.call(`/user/getSaveCode?id=${$page.params.id}`, { method: "GET", withToken: true });
-		return localStorage.getItem("code");
+	function handleDeleteTestCaseContainer(event: CustomEvent<number>) {
+		const index = event.detail;
+		test_cases = test_cases.filter((_, i) => i !== index);
 	}
 
-	async function saveCode(code) {
-		console.log("Saved");
-
-		localStorage.setItem("code", code);
+	//-------------------------------------------------------
+	// Code Editor Handlers - Solution Code
+	//-------------------------------------------------------
+	async function loadSolutionCode() {
+		return localStorage.getItem("solutionCode");
 	}
 
+	async function saveSolutionCode(code: string) {
+		console.log("Solution code saved");
+		localStorage.setItem("solutionCode", code);
+	}
+
+	//-------------------------------------------------------
+	// Code Editor Handlers - Default Code
+	//-------------------------------------------------------
+
+	async function loadDefaultCode() {
+		return localStorage.getItem("defaultCode");
+	}
+
+	async function saveDefaultCode(code: string) {
+		console.log("Default code saved");
+		localStorage.setItem("defaultCode", code);
+	}
+
+	//-------------------------------------------------------
+	// API Call Functions
+	//-------------------------------------------------------
 	async function onRunCode() {
 		result = {
 			exit_code: null,
@@ -165,41 +124,57 @@
 			method: "POST",
 			data: {
 				input: inputText,
-				code: codeText,
-				timeout: 1000,
+				code: solutionCodeText, // Use solutionCodeText for running
+				timeout: problemTimeLimit || 1000, // Use problemTimeLimit
 			},
 			withToken: true,
 		});
 	}
-	/*
-	-------------------------------------------------------
-	Lifecycle
-	-------------------------------------------------------
-	*/
 
-	function onEditorChange(text) {
-		codeText = text;
-	}
-
+	//-------------------------------------------------------
+	// Lifecycle
+	//-------------------------------------------------------
 	onMount(() => {
 		const url = new URL(window.location.href);
 		const problemId = url.searchParams.get("problemId");
+		// TODO: If problemId exists, load problem data
 	});
 </script>
 
-<div id="problemCreateContainer" use:enableVerticalScroll bind:this={mainScrollContainer}>
+<div id="problemCreateContainer" bind:this={mainScrollContainer}>
 	<div class="sectionPanel">
 		<div class="full mainFrame">
-			<Frame blur-bg margin={false} class="ProblemContainer">
-				<CodeEditor onChange={onEditorChange} {saveCode} {loadCode}></CodeEditor>
-			</Frame>
+			<Tab
+				class="problemCodeContainer"
+				margin={false}
+				headers={{ solutionCode: "เฉลย", defaultCode: "โค้ดเริ่มต้น" }}
+				bind:activeTab={leftActiveTab}
+			>
+				{#if leftActiveTab === "solutionCode"}
+					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+						<CodeEditor
+							saveCode={saveSolutionCode}
+							loadCode={loadSolutionCode}
+							bind:value={solutionCodeText}
+						/>
+					</div>
+				{:else if leftActiveTab === "defaultCode"}
+					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+						<CodeEditor
+							saveCode={saveDefaultCode}
+							loadCode={loadDefaultCode}
+							bind:value={defaultCodeText}
+						/>
+					</div>
+				{/if}
+			</Tab>
 
-			<Tab class="side" margin={false} headers={headerTabs} bind:activeTab>
-				{#if activeTab === "details"}
+			<Tab class="side" margin={false} headers={headerTabs} bind:activeTab={rightActiveTab}>
+				{#if rightActiveTab === "details"}
 					<div class="full details" in:azScale={{ delay: 250 }} out:azScale>
 						<div class="problemCreateInputContainer">
 							<div class="headText">ชื่อโจทย์ :</div>
-							<input bind:value={problemTitle} />
+							<input bind:value={problemTitle} placeholder="โจทย์ของคนสุดเทพ" />
 						</div>
 						<div class="problemCreateInputContainer">
 							<div class="headText">ชื่อคนทำโจทย์ : {problem?.author.name || $userData?.name}</div>
@@ -208,7 +183,7 @@
 						<div class="headText">ความยาก</div>
 
 						<div class="difficulty">
-							<Stars difficulty={problemDifficulty}></Stars>
+							<Stars bind:difficulty={problemDifficulty}></Stars>
 							<div class="difficultySlider">
 								<input
 									type="range"
@@ -217,7 +192,7 @@
 									max="5"
 									bind:value={problemDifficulty}
 								/>
-								<div style="width: 40px; text-align: end">{problemDifficulty}</div>
+								<div style="width: 40px; text-align: end">{problemDifficulty.toFixed(1)}</div>
 							</div>
 						</div>
 
@@ -225,11 +200,11 @@
 
 						<input type="number" bind:value={problemTimeLimit} placeholder="1000" />
 
-						<div class="headText">ประเภท ()</div>
+						<div class="headText">ประเภท (Tags)</div>
 
 						<Frame class="tagsBox">
 							{#each Object.keys(tagsColors) as tag}
-								<Checkbox color={tagsColors[tag]} value={tag} bind:group={selectedTags}
+								<Checkbox color={tagsColors[tag]} value={tag} bind:group={problemTags}
 									>{tag}</Checkbox
 								>
 							{/each}
@@ -239,8 +214,8 @@
 
 						<div class="checkboxContainer">
 							<RadioButton
-								selected={problemHeaderMode == "disallowed"}
-								onclick={() => (problemHeaderMode = "disallowed")}
+								selected={problemHeaderMode === "disallowed"}
+								on:click={() => (problemHeaderMode = "disallowed")}
 								name="problemHeaderMode"
 								color="var(--status-not-started)"
 							>
@@ -248,8 +223,8 @@
 							</RadioButton>
 
 							<RadioButton
-								selected={problemHeaderMode == "allowed"}
-								onclick={() => (problemHeaderMode = "allowed")}
+								selected={problemHeaderMode === "allowed"}
+								on:click={() => (problemHeaderMode = "allowed")}
 								name="problemHeaderMode"
 								color="var(--status-done)"
 							>
@@ -257,14 +232,18 @@
 							</RadioButton>
 						</div>
 
-						<input bind:value={problemHeaders} placeholder="stdio.h,string.h" />
+						<input
+							bind:value={problemHeaders}
+							placeholder="stdio.h,string.h"
+							disabled={problemHeaderMode === "disallowed"}
+						/>
 
 						<div class="headText">Functions</div>
 
 						<div class="checkboxContainer">
 							<RadioButton
-								selected={problemFunctionMode == "disallowed"}
-								onclick={() => (problemFunctionMode = "disallowed")}
+								selected={problemFunctionMode === "disallowed"}
+								on:click={() => (problemFunctionMode = "disallowed")}
 								name="problemFunctionMode"
 								color="var(--status-not-started)"
 							>
@@ -272,8 +251,8 @@
 							</RadioButton>
 
 							<RadioButton
-								selected={problemFunctionMode == "allowed"}
-								onclick={() => (problemFunctionMode = "allowed")}
+								selected={problemFunctionMode === "allowed"}
+								on:click={() => (problemFunctionMode = "allowed")}
 								name="problemFunctionMode"
 								color="var(--status-done)"
 							>
@@ -281,7 +260,11 @@
 							</RadioButton>
 						</div>
 
-						<input bind:value={problemFunctions} placeholder="for,while,if" />
+						<input
+							bind:value={problemFunctions}
+							placeholder="for,while,if"
+							disabled={problemFunctionMode === "disallowed"}
+						/>
 
 						<div class="headText">รายละเอียดโจทย์</div>
 
@@ -290,29 +273,23 @@
 							placeholder="รายละเอียดโจทย์"
 							bind:value={problemDescription}
 						>
-							{problem?.detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}
+							{problem?.detail || ""}
 						</textarea>
 					</div>
-				{:else if activeTab === "inputOutput"}
+				{:else if rightActiveTab === "inputOutput"}
 					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
+						<InputOutput {onRunCode} bind:inputText bind:result />
 					</div>
-				{:else if activeTab === "testcase"}
-					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCase {testCases} />
+				{:else if rightActiveTab === "testcase"}
+					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
+						<TestCaseContainer testCases={test_cases} />
+						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
+							>เพิ่ม Test Case</Button
+						>
 					</div>
 				{/if}
 			</Tab>
 		</div>
-	</div>
-
-	<div class="sectionPanel">
-		<Frame blur-bg margin={false} class="sectionContainer defaultCodeContainer">
-			<div class="defaultCodeHeader">Default code</div>
-			<div class="codeInputBox">
-				<CodeEditor></CodeEditor>
-			</div>
-		</Frame>
 	</div>
 </div>
 
@@ -325,7 +302,8 @@
 
 	.details {
 		display: flex;
-		gap: 5px;
+		flex-direction: column;
+		gap: 10px;
 	}
 
 	.headText {
@@ -348,7 +326,15 @@
 
 	.description {
 		height: 100%;
-		white-space: pre;
+		min-height: 150px;
+		white-space: pre-wrap;
+		border: 1px solid var(--outline);
+		border-radius: 5px;
+		padding: 8px;
+		background-color: var(--bg-alt);
+		color: var(--text-color);
+		font-family: inherit;
+		font-size: 0.9rem;
 	}
 
 	:global(.tagsBox) {
@@ -427,7 +413,7 @@
 				background: var(--status-not-started);
 			}
 
-			:global(.addTestCaseButton) {
+			:global(.addTestCaseContainerButton) {
 				min-width: 30px;
 				max-width: 30px;
 				align-self: center;
@@ -453,7 +439,7 @@
 		gap: 10px;
 	}
 
-	:global(.ProblemContainer) {
+	:global(div.problemCodeContainer) {
 		display: flex;
 		flex-direction: column;
 		width: 60%;
@@ -464,12 +450,43 @@
 		width: 40%;
 	}
 
+	.testcase-section {
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+		overflow-y: auto;
+		padding-right: 10px;
+	}
+
+	.addTestCaseContainerButtonFullWidth {
+		width: 100%;
+		margin-top: 10px;
+	}
+
+	input[type="text"],
+	input[type="number"],
+	textarea {
+		padding: 8px;
+		border: 1px solid var(--outline);
+		border-radius: 5px;
+		background-color: var(--bg-alt);
+		color: var(--text-color);
+		font-size: 0.9rem;
+		width: 100%;
+		box-sizing: border-box;
+
+		&:disabled {
+			background-color: var(--bg-disabled);
+			cursor: not-allowed;
+		}
+	}
+
 	@media (max-width: 800px) {
 		.mainFrame {
 			flex-direction: column;
 		}
 
-		:global(.ProblemContainer) {
+		:global(.problemCodeContainer) {
 			width: auto;
 			height: 50%;
 		}
