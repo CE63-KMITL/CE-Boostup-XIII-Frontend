@@ -11,7 +11,7 @@
 <div class="testcases-list">
 	<Button onclick={runAll}>▷ รันทั้งหมด</Button>
 	{#each testCases as testCase, index (testCase)}
-		<div class="testcase-item">
+		<div in:fly|global={{ x: 200, duration: 300, delay: 250 + 100 * index }} class="testcase-item">
 			<div
 				class="status-dot"
 				class:pass={testCase.status == "Pass"}
