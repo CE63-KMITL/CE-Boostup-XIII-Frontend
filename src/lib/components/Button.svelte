@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let hoverColor = "255, 255, 255, 0.1";
+	export let filter = true;
 
 	if (!$$restProps.style) $$restProps.style = "";
 	$$restProps.style += `--hoverColor: rgba(${hoverColor});`;
@@ -30,7 +31,7 @@
 	});
 </script>
 
-<button {...$$restProps} bind:this={This_Button} on:click>
+<button {...$$restProps} class:filter bind:this={This_Button} on:click>
 	<slot></slot>
 </button>
 
@@ -39,16 +40,16 @@
 		width: 100%;
 		padding: 12px;
 		background: var(--button-bg);
-		color: white;
+		color: var(--button-bg-text);
 		border: none;
 		border-radius: 5px;
 		font-size: 1rem;
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s ease;
+	}
 
-		&:hover {
-			filter: brightness(1.2);
-		}
+	.filter:hover {
+		filter: brightness(1.15);
 	}
 </style>
