@@ -8,9 +8,9 @@
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
-	import Fullscreen from "../../components/Fullscreen.svelte";
-	import Setting from "../../components/Icons/Setting.svelte";
-	import User from "../../components/Icons/User.svelte";
+	import Fullscreen from "$lib/components/Fullscreen.svelte";
+	import Setting from "$lib/components/Icons/Setting.svelte";
+	import User from "$lib/components/Icons/User.svelte";
 	import MenuCode from "./code/MenuCode.svelte";
 	import MenuCreateProblem from "./create_problem/MenuCreateProblem.svelte";
 	import ProblemInMenu from "./problem/MenuProblem.svelte";

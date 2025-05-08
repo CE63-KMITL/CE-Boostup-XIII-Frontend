@@ -3,21 +3,32 @@
 	import { tagsColors } from "$lib/constants/problem";
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
-	import Button from "../../../components/Button.svelte";
-	import Checkbox from "../../../components/Checkbox.svelte";
-	import CodeEditor from "../../../components/CodeEditor.svelte";
-	import Frame from "../../../components/Frame.svelte";
-	import Tab from "../../../components/Tab.svelte";
+	import Button from "$lib/components/Button.svelte";
+	import Checkbox from "$lib/components/Checkbox.svelte";
+	import CodeEditor from "$lib/components/CodeEditor.svelte";
+	import Frame from "$lib/components/Frame.svelte";
+	import Tab from "$lib/components/Tab.svelte";
 	import InputOutput from "../components/InputOutput.svelte";
 	import TestCase from "../components/TestCase.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
 	import Stars from "../problem/components/Stars.svelte";
 	import Tag from "../problem/components/Tag.svelte";
 	import { userData } from "$lib/auth.local";
+	import RadioButton from "$lib/components/RadioButton.svelte";
 
 	let test_cases = [{ input: "", output: "", hidden: false }];
 	let mainScrollContainer: HTMLElement | null = null;
 	let activeTab: string = "details";
+
+	let problemTitle: string = "";
+	let problemDifficulty: number = 1;
+	let problemTimeLimit: number = null;
+	let problemTags: string[] = [];
+	let problemHeaderMode: string = "disallowed";
+	let problemHeaders: string = "";
+	let problemFunctionMode: string = "disallowed";
+	let problemFunctions: string = "";
+	let problemDescription: string = "";
 
 	/*
      -------------------------------------------------------
@@ -110,6 +121,7 @@
 
 	let problem = null;
 	let selectedTags = {};
+	let selected = true;
 
 	let codeText = "";
 	let inputText = "";
@@ -211,15 +223,35 @@
 			<Tab class="side" margin={false} headers={headerTabs} bind:activeTab>
 				{#if activeTab === "details"}
 					<div class="full details" in:azScale={{ delay: 250 }} out:azScale>
-						<div class="problemCreate-input-container">
+						<div class="problemCreateInputContainer">
 							<div class="headText">ชื่อโจทย์ :</div>
-							<input class="title" value={problem?.title} />
+							<input bind:value={problemTitle} />
 						</div>
-						<div class="problemCreate-input-container">
+						<div class="problemCreateInputContainer">
 							<div class="headText">ชื่อคนทำโจทย์ : {problem?.author.name || $userData?.name}</div>
 						</div>
 
-						<div class="headText">ประเภท</div>
+						<div class="headText">ความยาก</div>
+
+						<div class="difficulty">
+							<Stars difficulty={problemDifficulty}></Stars>
+							<div class="difficultySlider">
+								<input
+									type="range"
+									step="0.5"
+									min="0.5"
+									max="5"
+									bind:value={problemDifficulty}
+								/>
+								<div style="width: 40px; text-align: end">{problemDifficulty}</div>
+							</div>
+						</div>
+
+						<div class="headText">เวลาสูงสุดที่อนุญาตให้รัน (ms)</div>
+
+						<input type="number" bind:value={problemTimeLimit} placeholder="1000" />
+
+						<div class="headText">ประเภท ()</div>
 
 						<Frame class="tagsBox">
 							{#each Object.keys(tagsColors) as tag}
@@ -229,7 +261,61 @@
 							{/each}
 						</Frame>
 
-						<textarea class="description">
+						<div class="headText">Headers</div>
+
+						<div class="checkboxContainer">
+							<RadioButton
+								selected={problemHeaderMode == "disallowed"}
+								onclick={() => (problemHeaderMode = "disallowed")}
+								name="problemHeaderMode"
+								color="var(--status-not-started)"
+							>
+								ไม่อนุญาตให้ใช้
+							</RadioButton>
+
+							<RadioButton
+								selected={problemHeaderMode == "allowed"}
+								onclick={() => (problemHeaderMode = "allowed")}
+								name="problemHeaderMode"
+								color="var(--status-done)"
+							>
+								อนุญาตให้ใช้แค่ที่กำหนด
+							</RadioButton>
+						</div>
+
+						<input bind:value={problemHeaders} placeholder="stdio.h,string.h" />
+
+						<div class="headText">Functions</div>
+
+						<div class="checkboxContainer">
+							<RadioButton
+								selected={problemFunctionMode == "disallowed"}
+								onclick={() => (problemFunctionMode = "disallowed")}
+								name="problemFunctionMode"
+								color="var(--status-not-started)"
+							>
+								ไม่อนุญาตให้ใช้
+							</RadioButton>
+
+							<RadioButton
+								selected={problemFunctionMode == "allowed"}
+								onclick={() => (problemFunctionMode = "allowed")}
+								name="problemFunctionMode"
+								color="var(--status-done)"
+							>
+								อนุญาตให้ใช้แค่ที่กำหนด
+							</RadioButton>
+						</div>
+
+						<input bind:value={problemFunctions} placeholder="for,while,if" />
+
+						<div class="headText">รายละเอียดโจทย์</div>
+
+						<textarea
+							class="description"
+							placeholder="รายละเอียดโจทย์"
+							bind:value={problemDescription}
+						>
 							{problem?.detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}
 						</textarea>
 					</div>
@@ -287,6 +373,12 @@
 </div>
 
 <style lang="scss">
+	.difficultySlider {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
 	.details {
 		display: flex;
 		gap: 10px;
@@ -296,11 +388,22 @@
 		font-weight: 600;
 	}
 
-	.problemCreate-input-container {
+	.problemCreateInputContainer {
 		display: flex;
 		align-items: center;
 		gap: 10px;
 		white-space: nowrap;
+	}
+
+	.checkboxContainer {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+	}
+
+	.description {
+		height: 100%;
+		white-space: pre;
 	}
 
 	:global(.tagsBox) {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import RadioButton from "../../../../components/RadioButton.svelte";
+	import RadioButton from "$lib/components/RadioButton.svelte";
 	import { searchParams } from "../problem";
 
 	let minDifficulty = $searchParams.minDifficulty;

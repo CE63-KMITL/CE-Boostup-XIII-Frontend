@@ -38,8 +38,8 @@
 	button {
 		width: 100%;
 		padding: 12px;
-		background: var(--theme);
-		color: var(--text);
+		background: var(--button-bg);
+		color: white;
 		border: none;
 		border-radius: 5px;
 		font-size: 1rem;
@@ -48,7 +48,7 @@
 		transition: all 0.2s ease;
 
 		&:hover {
-			background: #a78459;
+			filter: brightness(1.2);
 		}
 	}
 </style>

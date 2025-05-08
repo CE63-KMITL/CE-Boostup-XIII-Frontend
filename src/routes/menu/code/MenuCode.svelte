@@ -2,9 +2,9 @@
 	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
-	import CodeEditor from "../../../components/CodeEditor.svelte";
-	import Frame from "../../../components/Frame.svelte";
-	import Tab from "../../../components/Tab.svelte";
+	import CodeEditor from "$lib/components/CodeEditor.svelte";
+	import Frame from "$lib/components/Frame.svelte";
+	import Tab from "$lib/components/Tab.svelte";
 	import InputOutput from "../components/InputOutput.svelte";
 	import TestCase from "../components/TestCase.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";

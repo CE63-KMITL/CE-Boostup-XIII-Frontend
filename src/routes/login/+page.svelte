@@ -6,7 +6,7 @@
 	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 	import "../../app.css";
-	import Button from "../../components/Button.svelte";
+	import Button from "$lib/components/Button.svelte";
 
 	let email: string = "";
 	let password: string = "";
