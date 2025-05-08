@@ -2,7 +2,6 @@
 	import { goto } from "$app/navigation";
 	import { setCookie } from "$lib/cookie";
 	import * as api from "$lib/fetchApi";
-	import { onMount } from "svelte";
 	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 	import "../../app.css";
