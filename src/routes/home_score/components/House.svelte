@@ -1,14 +1,27 @@
 <script lang="ts">
-    import List from "$lib/components/List.svelte";
-    import BadgeGold from "$lib/components/Icons/Badge_Gold.svelte";
-    import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
-    import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
-    
-    export type House = {
-		house: string;
-		score: number;
-	};
-    
-    let {index, data}: {index: number; data: House} = $props();
+    import RankOrdering from "./RankOrdering.svelte";
+
+    let dataHouse = [
+    { house: "bard", score: 2750 },
+    { house: "mage", score: 2600 },
+    { house: "rogue", score: 2480 },
+    { house: "warrior", score: 2405 },
+    { house: "healer", score: 2380 },
+    ];
 
 </script>
+
+{#each dataHouse as user, i}
+    <RankOrdering index={i}>
+        <div style="width: 60%; text-align: left;">{user.house}</div>
+    	<div>{user.score}</div>
+    </RankOrdering>
+{/each}
+
+
+<style lang="scss">
+    :global(.TEST){
+        width: 60%;
+        text-align: left;
+    }
+</style>

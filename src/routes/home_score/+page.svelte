@@ -62,12 +62,13 @@
 		container-type: size;
 
         :global(#sc-left) {
-            border-radius: 3%;
+            border-radius: 20px;
             box-shadow: 0 4px 24px var(--list-shadow);
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 38%;
+            width: 40%;
+            height: 100%;
         }
 
         .scl-image { 
@@ -80,31 +81,33 @@
             display: flex; 
             flex-direction: column;
             background-color: var(--bg); 
-            border: 1px solid var(--outline);
+            border: 0.5px solid var(--outline);
             border-radius: 10px;
-            padding: 3% 4%;
-            width: 87%;
-            height: 100%;
+            margin: 15px;
+            padding: 2%;
+            width: 80%;
+            height: 70%;
 
             .scl-top { 
                 display: flex; 
                 justify-content: space-between; 
-                font-weight: 600;
-                font-size: 17.5px;
+                padding: 5% 5% 0 5%;
+                // font-weight: 600;
+                font-size: 19px;
             }
 
             :global(#scl-detail-top) {
                 background-color: var(--sc-bg);
                 border: 1px solid var(--outline);
                 border-radius: 10px 10px 0 0;
-                margin: 5% 0 0 0;
-                padding: 2% 4%;
+                margin: 20px 20px 0px 20px;
+                padding: 1.5%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                height: 30%;
-                font-weight: 600;
-                font-size: 16.8px;
+                height: auto;
+                // font-weight: 600;
+                // font-size: 16.8px;
             }
 
             #scl-detail-bottom {
@@ -112,22 +115,25 @@
                 border: 1px solid var(--outline);
                 border-top-width: 0;
                 border-radius: 0px 0px 10px 10px;
-                padding: 2% 4%;
+                margin: 0px 20px 0px 20px;
+                padding: 1.5%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                height: 30%;
-                font-size: 16.4px;
+                font-size: 15px;
             }
 
             :global(Button.scl-btn) {
                 background-color: var(--sc-bg);
                 border: 1px solid var(--outline);
-                padding: 3%;
-                margin: 6% 0 0 0;
+                padding: 2%;
+                // margin: 6% 0 0 0;
                 box-shadow: 0 3px 5px var(--list-shadow);
-                font-weight: 600;
-                color: var(--text)
+                width: auto;
+                // font-weight: 600;
+                margin: 20px 20px 0px 20px;
+                color: var(--text);
+                
             }
         }  
 
@@ -136,39 +142,39 @@
     // -------------------------------------------------------
         
         :global(#sc-right) { 
-            border-radius: 15px;
+            border-radius: 20px;
             box-shadow: 0 4px 24px var(--list-shadow); 
             padding: 1% 2%; 
             width: 60%;
+            height: 100%;
         }
     
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 920px) {
         #Score {
             flex-direction: column;
 
             :global(#sc-left) {
                 width: 100%;
-                height: 40%;
+                height: 35%;
                 flex-direction: row;
 
                 :global(#scl-image) {
-                    width: 25%;
+                    width: 50%;
                 }
                 :global(#scl-main) {
-                    width: 100%;
+                    width: 75%;
+                    height: auto;
                 }
-
             }
 
             :global(#sc-right) {
                 width: auto;
-                height: 60%
+                height: 60%;
             }
         }
-
-
-        
     }
+
+
 </style>
