@@ -20,7 +20,7 @@
 <Fullscreen>
     <div id="Score">
         <!-- SC-Left Side -->
-        <Frame id="sc-left" blur-bg>
+        <Frame id="sc-left" blur-bg border={false}>
             <div class="scl-image">
                 <img src={profile.cardImg} alt="">
             </div>
@@ -38,7 +38,7 @@
         </Frame>
 
         <!-- SC-Right Side -->
-        <Frame id="sc-right" full="" blur-bg>
+        <Frame id="sc-right" full="" blur-bg border={false}>
             <ScoreTab></ScoreTab>
         </Frame>
     </div>
