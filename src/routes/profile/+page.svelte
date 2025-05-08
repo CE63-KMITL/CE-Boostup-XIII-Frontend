@@ -50,7 +50,7 @@
           <img src={icon} alt="รูปนักผจญภัย" class="icon" />
           <div class="name_id">
             <div class="name">{user?.name}</div>
-            <div class="id">{user?.studentId}</div>
+            <div class="id">{user?.studentId?user?.studentId:"NULL"}</div>
           </div>
         </div>
 
@@ -120,7 +120,7 @@
 
   .profile_box {
     display: flex;
-    margin-top: 2vh;
+    margin-top: 1.5vh;
   }
 
   .score_history {
@@ -163,7 +163,8 @@
     font-size: 1vw;
     margin-top:auto;
     margin-bottom:auto;
-    margin-left: 32vw;
+    margin-left:auto;
+    margin-right:1.2vw;
     text-align:center;
   }
 
@@ -227,8 +228,8 @@
   }
 
   .bio_info .icon {
-    width: 5vw;
-    height: 11vh;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     margin-top: 2vh;
     margin-left: 2vw;
@@ -252,123 +253,108 @@
     margin-left: 2vw;
     color: var(--text);
   }
-  @media only screen and (max-width: 500px) {
-    h1 {
-      font-size: 24px;
-      font-weight: 700;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    h2 {
-      font-size: 18px;
-      font-weight: 700; /* Changed from 4000 which is invalid */
-      text-align: left;
-      margin-top: 15px;
-      margin-left: 10px;
-    }
-
-    .Container {
-      display: flex;
-      flex-direction: column; /* Stack items vertically on mobile */
-      align-items: center;
-      justify-content: flex-start; /* Changed from center for better mobile flow */
-      gap: 15px;
-      min-height: 100vh;
-      width: 100%;
-      padding: 15px 10px;
-      box-sizing: border-box;
-    }
-
-    .profile {
-      width: 100%;
-      max-width: 480px;
-      height: auto;
-      min-height: 300px;
-      background-color: var(--profile-bg);
-      border-radius: 15px;
-      outline: 2px solid;
-      border-color: var(--list-border);
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    .profile_box {
-      display: flex;
-      flex-direction: column; /* Stack items vertically */
-      margin-top: 10px;
-    }
-
-    .score_history {
-      width: 100%;
-      max-width: 480px;
-      height: auto;
-      min-height: 300px;
-      background-color: var(--profile-bg);
-      border-radius: 15px;
-      outline: 2px solid;
-      border-color: var(--list-border);
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    .profile .icon {
-      width: 98px;
-      height: 147px;
-      margin: 15px auto; /* Centered */
-      border-radius: 15px;
-    }
-
-    .profile .score_table {
-      margin: 15px auto;
-      text-align: center;
-      height: auto;
-      width: 80%;
-    }
-
-    .profile .score_body {
-      font-size: 14px;
-      background-color: var(--list-bg);
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      padding: 10px;
-      outline: 1px solid;
-    }
-
-    .profile_info {
-      width: 100%;
-      height: auto;
-      margin: 15px 0;
-      border-radius: 15px;
-      outline: 1px solid;
-      border-color: var(--list-border);
-      background-color: var(--profile-bg);
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    .bio_info {
-      display: flex;
-      flex-direction: column; /* Stack items vertically */
-      align-items: center;
-    }
-
-    .bio_info .name_id {
-      font-size: 16px;
-      margin: 10px auto;
-      text-align: center;
-    }
-
-    .bio_info .name_id .id {
-      color: var(--theme-dark-text);
-      display: block;
-      margin-top: 5px;
-    }
-
-    .personal_info {
-      font-size: 14px;
-      margin: 15px 10px;
-      line-height: 1.5;
-    }
+@media only screen and (max-width: 1050px) {
+  h1 {
+    font-size: 6vw;
+    margin-top: 3vh;
   }
+
+  h2 {
+    font-size: 4.5vw;
+    margin-top: 2vh;
+    margin-left: 5vw;
+  }
+
+  .Container {
+    flex-direction: column;
+    gap: 3vh;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+  }
+
+  .profile,
+  .score_history {
+    width: 90vw;
+    height: auto;
+    min-height: 60vh;
+    margin-bottom: 2vh;
+  }
+
+  .profile_box {
+    flex-direction: column;
+  }
+
+  .score_history .score_table {
+    width: 100%;
+    height: 60vh;
+  }
+
+  .score_history .score_table .score_body {
+    width: 85vw;
+    height: auto;
+    min-height: 8vh;
+    margin-top: 2vh;
+    flex-direction: column;
+    padding: 1vh 0;
+  }
+
+  .score_history .score_table .score_body .score_number {
+    font-size: 4vw;
+    margin-left: 5vw;
+    margin-bottom: 1vh;
+  }
+
+  .score_history .score_table .score_body .staff_and_time {
+    font-size: 3.5vw;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    text-align: left;
+  }
+
+  .profile .icon {
+    width: 125px;
+    height: 200px;
+    margin: 3vh auto;
+  }
+
+  .profile .score_table {
+    width: 85vw;
+    margin: 2vh auto;
+  }
+
+  .profile .score_header,
+  .profile .score_body {
+    font-size: 3.5vw;
+  }
+
+  .profile_info {
+    width: 85vw;
+    height: auto;
+    margin: 3vh auto;
+    padding-bottom: 2vh;
+  }
+
+  .bio_info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bio_info .icon {
+    width: 100px;
+    height: 100px;
+    margin: 2vh auto;
+  }
+
+  .bio_info .name_id {
+    font-size: 4vw;
+    margin: 1vh auto;
+    text-align: center;
+  }
+
+  .personal_info {
+    font-size: 4vw;
+    margin-left: 5vw;
+    margin-right: 5vw;
+  }
+}
 </style>
