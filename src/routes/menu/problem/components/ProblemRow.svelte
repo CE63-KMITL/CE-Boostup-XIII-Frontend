@@ -3,7 +3,7 @@
 	import { getToProblemURL, goToProblemURL, selectedProblemId } from "../problem";
 
 	import { statusColors, statusText, type Problem } from "$lib/constants/problem";
-	import List from "../$lib/components/List.svelte";
+	import List from "$lib/components/List.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
 
