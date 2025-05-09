@@ -3,6 +3,7 @@
     import Frame from "$lib/components/Frame.svelte";
     import ProfileTab from "./components/ProfileTab.svelte";
     import ScoreTab from "./components/ScoreTab.svelte";
+    import Test from "./components/TEST.svelte";
 
     const profile = {
       name: 'เพ็ญพิชชา ปานจันทร์',
@@ -19,9 +20,14 @@
 <Fullscreen>
     <div id="Score">
         <!-- SC-Left Side -->
-        <Frame id="sc-left" blur-bg border={false}>
+        <div id="sc-left">
+            <Test></Test>
+        </div>
+       
+        <!-- <Frame id="sc-left" blur-bg border={false}>
+            
             <ProfileTab></ProfileTab>
-        </Frame>
+        </Frame> -->
 
         <!-- SC-Right Side -->
         <Frame id="sc-right" full="" blur-bg border={false}>
@@ -52,14 +58,14 @@
     // -------------------------------------------------------
 
         :global(#sc-left) {
-            border-radius: 20px;
-            box-shadow: 0 4px 24px var(--list-shadow);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px 25px;
+            // border-radius: 20px;
+            // box-shadow: 0 4px 24px var(--list-shadow);
+            // display: flex;
+            // flex-direction: column;
+            // align-items: center;
+            // padding: 15px 25px;
             width: 35%;
-            height: 100%;
+            // height: 100%;
         }
 
     // -------------------------------------------------------

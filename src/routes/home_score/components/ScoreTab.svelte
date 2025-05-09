@@ -39,7 +39,7 @@
 </div>
 
 <style lang="scss">
-    :global(div.tab-container) {
+    :global(.tab-container) {
 		display: flex;
 		flex-direction: row;
 		width: 97.2%;
