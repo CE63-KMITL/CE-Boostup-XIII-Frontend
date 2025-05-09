@@ -54,11 +54,8 @@
 		background-color: var(--bg);
 		color: var(--text);
 		cursor: pointer;
-		// font-size: 1em;
 		font-weight: 600;
 		transition: background-color 0.3s ease;
-		// border-bottom: 2px solid transparent;
-		// z-index: 1;
 	}
 
     .tab-header:hover {
@@ -67,7 +64,7 @@
 
 	.tab-header.active {
 		background-color: var(--sc-button);
-		color: var(--bg)
+		color: var(--bg);
 	}
 	.scroll{
 		padding: 1%;
