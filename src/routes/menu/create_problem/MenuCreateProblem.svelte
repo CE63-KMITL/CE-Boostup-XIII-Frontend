@@ -160,7 +160,15 @@
 			},
 			method: "POST"
 		});
-		console.log(res);
+
+		problemTestCases.forEach((val, i) => {
+			val.result.output = res[i].output
+			val.result.exit_status = res[i].exit_status
+			val.result.exit_code = res[i].exit_code
+			val.result.used_time = res[i].used_time
+		})
+
+		problemTestCases = [...problemTestCases];
 	}
 
 	async function onCreateProblem() {
@@ -348,7 +356,7 @@
 					</div>
 				{:else if rightActiveTab === "testcase"}
 					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer bind:testCases={problemTestCases} staff={true} runAll={runAllCreateProblem} />
+						<TestCaseContainer testCases={problemTestCases} staff={true} runAll={runAllCreateProblem} />
 						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
 							>เพิ่ม Test Case</Button
 						>
