@@ -29,6 +29,8 @@ html:not([dark]) {
 
 	--list-bg: rgb(255, 255, 255);
 	--list-shadow: rgba(0, 0, 0, 0.5);
+	--list-shadow-5: rgba(0, 0, 0, 0.05);
+	--list-shadow-10: rgba(0, 0, 0, 0.1);
 	--list-outline: rgba(0, 0, 0, 0);
 
 	--profile-bg: rgba(255, 255, 255, 0.9);
