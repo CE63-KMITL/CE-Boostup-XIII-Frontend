@@ -98,9 +98,9 @@
 	}
 
 	.profiletab-header.active {
-        background-color: var(--sc-button);
-		border-bottom-color: var(--bg);
-        color: var(--bg);
+        background-color: var(--selected-list-bg);
+		border-bottom-color: var(--selected-list-outline);
+        // color: var(--bg);
 	}
 
     :global(div.profiletab-content) {
@@ -109,9 +109,9 @@
 
         :global(#scoreTab) {
             padding: 1% 20px;
-            // justify-content: end;
-            // text-align: end;
-            // align-items: end;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
             div.scl-image { 
                 height: auto;
