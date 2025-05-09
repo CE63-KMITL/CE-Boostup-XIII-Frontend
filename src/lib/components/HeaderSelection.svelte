@@ -61,6 +61,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 5px;
+          overflow: hidden;
 
 		top: 0px;
 		left: 0px;

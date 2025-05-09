@@ -50,6 +50,7 @@
 			class="problem-id-header"
 			onclick={() => {
 				$searchParams.idReverse = !$searchParams.idReverse;
+				$searchParams.difficultySortBy = null;
 			}}
 		>
 			ข้อที่

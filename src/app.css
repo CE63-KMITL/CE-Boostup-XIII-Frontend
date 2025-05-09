@@ -163,6 +163,7 @@ div:not(.view-line) {
 }
 
 input:not([type="checkbox"]),
+.input,
 textarea,
 .output {
 	outline: none;
@@ -176,6 +177,10 @@ textarea,
 	width: 100%;
 	box-sizing: border-box;
 	padding: 10px;
+}
+
+textarea {
+	white-space: pre;
 }
 
 textarea:focus {
@@ -206,12 +211,14 @@ svg {
 
 @keyframes slide-in {
 	0% {
-		margin-left: 10px;
+		transform: translateX(10px);
+		/* margin-left: 10px; */
 		opacity: 0;
 	}
 
 	100% {
-		margin-left: 0px;
+		transform: translateX(0px);
+		/* margin-left: 0px; */
 		opacity: 1;
 	}
 }
