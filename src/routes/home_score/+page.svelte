@@ -1,9 +1,7 @@
 <script lang="ts">
 	import Fullscreen from "$lib/components/Fullscreen.svelte";
 	import Frame from "$lib/components/Frame.svelte";
-	import ProfileTab from "./components/ProfileTab.svelte";
 	import ScoreTab from "./components/ScoreTab.svelte";
-	import Test from "./components/TEST.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import Tab from "$lib/components/Tab.svelte";
 	import { azScale } from "$lib/transition";
@@ -48,11 +46,6 @@
 			{/if}
 		</Tab>
 
-		<!-- <Frame id="sc-left" blur-bg border={false}>
-            
-            <ProfileTab></ProfileTab>
-        </Frame> -->
-
 		<!-- SC-Right Side -->
 		<Frame id="sc-right" full="" blur-bg border={false}>
 			<ScoreTab></ScoreTab>
@@ -81,13 +74,7 @@
 
 		:global(#sc-left) {
 			border-radius: 20px;
-			// box-shadow: 0 4px 24px var(--list-shadow);
-			// display: flex;
-			// flex-direction: column;
-			// align-items: center;
-			// padding: 15px 25px;
 			width: 35%;
-			// height: 100%;
 		}
 
 		// -------------------------------------------------------
@@ -105,13 +92,6 @@
 
 	:global(.side) {
 		box-shadow: 0 4px 24px var(--list-shadow);
-		//     border-radius: 20px;
-		//     display: flex;
-		//     flex-direction: column;
-		//     align-items: center;
-		//     padding: 15px 25px;
-		//     width: 35%;
-		//     height: 100%;
 	}
 
 	:global(#scoreTab) {
