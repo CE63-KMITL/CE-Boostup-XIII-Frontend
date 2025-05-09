@@ -14,7 +14,7 @@
     }
 </script>
 
-<Frame blur-bg {...$$restProps} class={"tab-container " + $$restProps.class}>
+<Frame blur-bg {...$$restProps} class={"score-tab-container " + $$restProps.class}>
 	{#each Object.keys(headerTabs) as headerId}
 		<button class="tab-header" class:active={activeTab === headerId} 
             on:click={() => selectTab(headerId)} style={$$restProps.style}}>
@@ -39,7 +39,7 @@
 </div>
 
 <style lang="scss">
-    :global(.tab-container) {
+    :global(div.score-tab-container) {
 		display: flex;
 		flex-direction: row;
 		width: 97.2%;
