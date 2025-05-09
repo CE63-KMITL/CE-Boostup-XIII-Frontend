@@ -151,14 +151,16 @@
 	}
 
 	async function runAllCreateProblem() {
-		api.call("/run_code/test-cases", {	
+		const res = await api.call("/run-code/test-cases", {	
 			withToken: true, 
 			data: {
 				inputs: problemTestCases.map((val) => val.input),
 				timeout: problemTimeLimit || 1000,
 				code: solutionCodeText
-			}
+			},
+			method: "POST"
 		});
+		console.log(res);
 	}
 
 	async function onCreateProblem() {
@@ -346,7 +348,7 @@
 					</div>
 				{:else if rightActiveTab === "testcase"}
 					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer testCases={problemTestCases} staff={true} />
+						<TestCaseContainer bind:testCases={problemTestCases} staff={true} runAll={runAllCreateProblem} />
 						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
 							>เพิ่ม Test Case</Button
 						>
