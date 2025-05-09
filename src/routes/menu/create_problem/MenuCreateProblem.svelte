@@ -26,7 +26,7 @@
 	//-------------------------------------------------------
 	let problemTitle: string = "";
 	let problemDifficulty: number = 1;
-	let problemTimeLimit: number = 1000;
+	let problemTimeLimit: number = null;
 	let problemTags: string[] = [];
 	let problemHeaderMode: string = "disallowed";
 	let problemHeaders: string = "";
@@ -44,7 +44,18 @@
 	//-------------------------------------------------------
 	// Test Case State
 	//-------------------------------------------------------
-	let test_cases = [{ input: "", output: "", hidden: false }];
+	let test_cases = [
+		{
+			input: "",
+			hidden: false,
+			result: {
+				exit_code: null,
+				exit_status: null,
+				output: null,
+				used_time: null,
+			},
+		},
+	];
 
 	//-------------------------------------------------------
 	// Input/Output State
@@ -65,23 +76,29 @@
 		inputOutput: "รันโค้ด",
 		testcase: "Test case",
 	};
-	let selectedTags = {};
 
 	//-------------------------------------------------------
 	// Test Case State Handlers
 	//-------------------------------------------------------
 	function handleAddTestCaseContainer(e) {
-		test_cases = [...test_cases, { input: "", output: "", hidden: false }];
+		test_cases = [
+			...test_cases,
+			{
+				input: "",
+				hidden: false,
+				result: {
+					exit_code: null,
+					exit_status: null,
+					output: null,
+					used_time: null,
+				},
+			},
+		];
 		requestAnimationFrame(() => {
 			if (e.target && typeof e.target.scrollIntoView === "function") {
 				e.target.scrollIntoView({ behavior: "smooth" });
 			}
 		});
-	}
-
-	function handleDeleteTestCaseContainer(event: CustomEvent<number>) {
-		const index = event.detail;
-		test_cases = test_cases.filter((_, i) => i !== index);
 	}
 
 	//-------------------------------------------------------
@@ -126,6 +143,32 @@
 				input: inputText,
 				code: solutionCodeText,
 				timeout: problemTimeLimit || 1000,
+			},
+			withToken: true,
+		});
+	}
+
+	async function onCreateProblem() {
+		problem = await api.call("/problem/create", {
+			method: "POST",
+			data: {
+				title: problemTitle,
+				description: problemDescription,
+				timeLimit: problemTimeLimit,
+				headerMode: problemHeaderMode,
+				headers: problemHeaders,
+				functionMode: problemFunctionMode,
+				functions: problemFunctions,
+				defaultCode: defaultCodeText,
+				solutionCode: solutionCodeText,
+				difficulty: problemDifficulty,
+				tags: problemTags,
+				testCases: test_cases.map((testCase) => {
+					return {
+						input: testCase.input,
+						isHiddenTestcase: testCase.hidden,
+					};
+				}),
 			},
 			withToken: true,
 		});
@@ -203,8 +246,16 @@
 
 						<Frame class="tagsBox">
 							{#each Object.keys(tagsColors) as tag}
-								<Checkbox color={tagsColors[tag]} value={tag} bind:group={problemTags}
-									>{tag}</Checkbox
+								<Checkbox
+									color={tagsColors[tag]}
+									value={tag}
+									onSelect={() => {
+										problemTags.push(tag);
+										console.log(problemTags);
+									}}
+									onUnselect={() => {
+										problemTags = problemTags.filter((t) => t !== tag);
+									}}>{tag}</Checkbox
 								>
 							{/each}
 						</Frame>
@@ -281,7 +332,7 @@
 					</div>
 				{:else if rightActiveTab === "testcase"}
 					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer testCases={test_cases} />
+						<TestCaseContainer testCases={test_cases} staff={true} />
 						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
 							>เพิ่ม Test Case</Button
 						>
@@ -293,12 +344,9 @@
 </div>
 
 <style lang="scss">
-	.difficultySlider {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
+	//-------------------------------------------------------
+	// Detail Pane Styles
+	//-------------------------------------------------------
 	.details {
 		display: flex;
 		flex-direction: column;
@@ -315,6 +363,12 @@
 		align-items: center;
 		gap: 10px;
 		white-space: nowrap;
+	}
+
+	.difficultySlider {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
 	}
 
 	.checkboxContainer {
@@ -336,6 +390,9 @@
 		font-size: 0.9rem;
 	}
 
+	//-------------------------------------------------------
+	// Global Styles
+	//-------------------------------------------------------
 	:global(.tagsBox) {
 		display: flex;
 		flex-direction: row;
@@ -344,11 +401,9 @@
 		gap: 10px;
 	}
 
-	/*
-	-------------------------------------------------------
-	Main Container and Section Panel
-	-------------------------------------------------------
-	*/
+	//-------------------------------------------------------
+	// Main Layout Styles
+	//-------------------------------------------------------
 	#problemCreateContainer {
 		width: 100%;
 		height: 100%;
@@ -363,71 +418,6 @@
 		padding: 20px;
 		height: 100%;
 		scroll-snap-align: start;
-	}
-
-	/*
-	-------------------------------------------------------
-	Global Section Container Styles (within Frame)
-	-------------------------------------------------------
-	*/
-	:global(#problemCreateContainer) {
-		:global(.sectionContainer) {
-			border-radius: 10px;
-			display: flex;
-			flex-direction: column;
-			position: relative;
-			box-sizing: border-box;
-			height: 100%;
-			width: 100%;
-			padding: 20px;
-		}
-
-		:global(.defaultCodeContainer) {
-			flex-direction: column;
-		}
-
-		:global(.problemInfo) {
-			justify-content: flex-start;
-			gap: 20px;
-		}
-
-		:global(.codeInputandOutput) {
-			gap: 20px;
-			flex-direction: row;
-			align-items: stretch;
-			overflow: hidden;
-			height: calc(100% - 50px);
-		}
-
-		:global(.testCaseSectionWrapper) {
-			gap: 20px;
-
-			:global(.runAll) {
-				color: var(--bg);
-				background: var(--status-in-progress);
-			}
-
-			:global(.deleteButton) {
-				color: var(--bg);
-				background: var(--status-not-started);
-			}
-
-			:global(.addTestCaseContainerButton) {
-				min-width: 30px;
-				max-width: 30px;
-				align-self: center;
-
-				height: 100%;
-				border: 1px solid var(--outline);
-
-				padding: 0;
-			}
-
-			:global(.doneButton) {
-				color: var(--bg);
-				background: var(--status-done);
-			}
-		}
 	}
 
 	.mainFrame {
@@ -449,6 +439,9 @@
 		width: 40%;
 	}
 
+	//-------------------------------------------------------
+	// Test Case Section Styles
+	//-------------------------------------------------------
 	.testcase-section {
 		display: flex;
 		flex-direction: column;
@@ -457,12 +450,9 @@
 		padding-right: 10px;
 	}
 
-	.addTestCaseContainerButtonFullWidth {
-		width: 100%;
-		margin-top: 10px;
-	}
-
-	input[type="text"],
+	//-------------------------------------------------------
+	// Form Element Styles
+	//-------------------------------------------------------
 	input[type="number"],
 	textarea {
 		padding: 8px;
@@ -480,6 +470,9 @@
 		}
 	}
 
+	//-------------------------------------------------------
+	// Responsive Styles
+	//-------------------------------------------------------
 	@media (max-width: 800px) {
 		.mainFrame {
 			flex-direction: column;
