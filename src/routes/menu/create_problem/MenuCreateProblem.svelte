@@ -46,7 +46,7 @@
 	//-------------------------------------------------------
 	// Test Case State
 	//-------------------------------------------------------
-	let test_cases = [
+	let problemTestCases = [
 		{
 			input: "",
 			hidden: false,
@@ -83,8 +83,8 @@
 	// Test Case State Handlers
 	//-------------------------------------------------------
 	function handleAddTestCaseContainer(e) {
-		test_cases = [
-			...test_cases,
+		problemTestCases = [
+			...problemTestCases,
 			{
 				input: "",
 				hidden: false,
@@ -150,6 +150,17 @@
 		});
 	}
 
+	async function runAllCreateProblem() {
+		api.call("/run_code/test-cases", {	
+			withToken: true, 
+			data: {
+				inputs: problemTestCases.map((val) => val.input),
+				timeout: problemTimeLimit || 1000,
+				code: solutionCodeText
+			}
+		});
+	}
+
 	async function onCreateProblem() {
 		const problemData = {
 			title: problemTitle,
@@ -169,7 +180,7 @@
 			solutionCode: solutionCodeText,
 			difficulty: problemDifficulty,
 			tags: problemTags,
-			testCases: test_cases.map((testCase) => {
+			testCases: problemTestCases.map((testCase) => {
 				return {
 					input: testCase.input,
 					isHiddenTestcase: testCase.hidden,
@@ -335,7 +346,7 @@
 					</div>
 				{:else if rightActiveTab === "testcase"}
 					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer testCases={test_cases} staff={true} />
+						<TestCaseContainer testCases={problemTestCases} staff={true} />
 						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
 							>เพิ่ม Test Case</Button
 						>
