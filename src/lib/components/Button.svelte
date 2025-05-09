@@ -1,4 +1,7 @@
 <script lang="ts">
+	export let color = "var(--button-bg)";
+	export let textColor = "var(--button-bg-text)";
+
 	export let hoverColor = "255, 255, 255, 0.1";
 	export let filter = true;
 
@@ -31,7 +34,13 @@
 	});
 </script>
 
-<button {...$$restProps} class:filter bind:this={This_Button} on:click>
+<button
+	{...$$restProps}
+	class:filter
+	bind:this={This_Button}
+	on:click
+	style="--color : {color}; --text-color : {textColor};"
+>
 	<slot></slot>
 </button>
 
@@ -39,8 +48,8 @@
 	button {
 		width: 100%;
 		padding: 12px;
-		background: var(--button-bg);
-		color: var(--button-bg-text);
+		background: var(--color);
+		color: var(--text-color);
 		border: none;
 		border-radius: 5px;
 		font-size: 1rem;

@@ -23,7 +23,7 @@
 <div class="radio-container" style="--color : {color};" bind:this={thisElement}>
 	<input type="radio" {...$$restProps} bind:this={thisRadioButton} />
 	<span>
-		<slot></slot>
+		<div class="text-content"><slot></slot></div>
 	</span>
 </div>
 
@@ -57,7 +57,7 @@
 			transition: 0.25s ease;
 			outline: 0px solid transparent;
 			color: var(--color);
-			white-space: nowrap;
+			overflow: hidden; // Keep this on the outer span for overall clipping if needed
 
 			&:hover {
 				background: var(--hover-list-bg);
@@ -65,7 +65,7 @@
 			}
 
 			&:before {
-				display: flex;
+				display: inline-block;
 				flex-shrink: 0;
 				content: "";
 				background-color: var(--bg);
@@ -76,6 +76,14 @@
 				transition: 0.25s ease;
 				box-shadow: inset 0 0 0 0.125em var(--color);
 				outline: 0px solid transparent;
+			}
+
+			.text-content {
+				flex: 1;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+                    color: var(--color);
 			}
 		}
 	}

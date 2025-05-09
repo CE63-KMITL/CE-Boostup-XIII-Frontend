@@ -30,7 +30,9 @@
 
 <div class="checkbox-container" style="--color : {color};" {...$$restProps} bind:this={thisElement}>
 	<input type="checkbox" bind:this={thisCheckbox} bind:checked={selected} />
-	<span><slot></slot></span>
+	<span>
+		<div class="text-content"><slot></slot></div>
+	</span>
 </div>
 
 <style lang="scss">
@@ -64,7 +66,7 @@
 			border-radius: 99em;
 			transition: 0.25s ease;
 			outline: 0px solid transparent;
-			color: var(--color);
+			overflow: hidden;
 
 			&:hover {
 				background: var(--hover-list-bg);
@@ -83,6 +85,15 @@
 				transition: 0.25s ease;
 				box-shadow: inset 0 0 0 0.125em var(--color);
 				outline: 0px solid transparent;
+			}
+
+			.text-content {
+				flex: 1;
+				min-width: 0;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				color: var(--color);
 			}
 		}
 	}

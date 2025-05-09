@@ -24,6 +24,7 @@
 	//-------------------------------------------------------
 	// Problem Data State
 	//-------------------------------------------------------
+	let problemId: number = null;
 	let problemTitle: string = "";
 	let problemDifficulty: number = 1;
 	let problemTimeLimit: number = null;
@@ -33,7 +34,8 @@
 	let problemFunctionMode: string = "disallowed";
 	let problemFunctions: string = "";
 	let problemDescription: string = "";
-	let problem = null;
+	let problemAuthorName = null;
+	let problemAuthorId = null;
 
 	//-------------------------------------------------------
 	// Code Editor State
@@ -149,29 +151,39 @@
 	}
 
 	async function onCreateProblem() {
-		problem = await api.call("/problem/create", {
-			method: "POST",
-			data: {
-				title: problemTitle,
-				description: problemDescription,
-				timeLimit: problemTimeLimit,
-				headerMode: problemHeaderMode,
-				headers: problemHeaders,
-				functionMode: problemFunctionMode,
-				functions: problemFunctions,
-				defaultCode: defaultCodeText,
-				solutionCode: solutionCodeText,
-				difficulty: problemDifficulty,
-				tags: problemTags,
-				testCases: test_cases.map((testCase) => {
-					return {
-						input: testCase.input,
-						isHiddenTestcase: testCase.hidden,
-					};
-				}),
-			},
-			withToken: true,
-		});
+		const problemData = {
+			title: problemTitle,
+			description: problemDescription,
+			timeLimit: problemTimeLimit,
+			headerMode: problemHeaderMode,
+			headers: problemHeaders
+				.trim()
+				.split(",")
+				.filter((header) => header != ""),
+			functionMode: problemFunctionMode,
+			functions: problemFunctions
+				.trim()
+				.split(",")
+				.filter((header) => header != ""),
+			defaultCode: defaultCodeText,
+			solutionCode: solutionCodeText,
+			difficulty: problemDifficulty,
+			tags: problemTags,
+			testCases: test_cases.map((testCase) => {
+				return {
+					input: testCase.input,
+					isHiddenTestcase: testCase.hidden,
+				};
+			}),
+		};
+
+		console.log(problemData);
+
+		// const result = await api.call("/problem", {
+		// 	method: "POST",
+		// 	data: problemData,
+		// 	withToken: true,
+		// });
 	}
 
 	//-------------------------------------------------------
@@ -185,7 +197,7 @@
 
 <div id="problemCreateContainer" bind:this={mainScrollContainer}>
 	<div class="sectionPanel">
-		<div class="full mainFrame">
+		<div class="mainFrame">
 			<Tab
 				class="problemCodeContainer"
 				margin={false}
@@ -219,7 +231,7 @@
 							<input bind:value={problemTitle} placeholder="โจทย์ของคนสุดเทพ" />
 						</div>
 						<div class="problemCreateInputContainer">
-							<div class="headText">ชื่อคนทำโจทย์ : {problem?.author.name || $userData?.name}</div>
+							<div class="headText">ชื่อคนทำโจทย์ : {problemAuthorName || $userData?.name}</div>
 						</div>
 
 						<div class="headText">ความยาก</div>
@@ -262,7 +274,7 @@
 
 						<div class="headText">Headers</div>
 
-						<div class="checkboxContainer">
+						<div class="radioButtonContainer">
 							<RadioButton
 								selected={problemHeaderMode === "disallowed"}
 								on:click={() => (problemHeaderMode = "disallowed")}
@@ -282,15 +294,11 @@
 							</RadioButton>
 						</div>
 
-						<input
-							bind:value={problemHeaders}
-							placeholder="stdio.h,string.h"
-							disabled={problemHeaderMode === "disallowed"}
-						/>
+						<input bind:value={problemHeaders} placeholder="stdio.h,string.h" />
 
 						<div class="headText">Functions</div>
 
-						<div class="checkboxContainer">
+						<div class="radioButtonContainer">
 							<RadioButton
 								selected={problemFunctionMode === "disallowed"}
 								on:click={() => (problemFunctionMode = "disallowed")}
@@ -310,11 +318,7 @@
 							</RadioButton>
 						</div>
 
-						<input
-							bind:value={problemFunctions}
-							placeholder="for,while,if"
-							disabled={problemFunctionMode === "disallowed"}
-						/>
+						<input bind:value={problemFunctions} placeholder="for,while,if" />
 
 						<div class="headText">รายละเอียดโจทย์</div>
 
@@ -323,7 +327,6 @@
 							placeholder="รายละเอียดโจทย์"
 							bind:value={problemDescription}
 						>
-							{problem?.detail || ""}
 						</textarea>
 					</div>
 				{:else if rightActiveTab === "inputOutput"}
@@ -340,6 +343,19 @@
 				{/if}
 			</Tab>
 		</div>
+
+		<Frame class="buttonContainer">
+			{#if problemId}
+				{#if problemAuthorId == $userData.id}
+					<Button>อัพเดทโจทย์</Button>
+				{:else}
+					<Button color="var(--status-not-started)">ไม่อนุมัติ</Button>
+					<Button color="var(--status-done)">อนุมัติ</Button>
+				{/if}
+			{:else}
+				<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
+			{/if}
+		</Frame>
 	</div>
 </div>
 
@@ -371,10 +387,11 @@
 		align-items: center;
 	}
 
-	.checkboxContainer {
+	.radioButtonContainer {
 		display: flex;
 		flex-direction: row;
 		gap: 10px;
+		flex-wrap: wrap;
 	}
 
 	.description {
@@ -407,17 +424,14 @@
 	#problemCreateContainer {
 		width: 100%;
 		height: 100%;
-		display: block;
-		overflow-y: auto;
-		overflow-x: hidden;
-		scroll-snap-type: y mandatory;
-		box-sizing: border-box;
 	}
 
 	.sectionPanel {
 		padding: 20px;
 		height: 100%;
-		scroll-snap-align: start;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
 	}
 
 	.mainFrame {
@@ -426,6 +440,8 @@
 		height: 100%;
 		width: 100%;
 		gap: 10px;
+		flex: 1;
+		min-height: 0;
 	}
 
 	:global(div.problemCodeContainer) {
@@ -437,6 +453,12 @@
 
 	:global(div.side) {
 		width: 40%;
+	}
+
+	:global(.buttonContainer) {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
 	}
 
 	//-------------------------------------------------------
@@ -463,6 +485,7 @@
 		font-size: 0.9rem;
 		width: 100%;
 		box-sizing: border-box;
+		resize: vertical;
 
 		&:disabled {
 			background-color: var(--bg-disabled);
@@ -476,16 +499,21 @@
 	@media (max-width: 800px) {
 		.mainFrame {
 			flex-direction: column;
+
+			:global(.problemCodeContainer) {
+				width: auto;
+				height: 50%;
+			}
+
+			:global(div.side) {
+				width: auto;
+				height: 50%;
+			}
 		}
 
-		:global(.problemCodeContainer) {
-			width: auto;
-			height: 50%;
-		}
-
-		:global(div.side) {
-			width: auto;
-			height: 50%;
+		.buttonContainer {
+			display: flex;
+			justify-content: center;
 		}
 	}
 </style>
