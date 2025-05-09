@@ -2,9 +2,10 @@ import { get, writable } from "svelte/store";
 import { Role } from "./enum/role";
 
 export const userData = writable({
+	id: null,
+	name: null,
 	role: null,
 	icon: null,
-	name: null,
 });
 
 export function IsRole(role: Role) {
