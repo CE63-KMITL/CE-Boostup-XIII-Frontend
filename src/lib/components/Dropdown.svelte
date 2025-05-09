@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { azScale } from "$lib/transition";
 	import { createEventDispatcher } from "svelte";
-	import { flip } from "svelte/animate";
 
 	/*
 	-------------------------------------------------------

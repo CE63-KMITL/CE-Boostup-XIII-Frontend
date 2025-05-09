@@ -2,7 +2,6 @@
 	export let data: any;
 	$userData = data;
 
-	import { goto, pushState } from "$app/navigation";
 	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
 	import { azScale } from "$lib/transition";
