@@ -347,6 +347,7 @@
 		<Frame class="buttonContainer">
 			{#if problemId}
 				{#if problemAuthorId == $userData.id}
+					<Button>เก็บโจทย์</Button>
 					<Button>อัพเดทโจทย์</Button>
 				{:else}
 					<Button color="var(--status-not-started)">ไม่อนุมัติ</Button>
