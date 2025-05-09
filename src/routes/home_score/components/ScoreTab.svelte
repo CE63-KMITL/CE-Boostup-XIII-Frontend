@@ -44,6 +44,8 @@
 		flex-direction: row;
 		width: 97.2%;
 		border-radius: 20px;
+		overflow: hidden;
+		padding: 0;
 	}
 
 	.tab-header {
