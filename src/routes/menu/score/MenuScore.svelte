@@ -24,8 +24,7 @@
 	let activeTab = "scoreDetail";
 
 	let selectedStudent = null;
-	
-
+	let nowSearch = "";
 
 	onMount(async () => {
 		if (IsRole(Role.STAFF)) {
@@ -46,21 +45,38 @@ DIV bla bla
 	{#if IsRole(Role.STAFF)}
 		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
 			{#if activeTab == "scData"}
-				<div class="full">scData naja</div>
+				<div id="scoreTab" class="full" style="justify-content: center;" in:azScale={{ delay: 250 }} out:azScale>
+					<div class="scl-image">
+						<img src={profile.cardImg} alt="" />
+					</div>
+					<div id="scl-main">
+						<div class="scl-top">
+							<span>{profile.name}</span>
+							<span style="color: var(--sc-text)">{profile.studentId} </span>
+						</div>
+						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
+						<div id="scl-detail-bottom">{profile.score}</div>
+						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
+						<div id="scl-detail-bottom">{profile.houseScore}</div>
+						<Button class="scl-btn" filter={false}>ประวัติคะแนน</Button>
+					</div>
+				</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
 						<Search></Search>
-						<input style="border: 0px;"
+						<input 
 							id="search"
 							placeholder="ชื่อ / รหัสนักศึกษา"
 							oninput={(e: any) => {
 								$searchParams["search"] = e.target.value;
 							}}
+							bind:value={nowSearch}
+							style="border: 0px;"
 						/>
 					</Frame>
-					{#if selectedStudent == null}
-						<div id="sc-below-search">
+					{#if selectedStudent == null && nowSearch == ""}
+						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="scl-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
