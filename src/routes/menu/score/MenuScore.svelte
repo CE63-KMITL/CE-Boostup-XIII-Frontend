@@ -45,7 +45,7 @@ DIV bla bla
 	{#if IsRole(Role.STAFF)}
 		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
 			{#if activeTab == "scData"}
-				<div id="scoreTab" class="full" style="justify-content: center;" in:azScale={{ delay: 250 }} out:azScale>
+				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
 						<img src={profile.cardImg} alt="" />
 					</div>
@@ -62,7 +62,7 @@ DIV bla bla
 					</div>
 				</div>
 			{:else if activeTab == "scEditData"}
-				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
 						<Search></Search>
 						<input 
@@ -89,7 +89,7 @@ DIV bla bla
 	{:else if IsRole(Role.MEMEBER)}
 		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
 			{#if activeTab == "scoreDetail"}
-				<div id="scoreTab" class="full" style="justify-content: center;" in:azScale={{ delay: 250 }} out:azScale>
+				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
 						<img src={profile.cardImg} alt="" />
 					</div>
@@ -157,30 +157,7 @@ Style SCSS
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		// justify-content: center;
-
-		:global(#sc-search-frame) {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			padding-inline: 10px;
-			width: 100%;
-			border-radius: 25px;
-		}
-
-		:global(#sc-below-search) {
-			width: 100%;
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-		}
-
-		span#dragontext {
-			filter: drop-shadow( 0 2px 3px var(--list-shadow));
-			font-size: 24px;
-		}
+		justify-content: center;
 
 		div.scl-image {
 			height: auto;
@@ -240,6 +217,37 @@ Style SCSS
 				color: var(--text);
 			}
 		}
+		
+	}
+	:global(#scoreTab-editscore) {
+		padding: 1% 20px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		:global(#sc-search-frame) {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			padding-inline: 10px;
+			width: 100%;
+			border-radius: 25px;
+		}
+
+		:global(#sc-below-search) {
+			width: 100%;
+			height: 100%;
+			padding: 0 100px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		span#dragontext {
+			filter: drop-shadow( 0 2px 3px var(--list-shadow));
+			font-size: 24px;
+		}
 	}
 
 	@media (max-width: 920px) {
@@ -261,5 +269,19 @@ Style SCSS
 			flex-direction: row;
 			align-items: start;
 		}
+
+		:global(#scoreTab-editscore) {
+			display: flex;
+			align-items: start;
+			flex-direction: row;
+
+			:global(#sc-below-search) {
+				display: none;
+			}
+
+			
+		}
+		
+		
 	}
 </style>
