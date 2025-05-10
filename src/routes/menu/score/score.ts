@@ -2,9 +2,10 @@ import { pushState } from "$app/navigation";
 import { writable } from "svelte/store";
 import { updatePage } from "../pageManager";
 
-export const selectedStudent = writable<string | null>(null);
-export const searchParams = writable({
-    search: ""
+export const selectedIDStudent = writable<string | null>(null);
+export const searchParams = writable<{ search: string;  page: number}>({
+    search: "",
+    page: 1
 });
 
 export function getStudentURL(id) {
