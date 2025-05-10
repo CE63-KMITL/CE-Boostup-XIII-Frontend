@@ -2,11 +2,11 @@
 	import { goto } from "$app/navigation";
 	import { setCookie } from "$lib/cookie";
 	import * as api from "$lib/fetchApi";
-	import { onMount } from "svelte";
 	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 	import "../../app.css";
-	import Button from "$lib/components/Button.svelte";
+	import Button from "../../lib/components/Button.svelte";
+	import PopUp, { showPopup } from "../../lib/components/PopUp.svelte";
 
 	let email: string = "";
 	let password: string = "";
@@ -19,11 +19,14 @@
 			goto("/menu");
 		} else {
 			alert(`Login failed\n\n${JSON.stringify(res.message)}`);
+			const massage = await showPopup(res.message, true)
+			console.log(massage)
 		}
 	}
 </script>
 
 <div class="Container">
+	<PopUp/>
 	<h1 class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
 	<div class="LoginBox">
 		<h1 class="LoginHead">เข้าสู่ระบบ</h1>
@@ -92,19 +95,19 @@
 		width: 25%;
 		padding: 1rem;
 		padding-top: 0px;
+		gap: 1rem;
 		margin-left: 0.75rem;
 		margin-right: 0.75rem;
 		border: 1px solid var(--theme-dark);
 		border-radius: 15px;
 		background-color: var(--bg-50);
-		opacity: 50;
 	}
 
 	.LoginHead {
 		font-size: 3.5rem;
 		font-weight: 700;
-		margin-top: 3rem;
-		color: var(--theme-dark);
+		margin-top: 2rem;
+		color: var(--theme-dark-text);
 	}
 
 	.InputBox {
@@ -174,7 +177,7 @@
 	}
 
 	:global(.Login) {
-		margin-bottom: 3rem;
+		margin-bottom: 2rem;
 	}
 
 	.Text {

@@ -104,7 +104,7 @@
 	}
 
 	//-------------------------------------------------------
-	// Code Editor Handlers - Solution Code
+	// Solution Code
 	//-------------------------------------------------------
 	async function loadSolutionCode() {
 		return localStorage.getItem("solutionCode");
@@ -116,7 +116,7 @@
 	}
 
 	//-------------------------------------------------------
-	// Code Editor Handlers - Default Code
+	// Default Code
 	//-------------------------------------------------------
 
 	async function loadDefaultCode() {
@@ -179,11 +179,13 @@
 
 		console.log(problemData);
 
-		// const result = await api.call("/problem", {
-		// 	method: "POST",
-		// 	data: problemData,
-		// 	withToken: true,
-		// });
+		const result = await api.call("/problem", {
+			method: "POST",
+			data: problemData,
+			withToken: true,
+		});
+
+		console.log(result);
 	}
 
 	//-------------------------------------------------------
@@ -427,6 +429,10 @@
 		height: 100%;
 	}
 
+	:global(div.problemCodeContainer) {
+		width: 60%;
+	}
+
 	.sectionPanel {
 		padding: 20px;
 		height: 100%;
@@ -443,13 +449,6 @@
 		gap: 10px;
 		flex: 1;
 		min-height: 0;
-	}
-
-	:global(div.problemCodeContainer) {
-		display: flex;
-		flex-direction: column;
-		width: 60%;
-		gap: 10px;
 	}
 
 	:global(div.side) {

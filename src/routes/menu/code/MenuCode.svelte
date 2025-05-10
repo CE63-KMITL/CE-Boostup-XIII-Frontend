@@ -129,71 +129,77 @@
 	});
 </script>
 
-<div class="full mainFrame">
-	<Frame blur-bg class="ProblemContainer">
-		<CodeEditor bind:value={codeText} {saveCode} {loadCode}></CodeEditor>
-	</Frame>
+<div class="component">
+	<div class="full mainFrame">
+		<Frame blur-bg class="ProblemContainer">
+			<CodeEditor bind:value={codeText} {saveCode} {loadCode}></CodeEditor>
+		</Frame>
 
-	<Tab class="side" headers={headerTabs} bind:activeTab>
-		{#if activeTab === "details"}
-			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<ProblemDetail problem={problemData}></ProblemDetail>
-			</div>
-		{:else if activeTab === "inputOutput"}
-			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
-			</div>
-		{:else if activeTab === "testcase"}
-			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<TestCaseContainer {testCases} />
-			</div>
-		{/if}
-	</Tab>
+		<Tab class="side" headers={headerTabs} bind:activeTab>
+			{#if activeTab === "details"}
+				<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+					<ProblemDetail problem={problemData}></ProblemDetail>
+				</div>
+			{:else if activeTab === "inputOutput"}
+				<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+					<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
+				</div>
+			{:else if activeTab === "testcase"}
+				<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+					<TestCaseContainer {testCases} />
+				</div>
+			{/if}
+		</Tab>
+	</div>
 </div>
 
 <style lang="scss">
-	//-------------------------------------------------------
-	// Main Layout Styles
-	//-------------------------------------------------------
-	.mainFrame {
-		display: flex;
-		flex-direction: row;
-		height: 100%;
-		width: 100%;
-		padding: 10px;
-		gap: 10px;
-	}
+	.component {
+		display: contents;
 
-	//-------------------------------------------------------
-	// Container Styles
-	//-------------------------------------------------------
-	:global(.ProblemContainer) {
-		display: flex;
-		flex-direction: column;
-		width: 60%;
-		gap: 10px;
-	}
-
-	:global(div.side) {
-		width: 40%;
-	}
-
-	//-------------------------------------------------------
-	// Responsive Styles
-	//-------------------------------------------------------
-	@media (max-width: 800px) {
+		//-------------------------------------------------------
+		// Main Layout Styles
+		//-------------------------------------------------------
 		.mainFrame {
-			flex-direction: column;
+			display: flex;
+			flex-direction: row;
+			height: 100%;
+			width: 100%;
+			padding: 10px;
+			gap: 10px;
 		}
 
+		//-------------------------------------------------------
+		// Container Styles
+		//-------------------------------------------------------
 		:global(.ProblemContainer) {
-			width: auto;
-			height: 50%;
+			display: flex;
+			flex-direction: column;
+			width: 60%;
+			gap: 10px;
 		}
 
-		:global(div.side) {
-			width: auto;
-			height: 50%;
+		:global(.side) {
+			width: 40%;
+		}
+
+		//-------------------------------------------------------
+		// Responsive Styles
+		//-------------------------------------------------------
+		@media (max-width: 800px) {
+			.mainFrame {
+				flex-direction: column;
+			}
+
+			:global(.ProblemContainer) {
+				width: auto;
+				height: 50%;
+			}
+
+			:global(div.side) {
+				width: auto;
+				height: 50%;
+			}
 		}
 	}
 </style>
