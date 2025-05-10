@@ -1,7 +1,11 @@
 export interface Problem {
 	id: string;
 	title: string;
-	author: { name: string };
+	author: {
+		id: string;
+		icon: string;
+		name: string;
+	};
 	description?: string;
 	tags: string[];
 	difficulty: 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 4.5 | 5;
@@ -27,4 +31,20 @@ export const statusText: { [key: string]: string } = {
 	"Not Started": "ยังไม่ได้ลองทำ",
 	"In Progress": "ลองทำแล้ว",
 	Done: "ผ่านแล้ว",
+};
+
+export const statusStaffColors: { [key: string]: string } = {
+	"In Progress": "var(--status-in-progress)",
+	"Need Review": "var(--used-time)",
+	Published: "var(--status-done)",
+	REJECTED: "var(--status-not-started)",
+	Archived: "โดนสั่งเก็บ",
+};
+
+export const statusStaffText: { [key: string]: string } = {
+	"In Progress": "กำลังแก้ไข",
+	"Need Review": "ต้องตรวจสอบ",
+	Published: "เผยแพร่แล้ว",
+	REJECTED: "ถูกปฏิเสธดั่งเขาไม่รับรัก",
+	Archived: "โดนสั่งเก็บ",
 };

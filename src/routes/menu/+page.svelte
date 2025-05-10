@@ -14,18 +14,17 @@
 	import MenuCreateProblem from "./create_problem/MenuCreateProblem.svelte";
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
 	import { items, currentPage, updatePage } from "./pageManager";
+	import { afterNavigate } from "$app/navigation";
 
 	if (IsRole(Role.STAFF)) {
 		$items["create_problem"] = "สร้างโจทย์";
 	}
 
-	let redirectToMenu = false;
-
 	onMount(() => {
+		window.addEventListener("popstate", () => {
+			updatePage(new URL(window.location.href).searchParams.get("page"),false);
+		});
 		let url = new URL(window.location.href);
-		if (url.pathname != "/menu") {
-			redirectToMenu = true;
-		}
 		if (!url.searchParams.get("page")) {
 			url.searchParams.append("page", "problem");
 			console.log(url);

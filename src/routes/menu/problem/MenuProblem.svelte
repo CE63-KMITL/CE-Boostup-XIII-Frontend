@@ -16,7 +16,7 @@
 	import Search from "$lib/components/Icons/Search.svelte";
 	import ProblemDetail from "./components/ProblemDetail.svelte";
 	import ProblemTable from "./components/ProblemTable.svelte";
-	import { goToProblemURL, searchParams, selectedProblemId } from "./problem";
+	import { goToCreateProblemURL, goToProblemURL, searchParams, selectedProblemId } from "./problem";
 	import type { Unsubscriber } from "svelte/store";
 	import Loading from "$lib/components/Loading.svelte";
 	import { fade, fly } from "svelte/transition";
@@ -264,9 +264,19 @@
 				<Button
 					class="submit-btn"
 					onclick={() => {
-						goToProblemURL(selectedProblem?.id);
-					}}>ทำโจทย์</Button
+						if ($searchParams.staff) {
+							goToCreateProblemURL(selectedProblem?.id);
+						} else {
+							goToProblemURL(selectedProblem?.id);
+						}
+					}}
 				>
+					{#if $searchParams.staff}
+						ดูโจทย์
+					{:else}
+						ทำโจทย์
+					{/if}
+				</Button>
 			</div>
 		{:else}
 			<div class="full" in:fade={{ duration: 250, delay: 250 }} out:fade={{ duration: 250 }}>

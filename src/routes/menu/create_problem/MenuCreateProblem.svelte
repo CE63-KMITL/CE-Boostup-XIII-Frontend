@@ -13,6 +13,9 @@
 	import Stars from "../problem/components/Stars.svelte";
 	import { userData } from "$lib/auth.local";
 	import RadioButton from "$lib/components/RadioButton.svelte";
+	import Loading from "$lib/components/Loading.svelte";
+	import { fade } from "svelte/transition";
+	import { showPopup } from "$lib/components/PopUp.svelte";
 
 	//-------------------------------------------------------
 	// Component State
@@ -24,29 +27,62 @@
 	//-------------------------------------------------------
 	// Problem Data State
 	//-------------------------------------------------------
-	let problemId: number = null;
-	let problemTitle: string = "";
-	let problemDifficulty: number = 1;
-	let problemTimeLimit: number = null;
-	let problemTags: string[] = [];
-	let problemHeaderMode: string = "disallowed";
-	let problemHeaders: string = "";
-	let problemFunctionMode: string = "disallowed";
-	let problemFunctions: string = "";
-	let problemDescription: string = "";
-	let problemAuthorName = null;
-	let problemAuthorId = null;
+	let problem = {
+		id: null,
+		title: "",
+		difficulty: 1,
+		timeLimit: null,
+		tags: [],
+		headerMode: "disallowed",
+		headers: "",
+		functionMode: "disallowed",
+		functions: "",
+		description: "",
+		author: {
+			id: null,
+			icon: null,
+			name: null,
+		},
+	};
+
+	function getProblemData() {
+		return {
+			title: problem.title,
+			description: problem.description,
+			timeLimit: problem.timeLimit,
+			headerMode: problem.headerMode,
+			headers: problem.headers
+				.trim()
+				.split(",")
+				.filter((header) => header != ""),
+			functionMode: problem.functionMode,
+			functions: problem.functions
+				.trim()
+				.split(",")
+				.filter((header) => header != ""),
+			defaultCode: defaultCode,
+			solutionCode,
+			difficulty: problem.difficulty,
+			tags: problem.tags,
+			testCases: testCases.map((testCase) => {
+				return {
+					input: testCase.input,
+					isHiddenTestcase: testCase.hidden,
+				};
+			}),
+		};
+	}
 
 	//-------------------------------------------------------
 	// Code Editor State
 	//-------------------------------------------------------
-	let solutionCodeText: string = "";
-	let defaultCodeText: string = "";
+	let solutionCode: string = "";
+	let defaultCode: string = "";
 
 	//-------------------------------------------------------
 	// Test Case State
 	//-------------------------------------------------------
-	let test_cases = [
+	let testCases = [
 		{
 			input: "",
 			hidden: false,
@@ -83,8 +119,8 @@
 	// Test Case State Handlers
 	//-------------------------------------------------------
 	function handleAddTestCaseContainer(e) {
-		test_cases = [
-			...test_cases,
+		testCases = [
+			...testCases,
 			{
 				input: "",
 				hidden: false,
@@ -103,30 +139,30 @@
 		});
 	}
 
-	//-------------------------------------------------------
-	// Solution Code
-	//-------------------------------------------------------
-	async function loadSolutionCode() {
-		return localStorage.getItem("solutionCode");
-	}
+	// //-------------------------------------------------------
+	// // Solution Code
+	// //-------------------------------------------------------
+	// async function loadSolutionCode() {
+	// 	return localStorage.getItem("solutionCode");
+	// }
 
-	async function saveSolutionCode(code: string) {
-		console.log("Solution code saved");
-		localStorage.setItem("solutionCode", code);
-	}
+	// async function saveSolutionCode(code: string) {
+	// 	console.log("Solution code saved");
+	// 	localStorage.setItem("solutionCode", code);
+	// }
 
-	//-------------------------------------------------------
-	// Default Code
-	//-------------------------------------------------------
+	// //-------------------------------------------------------
+	// // Default Code
+	// //-------------------------------------------------------
 
-	async function loadDefaultCode() {
-		return localStorage.getItem("defaultCode");
-	}
+	// async function loadDefaultCode() {
+	// 	return localStorage.getItem("defaultCode");
+	// }
 
-	async function saveDefaultCode(code: string) {
-		console.log("Default code saved");
-		localStorage.setItem("defaultCode", code);
-	}
+	// async function saveDefaultCode(code: string) {
+	// 	console.log("Default code saved");
+	// 	localStorage.setItem("defaultCode", code);
+	// }
 
 	//-------------------------------------------------------
 	// API Call Functions
@@ -143,39 +179,15 @@
 			method: "POST",
 			data: {
 				input: inputText,
-				code: solutionCodeText,
-				timeout: problemTimeLimit || 1000,
+				code: solutionCode,
+				timeout: problem.timeLimit || 1000,
 			},
 			withToken: true,
 		});
 	}
 
 	async function onCreateProblem() {
-		const problemData = {
-			title: problemTitle,
-			description: problemDescription,
-			timeLimit: problemTimeLimit,
-			headerMode: problemHeaderMode,
-			headers: problemHeaders
-				.trim()
-				.split(",")
-				.filter((header) => header != ""),
-			functionMode: problemFunctionMode,
-			functions: problemFunctions
-				.trim()
-				.split(",")
-				.filter((header) => header != ""),
-			defaultCode: defaultCodeText,
-			solutionCode: solutionCodeText,
-			difficulty: problemDifficulty,
-			tags: problemTags,
-			testCases: test_cases.map((testCase) => {
-				return {
-					input: testCase.input,
-					isHiddenTestcase: testCase.hidden,
-				};
-			}),
-		};
+		const problemData = getProblemData();
 
 		console.log(problemData);
 
@@ -188,177 +200,243 @@
 		console.log(result);
 	}
 
+	async function onUpdateProblem() {
+		const problemData = getProblemData();
+
+		console.log(problemData);
+
+		const result = await api.call(`/problem/${problem.id}`, {
+			method: "PATCH",
+			data: problemData,
+			withToken: true,
+		});
+
+		if (result) {
+			showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!");
+		}
+	}
+
 	//-------------------------------------------------------
 	// Lifecycle
 	//-------------------------------------------------------
-	onMount(() => {
+	let loaded = false;
+	onMount(async () => {
 		const url = new URL(window.location.href);
-		const problemId = url.searchParams.get("problemId");
+		const problemIdParam = url.searchParams.get("problemId");
+
+		if (problemIdParam) {
+			const fetchedProblem = await api.call(`/problem/${problemIdParam}`, {
+				withToken: true,
+			});
+
+			if (fetchedProblem) {
+				const headersToSet = Array.isArray(fetchedProblem.headers)
+					? fetchedProblem.headers.join(",")
+					: typeof fetchedProblem.headers === "string"
+						? fetchedProblem.headers
+						: "";
+
+				const functionsToSet = Array.isArray(fetchedProblem.functions)
+					? fetchedProblem.functions.join(",")
+					: typeof fetchedProblem.functions === "string"
+						? fetchedProblem.functions
+						: "";
+
+				problem = {
+					...problem,
+					...fetchedProblem,
+					difficulty: Number(fetchedProblem.difficulty),
+					headers: headersToSet,
+					functions: functionsToSet,
+					id: problemIdParam,
+				};
+
+				if (fetchedProblem.author) {
+					problem.author = { ...problem.author, ...fetchedProblem.author };
+				}
+
+				if (fetchedProblem.solutionCode) solutionCode = fetchedProblem.solutionCode;
+				if (fetchedProblem.defaultCode) defaultCode = fetchedProblem.defaultCode;
+
+				if (fetchedProblem.testCases)
+					testCases = fetchedProblem.testCases.map((tc) => ({
+						input: tc.input,
+						hidden: tc.isHiddenTestcase,
+						result: { exit_code: null, exit_status: null, output: null, used_time: null },
+					}));
+				loaded = true;
+			}
+		} else {
+			loaded = true;
+		}
 	});
 </script>
 
 <div id="problemCreateContainer" bind:this={mainScrollContainer}>
 	<div class="sectionPanel">
-		<div class="mainFrame">
-			<Tab
-				class="problemCodeContainer"
-				margin={false}
-				headers={{ solutionCode: "เฉลย", defaultCode: "โค้ดเริ่มต้น" }}
-				bind:activeTab={leftActiveTab}
-			>
-				{#if leftActiveTab === "solutionCode"}
-					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<CodeEditor
-							saveCode={saveSolutionCode}
-							loadCode={loadSolutionCode}
-							bind:value={solutionCodeText}
-						/>
-					</div>
-				{:else if leftActiveTab === "defaultCode"}
-					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<CodeEditor
-							saveCode={saveDefaultCode}
-							loadCode={loadDefaultCode}
-							bind:value={defaultCodeText}
-						/>
-					</div>
-				{/if}
-			</Tab>
-
-			<Tab class="side" margin={false} headers={headerTabs} bind:activeTab={rightActiveTab}>
-				{#if rightActiveTab === "details"}
-					<div class="full details" in:azScale={{ delay: 250 }} out:azScale>
-						<div class="problemCreateInputContainer">
-							<div class="headText">ชื่อโจทย์ :</div>
-							<input bind:value={problemTitle} placeholder="โจทย์ของคนสุดเทพ" />
+		{#if loaded}
+			<div class="mainFrame" in:azScale={{ delay: 250 }} out:azScale>
+				<Tab
+					class="problemCodeContainer"
+					margin={false}
+					headers={{ solutionCode: "เฉลย", defaultCode: "โค้ดเริ่มต้น" }}
+					bind:activeTab={leftActiveTab}
+				>
+					{#if leftActiveTab === "solutionCode"}
+						<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+							<CodeEditor bind:value={solutionCode} />
 						</div>
-						<div class="problemCreateInputContainer">
-							<div class="headText">ชื่อคนทำโจทย์ : {problemAuthorName || $userData?.name}</div>
+					{:else if leftActiveTab === "defaultCode"}
+						<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+							<CodeEditor bind:value={defaultCode} />
 						</div>
+					{/if}
+				</Tab>
 
-						<div class="headText">ความยาก</div>
-
-						<div class="difficulty">
-							<Stars bind:difficulty={problemDifficulty}></Stars>
-							<div class="difficultySlider">
-								<input
-									type="range"
-									step="0.5"
-									min="0.5"
-									max="5"
-									bind:value={problemDifficulty}
-								/>
-								<div style="width: 40px; text-align: end">{problemDifficulty.toFixed(1)}</div>
+				<Tab class="side" margin={false} headers={headerTabs} bind:activeTab={rightActiveTab}>
+					{#if rightActiveTab === "details"}
+						<div class="full details" in:azScale={{ delay: 250 }} out:azScale>
+							<div class="problemCreateInputContainer">
+								<div class="headText">ชื่อโจทย์ :</div>
+								<input bind:value={problem.title} placeholder="โจทย์ของคนสุดเทพ" />
 							</div>
-						</div>
+							<div class="problemCreateInputContainer">
+								<div class="headText">
+									ชื่อคนทำโจทย์ : {problem.author?.name || $userData?.name}
+								</div>
+							</div>
 
-						<div class="headText">เวลาสูงสุดที่อนุญาตให้รัน (ms)</div>
+							<div class="headText">ความยาก</div>
 
-						<input type="number" bind:value={problemTimeLimit} placeholder="1000" />
+							<div class="difficulty">
+								<Stars bind:difficulty={problem.difficulty}></Stars>
+								<div class="difficultySlider">
+									<input
+										type="range"
+										step="0.5"
+										min="0.5"
+										max="5"
+										bind:value={problem.difficulty}
+									/>
+									<div style="width: 40px; text-align: end">{problem.difficulty}</div>
+								</div>
+							</div>
 
-						<div class="headText">ประเภท (Tags)</div>
+							<div class="headText">เวลาสูงสุดที่อนุญาตให้รัน (ms)</div>
 
-						<Frame class="tagsBox">
-							{#each Object.keys(tagsColors) as tag}
-								<Checkbox
-									color={tagsColors[tag]}
-									value={tag}
-									onSelect={() => {
-										problemTags.push(tag);
-										console.log(problemTags);
-									}}
-									onUnselect={() => {
-										problemTags = problemTags.filter((t) => t !== tag);
-									}}>{tag}</Checkbox
+							<input type="number" bind:value={problem.timeLimit} placeholder="1000" />
+
+							<div class="headText">ประเภท (Tags)</div>
+
+							<Frame class="tagsBox">
+								{#each Object.keys(tagsColors) as tag}
+									<Checkbox
+										color={tagsColors[tag]}
+										value={tag}
+										checked={problem.tags.includes(tag)}
+										onSelect={() => {
+											if (!problem.tags.includes(tag)) {
+												problem.tags = [...problem.tags, tag];
+											}
+										}}
+										onUnselect={() => {
+											problem.tags = problem.tags.filter((t) => t !== tag);
+										}}>{tag}</Checkbox
+									>
+								{/each}
+							</Frame>
+
+							<div class="headText">Headers</div>
+
+							<div class="radioButtonContainer">
+								<RadioButton
+									selected={problem.headerMode === "disallowed"}
+									on:click={() => (problem.headerMode = "disallowed")}
+									name="headerMode"
+									color="var(--status-not-started)"
 								>
-							{/each}
-						</Frame>
+									ไม่อนุญาตให้ใช้
+								</RadioButton>
 
-						<div class="headText">Headers</div>
+								<RadioButton
+									selected={problem.headerMode === "allowed"}
+									on:click={() => (problem.headerMode = "allowed")}
+									name="headerMode"
+									color="var(--status-done)"
+								>
+									อนุญาตให้ใช้แค่ที่กำหนด
+								</RadioButton>
+							</div>
 
-						<div class="radioButtonContainer">
-							<RadioButton
-								selected={problemHeaderMode === "disallowed"}
-								on:click={() => (problemHeaderMode = "disallowed")}
-								name="problemHeaderMode"
-								color="var(--status-not-started)"
+							<input bind:value={problem.headers} placeholder="stdio.h,string.h" />
+
+							<div class="headText">Functions</div>
+
+							<div class="radioButtonContainer">
+								<RadioButton
+									selected={problem.functionMode === "disallowed"}
+									on:click={() => (problem.functionMode = "disallowed")}
+									name="functionMode"
+									color="var(--status-not-started)"
+								>
+									ไม่อนุญาตให้ใช้
+								</RadioButton>
+
+								<RadioButton
+									selected={problem.functionMode === "allowed"}
+									on:click={() => (problem.functionMode = "allowed")}
+									name="functionMode"
+									color="var(--status-done)"
+								>
+									อนุญาตให้ใช้แค่ที่กำหนด
+								</RadioButton>
+							</div>
+
+							<input bind:value={problem.functions} placeholder="for,while,if" />
+
+							<div class="headText">รายละเอียดโจทย์</div>
+
+							<textarea
+								class="description"
+								placeholder="รายละเอียดโจทย์"
+								bind:value={problem.description}
 							>
-								ไม่อนุญาตให้ใช้
-							</RadioButton>
-
-							<RadioButton
-								selected={problemHeaderMode === "allowed"}
-								on:click={() => (problemHeaderMode = "allowed")}
-								name="problemHeaderMode"
-								color="var(--status-done)"
-							>
-								อนุญาตให้ใช้แค่ที่กำหนด
-							</RadioButton>
+							</textarea>
 						</div>
-
-						<input bind:value={problemHeaders} placeholder="stdio.h,string.h" />
-
-						<div class="headText">Functions</div>
-
-						<div class="radioButtonContainer">
-							<RadioButton
-								selected={problemFunctionMode === "disallowed"}
-								on:click={() => (problemFunctionMode = "disallowed")}
-								name="problemFunctionMode"
-								color="var(--status-not-started)"
-							>
-								ไม่อนุญาตให้ใช้
-							</RadioButton>
-
-							<RadioButton
-								selected={problemFunctionMode === "allowed"}
-								on:click={() => (problemFunctionMode = "allowed")}
-								name="problemFunctionMode"
-								color="var(--status-done)"
-							>
-								อนุญาตให้ใช้แค่ที่กำหนด
-							</RadioButton>
+					{:else if rightActiveTab === "inputOutput"}
+						<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+							<InputOutput {onRunCode} bind:inputText bind:result />
 						</div>
+					{:else if rightActiveTab === "testcase"}
+						<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
+							<TestCaseContainer {testCases} staff={true} />
+							<Button
+								on:click={handleAddTestCaseContainer}
+								class="addTestCaseContainerButtonFullWidth">เพิ่ม Test Case</Button
+							>
+						</div>
+					{/if}
+				</Tab>
+			</div>
 
-						<input bind:value={problemFunctions} placeholder="for,while,if" />
-
-						<div class="headText">รายละเอียดโจทย์</div>
-
-						<textarea
-							class="description"
-							placeholder="รายละเอียดโจทย์"
-							bind:value={problemDescription}
-						>
-						</textarea>
-					</div>
-				{:else if rightActiveTab === "inputOutput"}
-					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<InputOutput {onRunCode} bind:inputText bind:result />
-					</div>
-				{:else if rightActiveTab === "testcase"}
-					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer testCases={test_cases} staff={true} />
-						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
-							>เพิ่ม Test Case</Button
-						>
-					</div>
-				{/if}
-			</Tab>
-		</div>
-
-		<Frame class="buttonContainer">
-			{#if problemId}
-				{#if problemAuthorId == $userData.id}
-					<Button>เก็บโจทย์</Button>
-					<Button>อัพเดทโจทย์</Button>
+			<Frame class="buttonContainer">
+				{#if problem.id}
+					{#if problem.author?.id == $userData.id}
+						<Button>เก็บโจทย์</Button>
+						<Button onclick={onUpdateProblem}>อัพเดทโจทย์</Button>
+					{:else}
+						<Button color="var(--status-not-started)">ไม่อนุมัติ</Button>
+						<Button color="var(--status-done)">อนุมัติ</Button>
+					{/if}
 				{:else}
-					<Button color="var(--status-not-started)">ไม่อนุมัติ</Button>
-					<Button color="var(--status-done)">อนุมัติ</Button>
+					<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
 				{/if}
-			{:else}
-				<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
-			{/if}
-		</Frame>
+			</Frame>
+		{:else}
+			<div class="full" in:fade={{ duration: 250, delay: 250 }} out:fade={{ duration: 250 }}>
+				<Loading></Loading>
+			</div>
+		{/if}
 	</div>
 </div>
 
