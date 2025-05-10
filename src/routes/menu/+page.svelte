@@ -14,6 +14,7 @@
 	import MenuCreateProblem from "./create_problem/MenuCreateProblem.svelte";
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
 	import { items, currentPage, updatePage } from "./pageManager";
+    import MenuScore from "./score/MenuScore.svelte";
 
 	if (IsRole(Role.STAFF)) {
 		$items["create_problem"] = "สร้างโจทย์";
@@ -121,7 +122,11 @@
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<ProblemInMenu></ProblemInMenu>
 			</div>
-		{:else if $currentPage == "score"}{:else if $currentPage == "create_problem"}
+		{:else if $currentPage == "score"}
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<MenuScore></MenuScore>
+			</div>
+		{:else if $currentPage == "create_problem"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<MenuCreateProblem></MenuCreateProblem>
 			</div>

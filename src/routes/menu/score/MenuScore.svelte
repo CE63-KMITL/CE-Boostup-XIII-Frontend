@@ -1,13 +1,14 @@
 <script lang="ts">
-	import Fullscreen from "$lib/components/Fullscreen.svelte";
 	import Frame from "$lib/components/Frame.svelte";
 	import ScoreTab from "./components/ScoreTab.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import Tab from "$lib/components/Tab.svelte";
 	import { azScale } from "$lib/transition";
-
-	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
-	let activeTab = "scoreDetail";
+    import { IsRole } from "$lib/auth.local";
+    import { Role } from "$lib/enum/role";
+    import { onMount } from "svelte";
+    import Search from "$lib/components/Icons/Search.svelte";
+    import { searchParams } from "./score";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -18,14 +19,61 @@
 		houseScore: 1200,
 		cardImg: "/house/warlock.png",
 	};
+
+	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
+	let activeTab = "scoreDetail";
+
+	let selectedStudent = null;
+	
+
+
+	onMount(async () => {
+		if (IsRole(Role.STAFF)) {
+			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
+			activeTab = "scEditData";
+		}
+	});
 </script>
 
-<Fullscreen>
-	<div id="Score">
-		<!-- SC-Left Side -->
+<!-- 
+-------------------------------------------------------
+DIV bla bla
+-------------------------------------------------------
+-->
+
+<div id="Score">
+	<!-- SC-Left Side -->
+	{#if IsRole(Role.STAFF)}
+		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
+			{#if activeTab == "scData"}
+				<div class="full">scData naja</div>
+			{:else if activeTab == "scEditData"}
+				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
+					<Frame id="sc-search-frame">
+						<Search></Search>
+						<input style="border: 0px;"
+							id="search"
+							placeholder="ชื่อ / รหัสนักศึกษา"
+							oninput={(e: any) => {
+								$searchParams["search"] = e.target.value;
+							}}
+						/>
+					</Frame>
+					{#if selectedStudent == null}
+						<div id="sc-below-search">
+							<div class="scl-image">
+								<img src={"dragon-logo.png"} alt="" />
+							</div>
+							<span id="dragontext">CE BOOSTUP</span>
+						</div>
+					{/if}
+				</div>
+			{/if}
+		</Tab>
+	{:else if IsRole(Role.MEMEBER)}
 		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
 			{#if activeTab == "scoreDetail"}
-				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<div id="scoreTab" class="full" style="justify-content: center;" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
 						<img src={profile.cardImg} alt="" />
 					</div>
@@ -45,19 +93,21 @@
 				<div class="full">claimPrice naja</div>
 			{/if}
 		</Tab>
+	{/if}
+	
+	<!-- SC-Right Side -->
+	<Frame id="sc-right" full="" blur-bg border={false}>
+		<ScoreTab></ScoreTab>
+	</Frame>
+</div>
 
-		<!-- SC-Right Side -->
-		<Frame id="sc-right" full="" blur-bg border={false}>
-			<ScoreTab></ScoreTab>
-		</Frame>
-	</div>
-</Fullscreen>
+<!-- 
+-------------------------------------------------------
+Style SCSS
+-------------------------------------------------------
+-->
 
 <style lang="scss">
-	// -------------------------------------------------------
-	// Left Side SC GUI
-	// -------------------------------------------------------
-
 	#Score {
 		width: 100%;
 		height: 100%;
@@ -68,18 +118,10 @@
 		box-sizing: border-box;
 		container-type: size;
 
-		// -------------------------------------------------------
-		// Left Side SC GUI
-		// -------------------------------------------------------
-
 		:global(#sc-left) {
 			border-radius: 20px;
 			width: 35%;
 		}
-
-		// -------------------------------------------------------
-		// Right Side SC GUI
-		// -------------------------------------------------------
 
 		:global(#sc-right) {
 			border-radius: 20px;
@@ -99,7 +141,30 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
+		// justify-content: center;
+
+		:global(#sc-search-frame) {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			padding-inline: 10px;
+			width: 100%;
+			border-radius: 25px;
+		}
+
+		:global(#sc-below-search) {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		span#dragontext {
+			filter: drop-shadow( 0 2px 3px var(--list-shadow));
+			font-size: 24px;
+		}
 
 		div.scl-image {
 			height: auto;
@@ -168,7 +233,6 @@
 			:global(#sc-left) {
 				width: 100%;
 				height: 35%;
-				// flex-direction: row;
 			}
 
 			:global(#sc-right) {

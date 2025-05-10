@@ -66,7 +66,7 @@
 
 	.tab-header.active {
 		background-color: var(--sc-button);
-		color: var(--bg);
+		color: var(--sc-text-tab);
 	}
 	.scroll{
 		padding: 1%;
