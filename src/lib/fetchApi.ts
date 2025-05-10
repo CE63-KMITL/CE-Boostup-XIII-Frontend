@@ -1,6 +1,7 @@
 import { goto } from "$app/navigation";
 import { getCookie } from "./cookie";
 import { say } from "./normalFunction";
+import { showPopup } from "$lib/components/PopUp.svelte";
 
 const API_HOST = import.meta.env.VITE_API_HOST;
 
@@ -25,7 +26,7 @@ export async function call(
 			const responseData = await response.json();
 
 			if (responseData.message == "User not found") {
-				alert(
+				showPopup(
 					say(
 						"⚠️ เกิดข้อผิดพลาด\n\nไม่พบข้อมูลผู้ใช้ หรือ เซสชั่นหมดอายุ\n\nกรุณาเข้าสู่ระบบใหม่อีกครั้ง",
 						"(*￣3￣)╭"
@@ -39,20 +40,22 @@ export async function call(
 
 			if (responseData.message) {
 				if (responseData.message.includes("Too Many Requests")) {
-					alert(say("ใจเย็นๆหน่อย~\n\nคุณดูเหนื่อยๆนะดื่มน้ำหน่อยไหม", "♪(´▽｀)"));
+					showPopup(say("ใจเย็นๆหน่อย~\n\nคุณดูเหนื่อยๆนะดื่มน้ำหน่อยไหม", "♪(´▽｀)"));
 					return;
 				} else if (responseData.message.includes("Unauthorized")) {
-					alert(say("กรุณาเข้าสู่ระบบก่อนใช้งาน", "( •̀ ω •́ )✧"));
+					showPopup(say("กรุณาเข้าสู่ระบบก่อนใช้งาน", "( •̀ ω •́ )✧"));
 					return;
 				}
 			}
 
 			if (!response.ok) {
-				alert(
+				showPopup(
 					say(
-						`${route}\n\n⚠️ เกิดข้อผิดพลาด\n\nโปรดติดต่อ CE63@KMITL\n\n${
-							responseData.error ?? ""
-						}\n${JSON.stringify(responseData.message)}`,
+						`${route}\n\n⚠️ เกิดข้อผิดพลาด\n\nโปรดติดต่อ CE63@KMITL\n\n${responseData.error ?? ""}\n${
+							typeof responseData.message == "object"
+								? JSON.stringify(responseData.message)
+								: responseData.message
+						}`,
 						"(┬┬﹏┬┬)"
 					)
 				);
@@ -68,14 +71,14 @@ export async function call(
 	} catch (error) {
 		try {
 			if (error.toString().includes("Failed to fetch")) {
-				alert(
+				showPopup(
 					say(
 						"⚠️ เกิดข้อผิดพลาด\n\nไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ โปรดติดต่อ CE63@KMITL",
 						"(˘･_･˘)"
 					)
 				);
 			} else {
-				alert(`${route}\n\n${error}`);
+				showPopup(`${route}\n\n${error}`);
 			}
 		} catch (error) {}
 		return null;

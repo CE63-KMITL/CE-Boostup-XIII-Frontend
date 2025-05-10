@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PopUp from "$lib/components/PopUp.svelte";
 	import "../app.css";
 	let { children } = $props();
 
@@ -7,4 +8,5 @@
 	onMount(() => {});
 </script>
 
+<PopUp />
 {@render children()}

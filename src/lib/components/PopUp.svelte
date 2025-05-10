@@ -1,55 +1,64 @@
 <script lang="ts" context="module">
-    import { writable } from "svelte/store";
+	import { writable } from "svelte/store";
 	import type { Writable } from "svelte/store";
 
-	export const popup: Writable<{ show: boolean; message: string, ok_btn: boolean, res?: (value: boolean) => void}> = writable({
+	export const popup: Writable<{
+		show: boolean;
+		message: string;
+		cancelButton: boolean;
+		res?: (value: boolean) => void;
+	}> = writable({
 		show: false,
 		message: "",
-        ok_btn: false,
-        res: undefined
+		cancelButton: false,
+		res: undefined,
 	});
 
-	export function showPopup(message: string, ok_btn: boolean): Promise<boolean> {
+	export async function showPopup(message: string, cancelButton: boolean = false): Promise<boolean> {
 		return new Promise((res) => {
-			popup.set({ show: true, message, ok_btn, res });
+			popup.set({ show: true, message, cancelButton, res });
 		});
 	}
 
 	export function closePopup(returnValue: boolean) {
 		popup.update((p) => {
 			if (p.res) p.res(returnValue);
-			return { show: false, message: "", ok_btn: false, resolve: undefined };
+			return { show: false, message: "", cancelButton: false, resolve: undefined };
 		});
 	}
-
 </script>
 
 <script lang="ts">
 	import { onDestroy } from "svelte";
+	import Button from "./Button.svelte";
+	import { azScale } from "$lib/transition";
+	import { fade } from "svelte/transition";
 
 	let show = false;
 	let message = "";
-    let ok_btn = false;
+	let cancelButton = false;
 
 	const unsubscribe = popup.subscribe(($popup) => {
 		show = $popup.show;
 		message = $popup.message;
-        ok_btn = $popup.ok_btn;
+		cancelButton = $popup.cancelButton;
 	});
 
 	onDestroy(() => unsubscribe());
 </script>
 
 {#if show}
-	<div class="Overlay">
-		<div class="Popup">
-			<p class="Massage">{message}</p>
-            <div class="ButtonContainer">
-                <button class="Close" on:click={() => closePopup(false)}>Close</button>
-                {#if ok_btn}
-                    <button class="Ok" on:click={() => closePopup(true)}>Ok</button>
-                {/if}
-            </div>
+	<div in:fade={{ duration: 250 }} out:fade={{ duration: 250 }} class="Overlay">
+		<div in:azScale out:azScale class="Popup">
+			<div class="Massage">{message}</div>
+			<div class="ButtonContainer">
+				{#if cancelButton}
+					<Button color="var(--status-not-started)" on:click={() => closePopup(false)}>Close</Button>
+				{/if}
+				<Button color={cancelButton ? "var(--status-done)" : undefined} on:click={() => closePopup(true)}
+					>Ok</Button
+				>
+			</div>
 		</div>
 	</div>
 {/if}
@@ -58,69 +67,44 @@
 	.Overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.7);
+		background: var(--list-shadow);
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		z-index: 9999;
-        font-size: 1.125rem;
-        font-weight: 500;
+		font-size: 1.125rem;
+		font-weight: 500;
 	}
 
 	.Popup {
-        display: flex;
-        flex-direction: column;
-		background: white;
-        height: 30vh;
-        width: 30vw;
-        min-height: 10rem;
-        min-width: 20rem;
-        max-height: 15rem;
-		padding: 2rem;
-        gap: 2rem;
-		border-radius: 12px;
-		box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+		display: flex;
+		flex-direction: column;
+		background: var(--list-bg);
+		min-width: 20rem;
+		padding: 1rem;
+		gap: 10px;
+		border-radius: 10px;
+		box-shadow: 0 0 12px var(--list-shadow);
 	}
 
-    .Massage {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 80%;
-        min-height: fit-content;
-    }
+	.Massage {
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		width: 100%;
+		min-height: fit-content;
+		white-space: pre-line;
+		word-break: break-word;
+		text-align: left;
+	}
 
-    .ButtonContainer {
-        display: flex;
-        align-items: flex-end;
-        width: 100%;
-        justify-content: space-between;
-    }
+	.ButtonContainer {
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
 
-    .Close {
-        color: var(--normal);
-        background-color: var(--status-not-started);
-        width: 4rem;
-        padding: 3px;
-        border-radius: 5px;
-    }
-
-    .Close:hover {
-        background-color: rgb(179, 55, 55);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    }
-
-    .Ok {
-        color: var(--normal);
-        background-color: var(--status-done);
-        width: 4rem;
-        padding: 3px;
-        border-radius: 5px;
-    }
-
-    .Ok:hover{
-        background-color: rgb(41, 136, 41);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    }
+		:global(button) {
+			font-size: 0.7rem;
+		}
+	}
 </style>
