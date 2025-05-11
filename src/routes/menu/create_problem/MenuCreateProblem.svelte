@@ -82,7 +82,7 @@
 	//-------------------------------------------------------
 	// Test Case State
 	//-------------------------------------------------------
-	let testCases = [
+	let problemTestCases = [
 		{
 			input: "",
 			hidden: false,
@@ -119,8 +119,8 @@
 	// Test Case State Handlers
 	//-------------------------------------------------------
 	function handleAddTestCaseContainer(e) {
-		testCases = [
-			...testCases,
+		problemTestCases = [
+			...problemTestCases,
 			{
 				input: "",
 				hidden: false,
@@ -186,22 +186,53 @@
 		});
 	}
 
-	async function onCreateProblem() {
-		const problemData = getProblemData();
-
-		console.log(problemData);
-
-		const result = await api.call("/problem", {
-			method: "POST",
-			data: problemData,
-			withToken: true,
+	async function runAllCreateProblem() {
+		const res = await api.call("/run-code/test-cases", {	
+			withToken: true, 
+			data: {
+				inputs: problemTestCases.map((val) => val.input),
+				timeout: problemTimeLimit || 1000,
+				code: solutionCodeText
+			},
+			method: "POST"
 		});
 
-		console.log(result);
+		problemTestCases.forEach((val, i) => {
+			val.result.output = res[i].output
+			val.result.exit_status = res[i].exit_status
+			val.result.exit_code = res[i].exit_code
+			val.result.used_time = res[i].used_time
+		})
+
+		problemTestCases = [...problemTestCases];
 	}
 
-	async function onUpdateProblem() {
-		const problemData = getProblemData();
+	async function onCreateProblem() {
+		const problemData = {
+			title: problemTitle,
+			description: problemDescription,
+			timeLimit: problemTimeLimit,
+			headerMode: problemHeaderMode,
+			headers: problemHeaders
+				.trim()
+				.split(",")
+				.filter((header) => header != ""),
+			functionMode: problemFunctionMode,
+			functions: problemFunctions
+				.trim()
+				.split(",")
+				.filter((header) => header != ""),
+			defaultCode: defaultCodeText,
+			solutionCode: solutionCodeText,
+			difficulty: problemDifficulty,
+			tags: problemTags,
+			testCases: problemTestCases.map((testCase) => {
+				return {
+					input: testCase.input,
+					isHiddenTestcase: testCase.hidden,
+				};
+			}),
+		};
 
 		console.log(problemData);
 
@@ -415,19 +446,37 @@
 								class="addTestCaseContainerButtonFullWidth">เพิ่ม Test Case</Button
 							>
 						</div>
-					{/if}
-				</Tab>
-			</div>
+						<input bind:value={problemFunctions} placeholder="for,while,if" />
 
-			<Frame class="buttonContainer">
-				{#if problem.id}
-					{#if problem.author?.id == $userData.id}
-						<Button>เก็บโจทย์</Button>
-						<Button onclick={onUpdateProblem}>อัพเดทโจทย์</Button>
-					{:else}
-						<Button color="var(--status-not-started)">ไม่อนุมัติ</Button>
-						<Button color="var(--status-done)">อนุมัติ</Button>
-					{/if}
+						<div class="headText">รายละเอียดโจทย์</div>
+
+						<textarea
+							class="description"
+							placeholder="รายละเอียดโจทย์"
+							bind:value={problemDescription}
+						>
+						</textarea>
+					</div>
+				{:else if rightActiveTab === "inputOutput"}
+					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+						<InputOutput {onRunCode} bind:inputText bind:result />
+					</div>
+				{:else if rightActiveTab === "testcase"}
+					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
+						<TestCaseContainer testCases={problemTestCases} staff={true} runAll={runAllCreateProblem} />
+						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
+							>เพิ่ม Test Case</Button
+						>
+					</div>
+				{/if}
+			</Tab>
+		</div>
+
+		<Frame class="buttonContainer">
+			{#if problemId}
+				{#if problemAuthorId == $userData.id}
+					<Button>เก็บโจทย์</Button>
+					<Button>อัพเดทโจทย์</Button>
 				{:else}
 					<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
 				{/if}

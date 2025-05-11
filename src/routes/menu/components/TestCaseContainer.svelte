@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { flip } from "svelte/animate";
 	import { fly } from "svelte/transition";
 	import Button from "$lib/components/Button.svelte";
 	import type { RunCodeResult } from "$lib/enum/runCode";
@@ -32,7 +31,7 @@
 			{#if !testCase.hidden || staff}
 				<div class="testcase-details" class:hidden={testCase.hidden}>
 					<div class="testcase-input">Input</div>
-					<textarea class="input" disabled={!staff}>{testCase.input}</textarea>
+					<textarea class="input" bind:value={testCase.input} disabled={!staff}></textarea>
 					<div class="testcase-output">Output{testCase.result?.output}</div>
 					<textarea class="output" readonly>{testCase.result.output}</textarea>
 				</div>
