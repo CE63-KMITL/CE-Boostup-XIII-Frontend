@@ -25,9 +25,20 @@ export function getToProblemURL(id) {
 	return `/menu?page=code&problemId=${id}`;
 }
 
+export function getToCreateProblemURL(id) {
+	return `/menu?page=create_problem&problemId=${id}`;
+}
+
 export function goToProblemURL(id) {
 	const url = new URL(window.location.href);
 	url.searchParams.set("problemId", id);
 	pushState(url, null);
 	updatePage("code");
+}
+
+export function goToCreateProblemURL(id) {
+	const url = new URL(window.location.href);
+	url.searchParams.set("problemId", id);
+	pushState(url, null);
+	updatePage("create_problem");
 }

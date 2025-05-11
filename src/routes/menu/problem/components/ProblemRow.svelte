@@ -1,8 +1,21 @@
 <script lang="ts">
 	import { userData } from "$lib/auth.local";
-	import { getToProblemURL, goToProblemURL, selectedProblemId } from "../problem";
+	import {
+		getToCreateProblemURL,
+		getToProblemURL,
+		goToCreateProblemURL,
+		goToProblemURL,
+		searchParams,
+		selectedProblemId,
+	} from "../problem";
 
-	import { statusColors, statusText, type Problem } from "$lib/constants/problem";
+	import {
+		statusColors,
+		statusStaffColors,
+		statusStaffText,
+		statusText,
+		type Problem,
+	} from "$lib/constants/problem";
 	import List from "$lib/components/List.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
@@ -34,22 +47,54 @@
 		<Stars difficulty={problem.difficulty} />
 	</div>
 
-	<div class="status" style="color: {statusColors[problem.status] ?? '#808080'};">
-		{statusText[problem.status] ?? "ไม่ทราบ"}
+	<div
+		class="status"
+		style="color: {(() => {
+			if (!problem.status) {
+				return 'var(--grayed)';
+			}
+			if ($searchParams.staff) {
+				return statusStaffColors[problem.status];
+			} else {
+				return statusColors[problem.status];
+			}
+		})()}"
+	>
+		{(() => {
+			if (!problem.status) {
+				return "ไม่ทราบ";
+			}
+			if ($searchParams.staff) {
+				return statusStaffText[problem.status];
+			} else {
+				return statusText[problem.status];
+			}
+		})()}
 	</div>
-	<div class="do-now">
-		<a
-			href={getToProblemURL(problem.id)}
-			title="สามารถกดเมาส์กลางได้"
-			aria-disabled={$userData.role == null}
-			on:click|stopPropagation|preventDefault={() => goToProblemURL(problem.id)}
-		>
-			{#if $userData.role == null}
-				กรุณาเข้าสู่ระบบ
-			{:else}
-				ทำโจทย์
-			{/if}
-		</a>
+	<div class="problemButtonContainer">
+		{#if $searchParams.staff}
+			<a
+				href={getToCreateProblemURL(problem.id)}
+				title="สามารถกดเมาส์กลางได้"
+				aria-disabled={$userData.role == null}
+				on:click|stopPropagation|preventDefault={() => goToCreateProblemURL(problem.id)}
+			>
+				ดูโจทย์
+			</a>
+		{:else}
+			<a
+				href={getToProblemURL(problem.id)}
+				title="สามารถกดเมาส์กลางได้"
+				aria-disabled={$userData.role == null}
+				on:click|stopPropagation|preventDefault={() => goToProblemURL(problem.id)}
+			>
+				{#if $userData.role == null}
+					กรุณาเข้าสู่ระบบ
+				{:else}
+					ทำโจทย์
+				{/if}
+			</a>
+		{/if}
 	</div>
 </List>
 
@@ -89,7 +134,7 @@
 		font-weight: 500;
 	}
 
-	.do-now a {
+	.problemButtonContainer a {
 		width: 100%;
 		padding: 5px;
 		padding-inline: 15px;

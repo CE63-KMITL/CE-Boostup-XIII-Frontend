@@ -5,10 +5,8 @@ COPY . .
 
 RUN npm i -g pnpm && pnpm i
 
-FROM node:23-alpine AS env
+FROM build AS env
 WORKDIR /app
-
-COPY --from=build . .
 
 ARG VITE_API_HOST
 ENV VITE_API_HOST=${VITE_API_HOST}

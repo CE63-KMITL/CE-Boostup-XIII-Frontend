@@ -20,13 +20,11 @@
 		$items["create_problem"] = "สร้างโจทย์";
 	}
 
-	let redirectToMenu = false;
-
 	onMount(() => {
+		window.addEventListener("popstate", () => {
+			updatePage(new URL(window.location.href).searchParams.get("page"),false);
+		});
 		let url = new URL(window.location.href);
-		if (url.pathname != "/menu") {
-			redirectToMenu = true;
-		}
 		if (!url.searchParams.get("page")) {
 			url.searchParams.append("page", "problem");
 			console.log(url);
