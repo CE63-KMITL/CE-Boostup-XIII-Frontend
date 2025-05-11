@@ -1,7 +1,7 @@
 <script lang="ts">
     import RankOrdering from "./RankOrdering.svelte";
 
-    let dataOverall = [
+    export let dataOverall = [
     { name: "Veerapat Pirultham", id: "67010852", house: "bard", score: 700 },
     { name: "Nattapong Suksiri", id: "67010853", house: "mage", score: 680 },
     { name: "Kamonchai Lekbun", id: "67010854", house: "rogue", score: 660 },

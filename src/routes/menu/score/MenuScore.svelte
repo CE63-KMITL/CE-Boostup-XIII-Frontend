@@ -46,29 +46,29 @@
     -------------------------------------------------------
     */
 
-	async function getQuerySC() {
-		const searchQuerySC = { search: $searchParams["search"] };
+	// async function getQuerySC() {
+	// 	const searchQuerySC = { search: $searchParams["search"] };
 
-		const querySC = Object.entries(searchQuerySC)
-			.filter(
-				([_, value]) => 
-				value !== null && 
-				value !== "" && 
-				(!Array.isArray(value) || value.length > 0)
-			)
-			.map(([key, value]) => {
-				if (Array.isArray(value)) {
-					let stringSC = "";
-					value.forEach((elementSC) => {
-						stringSC += `&${key}=${elementSC}`;
-					});
-					return stringSC;
-				}
-				return `${key}=${value}`;
-			})
-			.join("&");
-		return querySC;
-	}
+	// 	const querySC = Object.entries(searchQuerySC)
+	// 		.filter(
+	// 			([_, value]) => 
+	// 			value !== null && 
+	// 			value !== "" && 
+	// 			(!Array.isArray(value) || value.length > 0)
+	// 		)
+	// 		.map(([key, value]) => {
+	// 			if (Array.isArray(value)) {
+	// 				let stringSC = "";
+	// 				value.forEach((elementSC) => {
+	// 					stringSC += `&${key}=${elementSC}`;
+	// 				});
+	// 				return stringSC;
+	// 			}
+	// 			return `${key}=${value}`;
+	// 		})
+	// 		.join("&");
+	// 	return querySC;
+	// }
 
 	/*
     -------------------------------------------------------
@@ -76,17 +76,17 @@
     -------------------------------------------------------
     */
 
-	async function runProblemListAnimation(dataIds: string[]) {
-		for (let i = 0; i < dataIds.length; i++) {
-			const dataId = dataIds[i];
-			const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
+	// async function runProblemListAnimation(dataIds: string[]) {
+	// 	for (let i = 0; i < dataIds.length; i++) {
+	// 		const dataId = dataIds[i];
+	// 		const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
 
-			if (element) {
-				element.style.animation = `slide-in 0.2s ease-out forwards`;
-				await sleep(70);
-			}
-		}
-	}
+	// 		if (element) {
+	// 			element.style.animation = `slide-in 0.2s ease-out forwards`;
+	// 			await sleep(70);
+	// 		}
+	// 	}
+	// }
 
 	/*
     -------------------------------------------------------
@@ -94,64 +94,64 @@
     -------------------------------------------------------
     */
 
-	async function updateStudents(isLoadMoreSC = false) {
-		const querySC = await getQuerySC();
-		if (querySC === oldQuerySC && (!isLoadMoreSC || maxPageSC <= $searchParams.page)) return;
-		oldQuerySC = querySC;
+	// async function updateStudents(isLoadMoreSC = false) {
+	// 	const querySC = await getQuerySC();
+	// 	if (querySC === oldQuerySC && (!isLoadMoreSC || maxPageSC <= $searchParams.page)) return;
+	// 	oldQuerySC = querySC;
 
-		if (isLoadMoreSC) {
-			searchParams.update((params) => ({
-				...params,
-				page: params.page + 1
-			}));
-			// $searchParams.page++;
-			allStudents = [...allStudents, "loading"];
-		} else {
-			$selectedIDStudent = null;
-			$searchParams.page = 1;
-			isloaded = false;
-			allStudents = [];
-		}
+	// 	if (isLoadMoreSC) {
+	// 		searchParams.update((params) => ({
+	// 			...params,
+	// 			page: params.page + 1
+	// 		}));
+	// 		// $searchParams.page++;
+	// 		allStudents = [...allStudents, "loading"];
+	// 	} else {
+	// 		$selectedIDStudent = null;
+	// 		$searchParams.page = 1;
+	// 		isloaded = false;
+	// 		allStudents = [];
+	// 	}
 
-		const getAllStudents = await api.call(
-			`/user/search?${querySC}$page=${Number($searchParams.page)}`,
-			{ withToken: true }
-		);
+	// 	const getAllStudents = await api.call(
+	// 		`/user/search?${querySC}$page=${Number($searchParams.page)}`,
+	// 		{ withToken: true }
+	// 	);
 
-		console.log(getAllStudents);
+	// 	console.log(getAllStudents);
 
-		if (getAllStudents && getAllStudents.data.length > 0 ) {
-			if (isLoadMoreSC) {
-				allStudents = [...allStudents.slice(0, -1), ...getAllStudents.data];
-			} else {
-				allStudents = getAllStudents.data;
-				maxPageSC = getAllStudents.totalPage;
-				isloaded = true;
-			}
+	// 	if (getAllStudents && getAllStudents.data.length > 0 ) {
+	// 		if (isLoadMoreSC) {
+	// 			allStudents = [...allStudents.slice(0, -1), ...getAllStudents.data];
+	// 		} else {
+	// 			allStudents = getAllStudents.data;
+	// 			maxPageSC = getAllStudents.totalPage;
+	// 			isloaded = true;
+	// 		}
 
-			requestAnimationFrame(() => {
-				runProblemListAnimation(getAllStudents.data.map((item) => item.id));
-			});
+	// 		requestAnimationFrame(() => {
+	// 			runProblemListAnimation(getAllStudents.data.map((item) => item.id));
+	// 		});
 
-		} else {
-			if (isLoadMoreSC) {
-				allStudents = allStudents.slice(0, -1);
-				$searchParams.page--;
-			} else {
-				maxPageSC = null;
-				allStudents = [];
-				isloaded = true;
-			}
-		}
-	}
+	// 	} else {
+	// 		if (isLoadMoreSC) {
+	// 			allStudents = allStudents.slice(0, -1);
+	// 			$searchParams.page--;
+	// 		} else {
+	// 			maxPageSC = null;
+	// 			allStudents = [];
+	// 			isloaded = true;
+	// 		}
+	// 	}
+	// }
 
-	async function loadMoreSC() {
-		if (needLoad) return;
-		console.log("need load na");
-		needLoad = true;
-		await updateStudents(true);
-		needLoad = false;
-	}
+	// async function loadMoreSC() {
+	// 	if (needLoad) return;
+	// 	console.log("need load na");
+	// 	needLoad = true;
+	// 	await updateStudents(true);
+	// 	needLoad = false;
+	// }
 
 	// async function updateStudentsDetail() {
 	// 	if(!$selectedIDStudent) return;
@@ -163,31 +163,31 @@
     -------------------------------------------------------
     */
 
-	let subscribeSelectedIDStudent: Unsubscriber;
-	let subscribeSearchParams: Unsubscriber;
+	// let subscribeSelectedIDStudent: Unsubscriber;
+	// let subscribeSearchParams: Unsubscriber;
 
 	onMount(async () => {
 		// studentSelectorElement = document.querySelector("#")
 		// studentDetailsElement;
 
-		await updateStudents();
+		// await updateStudents();
 
-		subscribeSearchParams = searchParams.subscribe(() => {
-			updateStudents();
-		});
-		subscribeSelectedIDStudent = selectedIDStudent.subscribe(async () => {
-			selectedStudent = null;
+		// subscribeSearchParams = searchParams.subscribe(() => {
+		// 	updateStudents();
+		// });
+		// subscribeSelectedIDStudent = selectedIDStudent.subscribe(async () => {
+		// 	selectedStudent = null;
 
-			const studentData = 
-				allStudents.find((student) => typeof student === "object" && student.id === $selectedIDStudent) || selectedStudent;
+		// 	const studentData = 
+		// 		allStudents.find((student) => typeof student === "object" && student.id === $selectedIDStudent) || selectedStudent;
 		
-			if (studentData) {
-				studentData.detail = await api.call(`/user/${studentData.id}`, {
-					withToken: true
-				});
-			}
-			// selectedStudent = studentData;
-		});
+		// 	if (studentData) {
+		// 		studentData.detail = await api.call(`/user/${studentData.id}`, {
+		// 			withToken: true
+		// 		});
+		// 	}
+		// 	selectedStudent = studentData;
+		// });
 
 		if (IsRole(Role.STAFF)) {
 			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
@@ -195,10 +195,10 @@
 		}
 	});
 
-	onDestroy(() => {
-		if (subscribeSearchParams) subscribeSearchParams();
-		if (subscribeSelectedIDStudent) subscribeSelectedIDStudent();
-	});
+	// onDestroy(() => {
+	// 	if (subscribeSearchParams) subscribeSearchParams();
+	// 	if (subscribeSelectedIDStudent) subscribeSelectedIDStudent();
+	// });
 
 </script>
 
@@ -329,7 +329,7 @@ Style SCSS Na
 
 		div.scl-image {
 			height: auto;
-			width: 70%;
+			width: auto;
 		}
 
 		:global(#scl-main) {
@@ -403,9 +403,9 @@ Style SCSS Na
 		}
 
 		:global(#sc-below-search) {
-			width: 100%;
+			width: 55%;
 			height: 100%;
-			padding: 0 100px;
+			// padding: 10% 10%;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
@@ -414,9 +414,10 @@ Style SCSS Na
 
 		span#dragontext {
 			filter: drop-shadow( 0 2px 3px var(--list-shadow));
-			font-size: 24px;
+			font-size: 20px;
 		}
 	}
+
 
 	@media (max-width: 920px) {
 		#Score {

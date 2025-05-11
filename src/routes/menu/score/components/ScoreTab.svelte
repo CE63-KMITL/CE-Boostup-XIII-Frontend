@@ -24,15 +24,15 @@
 </Frame>
 <div class="scroll">
 	 {#if activeTab == "overall"}
-        <div class="leaderboard" in:azScale={{ delay: 250 }} out:azScale>
+        <div in:azScale={{ delay: 250 }} out:azScale>
 			<Overall></Overall>
         </div>
     {:else if activeTab == "house"}
-        <div class="leaderboard" in:azScale={{ delay: 250 }} out:azScale>
+        <div in:azScale={{ delay: 250 }} out:azScale>
             <House></House>
         </div>
     {:else if activeTab == "myHouse"}
-        <div class="leaderboard" in:azScale={{ delay: 250 }} out:azScale>
+        <div in:azScale={{ delay: 250 }} out:azScale>
             <MyHouse></MyHouse>
         </div>
     {/if}

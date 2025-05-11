@@ -1,5 +1,12 @@
 <script lang="ts">
     import RankOrdering from "./RankOrdering.svelte";
+    
+    let selectedOptionDropdown: string = "Barbarian";
+    const optionDropdown: { value: string; }[] = [
+    { value: 'Barbarian' }, { value: 'Rogue' }, { value: 'Sorcerer' },{ value: 'Bard' }, 
+    { value: 'Monk' }, { value: 'Paladin' }, { value: 'Wizard' }, { value: 'Priest' }, 
+    { value: 'Ranger' }, { value: 'Warlock' }, { value: 'Samurai' },
+    ];
 
     let dataMyHouse = [
     { name: "Veerapat Pirultham", id: "67010852", score: 720 },
@@ -11,10 +18,33 @@
 
 </script>
 
-{#each dataMyHouse as user, i}
-    <RankOrdering index={i}>
-    	<div>{user.name}</div>
-    	<div>{user.id}</div>
-    	<div>{user.score}</div>
-    </RankOrdering>
-{/each}
+<div class="myHouseLeaderboard">
+    <select id="dropdown" bind:value={selectedOptionDropdown}>
+        {#each optionDropdown as option}
+            <option>{option.value}</option>
+        {/each}
+    </select>
+    <!-- <p>คุณเลือก: {selectedOptionDropdown}</p> -->
+</div>
+    {#each dataMyHouse as user, i}
+        <RankOrdering index={i}>
+            <div>{user.name}</div>
+            <div>{user.id}</div>
+            <div>{user.score}</div>
+        </RankOrdering>
+    {/each}
+
+<style lang="scss">
+    .myHouseLeaderboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        #dropdown {
+            width: 40%;
+        }
+    }
+
+    
+
+</style>

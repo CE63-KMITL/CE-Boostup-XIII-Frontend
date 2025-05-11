@@ -7,7 +7,7 @@
 	let { index }: { index: number } = $props();
 </script>
 
-<List class="listHomeScores {index < 3 ? 'top' : ''}>">
+<List class="listScores {index < 3 ? 'top' : ''}>">
 	<div class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>
@@ -23,7 +23,7 @@
 </List>
 
 <style lang="scss">
-	:global(.listHomeScores) {
+	:global(.listScores) {
 		display: flex;
 		justify-content: space-between;
 		margin-top: 12px;
