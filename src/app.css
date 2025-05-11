@@ -29,6 +29,8 @@ html:not([dark]) {
 
 	--list-bg: rgb(255, 255, 255);
 	--list-shadow: rgba(0, 0, 0, 0.5);
+	--list-shadow-5: rgba(0, 0, 0, 0.05);
+	--list-shadow-10: rgba(0, 0, 0, 0.1);
 	--list-outline: rgba(0, 0, 0, 0);
 
 	--profile-bg: rgba(255, 255, 255, 0.9);
@@ -59,6 +61,8 @@ html:not([dark]) {
 	--outline: rgb(0, 0, 0);
 	--bg: rgb(255, 255, 255);
 	--bg-50: rgba(255, 255, 255, 0.8);
+
+	--grayed: #808080;
 }
 
 html[dark] {
@@ -108,6 +112,8 @@ html[dark] {
 	--button-bg: radial-gradient(at center top, rgb(190, 152, 80), rgba(153, 120, 48, 0.925));
 	--bg: rgba(0, 0, 0, 0.8);
 	--bg-50: rgba(0, 0, 0, 0.7);
+
+	--grayed: #808080;
 
 	background: black;
 }

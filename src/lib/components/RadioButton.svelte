@@ -31,6 +31,7 @@
 	.radio-container {
 		display: flex;
 		flex-direction: row;
+		cursor: pointer;
 
 		input {
 			position: absolute;
@@ -57,7 +58,8 @@
 			transition: 0.25s ease;
 			outline: 0px solid transparent;
 			color: var(--color);
-			overflow: hidden; // Keep this on the outer span for overall clipping if needed
+			overflow: hidden;
+			pointer-events: none;
 
 			&:hover {
 				background: var(--hover-list-bg);
@@ -83,7 +85,7 @@
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-                    color: var(--color);
+				color: var(--color);
 			}
 		}
 	}

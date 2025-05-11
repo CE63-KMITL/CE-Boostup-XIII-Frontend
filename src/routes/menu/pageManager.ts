@@ -5,11 +5,11 @@ export const items = writable({ code: "ทำโจทย์", problem: "โจ�
 
 export let currentPage = writable("");
 
-export const updatePage = (name) => {
+export const updatePage = (name, setState = true) => {
 	if (name == currentPage) return;
 	let url = new URL(window.location.href);
 	url.searchParams.set("page", name);
 	currentPage.set(name);
-	pushState(url, null);
+	if (setState) pushState(url, null);
 	document.title = get(items)[get(currentPage)];
 };
