@@ -13,6 +13,7 @@
 	import { sleep } from "$lib/normalFunction";
     import type { Unsubscriber } from "svelte/store";
 	import { type Student } from "$lib/constants/student";
+    import { eventNames } from "process";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -26,7 +27,6 @@
 
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
-	
 
 	let isSearching = "";
 	let selectedStudent = null;
@@ -39,6 +39,17 @@
 	let oldQuerySC = "";
 	let needLoad = false;
 	let isloaded = false;
+
+	/*
+    -------------------------------------------------------
+    Score History
+    -------------------------------------------------------
+    */
+
+	// let showHistory = false;
+	// function openHistory() { showHistory = true; }
+	// function closeHistory() { showHistory = false; }
+	// function protectClick(event) { event.stopPropagation(); }
 
 	/*
     -------------------------------------------------------
@@ -227,6 +238,15 @@ HTML Crapp
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
 						<Button class="scl-btn" filter={false}>ประวัติคะแนน</Button>
+						<!-- onclick={openHistory} -->
+						<!-- {#if showHistory}
+							<div class="backdrop" onclick={closeHistory}>
+								<div id="popup" onclick={protectClick}>
+									<div>Hello, World</div>
+									<Button onclick={closeHistory}>Close Ja</Button>
+								</div>
+							</div>
+						{/if} -->
 					</div>
 				</div>
 			{:else if activeTab == "scEditData"}
@@ -240,7 +260,11 @@ HTML Crapp
 								$searchParams["search"] = e.target.value;
 							}}
 							bind:value={isSearching}
-							style="border: 0px;"
+							style="
+								border: 0; 
+								background-color: transparent;
+								padding: 5px;
+								"
 						/>
 					</Frame>
 					{#if selectedStudent == null && isSearching == ""}
@@ -271,6 +295,15 @@ HTML Crapp
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
 						<Button class="scl-btn" filter={false}>ประวัติคะแนน</Button>
+						<!-- onclick={openHistory} -->
+						<!-- {#if showHistory}
+							<div class="backdrop" onclick={closeHistory}>
+								<div id="popup" onclick={protectClick}>
+									<div>Hello, World</div>
+									<Button onclick={closeHistory}>Close Ja</Button>
+								</div>
+							</div>
+						{/if} -->
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
@@ -284,6 +317,17 @@ HTML Crapp
 		<ScoreTab></ScoreTab>
 	</Frame>
 </div>
+
+<!-- {#if showHistory}
+	<div class="backdrop" onclick={closeHistory}>
+		<div id="popup" onclick={protectClick}>
+			<h2>Popup</h2>
+			<p>Detail kub</p>
+			<Button onclick={closeHistory}>Close Ja</Button>
+		</div>
+	</div>
+{/if} -->
+
 
 <!-- 
 -------------------------------------------------------
@@ -328,8 +372,12 @@ Style SCSS Na
 		justify-content: center;
 
 		div.scl-image {
-			height: auto;
-			width: auto;
+			// height: auto;
+			// width: auto;
+			width: 100%;
+			height: 70%;
+			margin: 60px 0px 0px 0px;
+			padding: 5%;
 		}
 
 		:global(#scl-main) {
@@ -397,6 +445,7 @@ Style SCSS Na
 			display: flex;
 			flex-direction: row;
 			align-items: center;
+			padding: 0%;
 			padding-inline: 10px;
 			width: 100%;
 			border-radius: 25px;
@@ -414,10 +463,9 @@ Style SCSS Na
 
 		span#dragontext {
 			filter: drop-shadow( 0 2px 3px var(--list-shadow));
-			font-size: 20px;
+			font-size: 16px;
 		}
 	}
-
 
 	@media (max-width: 920px) {
 		#Score {
@@ -441,11 +489,15 @@ Style SCSS Na
 
 		:global(#scoreTab-editscore) {
 			display: flex;
-			align-items: start;
-			flex-direction: row;
+			align-items: center;
+			flex-direction: column;
 
-			:global(#sc-below-search) {
-				display: none;
+			// :global(#sc-below-search) {
+			// 	display: none;
+			// }
+
+			.scl-image {
+				width: 80%;
 			}
 		}
 	}

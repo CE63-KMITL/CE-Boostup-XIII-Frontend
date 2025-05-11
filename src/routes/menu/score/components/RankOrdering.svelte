@@ -20,6 +20,7 @@
 		{/if}
 	</div>
 	<slot></slot>
+	<!-- {@render content()} -->
 </List>
 
 <style lang="scss">

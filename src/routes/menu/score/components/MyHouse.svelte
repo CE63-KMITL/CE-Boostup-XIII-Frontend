@@ -5,7 +5,7 @@
     const optionDropdown: { value: string; }[] = [
     { value: 'Barbarian' }, { value: 'Rogue' }, { value: 'Sorcerer' },{ value: 'Bard' }, 
     { value: 'Monk' }, { value: 'Paladin' }, { value: 'Wizard' }, { value: 'Priest' }, 
-    { value: 'Ranger' }, { value: 'Warlock' }, { value: 'Samurai' },
+    { value: 'Ranger' }, { value: 'Fighter' }, { value: 'Warlock' }, { value: 'Samurai' },
     ];
 
     let dataMyHouse = [
@@ -24,15 +24,16 @@
             <option>{option.value}</option>
         {/each}
     </select>
-    <!-- <p>คุณเลือก: {selectedOptionDropdown}</p> -->
+    <!-- <p>choice: {selectedOptionDropdown}</p> -->
+    <!-- <p>{selectedOptionDropdown}</p> -->
 </div>
-    {#each dataMyHouse as user, i}
-        <RankOrdering index={i}>
-            <div>{user.name}</div>
-            <div>{user.id}</div>
-            <div>{user.score}</div>
-        </RankOrdering>
-    {/each}
+{#each dataMyHouse as user, i}
+    <RankOrdering index={i}>
+        <div>{user.name}</div>
+        <div>{user.id}</div>
+        <div>{user.score}</div>
+    </RankOrdering>
+{/each}
 
 <style lang="scss">
     .myHouseLeaderboard {
@@ -41,10 +42,12 @@
         align-items: center;
 
         #dropdown {
-            width: 40%;
+            width: 20%;
+            padding: 5px;
+            border-radius: 10px;
+            border: 1px solid var(--outline);
+            cursor: pointer;
         }
     }
-
-    
 
 </style>
