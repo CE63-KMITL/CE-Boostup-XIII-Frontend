@@ -11,7 +11,7 @@
 </script>
 
 <div class="testcases-list">
-	<Button onclick={runAll}>▷ รันทั้งหมด</Button>
+	<Button class="run-all" onclick={runAll}>▷ รันทั้งหมด</Button>
 	{#each testCases as testCase, index (testCase)}
 		<div in:fly|global={{ x: 200, duration: 300, delay: 250 + 100 * index }} class="testcase-item">
 			<RunCodeStatus result={testCase.result}></RunCodeStatus>
@@ -32,7 +32,7 @@
 				<div class="testcase-details" class:hidden={testCase.hidden}>
 					<div class="testcase-input">Input</div>
 					<textarea class="input" bind:value={testCase.input} disabled={!staff}></textarea>
-					<div class="testcase-output">Output{testCase.result?.output}</div>
+					<div class="testcase-output">Output</div>
 					<textarea class="output" readonly>{testCase.result.output}</textarea>
 				</div>
 			{/if}
@@ -41,8 +41,12 @@
 </div>
 
 <style lang="scss">
+	:global(.run-all) {
+		position: sticky;
+		top: 0;
+	}
 	.output {
-		height: 100px;
+		height: 200px;
 	}
 	textarea {
 		resize: vertical;

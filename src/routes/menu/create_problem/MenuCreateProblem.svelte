@@ -16,6 +16,7 @@
 	import Loading from "$lib/components/Loading.svelte";
 	import { fade } from "svelte/transition";
 	import { showPopup } from "$lib/components/PopUp.svelte";
+	import { goto } from "$app/navigation";
 
 	//-------------------------------------------------------
 	// Component State
@@ -49,7 +50,7 @@
 		return {
 			title: problem.title,
 			description: problem.description,
-			timeLimit: problem.timeLimit,
+			timeLimit: problem.timeLimit || 100,
 			headerMode: problem.headerMode,
 			headers: problem.headers
 				.trim()
@@ -64,7 +65,7 @@
 			solutionCode,
 			difficulty: problem.difficulty,
 			tags: problem.tags,
-			testCases: testCases.map((testCase) => {
+			testCases: problemTestCases.map((testCase) => {
 				return {
 					input: testCase.input,
 					isHiddenTestcase: testCase.hidden,
@@ -187,52 +188,51 @@
 	}
 
 	async function runAllCreateProblem() {
-		const res = await api.call("/run-code/test-cases", {	
-			withToken: true, 
+		const res = await api.call("/run-code/test-cases", {
+			withToken: true,
 			data: {
 				inputs: problemTestCases.map((val) => val.input),
-				timeout: problemTimeLimit || 1000,
-				code: solutionCodeText
+				timeout: problem.timeLimit || 1000, // Corrected variable name
+				code: solutionCode, // Corrected variable name
 			},
-			method: "POST"
+			method: "POST",
 		});
 
 		problemTestCases.forEach((val, i) => {
-			val.result.output = res[i].output
-			val.result.exit_status = res[i].exit_status
-			val.result.exit_code = res[i].exit_code
-			val.result.used_time = res[i].used_time
-		})
+			val.result.output = res[i].output;
+			val.result.exit_status = res[i].exit_status;
+			val.result.exit_code = res[i].exit_code;
+			val.result.used_time = res[i].used_time;
+		});
 
 		problemTestCases = [...problemTestCases];
 	}
 
 	async function onCreateProblem() {
-		const problemData = {
-			title: problemTitle,
-			description: problemDescription,
-			timeLimit: problemTimeLimit,
-			headerMode: problemHeaderMode,
-			headers: problemHeaders
-				.trim()
-				.split(",")
-				.filter((header) => header != ""),
-			functionMode: problemFunctionMode,
-			functions: problemFunctions
-				.trim()
-				.split(",")
-				.filter((header) => header != ""),
-			defaultCode: defaultCodeText,
-			solutionCode: solutionCodeText,
-			difficulty: problemDifficulty,
-			tags: problemTags,
-			testCases: problemTestCases.map((testCase) => {
-				return {
-					input: testCase.input,
-					isHiddenTestcase: testCase.hidden,
-				};
-			}),
-		};
+		const problemData = getProblemData();
+
+		console.log(problemData);
+
+		const result = await api.call(`/problem`, {
+			method: "POST",
+			data: problemData,
+			withToken: true,
+		});
+
+		if (result) {
+			showPopup(`✅ สร้างโจทย์เรียบร้อยแล้ว!`, {
+				สร้างโจทย์เพิ่ม: () => {
+					window.location.href = `/menu?page=create_problem`;
+				},
+				แก้ไขโจทย์: () => {
+					window.location.href = `/menu?page=create_problem&problemId=${result.id}`;
+				},
+			});
+		}
+	}
+
+	async function onUpdateProblem() {
+		const problemData = getProblemData();
 
 		console.log(problemData);
 
@@ -243,7 +243,9 @@
 		});
 
 		if (result) {
-			showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!");
+			showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!", {
+				ok: () => {},
+			});
 		}
 	}
 
@@ -290,7 +292,8 @@
 				if (fetchedProblem.defaultCode) defaultCode = fetchedProblem.defaultCode;
 
 				if (fetchedProblem.testCases)
-					testCases = fetchedProblem.testCases.map((tc) => ({
+					problemTestCases = fetchedProblem.testCases.map((tc) => ({
+						// Corrected variable name
 						input: tc.input,
 						hidden: tc.isHiddenTestcase,
 						result: { exit_code: null, exit_status: null, output: null, used_time: null },
@@ -440,45 +443,29 @@
 						</div>
 					{:else if rightActiveTab === "testcase"}
 						<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-							<TestCaseContainer {testCases} staff={true} />
-							<Button
-								on:click={handleAddTestCaseContainer}
-								class="addTestCaseContainerButtonFullWidth">เพิ่ม Test Case</Button
+							<TestCaseContainer
+								testCases={problemTestCases}
+								staff={true}
+								runAll={runAllCreateProblem}
+							/>
+							<Button on:click={handleAddTestCaseContainer} class="addTestCase"
+								>เพิ่ม Test Case</Button
 							>
 						</div>
-						<input bind:value={problemFunctions} placeholder="for,while,if" />
+					{/if}
+				</Tab>
+			</div>
 
-						<div class="headText">รายละเอียดโจทย์</div>
-
-						<textarea
-							class="description"
-							placeholder="รายละเอียดโจทย์"
-							bind:value={problemDescription}
-						>
-						</textarea>
-					</div>
-				{:else if rightActiveTab === "inputOutput"}
-					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<InputOutput {onRunCode} bind:inputText bind:result />
-					</div>
-				{:else if rightActiveTab === "testcase"}
-					<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer testCases={problemTestCases} staff={true} runAll={runAllCreateProblem} />
-						<Button on:click={handleAddTestCaseContainer} class="addTestCaseContainerButtonFullWidth"
-							>เพิ่ม Test Case</Button
-						>
-					</div>
-				{/if}
-			</Tab>
-		</div>
-
-		<Frame class="buttonContainer">
-			{#if problemId}
-				{#if problemAuthorId == $userData.id}
-					<Button>เก็บโจทย์</Button>
-					<Button>อัพเดทโจทย์</Button>
+			<Frame class="buttonContainer">
+				{#if problem.id}
+					{#if problem.author?.id == $userData.id}
+						<Button>เก็บโจทย์</Button>
+						<Button on:click={onUpdateProblem}>อัพเดทโจทย์</Button>
+					{:else}
+						<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
+					{/if}
 				{:else}
-					<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
+					<Button on:click={onCreateProblem}>สร้างโจทย์</Button>
 				{/if}
 			</Frame>
 		{:else}
@@ -493,6 +480,11 @@
 	//-------------------------------------------------------
 	// Detail Pane Styles
 	//-------------------------------------------------------
+	:global(.addTestCase) {
+		position: sticky;
+		bottom: 0;
+	}
+
 	.details {
 		display: flex;
 		flex-direction: column;

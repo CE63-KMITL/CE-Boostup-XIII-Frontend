@@ -5,25 +5,28 @@
 	export const popup: Writable<{
 		show: boolean;
 		message: string;
-		cancelButton: boolean;
-		res?: (value: boolean) => void;
+		buttons: { [key: string]: () => void };
+		res?: (value: string | undefined) => void;
 	}> = writable({
 		show: false,
 		message: "",
-		cancelButton: false,
+		buttons: {},
 		res: undefined,
 	});
 
-	export async function showPopup(message: string, cancelButton: boolean = false): Promise<boolean> {
+	export async function showPopup(
+		message: string,
+		buttons: { [key: string]: () => void } = { OK: () => {} }
+	): Promise<string | undefined> {
 		return new Promise((res) => {
-			popup.set({ show: true, message, cancelButton, res });
+			popup.set({ show: true, message, buttons, res });
 		});
 	}
 
-	export function closePopup(returnValue: boolean) {
+	export function closePopup(buttonLabel?: string) {
 		popup.update((p) => {
-			if (p.res) p.res(returnValue);
-			return { show: false, message: "", cancelButton: false, resolve: undefined };
+			if (p.res) p.res(buttonLabel);
+			return { show: false, message: "", buttons: {}, res: undefined };
 		});
 	}
 </script>
@@ -36,12 +39,12 @@
 
 	let show = false;
 	let message = "";
-	let cancelButton = false;
+	let buttons: { [key: string]: () => void } = {};
 
 	const unsubscribe = popup.subscribe(($popup) => {
 		show = $popup.show;
 		message = $popup.message;
-		cancelButton = $popup.cancelButton;
+		buttons = $popup.buttons;
 	});
 
 	onDestroy(() => unsubscribe());
@@ -52,12 +55,14 @@
 		<div in:azScale out:azScale class="Popup">
 			<div class="Massage">{message}</div>
 			<div class="ButtonContainer">
-				{#if cancelButton}
-					<Button color="var(--status-not-started)" on:click={() => closePopup(false)}>Close</Button>
-				{/if}
-				<Button color={cancelButton ? "var(--status-done)" : undefined} on:click={() => closePopup(true)}
-					>Ok</Button
-				>
+				{#each Object.entries(buttons) as [label, action]}
+					<Button
+						on:click={() => {
+							action();
+							closePopup(label);
+						}}>{label}</Button
+					>
+				{/each}
 			</div>
 		</div>
 	</div>
@@ -85,17 +90,19 @@
 		gap: 10px;
 		border-radius: 10px;
 		box-shadow: 0 0 12px var(--list-shadow);
+		max-width: 80%;
+		max-height: 50%;
 	}
 
 	.Massage {
 		display: flex;
-		align-items: center;
 		justify-content: start;
 		width: 100%;
 		min-height: fit-content;
 		white-space: pre-line;
 		word-break: break-word;
 		text-align: left;
+		overflow-y: auto;
 	}
 
 	.ButtonContainer {
