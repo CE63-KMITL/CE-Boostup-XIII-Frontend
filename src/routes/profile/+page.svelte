@@ -253,7 +253,7 @@
     margin-left: 2vw;
     color: var(--text);
   }
-@media only screen and (max-width: 1024px) and (min-height: 500px) {
+@media only screen and (max-width: 1024px) and (min-height: 600px) {
   h1 {
     font-size: 6vw;
     margin-top: 3vh;
