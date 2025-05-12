@@ -2,7 +2,8 @@
   //import NavBar from '../../components/NavBar.svelte'
   import { onMount } from 'svelte';
   import * as api from "$lib/fetchApi";
-  import icon from "./placeholder.jpg";
+  import houseIcon from "./placeholder.jpg";
+  import userIcon from "./placeholder2.png";
 
   // convert date to dd/mm format
   function convertDate(dateString) {
@@ -30,7 +31,7 @@
     <h1>ข้อมูลนักผจญภัย</h1>
     <div class="profile_box">
       <div>
-        <img src={icon} alt="การ์ดนักผจญภัย" class="icon" />
+        <img src={houseIcon} alt="การ์ดนักผจญภัย" class="icon" />
         <table class="score_table">
           <thead>
             <tr>
@@ -47,7 +48,7 @@
 
       <div class="profile_info">
         <div class="bio_info">
-          <img src={icon} alt="รูปนักผจญภัย" class="icon" />
+          <img src={userIcon} alt="รูปนักผจญภัย" class="icon" />
           <div class="name_id">
             <div class="name">{user?.name}</div>
             <div class="id">{user?.studentId?user?.studentId:"NULL"}</div>
@@ -230,8 +231,9 @@
   .bio_info .icon {
     width: 50px;
     height: 50px;
+    border: 1px solid #ddd;
     border-radius: 50%;
-    margin-top: 2vh;
+    margin-top: 3vh;
     margin-left: 2vw;
   }
 
