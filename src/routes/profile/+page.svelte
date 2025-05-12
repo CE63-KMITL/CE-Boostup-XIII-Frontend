@@ -312,8 +312,8 @@
   }
 
   .profile .icon {
-    width: 125px;
-    height: 200px;
+    width: 40vw;
+    height: 45vh;
     margin: 3vh auto;
   }
 
@@ -355,6 +355,48 @@
     font-size: 4vw;
     margin-left: 5vw;
     margin-right: 5vw;
+  }
+}
+
+@media only screen and (max-width: 932px) {
+  .profile .icon {
+    width: 65vw;
+    height: 45vh;
+    margin: 3vh auto;
+  }
+
+  .profile .score_table {
+    width: 85vw;
+    margin: 2vh auto;
+  }
+
+  .profile .score_header,
+  .profile .score_body {
+    font-size: 3.5vw;
+  }
+
+  .profile_info {
+    width: 85vw;
+    height: auto;
+    margin: 3vh auto;
+    padding-bottom: 2vh;
+  }
+
+  .bio_info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bio_info .icon {
+    width: 100px;
+    height: 100px;
+    margin: 2vh auto;
+  }
+
+  .bio_info .name_id {
+    font-size: 4vw;
+    margin: 1vh auto;
+    text-align: center;
   }
 }
 </style>
