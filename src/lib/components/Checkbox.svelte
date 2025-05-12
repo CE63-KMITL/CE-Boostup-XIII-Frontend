@@ -10,6 +10,7 @@
 
 	let thisElement: HTMLDivElement;
 	let thisCheckbox: HTMLInputElement;
+	let textContentElement: HTMLDivElement;
 
 	onMount(() => {
 		thisElement.addEventListener("click", () => {
@@ -26,12 +27,16 @@
 
 		if (selected) thisElement.click();
 	});
+
+	$: if (thisElement && textContentElement) {
+		thisElement.title = textContentElement.textContent?.trim() || "";
+	}
 </script>
 
 <div class="checkbox-container" style="--color : {color};" {...$$restProps} bind:this={thisElement}>
 	<input type="checkbox" bind:this={thisCheckbox} bind:checked={selected} />
 	<span>
-		<div class="text-content"><slot></slot></div>
+		<div class="text-content" bind:this={textContentElement}><slot></slot></div>
 	</span>
 </div>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as api from "$lib/fetchApi";
-	import { tagsColors } from "$lib/constants/problem";
+	import { statusStaffColors, statusStaffText, tagsColors } from "$lib/constants/problem";
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
 	import Button from "$lib/components/Button.svelte";
@@ -15,7 +15,7 @@
 	import RadioButton from "$lib/components/RadioButton.svelte";
 	import Loading from "$lib/components/Loading.svelte";
 	import { fade } from "svelte/transition";
-	import { showPopup } from "$lib/components/PopUp.svelte";
+	import { showPopup, type ShowPopupInputs } from "$lib/components/PopUp.svelte";
 	import { goto } from "$app/navigation";
 
 	//-------------------------------------------------------
@@ -39,6 +39,8 @@
 		functionMode: "disallowed",
 		functions: "",
 		description: "",
+		devStatus: "",
+		rejectedMessage: "" as string | null,
 		author: {
 			id: null,
 			icon: null,
@@ -140,31 +142,6 @@
 		});
 	}
 
-	// //-------------------------------------------------------
-	// // Solution Code
-	// //-------------------------------------------------------
-	// async function loadSolutionCode() {
-	// 	return localStorage.getItem("solutionCode");
-	// }
-
-	// async function saveSolutionCode(code: string) {
-	// 	console.log("Solution code saved");
-	// 	localStorage.setItem("solutionCode", code);
-	// }
-
-	// //-------------------------------------------------------
-	// // Default Code
-	// //-------------------------------------------------------
-
-	// async function loadDefaultCode() {
-	// 	return localStorage.getItem("defaultCode");
-	// }
-
-	// async function saveDefaultCode(code: string) {
-	// 	console.log("Default code saved");
-	// 	localStorage.setItem("defaultCode", code);
-	// }
-
 	//-------------------------------------------------------
 	// API Call Functions
 	//-------------------------------------------------------
@@ -192,8 +169,8 @@
 			withToken: true,
 			data: {
 				inputs: problemTestCases.map((val) => val.input),
-				timeout: problem.timeLimit || 1000, // Corrected variable name
-				code: solutionCode, // Corrected variable name
+				timeout: problem.timeLimit || 1000,
+				code: solutionCode,
 			},
 			method: "POST",
 		});
@@ -244,9 +221,120 @@
 
 		if (result) {
 			showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!", {
-				ok: () => {},
+				โอเค: () => {
+					window.location.reload();
+				},
 			});
 		}
+	}
+
+	//-------------------------------------------------------
+	// Staff Action Functions
+	//-------------------------------------------------------
+	async function reviewProblem() {
+		if (!problem.id) return;
+		const result = await api.call(`/problem/review/${problem.id}`, {
+			method: "POST",
+			withToken: true,
+		});
+		if (result) {
+			showPopup("โจทย์ถูกส่งเพื่อตรวจสอบแล้ว!", {
+				โอเค: () => {
+					window.location.reload();
+				},
+			});
+		}
+	}
+
+	async function approveProblem() {
+		if (!problem.id) return;
+		const result = await api.call(`/problem/approve/${problem.id}`, {
+			method: "POST",
+			withToken: true,
+		});
+		if (result) {
+			showPopup("โจทย์ได้รับการอนุมัติแล้ว!", {
+				โอเค: () => {
+					window.location.reload();
+				},
+			});
+		}
+	}
+
+	async function rejectProblem() {
+		if (!problem.id) return;
+		const inputsForReject: ShowPopupInputs = [
+			{
+				type: "textarea",
+				name: "message",
+				label: "เหตุผลในการไม่อนุมัติ",
+				placeholder: "กรุณาระบุเหตุผล...",
+				required: true,
+			},
+		];
+		showPopup(
+			"ไม่อนุมัติโจทย์",
+			{
+				ไม่อนุมัติโจทย์: {
+					primary: true,
+					callback: async (formData) => {
+						if (formData && formData.message) {
+							const res = await api.call(`/problem/reject/${problem.id}`, {
+								method: "POST",
+								data: { message: formData.message },
+								withToken: true,
+							});
+							if (res) {
+								await showPopup("ไม่อนุมัติโจทย์แล้ว", {
+									ตกลง: () => {
+										window.location.reload();
+									},
+								});
+							}
+						}
+					},
+				},
+				ยกเลิก: {
+					cancel: true,
+					callback: () => {},
+				},
+			},
+			"large",
+			inputsForReject,
+			true
+		);
+	}
+
+	async function archiveProblem() {
+		if (!problem.id) return;
+		showPopup(
+			"ยืนยันการเก็บโจทย์",
+			{
+				ลาก่อนโจทย์นี้: {
+					primary: true,
+					callback: async () => {
+						const result = await api.call(`/problem/archive/${problem.id}`, {
+							method: "POST",
+							withToken: true,
+						});
+						if (result) {
+							showPopup("โจทย์ถูกเก็บเข้าคลังแล้ว!", {
+								ตกลง: () => {
+									window.location.reload();
+								},
+							});
+						}
+					},
+				},
+				ยกเลิก: {
+					cancel: true,
+					callback: () => {},
+				},
+			},
+			"medium",
+			null,
+			true
+		);
 	}
 
 	//-------------------------------------------------------
@@ -293,12 +381,25 @@
 
 				if (fetchedProblem.testCases)
 					problemTestCases = fetchedProblem.testCases.map((tc) => ({
-						// Corrected variable name
 						input: tc.input,
 						hidden: tc.isHiddenTestcase,
 						result: { exit_code: null, exit_status: null, output: null, used_time: null },
 					}));
+
+				if (problem.devStatus === "Rejected" && problem.rejectedMessage) {
+					showPopup(
+						`โจทย์นี้ถูกไม่อนุมัติด้วยเหตุผล: ${problem.rejectedMessage}`,
+						{
+							โอเค: () => {},
+						},
+						"medium"
+					);
+				}
 				loaded = true;
+			} else {
+				await showPopup("ไม่พบโจทย์ที่ระบุ", { ตกลง: () => goto("/menu?page=problem") });
+				loaded = false;
+				return;
 			}
 		} else {
 			loaded = true;
@@ -337,6 +438,7 @@
 							<div class="problemCreateInputContainer">
 								<div class="headText">
 									ชื่อคนทำโจทย์ : {problem.author?.name || $userData?.name}
+									{problem.author?.name == $userData?.name ? "(คุณ)" : ""}
 								</div>
 							</div>
 
@@ -384,21 +486,22 @@
 
 							<div class="radioButtonContainer">
 								<RadioButton
-									selected={problem.headerMode === "disallowed"}
-									on:click={() => (problem.headerMode = "disallowed")}
-									name="headerMode"
+									selected={(() => {
+										console.log(problem.headerMode);
+										return problem.headerMode == "disallowed";
+									})()}
+									onclick={() => (problem.headerMode = "disallowed")}
 									color="var(--status-not-started)"
 								>
 									ไม่อนุญาตให้ใช้
 								</RadioButton>
 
 								<RadioButton
-									selected={problem.headerMode === "allowed"}
-									on:click={() => (problem.headerMode = "allowed")}
-									name="headerMode"
+									selected={problem.headerMode == "allowed"}
+									onclick={() => (problem.headerMode = "allowed")}
 									color="var(--status-done)"
 								>
-									อนุญาตให้ใช้แค่ที่กำหนด
+									จำเป็นต้องใช้
 								</RadioButton>
 							</div>
 
@@ -408,21 +511,19 @@
 
 							<div class="radioButtonContainer">
 								<RadioButton
-									selected={problem.functionMode === "disallowed"}
-									on:click={() => (problem.functionMode = "disallowed")}
-									name="functionMode"
+									selected={problem.functionMode == "disallowed"}
+									onclick={() => (problem.functionMode = "disallowed")}
 									color="var(--status-not-started)"
 								>
 									ไม่อนุญาตให้ใช้
 								</RadioButton>
 
 								<RadioButton
-									selected={problem.functionMode === "allowed"}
-									on:click={() => (problem.functionMode = "allowed")}
-									name="functionMode"
+									selected={problem.functionMode == "allowed"}
+									onclick={() => (problem.functionMode = "allowed")}
 									color="var(--status-done)"
 								>
-									อนุญาตให้ใช้แค่ที่กำหนด
+									จำเป็นต้องใช้
 								</RadioButton>
 							</div>
 
@@ -456,18 +557,69 @@
 				</Tab>
 			</div>
 
-			<Frame class="buttonContainer">
-				{#if problem.id}
-					{#if problem.author?.id == $userData.id}
-						<Button>เก็บโจทย์</Button>
-						<Button on:click={onUpdateProblem}>อัพเดทโจทย์</Button>
+			{#if problem.id}
+				<div class="devStatus" style="color: {statusStaffColors[problem.devStatus]};">
+					✿ {statusStaffText[problem.devStatus]} ✿
+				</div>
+			{/if}
+
+			{@const isAuthor = problem.author?.id == $userData?.id}
+
+			{#if loaded}
+				<div class="buttonContainer">
+					{#if problem.id}
+						{#if problem.devStatus === "Need Review" || problem.devStatus === "Published"}
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--status-not-started)"
+								textColor="var(--status-not-started)"
+								outline="var(--status-not-started)"
+								onclick={rejectProblem}>ไม่อนุมัติโจทย์</Button
+							>
+						{/if}
+						{#if isAuthor}
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--grayed)"
+								textColor="var(--grayed)"
+								outline="var(--grayed)"
+								onclick={archiveProblem}>เก็บโจทย์</Button
+							>
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--status-in-progress)"
+								textColor="var(--status-in-progress)"
+								outline="var(--status-in-progress)"
+								onclick={onUpdateProblem}>อัพเดทโจทย์</Button
+							>
+							{#if problem.devStatus !== "Need Review"}
+								<Button
+									color="var(--bg)"
+									hoverColor="var(--used-time)"
+									textColor="var(--used-time)"
+									outline="var(--used-time)"
+									onclick={reviewProblem}
+									title="ส่งให้ Staff ตรวจสอบ">ส่งเพื่อตรวจสอบ</Button
+								>
+							{/if}
+						{/if}
+
+						{#if problem.devStatus === "Need Review"}
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--status-done)"
+								textColor="var(--status-done)"
+								outline="var(--status-done)"
+								onclick={approveProblem}>อนุมัติโจทย์</Button
+							>
+						{/if}
 					{:else}
-						<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
+						<Frame style="width: 100%;">
+							<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
+						</Frame>
 					{/if}
-				{:else}
-					<Button on:click={onCreateProblem}>สร้างโจทย์</Button>
-				{/if}
-			</Frame>
+				</div>
+			{/if}
 		{:else}
 			<div class="full" in:fade={{ duration: 250, delay: 250 }} out:fade={{ duration: 250 }}>
 				<Loading></Loading>
@@ -477,6 +629,15 @@
 </div>
 
 <style lang="scss">
+	.devStatus {
+		padding: 10px;
+		background: var(--bg);
+		border-radius: var(--n-border-radius);
+		border: 1px solid var(--outline);
+		font-weight: 600;
+		text-align: center;
+		font-size: 1rem;
+	}
 	//-------------------------------------------------------
 	// Detail Pane Styles
 	//-------------------------------------------------------
@@ -527,6 +688,10 @@
 		color: var(--text-color);
 		font-family: inherit;
 		font-size: 0.9rem;
+		&:disabled {
+			background-color: var(--bg-disabled);
+			cursor: not-allowed;
+		}
 	}
 
 	//-------------------------------------------------------
@@ -605,11 +770,6 @@
 		width: 100%;
 		box-sizing: border-box;
 		resize: vertical;
-
-		&:disabled {
-			background-color: var(--bg-disabled);
-			cursor: not-allowed;
-		}
 	}
 
 	//-------------------------------------------------------

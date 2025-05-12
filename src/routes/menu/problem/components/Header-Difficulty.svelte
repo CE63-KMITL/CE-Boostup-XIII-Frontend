@@ -4,6 +4,7 @@
 
 	let minDifficulty = $searchParams.minDifficulty;
 	let maxDifficulty = $searchParams.maxDifficulty;
+	let random = Math.random();
 
 	let timeout;
 	$: {
@@ -18,25 +19,30 @@
 
 <div>เรียงลำดับ:</div>
 <RadioButton
-	name="difficulty-sort"
+	name={random}
 	onclick={() => {
 		$searchParams.difficultySortBy = null;
 	}}
-	selected={true}
+	selected={(() => {
+		console.log(!$searchParams.difficultySortBy);
+		return !$searchParams.difficultySortBy;
+	})()}
 	>ไม่เรียง
 </RadioButton>
 <RadioButton
-	name="difficulty-sort"
+	name={random}
 	onclick={() => {
 		$searchParams.difficultySortBy = "ASC";
 	}}
+	selected={$searchParams.difficultySortBy === "ASC"}
 	>น้อยไปมาก
 </RadioButton>
 <RadioButton
-	name="difficulty-sort"
+	name={random}
 	onclick={() => {
 		$searchParams.difficultySortBy = "DESC";
 	}}
+	selected={$searchParams.difficultySortBy === "DESC"}
 	>มากไปน้อย
 </RadioButton>
 <div>ช่วงความยาก:</div>

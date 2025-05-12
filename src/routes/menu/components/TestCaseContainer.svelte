@@ -31,9 +31,9 @@
 			{#if !testCase.hidden || staff}
 				<div class="testcase-details" class:hidden={testCase.hidden}>
 					<div class="testcase-input">Input</div>
-					<textarea class="input" bind:value={testCase.input} disabled={!staff}></textarea>
+					<textarea class="input" bind:value={testCase.input}></textarea>
 					<div class="testcase-output">Output</div>
-					<textarea class="output" readonly>{testCase.result.output}</textarea>
+					<textarea class="output" disabled>{testCase.result.output}</textarea>
 				</div>
 			{/if}
 		</div>

@@ -2,68 +2,263 @@
 	import { writable } from "svelte/store";
 	import type { Writable } from "svelte/store";
 
-	export const popup: Writable<{
+	export interface PopupInput {
+		type: "text" | "textarea" | "number" | "password";
+		name: string;
+		label?: string;
+		placeholder?: string;
+		required?: boolean;
+		value?: string | number;
+	}
+
+	export interface PopupButton {
+		label: string;
+		action: (formData?: { [key: string]: any }) => void;
+		primary?: boolean;
+		cancel?: boolean;
+	}
+
+	export interface PopupConfig {
 		show: boolean;
-		message: string;
-		buttons: { [key: string]: () => void };
-		res?: (value: string | undefined) => void;
-	}> = writable({
+		message?: string;
+		inputs?: PopupInput[];
+		buttons: PopupButton[];
+		size?: "small" | "medium" | "large" | "xlarge";
+		title?: string;
+		res?: (formData?: { [key: string]: any }) => void;
+		onClose?: () => void;
+	}
+
+	export const popup: Writable<PopupConfig> = writable({
 		show: false,
 		message: "",
-		buttons: {},
+		inputs: [],
+		buttons: [],
+		size: "medium",
+		title: undefined,
 		res: undefined,
+		onClose: undefined,
 	});
 
+	export type ShowPopupButtons = {
+		[key: string]:
+			| (() => void)
+			| {
+					callback: (formData?: { [key: string]: any }) => void;
+					primary?: boolean;
+					cancel?: boolean;
+			  };
+	};
+	export type ShowPopupInputs = PopupInput[];
+
 	export async function showPopup(
-		message: string,
-		buttons: { [key: string]: () => void } = { OK: () => {} }
-	): Promise<string | undefined> {
-		return new Promise((res) => {
-			popup.set({ show: true, message, buttons, res });
+		messageOrTitle: string,
+		buttonsConfig: ShowPopupButtons = { โอเค: () => {} },
+		size: "small" | "medium" | "large" | "xlarge" = "medium",
+		inputs?: ShowPopupInputs,
+		isTitle: boolean = false
+	): Promise<{ [key: string]: any } | string | undefined> {
+		return new Promise((resolve) => {
+			const formattedButtons: PopupButton[] = Object.entries(buttonsConfig).map(([label, config]) => {
+				if (typeof config === "function") {
+					return { label, action: config };
+				}
+				return {
+					label,
+					action: config.callback,
+					primary: config.primary,
+					cancel: config.cancel,
+				};
+			});
+
+			popup.set({
+				show: true,
+				message: isTitle ? undefined : messageOrTitle,
+				title: isTitle ? messageOrTitle : undefined,
+				buttons: formattedButtons,
+				inputs: inputs || [],
+				size,
+				res: resolve,
+				onClose: () => resolve(undefined),
+			});
 		});
 	}
 
-	export function closePopup(buttonLabel?: string) {
+	export function closePopup(formData?: { [key: string]: any }, buttonClicked?: boolean) {
 		popup.update((p) => {
-			if (p.res) p.res(buttonLabel);
-			return { show: false, message: "", buttons: {}, res: undefined };
+			if (p.res && buttonClicked) {
+				p.res(formData);
+			} else if (p.res && !buttonClicked) {
+				p.res(undefined);
+			}
+			if (p.onClose) {
+				p.onClose();
+			}
+			return {
+				show: false,
+				message: "",
+				inputs: [],
+				buttons: [],
+				size: "medium",
+				title: undefined,
+				res: undefined,
+				onClose: undefined,
+			};
 		});
 	}
 </script>
 
 <script lang="ts">
-	import { onDestroy } from "svelte";
+	import { onDestroy, createEventDispatcher } from "svelte";
 	import Button from "./Button.svelte";
 	import { azScale } from "$lib/transition";
 	import { fade } from "svelte/transition";
 
-	let show = false;
-	let message = "";
-	let buttons: { [key: string]: () => void } = {};
+	const dispatch = createEventDispatcher();
+
+	let currentConfig: PopupConfig = {
+		show: false,
+		message: "",
+		inputs: [],
+		buttons: [],
+		size: "medium",
+		title: undefined,
+	};
+
+	let formData: { [key: string]: any } = {};
 
 	const unsubscribe = popup.subscribe(($popup) => {
-		show = $popup.show;
-		message = $popup.message;
-		buttons = $popup.buttons;
+		currentConfig = $popup;
+		if ($popup.show) {
+			formData = {};
+			if ($popup.inputs) {
+				$popup.inputs.forEach((input) => {
+					formData[input.name] = input.value !== undefined ? input.value : "";
+				});
+			}
+		}
 	});
 
-	onDestroy(() => unsubscribe());
+	function handleInputChange(name: string, value: any) {
+		formData[name] = value;
+	}
+
+	function handleButtonClick(button: PopupButton) {
+		if (button.cancel) {
+			button.action(formData);
+			closePopup(undefined, true);
+			dispatch("action", { buttonLabel: button.label, formData });
+			return;
+		}
+
+		if (currentConfig.inputs) {
+			for (const input of currentConfig.inputs) {
+				if (input.required && (formData[input.name] === undefined || formData[input.name] === "")) {
+					showPopup(`กรุณากรอกข้อมูล: ${input.label || input.name}`, { ตกลง: () => {} }, "small");
+					return;
+				}
+			}
+		}
+
+		button.action(formData);
+		closePopup(formData, true);
+		dispatch("action", { buttonLabel: button.label, formData });
+	}
+
+	function handleOverlayClick() {
+		const cancelBehaviorButton = currentConfig.buttons.find((b) => b.cancel);
+		if (cancelBehaviorButton) {
+		}
+		closePopup(undefined, false);
+		dispatch("close");
+	}
+
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === "Escape" && currentConfig.show) {
+			handleOverlayClick();
+		}
+	}
+
+	onDestroy(() => {
+		unsubscribe();
+	});
 </script>
 
-{#if show}
-	<div in:fade={{ duration: 250 }} out:fade={{ duration: 250 }} class="Overlay">
-		<div in:azScale out:azScale class="Popup">
-			<div class="Massage">{message}</div>
-			<div class="ButtonContainer">
-				{#each Object.entries(buttons) as [label, action]}
-					<Button
-						on:click={() => {
-							action();
-							closePopup(label);
-						}}>{label}</Button
-					>
-				{/each}
-			</div>
+<svelte:window on:keydown={handleKeydown} />
+
+{#if currentConfig.show}
+	<div in:fade={{ duration: 150 }} out:fade={{ duration: 150 }} class="Overlay" on:click|self={handleOverlayClick}>
+		<div
+			in:azScale={{ duration: 200 }}
+			out:azScale={{ duration: 200 }}
+			class="Popup {currentConfig.size || 'medium'}"
+		>
+			{#if currentConfig.title}
+				<div class="Title">{currentConfig.title}</div>
+			{/if}
+			{#if currentConfig.message}
+				<div class="Message">{currentConfig.message}</div>
+			{/if}
+
+			{#if currentConfig.inputs && currentConfig.inputs.length > 0}
+				<form class="InputsContainer" on:submit|preventDefault>
+					{#each currentConfig.inputs as input (input.name)}
+						<div class="InputGroup">
+							{#if input.label}
+								<label for={input.name}>{input.label}</label>
+							{/if}
+							{#if input.type === "textarea"}
+								<textarea
+									id={input.name}
+									name={input.name}
+									placeholder={input.placeholder || ""}
+									bind:value={formData[input.name]}
+									on:input={(e) =>
+										handleInputChange(
+											input.name,
+											(e.target as HTMLTextAreaElement).value
+										)}
+									required={input.required}
+								></textarea>
+							{:else}
+								<input
+									type={input.type}
+									id={input.name}
+									name={input.name}
+									placeholder={input.placeholder || ""}
+									bind:value={formData[input.name]}
+									on:input={(e) =>
+										handleInputChange(input.name, (e.target as HTMLInputElement).value)}
+									required={input.required}
+								/>
+							{/if}
+						</div>
+					{/each}
+				</form>
+			{/if}
+
+			{#if currentConfig.buttons && currentConfig.buttons.length > 0}
+				<div class="ButtonContainer">
+					{#each currentConfig.buttons as button (button.label)}
+						<Button
+							on:click={() => handleButtonClick(button)}
+							color={button.primary
+								? "var(--primary-action)"
+								: button.cancel
+									? "var(--cancel-action)"
+									: "var(--secondary-action)"}
+							textColor={button.primary
+								? "var(--text-on-primary)"
+								: button.cancel
+									? "var(--text-on-cancel)"
+									: "var(--text-on-secondary)"}
+							outline={!button.primary && !button.cancel ? "var(--outline)" : undefined}
+						>
+							{button.label}
+						</Button>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</div>
 {/if}
@@ -72,46 +267,118 @@
 	.Overlay {
 		position: fixed;
 		inset: 0;
-		background: var(--list-shadow);
+		background: rgba(0, 0, 0, 0.6);
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		z-index: 9999;
-		font-size: 1.125rem;
-		font-weight: 500;
+		font-size: 1rem;
+		font-weight: 400;
+		padding: 1rem;
 	}
 
 	.Popup {
 		display: flex;
 		flex-direction: column;
-		background: var(--list-bg);
-		min-width: 20rem;
-		padding: 1rem;
-		gap: 10px;
-		border-radius: 10px;
-		box-shadow: 0 0 12px var(--list-shadow);
-		max-width: 80%;
-		max-height: 50%;
+		background: var(--bg);
+		padding: 1.5rem;
+		gap: 1rem;
+		border-radius: var(--n-border-radius, 8px);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+		max-width: 90vw;
+		max-height: 90vh;
+		width: auto;
+		min-width: 300px;
+		overflow-y: auto;
 	}
 
-	.Massage {
-		display: flex;
-		justify-content: start;
-		width: 100%;
-		min-height: fit-content;
+	.Popup.small {
+		width: clamp(300px, 40%, 500px);
+	}
+	.Popup.medium {
+		width: clamp(400px, 60%, 700px);
+	}
+	.Popup.large {
+		width: clamp(500px, 80%, 900px);
+	}
+	.Popup.xlarge {
+		width: clamp(600px, 90%, 1200px);
+	}
+
+	.Title {
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: var(--text-color-strong, var(--text-color));
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--outline-variant, var(--outline));
+	}
+
+	.Message {
+		font-size: 1rem;
+		line-height: 1.6;
+		color: var(--text-color-light, var(--text-color));
 		white-space: pre-line;
 		word-break: break-word;
-		text-align: left;
-		overflow-y: auto;
+		margin-bottom: 0.5rem;
+	}
+
+	.InputsContainer {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		width: 100%;
+	}
+
+	.InputGroup {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.InputGroup label {
+		font-weight: 500;
+		font-size: 0.875rem;
+		color: var(--text-color-medium, var(--text-color));
+	}
+
+	.InputGroup input[type="text"],
+	.InputGroup input[type="number"],
+	.InputGroup input[type="password"],
+	.InputGroup textarea {
+		padding: 0.6rem 0.75rem;
+		border-radius: var(--n-border-radius-small, 4px);
+		background-color: var(--bg-input, var(--bg));
+		color: var(--text-color);
+		font-size: 0.9rem;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.InputGroup textarea {
+		min-height: 80px;
+		resize: vertical;
 	}
 
 	.ButtonContainer {
 		display: flex;
 		flex-direction: row;
-		gap: 10px;
+		gap: 0.75rem;
+		justify-content: flex-end;
+		margin-top: 1rem;
+		flex-wrap: wrap;
+	}
 
-		:global(button) {
-			font-size: 0.7rem;
-		}
+	.ButtonContainer :global(button) {
+		font-size: 0.9rem;
+	}
+
+	:root {
+		--primary-action: var(--status-done);
+		--text-on-primary: var(--bg);
+		--cancel-action: var(--status-not-started);
+		--text-on-cancel: var(--bg);
+		--secondary-action: var(--button-bg);
+		--text-on-secondary: var(--button-text);
+		--outline-variant: var(--grayed);
 	}
 </style>

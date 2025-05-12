@@ -5,47 +5,41 @@
 
 	let ThisHeaderSelection: HTMLElement;
 
+	// let selectorList: any = [];
+
+	// function updateList() {
+	// 	selectorList = [];
+	// 	for (const selector of ThisHeaderSelection.children) {
+	// 		selectorList.push(selector);
+	// 	}
+	// }
+
 	onMount(() => {
-		const selectorList: any = [];
+		// async function show() {
+		// 	hide();
+		// 	updateList();
+		// 	for (var i = 0; i < selectorList.length; i++) {
+		// 		const selector = selectorList[i];
+		// 		selector.style.animation = `slide-in 0.2s ${(i + 1) * 0.07}s ease-out forwards`;
+		// 	}
+		// }
 
-		for (const selector of ThisHeaderSelection.children) {
-			switch (selector.tagName) {
-				case "FORM":
-					selectorList.push(...selector.children);
-					break;
+		// async function hide() {
+		// 	updateList();
+		// 	for (const selector of selectorList) {
+		// 		selector.style.animation = "";
+		// 	}
+		// }
 
-				default:
-					selectorList.push(selector);
-					break;
-			}
-		}
-
-		console.log(selectorList);
-
-		async function show() {
-			ThisHeaderSelection.setAttribute("open", "true");
-			for (var i = 0; i < selectorList.length; i++) {
-				const selector = selectorList[i];
-				selector.style.animation = `slide-in 0.2s ${(i + 1) * 0.07}s ease-out forwards`;
-			}
-		}
-
-		async function hide() {
-			ThisHeaderSelection.setAttribute("open", "false");
-			for (const selector of selectorList) {
-				selector.style.animation = "";
-			}
-		}
-
-		hide();
+		// hide();
 
 		console.log(toggleSelector);
 		if (toggleSelector) {
 			toggleSelector.addEventListener("click", () => {
 				if (ThisHeaderSelection?.getAttribute("open") === "true") {
-					hide();
+					ThisHeaderSelection.setAttribute("open", "false");
 				} else {
-					show();
+					ThisHeaderSelection.setAttribute("open", "true");
 				}
 			});
 		}
@@ -61,7 +55,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 5px;
-          overflow: hidden;
+		overflow: hidden;
 
 		top: 0px;
 		left: 0px;
@@ -76,6 +70,12 @@
 		pointer-events: none;
 
 		border-radius: 0px 0px var(--n-border-radius) var(--n-border-radius);
+	}
+
+	@for $i from 1 through 10 {
+		:global(.header-selection[open="true"] > div:nth-child(#{$i}n)) {
+			animation: slide-in 0.2s #{$i * 0.07}s ease-out forwards;
+		}
 	}
 
 	:global(.header-selection[open="true"]) {

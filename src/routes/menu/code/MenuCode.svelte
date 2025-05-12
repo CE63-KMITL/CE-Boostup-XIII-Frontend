@@ -146,7 +146,7 @@
 				</div>
 			{:else if activeTab === "testcase"}
 				<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<TestCaseContainer {testCases} />
+					<TestCaseContainer staff={false} {testCases} />
 				</div>
 			{/if}
 		</Tab>

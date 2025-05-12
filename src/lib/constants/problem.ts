@@ -37,7 +37,7 @@ export const statusStaffColors: { [key: string]: string } = {
 	"In Progress": "var(--status-in-progress)",
 	"Need Review": "var(--used-time)",
 	Published: "var(--status-done)",
-	REJECTED: "var(--status-not-started)",
+	Rejected: "var(--status-not-started)",
 	Archived: "โดนสั่งเก็บ",
 };
 
@@ -45,6 +45,6 @@ export const statusStaffText: { [key: string]: string } = {
 	"In Progress": "กำลังแก้ไข",
 	"Need Review": "ต้องตรวจสอบ",
 	Published: "เผยแพร่แล้ว",
-	REJECTED: "ถูกปฏิเสธดั่งเขาไม่รับรัก",
+	Rejected: "ถูกปฏิเสธดั่งเขาไม่รับรัก",
 	Archived: "โดนสั่งเก็บ",
 };
