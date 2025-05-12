@@ -2,8 +2,8 @@
   //import NavBar from '../../components/NavBar.svelte'
   import { onMount } from 'svelte';
   import * as api from "$lib/fetchApi";
-  import houseIcon from "./placeholder.jpg";
-  import userIcon from "./placeholder2.png";
+  import houseIcon from "./house-placeholder.png";
+  import userIcon from "./user-placeholder.png";
 
   // convert date to dd/mm format
   function convertDate(dateString) {
@@ -253,7 +253,7 @@
     margin-left: 2vw;
     color: var(--text);
   }
-@media only screen and (max-width: 1050px) {
+@media only screen and (max-width: 1024px) and (min-height: 500px) {
   h1 {
     font-size: 6vw;
     margin-top: 3vh;
@@ -340,8 +340,8 @@
   }
 
   .bio_info .icon {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     margin: 2vh auto;
   }
 
@@ -358,45 +358,17 @@
   }
 }
 
-@media only screen and (max-width: 932px) {
+@media only screen and (max-width: 430px) and (min-height: 500px) {
   .profile .icon {
-    width: 65vw;
+    width: 60vw;
     height: 45vh;
     margin: 3vh auto;
   }
-
-  .profile .score_table {
-    width: 85vw;
-    margin: 2vh auto;
-  }
-
-  .profile .score_header,
-  .profile .score_body {
-    font-size: 3.5vw;
-  }
-
-  .profile_info {
-    width: 85vw;
-    height: auto;
-    margin: 3vh auto;
-    padding-bottom: 2vh;
-  }
-
-  .bio_info {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .bio_info .icon {
+  
+    .bio_info .icon {
     width: 100px;
     height: 100px;
     margin: 2vh auto;
-  }
-
-  .bio_info .name_id {
-    font-size: 4vw;
-    margin: 1vh auto;
-    text-align: center;
   }
 }
 </style>
