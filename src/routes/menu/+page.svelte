@@ -34,7 +34,7 @@
 				</button>
 			{/each}
 		</div>
-		<dir id="end"></dir>
+		<img alt="icon" id="usericon" />
 	</div>
 	<div id="content">
 		<ProblemInMenu {data}></ProblemInMenu>
@@ -76,6 +76,14 @@
 		user-select: none;
 		container-type: size;
 	}
+	
+	#usericon {
+		width: 50px;
+		height: 50px;
+		border: 1px solid #ddd;
+		border-radius: 50%;
+		margin-left:50px;
+	}
 
 	#page-selector-container {
 		display: flex;
@@ -113,6 +121,11 @@
 
 		#logo-text {
 			display: none;
+		}
+
+		#usericon {
+			width: 30px;
+			height: 30px;
 		}
 
 		#page-selector-container {

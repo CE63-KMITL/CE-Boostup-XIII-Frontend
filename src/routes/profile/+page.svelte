@@ -29,7 +29,7 @@
     <h1>ข้อมูลนักผจญภัย</h1>
     <div class="profile_box">
       <div>
-        <img src={houseIcon} alt="การ์ดนักผจญภัย" class="icon" />
+        <img src={houseIcon} alt="house" class="icon" />
         <table class="score_table">
           <thead>
             <tr>
@@ -46,7 +46,7 @@
 
       <div class="profile_info">
         <div class="bio_info">
-          <img src={userIcon} alt="รูปนักผจญภัย" class="icon" />
+          <img src={userIcon} alt="user" class="icon" />
           <div class="name_id">
             <div class="name">{user?.name}</div>
             <div class="id">{user?.studentId?user?.studentId:"NULL"}</div>
