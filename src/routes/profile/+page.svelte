@@ -21,8 +21,6 @@
       user = await api.call('/user/me', { method: 'GET', withToken: true });
       scoreInfo = await api.call('/user/me/scorelog', { method: 'GET', withToken: true });
       scoreLog = scoreInfo.scoreLogs;
-      console.log(scoreLog)
-      console.log(user);
   })
 </script>
 
