@@ -9,7 +9,7 @@
 		cursor: pointer;
 		user-select: none;
 		border-radius: var(--n-border-radius);
-		gap: 10px;
+		gap: var(--n-gap);
 		padding-block: 10px;
 		container-type: inline-size;
 		filter: drop-shadow(0 2px 4px var(--list-shadow));

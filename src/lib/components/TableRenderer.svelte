@@ -7,7 +7,7 @@
 		overflow-y: scroll;
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: var(--n-gap);
 		container-type: size;
 		position: relative;
 	}

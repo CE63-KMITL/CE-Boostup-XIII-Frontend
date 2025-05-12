@@ -8,6 +8,7 @@
 	import InputOutput from "../components/InputOutput.svelte";
 	import TestCaseContainer from "../components/TestCaseContainer.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
+	import Button from "$lib/components/Button.svelte";
 
 	//-------------------------------------------------------
 	// Component State
@@ -131,25 +132,31 @@
 
 <div class="component">
 	<div class="full mainFrame">
-		<Frame blur-bg class="ProblemContainer">
-			<CodeEditor bind:value={codeText} {saveCode} {loadCode}></CodeEditor>
-		</Frame>
+		<div class="full subFrame">
+			<Frame blur-bg margin={false} class="ProblemContainer">
+				<CodeEditor bind:value={codeText} {saveCode} {loadCode}></CodeEditor>
+			</Frame>
 
-		<Tab class="side" headers={headerTabs} bind:activeTab>
-			{#if activeTab === "details"}
-				<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<ProblemDetail problem={problemData}></ProblemDetail>
-				</div>
-			{:else if activeTab === "inputOutput"}
-				<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
-				</div>
-			{:else if activeTab === "testcase"}
-				<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<TestCaseContainer staff={false} {testCases} />
-				</div>
-			{/if}
-		</Tab>
+			<Tab margin={false} class="side" headers={headerTabs} bind:activeTab>
+				{#if activeTab === "details"}
+					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+						<ProblemDetail problem={problemData}></ProblemDetail>
+					</div>
+				{:else if activeTab === "inputOutput"}
+					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+						<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
+					</div>
+				{:else if activeTab === "testcase"}
+					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+						<TestCaseContainer staff={false} {testCases} />
+					</div>
+				{/if}
+			</Tab>
+		</div>
+
+		<div class="buttonContainer">
+			<Button>ดูโจทย์</Button>
+		</div>
 	</div>
 </div>
 
@@ -157,16 +164,27 @@
 	.component {
 		display: contents;
 
+		.mainFrame {
+			display: flex;
+			padding: 10px;
+			gap: var(--n-gap);
+			flex-direction: column;
+		}
+
 		//-------------------------------------------------------
 		// Main Layout Styles
 		//-------------------------------------------------------
-		.mainFrame {
+		.subFrame {
 			display: flex;
 			flex-direction: row;
-			height: 100%;
 			width: 100%;
-			padding: 10px;
-			gap: 10px;
+			gap: var(--n-gap);
+			flex-shrink: 3;
+			min-height: 0;
+		}
+
+		.buttonContainer {
+			display: flex;
 		}
 
 		//-------------------------------------------------------
@@ -176,7 +194,7 @@
 			display: flex;
 			flex-direction: column;
 			width: 60%;
-			gap: 10px;
+			gap: var(--n-gap);
 		}
 
 		:global(.side) {
@@ -187,7 +205,7 @@
 		// Responsive Styles
 		//-------------------------------------------------------
 		@media (max-width: 800px) {
-			.mainFrame {
+			.subFrame {
 				flex-direction: column;
 			}
 

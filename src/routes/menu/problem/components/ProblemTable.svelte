@@ -294,7 +294,7 @@
 				display: flex;
 				flex-direction: row;
 				align-items: center;
-				gap: 10px;
+				gap: var(--n-gap);
 
 				:global(> div) {
 					&:nth-child(1) {

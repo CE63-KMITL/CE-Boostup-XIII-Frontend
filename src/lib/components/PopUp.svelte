@@ -263,7 +263,7 @@
 	</div>
 {/if}
 
-<style>
+<style lang="scss">
 	.Overlay {
 		position: fixed;
 		inset: 0;
@@ -290,19 +290,19 @@
 		width: auto;
 		min-width: 300px;
 		overflow-y: auto;
-	}
 
-	.Popup.small {
-		width: clamp(300px, 40%, 500px);
-	}
-	.Popup.medium {
-		width: clamp(400px, 60%, 700px);
-	}
-	.Popup.large {
-		width: clamp(500px, 80%, 900px);
-	}
-	.Popup.xlarge {
-		width: clamp(600px, 90%, 1200px);
+		&.small {
+			width: clamp(300px, 40%, 500px);
+		}
+		&.medium {
+			width: clamp(400px, 60%, 700px);
+		}
+		&.large {
+			width: clamp(500px, 80%, 900px);
+		}
+		&.xlarge {
+			width: clamp(600px, 90%, 1200px);
+		}
 	}
 
 	.Title {
@@ -333,30 +333,30 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
-	}
 
-	.InputGroup label {
-		font-weight: 500;
-		font-size: 0.875rem;
-		color: var(--text-color-medium, var(--text-color));
-	}
+		label {
+			font-weight: 500;
+			font-size: 0.875rem;
+			color: var(--text-color-medium, var(--text-color));
+		}
 
-	.InputGroup input[type="text"],
-	.InputGroup input[type="number"],
-	.InputGroup input[type="password"],
-	.InputGroup textarea {
-		padding: 0.6rem 0.75rem;
-		border-radius: var(--n-border-radius-small, 4px);
-		background-color: var(--bg-input, var(--bg));
-		color: var(--text-color);
-		font-size: 0.9rem;
-		width: 100%;
-		box-sizing: border-box;
-	}
+		input[type="text"],
+		input[type="number"],
+		input[type="password"],
+		textarea {
+			padding: 0.6rem 0.75rem;
+			border-radius: var(--n-border-radius-small, 4px);
+			background-color: var(--bg-input, var(--bg));
+			color: var(--text-color);
+			font-size: 0.9rem;
+			width: 100%;
+			box-sizing: border-box;
+		}
 
-	.InputGroup textarea {
-		min-height: 80px;
-		resize: vertical;
+		textarea {
+			min-height: 80px;
+			resize: vertical;
+		}
 	}
 
 	.ButtonContainer {
@@ -366,10 +366,10 @@
 		justify-content: flex-end;
 		margin-top: 1rem;
 		flex-wrap: wrap;
-	}
 
-	.ButtonContainer :global(button) {
-		font-size: 0.9rem;
+		:global(button) {
+			font-size: 0.9rem;
+		}
 	}
 
 	:root {

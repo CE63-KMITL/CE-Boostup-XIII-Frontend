@@ -22,7 +22,7 @@
 
 	onMount(() => {
 		window.addEventListener("popstate", () => {
-			updatePage(new URL(window.location.href).searchParams.get("page"),false);
+			updatePage(new URL(window.location.href).searchParams.get("page"), false);
 		});
 		let url = new URL(window.location.href);
 		if (!url.searchParams.get("page")) {
@@ -157,6 +157,7 @@
 	}
 
 	.circle-bg {
+		display: flex;
 		height: 40px;
 		width: auto;
 		// aspect-ratio: 1/1 !important;
@@ -166,6 +167,8 @@
 		border: 1px solid transparent;
 		transition: all 0.2s ease-out;
 		cursor: pointer;
+		justify-content: center;
+		align-items: center;
 
 		&:hover:not([data-currentPage="true"]) {
 			background: var(--top-bar-hover);
@@ -200,7 +203,7 @@
 	#end {
 		display: flex;
 		flex-direction: row;
-		gap: 10px;
+		gap: var(--n-gap);
 		z-index: 2;
 	}
 
@@ -248,6 +251,7 @@
 			border-radius: 99px;
 			font-size: 1.2rem;
 			transition: all 0.2s ease-out;
+			border: none;
 
 			&:hover:not([data-currentPage="true"]) {
 				cursor: pointer;
@@ -304,7 +308,7 @@
 				padding-inline: 30px;
 			}
 
-			gap: 10px;
+			gap: var(--n-gap);
 		}
 
 		#content {

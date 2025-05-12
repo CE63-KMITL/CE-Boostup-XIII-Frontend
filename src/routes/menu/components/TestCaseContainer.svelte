@@ -54,12 +54,12 @@
 	.testcaseHeader {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 	.testcases-list {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 	/*
 	-------------------------------------------------------
@@ -74,7 +74,7 @@
 		border: 1px solid var(--outline);
 		border-radius: var(--n-border-radius);
 		padding: 10px;
-		gap: 10px;
+		gap: var(--n-gap);
 		width: 100%;
 		box-sizing: border-box;
 		flex-shrink: 0;

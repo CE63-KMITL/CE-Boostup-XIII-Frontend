@@ -574,7 +574,7 @@
 								hoverColor="var(--status-not-started)"
 								textColor="var(--status-not-started)"
 								outline="var(--status-not-started)"
-								onclick={rejectProblem}>ไม่อนุมัติโจทย์</Button
+								onclick={rejectProblem}>ให้ไปแก้ไข</Button
 							>
 						{/if}
 						{#if isAuthor}
@@ -649,7 +649,7 @@
 	.details {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	.headText {
@@ -660,7 +660,7 @@
 	.problemCreateInputContainer {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--n-gap);
 		white-space: nowrap;
 	}
 
@@ -673,7 +673,7 @@
 	.radioButtonContainer {
 		display: flex;
 		flex-direction: row;
-		gap: 10px;
+		gap: var(--n-gap);
 		flex-wrap: wrap;
 	}
 
@@ -702,7 +702,7 @@
 		flex-direction: row;
 		flex-wrap: wrap;
 		padding: 10px;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	//-------------------------------------------------------
@@ -722,7 +722,7 @@
 		height: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	.mainFrame {
@@ -730,7 +730,7 @@
 		flex-direction: row;
 		height: 100%;
 		width: 100%;
-		gap: 10px;
+		gap: var(--n-gap);
 		flex: 1;
 		min-height: 0;
 	}
@@ -742,7 +742,7 @@
 	:global(.buttonContainer) {
 		display: flex;
 		flex-direction: row;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	//-------------------------------------------------------

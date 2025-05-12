@@ -115,7 +115,7 @@
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	.WrapPasswordInput {

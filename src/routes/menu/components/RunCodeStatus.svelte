@@ -28,7 +28,7 @@
 	}
 	.status-container {
 		display: flex;
-		gap: 10px;
+		gap: var(--n-gap);
 
 		div {
 			font-size: 1rem;
