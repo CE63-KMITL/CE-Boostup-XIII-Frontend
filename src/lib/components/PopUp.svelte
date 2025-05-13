@@ -243,16 +243,25 @@
 						<Button
 							on:click={() => handleButtonClick(button)}
 							color={button.primary
-								? "var(--primary-action)"
+								? "var(--bg)"
 								: button.cancel
-									? "var(--cancel-action)"
-									: "var(--secondary-action)"}
+									? "var(--bg)"
+									: "var(--button-bg)"}
 							textColor={button.primary
-								? "var(--text-on-primary)"
+								? "var(--status-done)"
 								: button.cancel
-									? "var(--text-on-cancel)"
-									: "var(--text-on-secondary)"}
-							outline={!button.primary && !button.cancel ? "var(--outline)" : undefined}
+									? "var(--status-not-started)"
+									: "var(--button-text)"}
+							outline={button.primary
+								? "var(--status-done)"
+								: button.cancel
+									? "var(--status-not-started)"
+									: ""}
+							hoverColor={button.primary
+								? "var(--status-done)"
+								: button.cancel
+									? "var(--status-not-started)"
+									: ""}
 						>
 							{button.label}
 						</Button>
@@ -310,7 +319,7 @@
 		font-weight: 600;
 		color: var(--text-color-strong, var(--text-color));
 		padding-bottom: 0.5rem;
-		border-bottom: 1px solid var(--outline-variant, var(--outline));
+		border-bottom: 1px solid var(--grayed, var(--outline));
 	}
 
 	.Message {
@@ -368,17 +377,8 @@
 		flex-wrap: wrap;
 
 		:global(button) {
-			font-size: 0.9rem;
+			font-weight: 600;
+			font-size: 1rem;
 		}
-	}
-
-	:root {
-		--primary-action: var(--status-done);
-		--text-on-primary: var(--bg);
-		--cancel-action: var(--status-not-started);
-		--text-on-cancel: var(--bg);
-		--secondary-action: var(--button-bg);
-		--text-on-secondary: var(--button-text);
-		--outline-variant: var(--grayed);
 	}
 </style>

@@ -62,7 +62,7 @@
 						await saveCode(editor.getValue());
 					}
 				},
-				Number(localStorage.getItem("autoSaveDelay")) || 10000
+				Number(localStorage.getItem("autoSaveDelay")) || 500
 			);
 		});
 
@@ -75,12 +75,6 @@
 			cCompletionProviderRegistration?.dispose();
 		};
 	});
-
-	onbeforeunload = () => {
-		if (saveCode) {
-			saveCode(editor.getValue());
-		}
-	};
 
 	/*
 	-------------------------------------------------------

@@ -9,6 +9,10 @@
 	import TestCaseContainer from "../components/TestCaseContainer.svelte";
 	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
 	import Button from "$lib/components/Button.svelte";
+	import { IsRole, userData } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
+	import { updatePage } from "../pageManager";
+	import { showPopup } from "$lib/components/PopUp.svelte";
 
 	//-------------------------------------------------------
 	// Component State
@@ -32,7 +36,7 @@
 	// Problem Data State
 	//-------------------------------------------------------
 	let currentProblemId: string | null = null;
-	let problemData = null;
+	let problem: { [key: string]: any } = {};
 
 	//-------------------------------------------------------
 	// Test Case State (Static or Placeholder)
@@ -71,11 +75,15 @@
 
 	async function saveCode(code: string) {
 		if (currentProblemId) {
-			await api.call(`/user/code/${currentProblemId}`, {
+			const result = await api.call(`/user/code/${currentProblemId}`, {
 				method: "POST",
 				data: { code },
 				withToken: true,
 			});
+
+			if (!result) {
+				showPopup("ไม่สามารถบันทึกโค้ดได้", { ตกลง: () => {} });
+			}
 		} else {
 			localStorage.setItem("code", code);
 		}
@@ -113,6 +121,10 @@
 		}
 	}
 
+	function onViewProblem() {
+		updatePage("create_problem");
+	}
+
 	//-------------------------------------------------------
 	// Lifecycle
 	//-------------------------------------------------------
@@ -122,9 +134,10 @@
 
 		if (problemIdFromUrl) {
 			currentProblemId = problemIdFromUrl;
-			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "Test case" };
+			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "ส่ง" };
 			activeTab = "details";
-			problemData = await api.call(`/problem/${currentProblemId}`, { withToken: true });
+			problem = await api.call(`/problem/${currentProblemId}`, { withToken: true });
+			console.log(problem);
 		}
 		codeText = await loadCode();
 	});
@@ -140,7 +153,7 @@
 			<Tab margin={false} class="side" headers={headerTabs} bind:activeTab>
 				{#if activeTab === "details"}
 					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<ProblemDetail problem={problemData}></ProblemDetail>
+						<ProblemDetail {problem}></ProblemDetail>
 					</div>
 				{:else if activeTab === "inputOutput"}
 					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
@@ -148,15 +161,17 @@
 					</div>
 				{:else if activeTab === "testcase"}
 					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer staff={false} {testCases} />
+						<TestCaseContainer staff={false} testCases={problem.testCases} />
 					</div>
 				{/if}
 			</Tab>
 		</div>
 
-		<div class="buttonContainer">
-			<Button>ดูโจทย์</Button>
-		</div>
+		{#if IsRole(Role.STAFF)}
+			<Frame>
+				<Button onclick={onViewProblem}>แก้ไขโจทย์</Button>
+			</Frame>
+		{/if}
 	</div>
 </div>
 
@@ -181,10 +196,6 @@
 			gap: var(--n-gap);
 			flex-shrink: 3;
 			min-height: 0;
-		}
-
-		.buttonContainer {
-			display: flex;
 		}
 
 		//-------------------------------------------------------

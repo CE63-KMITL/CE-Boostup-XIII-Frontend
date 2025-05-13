@@ -25,7 +25,7 @@
 			if (onclick) onclick(thisCheckbox.checked);
 		});
 
-		if (selected) thisElement.click();
+		thisCheckbox.checked = selected;
 	});
 
 	$: if (thisElement && textContentElement) {

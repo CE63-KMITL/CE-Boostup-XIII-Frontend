@@ -4,7 +4,9 @@
 	export let result: RunCodeResult = {};
 </script>
 
-<div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%;">
+<div
+	style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap;"
+>
 	<div style="display: flex; flex-direction: row; align-items: center; gap:10px; font-size: 0.8rem">
 		<div class="runCodeStatus" data-status={result?.exit_status}></div>
 		{result.exit_status || "NOT_RUNNING"}

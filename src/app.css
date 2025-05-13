@@ -30,7 +30,7 @@ html:not([dark]) {
 	--top-bar-right: rgb(63, 46, 62);
 
 	--button-bg: rgb(169, 132, 77);
-	--button-bg-text: var(--bg);
+	--button-text: var(--bg);
 
 	--theme: #a9844d;
 	--theme-dark: rgb(150, 125, 79);
@@ -84,7 +84,7 @@ html[dark] {
 	--top-bar-right: rgb(22, 22, 22);
 
 	--button-bg: rgb(207, 165, 85);
-	--button-bg-text: var(--text);
+	--button-text: var(--text);
 
 	--theme: #caa561;
 	--theme-dark: rgb(150, 125, 79);
@@ -198,6 +198,7 @@ textarea {
 	white-space: pre;
 }
 
+input:not([type="checkbox"]):focus,
 textarea:focus {
 	outline: none !important;
 	border: 1px solid var(--theme);

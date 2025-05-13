@@ -70,7 +70,7 @@
 			testCases: problemTestCases.map((testCase) => {
 				return {
 					input: testCase.input,
-					isHiddenTestcase: testCase.hidden,
+					isHiddenTestcase: testCase.isHiddenTestcase,
 				};
 			}),
 		};
@@ -88,7 +88,7 @@
 	let problemTestCases = [
 		{
 			input: "",
-			hidden: false,
+			isHiddenTestcase: false,
 			result: {
 				exit_code: null,
 				exit_status: null,
@@ -126,7 +126,7 @@
 			...problemTestCases,
 			{
 				input: "",
-				hidden: false,
+				isHiddenTestcase: false,
 				result: {
 					exit_code: null,
 					exit_status: null,
@@ -142,6 +142,11 @@
 		});
 	}
 
+	function removeTestCase(index) {
+		problemTestCases.splice(index, 1);
+		problemTestCases = [...problemTestCases];
+	}
+
 	//-------------------------------------------------------
 	// API Call Functions
 	//-------------------------------------------------------
@@ -153,24 +158,45 @@
 			used_time: null,
 		};
 
+		const problemData = getProblemData();
+
 		result = await api.call("/run-code", {
 			method: "POST",
 			data: {
 				input: inputText,
 				code: solutionCode,
 				timeout: problem.timeLimit || 1000,
+				functionMode: problemData.functionMode,
+				headerMode: problemData.headerMode,
+				headers: problemData.headers,
+				functions: problemData.functions,
 			},
 			withToken: true,
 		});
 	}
 
 	async function runAllCreateProblem() {
+		const problemData = getProblemData();
+
+		problemTestCases.forEach((val, i) => {
+			val.result.output = "";
+			val.result.exit_status = "RUNNING";
+			val.result.exit_code = null;
+			val.result.used_time = null;
+		});
+
+		problemTestCases = [...problemTestCases];
+
 		const res = await api.call("/run-code/test-cases", {
 			withToken: true,
 			data: {
 				inputs: problemTestCases.map((val) => val.input),
 				timeout: problem.timeLimit || 1000,
 				code: solutionCode,
+				functionMode: problemData.functionMode,
+				headerMode: problemData.headerMode,
+				headers: problemData.headers,
+				functions: problemData.functions,
 			},
 			method: "POST",
 		});
@@ -187,8 +213,6 @@
 
 	async function onCreateProblem() {
 		const problemData = getProblemData();
-
-		console.log(problemData);
 
 		const result = await api.call(`/problem`, {
 			method: "POST",
@@ -211,8 +235,6 @@
 	async function onUpdateProblem() {
 		const problemData = getProblemData();
 
-		console.log(problemData);
-
 		const result = await api.call(`/problem/${problem.id}`, {
 			method: "PATCH",
 			data: problemData,
@@ -220,12 +242,14 @@
 		});
 
 		if (result) {
-			showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!", {
+			await showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!", {
 				โอเค: () => {
 					window.location.reload();
 				},
 			});
 		}
+
+		return result;
 	}
 
 	//-------------------------------------------------------
@@ -233,6 +257,11 @@
 	//-------------------------------------------------------
 	async function reviewProblem() {
 		if (!problem.id) return;
+
+		if (!(await onUpdateProblem())) {
+			return;
+		}
+
 		const result = await api.call(`/problem/review/${problem.id}`, {
 			method: "POST",
 			withToken: true,
@@ -246,8 +275,7 @@
 		}
 	}
 
-	async function approveProblem() {
-		if (!problem.id) return;
+	async function reqApproveProblem() {
 		const result = await api.call(`/problem/approve/${problem.id}`, {
 			method: "POST",
 			withToken: true,
@@ -261,21 +289,42 @@
 		}
 	}
 
+	async function approveProblem() {
+		if (!problem.id) return;
+
+		if (problem.author?.id == $userData?.id) {
+			await showPopup("⚠️ ไม่แนะนำให้คุณอนุมัติโจทย์ของคุณเอง!", {
+				มันจำเป็นอะ: {
+					primary: true,
+					callback: async () => {
+						reqApproveProblem();
+					},
+				},
+				โอเคไม่ก็ได้: {
+					cancel: true,
+					callback: () => {},
+				},
+			});
+		} else {
+			reqApproveProblem();
+		}
+	}
+
 	async function rejectProblem() {
 		if (!problem.id) return;
 		const inputsForReject: ShowPopupInputs = [
 			{
 				type: "textarea",
 				name: "message",
-				label: "เหตุผลในการไม่อนุมัติ",
+				label: "เหตุผลในการให้กลับไปแก้ไข",
 				placeholder: "กรุณาระบุเหตุผล...",
 				required: true,
 			},
 		];
 		showPopup(
-			"ไม่อนุมัติโจทย์",
+			"ส่งโจทย์กลับบ้าน",
 			{
-				ไม่อนุมัติโจทย์: {
+				ข้าขอส่งให้เจ้ากลับไปแก้ไขซะ: {
 					primary: true,
 					callback: async (formData) => {
 						if (formData && formData.message) {
@@ -285,7 +334,7 @@
 								withToken: true,
 							});
 							if (res) {
-								await showPopup("ไม่อนุมัติโจทย์แล้ว", {
+								await showPopup("ได้ส่งโจทย์กลับบ้านแล้ว!", {
 									ตกลง: () => {
 										window.location.reload();
 									},
@@ -318,7 +367,7 @@
 							withToken: true,
 						});
 						if (result) {
-							showPopup("โจทย์ถูกเก็บเข้าคลังแล้ว!", {
+							showPopup("โจทย์ได้โบกมือบ๊ายบายให้คุณแล้ว!", {
 								ตกลง: () => {
 									window.location.reload();
 								},
@@ -382,7 +431,7 @@
 				if (fetchedProblem.testCases)
 					problemTestCases = fetchedProblem.testCases.map((tc) => ({
 						input: tc.input,
-						hidden: tc.isHiddenTestcase,
+						isHiddenTestcase: tc.isHiddenTestcase,
 						result: { exit_code: null, exit_status: null, output: null, used_time: null },
 					}));
 
@@ -548,8 +597,9 @@
 								testCases={problemTestCases}
 								staff={true}
 								runAll={runAllCreateProblem}
+								{removeTestCase}
 							/>
-							<Button on:click={handleAddTestCaseContainer} class="addTestCase"
+							<Button onclick={handleAddTestCaseContainer} class="addTestCase"
 								>เพิ่ม Test Case</Button
 							>
 						</div>

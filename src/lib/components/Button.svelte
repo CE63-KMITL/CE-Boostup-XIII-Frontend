@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let color = "var(--button-bg)";
-	export let textColor = "var(--button-bg-text)";
+	export let textColor = "var(--button-text)";
 	export let outline = "transparent";
 	export let hoverColor = "";
 
