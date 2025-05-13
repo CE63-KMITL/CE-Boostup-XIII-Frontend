@@ -1,9 +1,12 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import Button from '$lib/components/Button.svelte';
     import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 
     $: query = $page.url.searchParams.get('type');
+    let text_password: string = "";
+    let text_re_password: string = "";
     let see_password: boolean = false;
     let recheck_password: boolean = false;
 </script>
@@ -19,8 +22,13 @@
         {/if}
          <div class="passwordBox">
             <p class="Text">รหัสผ่าน</p>
-            <div class="Wrap">
-                <input type="password" class="password" placeholder="รหัสผ่าน" />
+            <div class="wrap">
+                <input 
+                    type={see_password ? "text" : "password"} 
+                    class="password" 
+                    placeholder="รหัสผ่าน" 
+                    bind:value={text_password} 
+                />
                 <button
                     class="IoIosEyeOff"
                     on:click={() => {
@@ -37,8 +45,13 @@
         </div>
         <div class="recheckBox">
             <p class="Text">ยืนยันรหัสผ่าน</p>
-            <div class="Wrap">
-                <input type="password" class="recheck" placeholder="ยืนยันรหัสผ่าน" />
+            <div class="wrap">
+                <input 
+                    type={recheck_password ? "text" : "password"}
+                    class="recheck" 
+                    placeholder="ยืนยันรหัสผ่าน" 
+                    bind:value={text_re_password}
+                />
                 <button
                     class="IoIosEyeOff"
                     on:click={() => {
@@ -53,6 +66,7 @@
                 </button>
             </div>
         </div>
+        <Button class="confirm">ยืนยัน</Button>
     </div>
 </div>
 
@@ -92,7 +106,7 @@
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
-		gap: 10px;
+		gap: 5px;
     }
     .name{
         padding: 0.125rem;
@@ -100,7 +114,7 @@
 		padding-right: 0.75rem;
 		width: 100%;
 		max-width: 25rem;
-		background-color: transparent;
+		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
@@ -115,14 +129,15 @@
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
+        max-width: 25rem;
+        gap: 5px;
     }
     .password {
         padding: 0.125rem;
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 		width: 100%;
-		max-width: 25rem;
-		background-color: transparent;
+		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
@@ -131,13 +146,22 @@
         color: var(--theme-dark);
 		font-weight: 400;
     }
+    .recheckBox {
+        display: flex;
+		align-self: self-start;
+		flex-direction: column;
+		justify-content: center;
+		width: 100%;
+        max-width: 25rem;
+        gap: 5px;
+        margin-bottom: 2rem;
+    }
     .recheck {
         padding: 0.125rem;
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 		width: 100%;
-		max-width: 25rem;
-		background-color: transparent;
+		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
@@ -145,6 +169,15 @@
     .recheck::placeholder {
         color: var(--theme-dark);
 		font-weight: 400;
+    }
+    :global(.confirm) {
+        margin-bottom: 1rem;
+    }
+    .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
     .Text {
 		font-size: 1.5rem;
@@ -154,7 +187,6 @@
     .IoIosEyeOff {
 		width: 2rem;
 	}
-
 	.IoIosEyeOff :global(svg) {
 		fill: var(--theme-dark);
 	}
