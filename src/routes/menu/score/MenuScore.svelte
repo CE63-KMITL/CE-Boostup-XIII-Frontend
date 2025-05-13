@@ -30,14 +30,6 @@
 	
 	let isSearching = "";
 	let selectedStudent = null;
-	// let allStudents: (Student | string)[] = [];
-	
-	// let studentSelectorElement;
-	// let studentDetailsElement;
-	// let maxPageSC;
-	// let oldQuerySC = "";
-	// let needLoad = false;
-	// let isloaded = false;
 
 	let showPopup = false;
 	function openPopup() { showPopup = true; }
@@ -148,10 +140,10 @@ Popup Score History
 -->
 
 {#if showPopup}
-	<div class="backdrop" onclick={closePopup}>
-		<div id="popup" onclick={protectClick}>
-			<span>Check!</span>
-			<Button onclick={closePopup}>close</Button>
+	<div class="backdrop" onclick={closePopup} in:azScale out:azScale>
+		<div id="popup" onclick={protectClick} in:azScale out:azScale>
+			<div>gegegege</div>
+			<button class="sc-history-btn" onclick={closePopup}>ปิด</button>
 		</div>
 	</div>
 {/if}
@@ -294,26 +286,48 @@ Style SCSS Na
 		}
 	}
 
+
+// -------------------------------------------------------
+// 	Score History Pop-up
+// -------------------------------------------------------
+
 	.backdrop {
 		position: fixed;
-		inset: 0;
-		background-color: rgba(0, 0, 0, 0.5);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		z-index: 1000;
+		inset: 0;
+		background-color: var(--list-shadow);
+		// z-index: 1000;
 	}
 
 	#popup {
-		background: white;
-		padding: 2rem;
-		border-radius: 1rem;
-		box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+		background-color: var(--bg);
+		
+		box-shadow: 0 0 20px var(--list-shadow);
+		padding: 15px;
+		border-radius: 20px;
 		width: 90%;
-		max-width: 400px;
+		max-width: 500px;
 		text-align: center;
+
+		.sc-history-btn {
+			background-color: var(--sc-bg);
+			color: var(--text);
+			width: 50%;
+			padding: 10px;
+			border-radius: 10px;
+			font-size: 1rem;
+			font-weight: 500;
+			transition: background-color 0.3s ease;
+		}
+
+		.sc-history-btn:hover {
+			background-color: var(--theme-dark);
+		}
 	}
 
+	
 
 // -------------------------------------------------------
 // 	Mobile phone Mode
@@ -359,6 +373,10 @@ Style SCSS Na
 			.scl-image {
 				width: 80%;
 			}
+		}
+
+		#popup {
+			max-width: 300px;
 		}
 	}
 </style>

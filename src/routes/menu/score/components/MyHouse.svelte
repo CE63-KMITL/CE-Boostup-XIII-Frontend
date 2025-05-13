@@ -42,12 +42,14 @@
         align-items: center;
 
         #dropdown {
-            width: 20%;
-            padding: 5px;
-            border-radius: 10px;
-            border: 1px solid var(--outline);
-            cursor: pointer;
+            background-color: var(--list-bg);
+            width: 40%;
+            border: 0.5px solid var(--outline);
+            border-radius: 20px;
+            padding: 7px;
         }
     }
+
+    
 
 </style>

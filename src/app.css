@@ -73,7 +73,8 @@ html:not([dark]) {
 	--sc-text-tab: rgb(255, 255, 255);
 	--sc-bg: rgb(241, 213, 161);
 	--sc-text: rgb(169, 132, 77);
-	--sc-button: rgb(95, 75, 94);
+	--sc-tab: rgb(95, 75, 94);
+	--sc-shadow: rgba(0, 0, 0, 0.5);
 }
 
 html[dark] {
@@ -126,7 +127,7 @@ html[dark] {
 
 	--sc-bg: rgb(169, 132, 77);
 	--sc-text: rgb(169, 132, 77);
-	--sc-button: rgb(95, 75, 94);
+	--sc-tab: rgb(95, 75, 94);
 
 	background: black;
 }
