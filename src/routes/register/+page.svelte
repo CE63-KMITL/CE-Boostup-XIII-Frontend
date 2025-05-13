@@ -1,17 +1,58 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
+	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 
     $: query = $page.url.searchParams.get('type');
+    let see_password: boolean = false;
+    let recheck_password: boolean = false;
 </script>
 
 <div class="registerContainer">
     <div class="registerBox">
         <h1 class="registerHead">ข้อมูลผู้ใช้</h1>
-        {#if query == "student"}
-            <p>student</p>
-        {:else}
-            <p>outsider</p>
+        {#if query != "student"}
+            <div class="nameBox">
+                <p class="Text">ชื่อผู้ใช้</p>
+                <input type="text" class="name" placeholder="ชื่อผู้ใช้" />
+            </div>
         {/if}
+         <div class="passwordBox">
+            <p class="Text">รหัสผ่าน</p>
+            <div class="Wrap">
+                <input type="password" class="password" placeholder="รหัสผ่าน" />
+                <button
+                    class="IoIosEyeOff"
+                    on:click={() => {
+                        see_password = !see_password;
+                    }}
+                >
+                    {#if see_password}
+                        <IoIosEye />
+                    {:else}
+                        <IoIosEyeOff />
+                    {/if}
+                </button>
+            </div>
+        </div>
+        <div class="recheckBox">
+            <p class="Text">ยืนยันรหัสผ่าน</p>
+            <div class="Wrap">
+                <input type="password" class="recheck" placeholder="ยืนยันรหัสผ่าน" />
+                <button
+                    class="IoIosEyeOff"
+                    on:click={() => {
+                        recheck_password = !recheck_password;
+                    }}
+                >
+                    {#if recheck_password}
+                        <IoIosEye />
+                    {:else}
+                        <IoIosEyeOff />
+                    {/if}
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -45,4 +86,76 @@
 		margin-top: 2rem;
 		color: var(--theme-dark-text);
     }
+    .nameBox{
+        display: flex;
+		align-self: self-start;
+		flex-direction: column;
+		justify-content: center;
+		width: 100%;
+		gap: 10px;
+    }
+    .name{
+        padding: 0.125rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: 100%;
+		max-width: 25rem;
+		background-color: transparent;
+		border: 1px solid var(--theme-dark);
+		border-radius: 5px;
+		font-size: 1.125rem;
+    }
+    .name::placeholder {
+		color: var(--theme-dark);
+		font-weight: 400;
+	}
+    .passwordBox{
+        display: flex;
+		align-self: self-start;
+		flex-direction: column;
+		justify-content: center;
+		width: 100%;
+    }
+    .password {
+        padding: 0.125rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: 100%;
+		max-width: 25rem;
+		background-color: transparent;
+		border: 1px solid var(--theme-dark);
+		border-radius: 5px;
+		font-size: 1.125rem;
+    }
+    .password::placeholder {
+        color: var(--theme-dark);
+		font-weight: 400;
+    }
+    .recheck {
+        padding: 0.125rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: 100%;
+		max-width: 25rem;
+		background-color: transparent;
+		border: 1px solid var(--theme-dark);
+		border-radius: 5px;
+		font-size: 1.125rem;
+    }
+    .recheck::placeholder {
+        color: var(--theme-dark);
+		font-weight: 400;
+    }
+    .Text {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: var(--theme-dark);
+	}
+    .IoIosEyeOff {
+		width: 2rem;
+	}
+
+	.IoIosEyeOff :global(svg) {
+		fill: var(--theme-dark);
+	}
 </style>
