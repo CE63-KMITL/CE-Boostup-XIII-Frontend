@@ -244,7 +244,10 @@
 							on:click={() => handleButtonClick(button)}
 							color={button.primary
 								? "var(--bg)"
+								? "var(--bg)"
 								: button.cancel
+									? "var(--bg)"
+									: "var(--button-bg)"}
 									? "var(--bg)"
 									: "var(--button-bg)"}
 							textColor={button.primary
@@ -260,6 +263,8 @@
 							hoverColor={button.primary
 								? "var(--status-done)"
 								: button.cancel
+									? "var(--status-not-started)"
+									: ""}
 									? "var(--status-not-started)"
 									: ""}
 						>
@@ -321,6 +326,7 @@
 		color: var(--text-color-strong, var(--text-color));
 		padding-bottom: 0.5rem;
 		border-bottom: 1px solid var(--grayed, var(--outline));
+		border-bottom: 1px solid var(--grayed, var(--outline));
 	}
 
 	.Message {
@@ -378,6 +384,8 @@
 		flex-wrap: wrap;
 
 		:global(button) {
+			font-weight: 600;
+			font-size: 1rem;
 			font-weight: 600;
 			font-size: 1rem;
 		}

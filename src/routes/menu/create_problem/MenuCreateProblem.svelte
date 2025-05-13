@@ -84,6 +84,7 @@
 				return {
 					input: testCase.input,
 					isHiddenTestcase: testCase.isHiddenTestcase,
+					isHiddenTestcase: testCase.isHiddenTestcase,
 				};
 			}),
 		};
@@ -158,12 +159,18 @@
 
 		const problemData = getProblemData();
 
+		const problemData = getProblemData();
+
 		result = await api.call("/run-code", {
 			method: "POST",
 			data: {
 				input: inputText,
 				code: solutionCode,
 				timeout: problem.timeLimit || 1000,
+				functionMode: problemData.functionMode,
+				headerMode: problemData.headerMode,
+				headers: problemData.headers,
+				functions: problemData.functions,
 				functionMode: problemData.functionMode,
 				headerMode: problemData.headerMode,
 				headers: problemData.headers,
@@ -191,6 +198,10 @@
 				inputs: problem.testCases.map((val) => val.input),
 				timeout: problem.timeLimit || 1000,
 				code: solutionCode,
+				functionMode: problemData.functionMode,
+				headerMode: problemData.headerMode,
+				headers: problemData.headers,
+				functions: problemData.functions,
 				functionMode: problemData.functionMode,
 				headerMode: problemData.headerMode,
 				headers: problemData.headers,
@@ -245,11 +256,14 @@
 
 		if (result) {
 			await showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!", {
+			await showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!", {
 				โอเค: () => {
 					window.location.reload();
 				},
 			});
 		}
+
+		return result;
 
 		return result;
 	}
@@ -277,6 +291,7 @@
 		}
 	}
 
+	async function reqApproveProblem() {
 	async function reqApproveProblem() {
 		const result = await api.call(`/problem/approve/${problem.id}`, {
 			method: "POST",
@@ -312,6 +327,27 @@
 		}
 	}
 
+	async function approveProblem() {
+		if (!problem.id) return;
+
+		if (problem.author?.id == $userData?.id) {
+			await showPopup("⚠️ ไม่แนะนำให้คุณอนุมัติโจทย์ของคุณเอง!", {
+				มันจำเป็นอะ: {
+					primary: true,
+					callback: async () => {
+						reqApproveProblem();
+					},
+				},
+				โอเคไม่ก็ได้: {
+					cancel: true,
+					callback: () => {},
+				},
+			});
+		} else {
+			reqApproveProblem();
+		}
+	}
+
 	async function rejectProblem() {
 		if (!problem.id) return;
 		const inputsForReject: ShowPopupInputs = [
@@ -319,13 +355,16 @@
 				type: "textarea",
 				name: "message",
 				label: "เหตุผลในการให้กลับไปแก้ไข",
+				label: "เหตุผลในการให้กลับไปแก้ไข",
 				placeholder: "กรุณาระบุเหตุผล...",
 				required: true,
 			},
 		];
 		showPopup(
 			"ส่งโจทย์กลับบ้าน",
+			"ส่งโจทย์กลับบ้าน",
 			{
+				ข้าขอส่งให้เจ้ากลับไปแก้ไขซะ: {
 				ข้าขอส่งให้เจ้ากลับไปแก้ไขซะ: {
 					primary: true,
 					callback: async (formData) => {
@@ -336,6 +375,7 @@
 								withToken: true,
 							});
 							if (res) {
+								await showPopup("ได้ส่งโจทย์กลับบ้านแล้ว!", {
 								await showPopup("ได้ส่งโจทย์กลับบ้านแล้ว!", {
 									ตกลง: () => {
 										window.location.reload();
@@ -369,6 +409,7 @@
 							withToken: true,
 						});
 						if (result) {
+							showPopup("โจทย์ได้โบกมือบ๊ายบายให้คุณแล้ว!", {
 							showPopup("โจทย์ได้โบกมือบ๊ายบายให้คุณแล้ว!", {
 								ตกลง: () => {
 									window.location.reload();
@@ -604,7 +645,9 @@
 								editMode={true}
 								runAll={runAllCreateProblem}
 								{removeTestCase}
+								{removeTestCase}
 							/>
+							<Button onclick={handleAddTestCaseContainer} class="addTestCase"
 							<Button onclick={handleAddTestCaseContainer} class="addTestCase"
 								>เพิ่ม Test Case</Button
 							>

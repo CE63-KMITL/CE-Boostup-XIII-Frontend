@@ -55,6 +55,9 @@
 					selected={testCase.isHiddenTestcase}
 					onclick={() => {
 						testCase.isHiddenTestcase = !testCase.isHiddenTestcase;
+					selected={testCase.isHiddenTestcase}
+					onclick={() => {
+						testCase.isHiddenTestcase = !testCase.isHiddenTestcase;
 					}}
 				>
 					Hidden testcase
@@ -157,6 +160,7 @@
 		box-sizing: border-box;
 		flex-shrink: 0;
 		overflow: isHiddenTestcase;
+		overflow: isHiddenTestcase;
 	}
 
 	.testcase-item:last-child {
@@ -168,6 +172,7 @@
 		flex-direction: column;
 		gap: 5px;
 		flex-grow: 1;
+		overflow: isHiddenTestcase;
 		overflow: isHiddenTestcase;
 		width: 100%;
 	}

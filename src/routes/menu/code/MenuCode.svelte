@@ -13,6 +13,10 @@
 	import { Role } from "$lib/enum/role";
 	import { updatePage } from "../pageManager";
 	import { showPopup } from "$lib/components/PopUp.svelte";
+	import { IsRole, userData } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
+	import { updatePage } from "../pageManager";
+	import { showPopup } from "$lib/components/PopUp.svelte";
 
 	//-------------------------------------------------------
 	// Component State
@@ -56,10 +60,15 @@
 	async function saveCode(code: string) {
 		if (currentProblemId) {
 			const result = await api.call(`/user/code/${currentProblemId}`, {
+			const result = await api.call(`/user/code/${currentProblemId}`, {
 				method: "POST",
 				data: { code },
 				withToken: true,
 			});
+
+			if (!result) {
+				showPopup("ไม่สามารถบันทึกโค้ดได้", { ตกลง: () => {} });
+			}
 
 			if (!result) {
 				showPopup("ไม่สามารถบันทึกโค้ดได้", { ตกลง: () => {} });
@@ -141,6 +150,7 @@
 		if (problemIdFromUrl) {
 			currentProblemId = problemIdFromUrl;
 			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "ส่ง" };
+			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "ส่ง" };
 			activeTab = "details";
 			problem = await api.call(`/problem/code/${currentProblemId}`, { withToken: true });
 			console.log(problem);
@@ -160,6 +170,7 @@
 				{#if activeTab === "details"}
 					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 						<ProblemDetail {problem}></ProblemDetail>
+						<ProblemDetail {problem}></ProblemDetail>
 					</div>
 				{:else if activeTab === "inputOutput"}
 					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
@@ -173,6 +184,11 @@
 			</Tab>
 		</div>
 
+		{#if IsRole(Role.STAFF)}
+			<Frame>
+				<Button onclick={onViewProblem}>แก้ไขโจทย์</Button>
+			</Frame>
+		{/if}
 		{#if IsRole(Role.STAFF)}
 			<Frame>
 				<Button onclick={onViewProblem}>แก้ไขโจทย์</Button>
