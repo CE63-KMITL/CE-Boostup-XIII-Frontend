@@ -24,7 +24,9 @@
 	}
 
 	let loaded = false;
+	let loaded = false;
 	onMount(() => {
+		loaded = true;
 		loaded = true;
 		window.addEventListener("popstate", () => {
 			updatePage(new URL(window.location.href).searchParams.get("page"), false);
@@ -52,7 +54,24 @@
 				<img id="logo" src="/logo.png" alt="LOGO" />
 				<img id="logo-text" src="/logo-text.png" alt="CE BOOSTUP" />
 			</div>
+	{#if loaded}
+		<div in:fly={{ y: -30, duration: 500 }} id="topbar">
+			<div id="start" onclick={() => (window.location.href = "/")}>
+				<img id="logo" src="/logo.png" alt="LOGO" />
+				<img id="logo-text" src="/logo-text.png" alt="CE BOOSTUP" />
+			</div>
 
+			<div id="page-selector-container" data-pc="true">
+				{#each Object.keys($items) as item}
+					<button
+						class="page-selector"
+						data-currentPage={$currentPage == item}
+						onclick={() => updatePage(item)}
+					>
+						{$items[item]}
+					</button>
+				{/each}
+			</div>
 			<div id="page-selector-container" data-pc="true">
 				{#each Object.keys($items) as item}
 					<button
@@ -70,7 +89,25 @@
 					≡
 				</button>
 			</div>
+			<div id="moblie-page-selector-container">
+				<button id="page-selector-toggle" data-selected={showMobileTopbar} onclick={toggleMobileTopbar}>
+					≡
+				</button>
+			</div>
 
+			{#if showMobileTopbar}
+				<div in:fly={{ y: 20 }} out:fly={{ y: 20 }} id="page-selector-container" data-mobile="true">
+					{#each Object.keys($items) as item}
+						<button
+							class="page-selector"
+							data-currentPage={$currentPage == item}
+							onclick={() => updatePage(item)}
+						>
+							{$items[item]}
+						</button>
+					{/each}
+				</div>
+			{/if}
 			{#if showMobileTopbar}
 				<div in:fly={{ y: 20 }} out:fly={{ y: 20 }} id="page-selector-container" data-mobile="true">
 					{#each Object.keys($items) as item}
@@ -199,6 +236,7 @@
 		z-index: 2;
 		cursor: pointer;
 		transition: all 0.2s;
+          gap: var(--n-gap);
           gap: var(--n-gap);
 
 		&:hover {
