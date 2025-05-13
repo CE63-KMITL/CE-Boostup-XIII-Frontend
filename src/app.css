@@ -130,6 +130,7 @@ html[dark] {
 
 	--sc-text: rgb(169, 132, 77);
 	--sc-tab: rgb(95, 75, 94);
+	--sc-shadow: rgba(0, 0, 0, 0.5);
 	--sc-orangelight: rgb(169, 132, 77);
 	--sc-orangedark: rgb(169, 132, 77);
 	--sc-bg-popup: rgb(0, 0, 0);

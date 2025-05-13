@@ -36,7 +36,13 @@
 	function closePopup() { showPopup = false; }
 	function protectClick(event) { event.stopPropagation(); }
 
+	function test() {
+		console.log("Hello, World");
+	}
+
 	onMount(async () => {
+
+		
 
 		if (IsRole(Role.STAFF)) {
 			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
@@ -299,7 +305,7 @@ Style SCSS Na
 		align-items: center;
 		justify-content: center;
 		inset: 0;
-		background-color: var(--list-shadow);
+		background-color: var(--sc-shadow);
 	}
 
 	#popup {
@@ -310,7 +316,7 @@ Style SCSS Na
 		padding: 15px;
 		border-radius: 20px;
 		width: 90%;
-		height: 60%;
+		height: 75%;
 		max-width: 500px;
 
 		#popup-middle {
