@@ -85,10 +85,10 @@ HTML Crapp
 							}}
 							bind:value={isSearching}
 							style="
-								border: 0; 
-								background-color: transparent;
-								padding: 5px;
-								"
+							border: 0px;
+							background-color: transparent;
+							"
+
 						/>
 					</Frame>
 					{#if selectedStudent == null && isSearching == ""}
@@ -271,7 +271,6 @@ Style SCSS Na
 			padding-inline: 10px;
 			width: 100%;
 			border-radius: 25px;
-			
 		}
 
 		:global(#sc-below-search) {
@@ -304,21 +303,23 @@ Style SCSS Na
 	}
 
 	#popup {
-		background-color: var(--bg);
+		background-color: var(--sc-bg-popup);
 		box-shadow: 0 0 20px var(--list-shadow);
 		padding: 15px;
 		border-radius: 20px;
 		width: 90%;
 		height: 70%;
 		max-width: 500px;
-		
-		overflow-y: auto;
 
 		#popup-middle {
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
+			margin-top: 10px;
 			width: 100%;
+			padding: 1%;
+			height: 85%;
+			overflow-y: auto;
 		}
 
 		#popup-bottom {
@@ -348,6 +349,11 @@ Style SCSS Na
 // 	Mobile phone Mode
 // -------------------------------------------------------
 
+	// @media (max-width: 1025px) {
+	// 	#popup {
+	// 		max-width: 700px;
+	// 	}
+	// }
 
 	@media (max-width: 920px) {
 		#Score {
@@ -391,7 +397,7 @@ Style SCSS Na
 		}
 
 		#popup {
-			max-width: 300px;
+			max-width: 500px;
 		}
 	}
 </style>
