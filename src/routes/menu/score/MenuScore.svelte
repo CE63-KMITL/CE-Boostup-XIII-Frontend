@@ -303,22 +303,21 @@ Style SCSS Na
 	}
 
 	#popup {
+		display: flex;
+		flex-direction: column;
 		background-color: var(--sc-bg-popup);
 		box-shadow: 0 0 20px var(--list-shadow);
 		padding: 15px;
 		border-radius: 20px;
 		width: 90%;
-		height: 70%;
+		height: 60%;
 		max-width: 500px;
 
 		#popup-middle {
 			display: flex;
 			flex-direction: column;
-			justify-content: space-between;
 			margin-top: 10px;
-			width: 100%;
 			padding: 1%;
-			height: 85%;
 			overflow-y: auto;
 		}
 
@@ -349,11 +348,6 @@ Style SCSS Na
 // 	Mobile phone Mode
 // -------------------------------------------------------
 
-	// @media (max-width: 1025px) {
-	// 	#popup {
-	// 		max-width: 700px;
-	// 	}
-	// }
 
 	@media (max-width: 920px) {
 		#Score {
