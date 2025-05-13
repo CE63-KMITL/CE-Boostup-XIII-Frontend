@@ -485,6 +485,13 @@ Style SCSS Na
 		:global(#scoreTab) {
 			flex-direction: row;
 			align-items: start;
+
+			div.scl-image {
+				height: auto;
+				width: 90%;
+				padding: 0px;
+				margin-top: 0px;
+			}
 		}
 
 		:global(#scoreTab-editscore) {
