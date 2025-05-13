@@ -27,189 +27,30 @@
 
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
-
+	
 	let isSearching = "";
 	let selectedStudent = null;
-	let allStudents: (Student | string)[] = [];
+	// let allStudents: (Student | string)[] = [];
 	
 	// let studentSelectorElement;
 	// let studentDetailsElement;
+	// let maxPageSC;
+	// let oldQuerySC = "";
+	// let needLoad = false;
+	// let isloaded = false;
 
-	let maxPageSC;
-	let oldQuerySC = "";
-	let needLoad = false;
-	let isloaded = false;
-
-	/*
-    -------------------------------------------------------
-    Score History
-    -------------------------------------------------------
-    */
-
-	// let showHistory = false;
-	// function openHistory() { showHistory = true; }
-	// function closeHistory() { showHistory = false; }
-	// function protectClick(event) { event.stopPropagation(); }
-
-	/*
-    -------------------------------------------------------
-    Help Functions
-    -------------------------------------------------------
-    */
-
-	// async function getQuerySC() {
-	// 	const searchQuerySC = { search: $searchParams["search"] };
-
-	// 	const querySC = Object.entries(searchQuerySC)
-	// 		.filter(
-	// 			([_, value]) => 
-	// 			value !== null && 
-	// 			value !== "" && 
-	// 			(!Array.isArray(value) || value.length > 0)
-	// 		)
-	// 		.map(([key, value]) => {
-	// 			if (Array.isArray(value)) {
-	// 				let stringSC = "";
-	// 				value.forEach((elementSC) => {
-	// 					stringSC += `&${key}=${elementSC}`;
-	// 				});
-	// 				return stringSC;
-	// 			}
-	// 			return `${key}=${value}`;
-	// 		})
-	// 		.join("&");
-	// 	return querySC;
-	// }
-
-	/*
-    -------------------------------------------------------
-    Animation Functions Coolๆ
-    -------------------------------------------------------
-    */
-
-	// async function runProblemListAnimation(dataIds: string[]) {
-	// 	for (let i = 0; i < dataIds.length; i++) {
-	// 		const dataId = dataIds[i];
-	// 		const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
-
-	// 		if (element) {
-	// 			element.style.animation = `slide-in 0.2s ease-out forwards`;
-	// 			await sleep(70);
-	// 		}
-	// 	}
-	// }
-
-	/*
-    -------------------------------------------------------
-    Data Functions
-    -------------------------------------------------------
-    */
-
-	// async function updateStudents(isLoadMoreSC = false) {
-	// 	const querySC = await getQuerySC();
-	// 	if (querySC === oldQuerySC && (!isLoadMoreSC || maxPageSC <= $searchParams.page)) return;
-	// 	oldQuerySC = querySC;
-
-	// 	if (isLoadMoreSC) {
-	// 		searchParams.update((params) => ({
-	// 			...params,
-	// 			page: params.page + 1
-	// 		}));
-	// 		// $searchParams.page++;
-	// 		allStudents = [...allStudents, "loading"];
-	// 	} else {
-	// 		$selectedIDStudent = null;
-	// 		$searchParams.page = 1;
-	// 		isloaded = false;
-	// 		allStudents = [];
-	// 	}
-
-	// 	const getAllStudents = await api.call(
-	// 		`/user/search?${querySC}$page=${Number($searchParams.page)}`,
-	// 		{ withToken: true }
-	// 	);
-
-	// 	console.log(getAllStudents);
-
-	// 	if (getAllStudents && getAllStudents.data.length > 0 ) {
-	// 		if (isLoadMoreSC) {
-	// 			allStudents = [...allStudents.slice(0, -1), ...getAllStudents.data];
-	// 		} else {
-	// 			allStudents = getAllStudents.data;
-	// 			maxPageSC = getAllStudents.totalPage;
-	// 			isloaded = true;
-	// 		}
-
-	// 		requestAnimationFrame(() => {
-	// 			runProblemListAnimation(getAllStudents.data.map((item) => item.id));
-	// 		});
-
-	// 	} else {
-	// 		if (isLoadMoreSC) {
-	// 			allStudents = allStudents.slice(0, -1);
-	// 			$searchParams.page--;
-	// 		} else {
-	// 			maxPageSC = null;
-	// 			allStudents = [];
-	// 			isloaded = true;
-	// 		}
-	// 	}
-	// }
-
-	// async function loadMoreSC() {
-	// 	if (needLoad) return;
-	// 	console.log("need load na");
-	// 	needLoad = true;
-	// 	await updateStudents(true);
-	// 	needLoad = false;
-	// }
-
-	// async function updateStudentsDetail() {
-	// 	if(!$selectedIDStudent) return;
-	// }
-	
-	/*
-    -------------------------------------------------------
-    Cycle Na Won Won Pai
-    -------------------------------------------------------
-    */
-
-	// let subscribeSelectedIDStudent: Unsubscriber;
-	// let subscribeSearchParams: Unsubscriber;
+	let showPopup = false;
+	function openPopup() { showPopup = true; }
+	function closePopup() { showPopup = false; }
+	function protectClick(event) { event.stopPropagation(); }
 
 	onMount(async () => {
-		// studentSelectorElement = document.querySelector("#")
-		// studentDetailsElement;
-
-		// await updateStudents();
-
-		// subscribeSearchParams = searchParams.subscribe(() => {
-		// 	updateStudents();
-		// });
-		// subscribeSelectedIDStudent = selectedIDStudent.subscribe(async () => {
-		// 	selectedStudent = null;
-
-		// 	const studentData = 
-		// 		allStudents.find((student) => typeof student === "object" && student.id === $selectedIDStudent) || selectedStudent;
-		
-		// 	if (studentData) {
-		// 		studentData.detail = await api.call(`/user/${studentData.id}`, {
-		// 			withToken: true
-		// 		});
-		// 	}
-		// 	selectedStudent = studentData;
-		// });
 
 		if (IsRole(Role.STAFF)) {
 			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
 			activeTab = "scEditData";
 		}
 	});
-
-	// onDestroy(() => {
-	// 	if (subscribeSearchParams) subscribeSearchParams();
-	// 	if (subscribeSelectedIDStudent) subscribeSelectedIDStudent();
-	// });
 
 </script>
 
@@ -237,16 +78,7 @@ HTML Crapp
 						<div id="scl-detail-bottom">{profile.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" filter={false}>ประวัติคะแนน</Button>
-						<!-- onclick={openHistory} -->
-						<!-- {#if showHistory}
-							<div class="backdrop" onclick={closeHistory}>
-								<div id="popup" onclick={protectClick}>
-									<div>Hello, World</div>
-									<Button onclick={closeHistory}>Close Ja</Button>
-								</div>
-							</div>
-						{/if} -->
+						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
 			{:else if activeTab == "scEditData"}
@@ -294,16 +126,7 @@ HTML Crapp
 						<div id="scl-detail-bottom">{profile.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" filter={false}>ประวัติคะแนน</Button>
-						<!-- onclick={openHistory} -->
-						<!-- {#if showHistory}
-							<div class="backdrop" onclick={closeHistory}>
-								<div id="popup" onclick={protectClick}>
-									<div>Hello, World</div>
-									<Button onclick={closeHistory}>Close Ja</Button>
-								</div>
-							</div>
-						{/if} -->
+						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
@@ -318,16 +141,20 @@ HTML Crapp
 	</Frame>
 </div>
 
-<!-- {#if showHistory}
-	<div class="backdrop" onclick={closeHistory}>
+<!-- 
+-------------------------------------------------------
+Popup Score History
+-------------------------------------------------------
+-->
+
+{#if showPopup}
+	<div class="backdrop" onclick={closePopup}>
 		<div id="popup" onclick={protectClick}>
-			<h2>Popup</h2>
-			<p>Detail kub</p>
-			<Button onclick={closeHistory}>Close Ja</Button>
+			<span>Check!</span>
+			<Button onclick={closePopup}>close</Button>
 		</div>
 	</div>
-{/if} -->
-
+{/if}
 
 <!-- 
 -------------------------------------------------------
@@ -466,6 +293,32 @@ Style SCSS Na
 			font-size: 16px;
 		}
 	}
+
+	.backdrop {
+		position: fixed;
+		inset: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1000;
+	}
+
+	#popup {
+		background: white;
+		padding: 2rem;
+		border-radius: 1rem;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+		width: 90%;
+		max-width: 400px;
+		text-align: center;
+	}
+
+
+// -------------------------------------------------------
+// 	Mobile phone Mode
+// -------------------------------------------------------
+
 
 	@media (max-width: 920px) {
 		#Score {
