@@ -117,7 +117,7 @@ html[dark] {
 	--darker: rgb(22, 22, 22);
 	--darker-50: rgba(22, 22, 22, 0.5);
 	--outline: rgb(125, 125, 125);
-	--button-bg: radial-gradient(at center top, rgb(190, 152, 80), rgba(153, 120, 48, 0.925));
+	--button-bg: radial-gradient(at center top, rgb(134, 109, 62), rgba(121, 87, 43, 0.925));
 	--bg: rgba(0, 0, 0, 0.8);
 	--bg-50: rgba(0, 0, 0, 0.7);
 
@@ -146,10 +146,6 @@ html[dark] {
 
 *::-webkit-scrollbar-thumb:hover {
 	background: var(--text);
-}
-
-html[dark] > body > #bg {
-	opacity: 0.5;
 }
 
 div:not(.view-line) {
@@ -256,4 +252,28 @@ svg {
 	100% {
 		opacity: 0;
 	}
+}
+
+@keyframes background-animation {
+	0% {
+		opacity: 0;
+		transform: scale(1.1);
+		filter: blur(10px);
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+html > body > #bg-container > #bg {
+	transition: all 1s;
+	opacity: 0;
+}
+
+html[dark] > body > #bg-container {
+	opacity: 0.5;
+}
+
+html[loaded] > body > #bg-container > #bg {
+	animation: background-animation 1s ease-out forwards;
 }

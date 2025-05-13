@@ -20,7 +20,9 @@
 		$items["create_problem"] = "สร้างโจทย์";
 	}
 
+	let loaded = false;
 	onMount(() => {
+		loaded = true;
 		window.addEventListener("popstate", () => {
 			updatePage(new URL(window.location.href).searchParams.get("page"), false);
 		});
@@ -41,32 +43,14 @@
 </script>
 
 <Fullscreen>
-	<div id="topbar">
-		<div id="start" onclick={() => (window.location.href = "/")}>
-			<img id="logo" src="/logo.png" alt="LOGO" />
-			<img id="logo-text" src="/logo-text.png" alt="CE BOOSTUP" />
-		</div>
+	{#if loaded}
+		<div in:fly={{ y: -30, duration: 500 }} id="topbar">
+			<div id="start" onclick={() => (window.location.href = "/")}>
+				<img id="logo" src="/logo.png" alt="LOGO" />
+				<img id="logo-text" src="/logo-text.png" alt="CE BOOSTUP" />
+			</div>
 
-		<div id="page-selector-container" data-pc="true">
-			{#each Object.keys($items) as item}
-				<button
-					class="page-selector"
-					data-currentPage={$currentPage == item}
-					onclick={() => updatePage(item)}
-				>
-					{$items[item]}
-				</button>
-			{/each}
-		</div>
-
-		<div id="moblie-page-selector-container">
-			<button id="page-selector-toggle" data-selected={showMobileTopbar} onclick={toggleMobileTopbar}>
-				≡
-			</button>
-		</div>
-
-		{#if showMobileTopbar}
-			<div in:fly={{ y: 20 }} out:fly={{ y: 20 }} id="page-selector-container" data-mobile="true">
+			<div id="page-selector-container" data-pc="true">
 				{#each Object.keys($items) as item}
 					<button
 						class="page-selector"
@@ -77,40 +61,61 @@
 					</button>
 				{/each}
 			</div>
-		{/if}
 
-		<dir id="end">
-			<div
-				data-currentPage={$currentPage == "profile"}
-				class="circle-bg"
-				onclick={(e) => {
-					if ($userData.role == null) {
-						window.location.href = "/login";
-					} else {
-						updatePage("profile");
-					}
-				}}
-			>
-				{#if $userData.role == null}
-					ล็อคอิน
-				{:else if $userData.icon}
-					<img src={$userData.icon} alt="Icon" class="circular-icon" />
-				{:else}
-					<User></User>
-				{/if}
+			<div id="moblie-page-selector-container">
+				<button id="page-selector-toggle" data-selected={showMobileTopbar} onclick={toggleMobileTopbar}>
+					≡
+				</button>
 			</div>
 
-			<div
-				data-currentPage={$currentPage == "setting"}
-				class="circle-bg"
-				onclick={() => {
-					updatePage("setting");
-				}}
-			>
-				<Setting></Setting>
-			</div>
-		</dir>
-	</div>
+			{#if showMobileTopbar}
+				<div in:fly={{ y: 20 }} out:fly={{ y: 20 }} id="page-selector-container" data-mobile="true">
+					{#each Object.keys($items) as item}
+						<button
+							class="page-selector"
+							data-currentPage={$currentPage == item}
+							onclick={() => updatePage(item)}
+						>
+							{$items[item]}
+						</button>
+					{/each}
+				</div>
+			{/if}
+
+			<dir id="end">
+				<div
+					data-currentPage={$currentPage == "profile"}
+					class="circle-bg"
+					onclick={(e) => {
+						if ($userData.role == null) {
+							window.location.href = "/login";
+						} else {
+							updatePage("profile");
+						}
+					}}
+				>
+					{#if $userData.role == null}
+						ล็อคอิน
+					{:else if $userData.icon}
+						<img src={$userData.icon} alt="Icon" class="circular-icon" />
+					{:else}
+						<User></User>
+					{/if}
+				</div>
+
+				<div
+					data-currentPage={$currentPage == "setting"}
+					class="circle-bg"
+					onclick={() => {
+						updatePage("setting");
+					}}
+				>
+					<Setting></Setting>
+				</div>
+			</dir>
+		</div>
+	{/if}
+
 	<div id="content">
 		{#if $currentPage == "code"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
@@ -188,6 +193,7 @@
 		z-index: 2;
 		cursor: pointer;
 		transition: all 0.2s;
+          gap: var(--n-gap);
 
 		&:hover {
 			transform: scale(1.1);

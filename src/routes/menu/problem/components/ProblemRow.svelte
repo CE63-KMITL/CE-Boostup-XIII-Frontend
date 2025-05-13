@@ -138,7 +138,7 @@
 		width: 100%;
 		padding: 5px;
 		padding-inline: 15px;
-		background: var(--theme);
+		background: var(--button-bg);
 		color: white;
 		border: none;
 		border-radius: 5px;
@@ -149,8 +149,7 @@
 		border: transparent 1px solid;
 
 		&:hover {
-			background: var(--theme-dark);
-			border: var(--text) 1px solid;
+			filter: brightness(1.2);
 			translate: 0 -2px;
 		}
 

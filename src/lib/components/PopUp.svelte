@@ -299,6 +299,7 @@
 		width: auto;
 		min-width: 300px;
 		overflow-y: auto;
+		border: 1px solid var(--outline);
 
 		&.small {
 			width: clamp(300px, 40%, 500px);

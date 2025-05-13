@@ -5,34 +5,7 @@
 
 	let ThisHeaderSelection: HTMLElement;
 
-	// let selectorList: any = [];
-
-	// function updateList() {
-	// 	selectorList = [];
-	// 	for (const selector of ThisHeaderSelection.children) {
-	// 		selectorList.push(selector);
-	// 	}
-	// }
-
 	onMount(() => {
-		// async function show() {
-		// 	hide();
-		// 	updateList();
-		// 	for (var i = 0; i < selectorList.length; i++) {
-		// 		const selector = selectorList[i];
-		// 		selector.style.animation = `slide-in 0.2s ${(i + 1) * 0.07}s ease-out forwards`;
-		// 	}
-		// }
-
-		// async function hide() {
-		// 	updateList();
-		// 	for (const selector of selectorList) {
-		// 		selector.style.animation = "";
-		// 	}
-		// }
-
-		// hide();
-
 		console.log(toggleSelector);
 		if (toggleSelector) {
 			toggleSelector.addEventListener("click", () => {
@@ -72,7 +45,7 @@
 		border-radius: 0px 0px var(--n-border-radius) var(--n-border-radius);
 	}
 
-	@for $i from 1 through 10 {
+	@for $i from 1 through 20 {
 		:global(.header-selection[open="true"] > div:nth-child(#{$i}n)) {
 			animation: slide-in 0.2s #{$i * 0.07}s ease-out forwards;
 		}

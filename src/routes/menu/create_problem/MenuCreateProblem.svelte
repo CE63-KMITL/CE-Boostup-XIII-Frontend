@@ -232,7 +232,7 @@
 		}
 	}
 
-	async function onUpdateProblem() {
+	async function onUpdateProblem(skip = false) {
 		const problemData = getProblemData();
 
 		const result = await api.call(`/problem/${problem.id}`, {
@@ -240,6 +240,10 @@
 			data: problemData,
 			withToken: true,
 		});
+
+		if (skip) {
+			return result;
+		}
 
 		if (result) {
 			await showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!", {
@@ -258,7 +262,7 @@
 	async function reviewProblem() {
 		if (!problem.id) return;
 
-		if (!(await onUpdateProblem())) {
+		if (!(await onUpdateProblem(true))) {
 			return;
 		}
 
@@ -459,6 +463,11 @@
 <div id="problemCreateContainer" bind:this={mainScrollContainer}>
 	<div class="sectionPanel">
 		{#if loaded}
+			{#if problem.id}
+				<div class="devStatus" style="color: {statusStaffColors[problem.devStatus]};">
+					✿ {statusStaffText[problem.devStatus]} ✿
+				</div>
+			{/if}
 			<div class="mainFrame" in:azScale={{ delay: 250 }} out:azScale>
 				<Tab
 					class="problemCodeContainer"
@@ -607,12 +616,6 @@
 				</Tab>
 			</div>
 
-			{#if problem.id}
-				<div class="devStatus" style="color: {statusStaffColors[problem.devStatus]};">
-					✿ {statusStaffText[problem.devStatus]} ✿
-				</div>
-			{/if}
-
 			{@const isAuthor = problem.author?.id == $userData?.id}
 
 			{#if loaded}
@@ -640,7 +643,7 @@
 								hoverColor="var(--status-in-progress)"
 								textColor="var(--status-in-progress)"
 								outline="var(--status-in-progress)"
-								onclick={onUpdateProblem}>อัพเดทโจทย์</Button
+								onclick={() => onUpdateProblem()}>อัพเดทโจทย์</Button
 							>
 							{#if problem.devStatus !== "Need Review"}
 								<Button

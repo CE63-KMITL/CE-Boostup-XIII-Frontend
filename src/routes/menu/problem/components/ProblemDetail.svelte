@@ -25,7 +25,59 @@
 		</div>
 	</div>
 
-	<div class="description">{problem?.detail || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
+	{#if problem?.headers?.length > 0 || problem?.functions?.length > 0}
+		<div class="header-function-info">
+			<div class="mode-section">
+				{#if problem?.headers?.length > 0}
+					<div class="mode-item">
+						<span class="mode-label">Headers:</span>
+						<span
+							class="mode-value"
+							class:disallowed={problem?.headerMode === "disallowed"}
+							class:allowed={problem?.headerMode === "allowed"}
+							>{problem?.headerMode === "disallowed"
+								? "ไม่อนุญาตให้ใช้"
+								: problem?.headerMode === "allowed"
+									? "จำเป็นต้องใช้"
+									: problem?.headerMode}
+						</span>
+
+						<div class="list-section">
+							<div class="list-items">
+								{#each problem?.headers as header}
+									<Tag tag={header} />
+								{/each}
+							</div>
+						</div>
+					</div>
+				{/if}
+				{#if problem?.functions?.length > 0}
+					<div class="mode-item">
+						<span class="mode-label">Functions:</span>
+						<span
+							class="mode-value"
+							class:disallowed={problem?.functionMode === "disallowed"}
+							class:allowed={problem?.functionMode === "allowed"}
+							>{problem?.functionMode === "disallowed"
+								? "ไม่อนุญาตให้ใช้"
+								: problem?.functionMode === "allowed"
+									? "จำเป็นต้องใช้"
+									: problem?.functionMode}</span
+						>
+						<div class="list-section">
+							<div class="list-items">
+								{#each problem?.functions as func}
+									<Tag tag={func} />
+								{/each}
+							</div>
+						</div>
+					</div>
+				{/if}
+			</div>
+		</div>
+	{/if}
+
+	<div class="description">{problem?.description || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
 </div>
 
 <style lang="scss">
@@ -104,5 +156,61 @@
 		padding: 10px;
 		border-radius: 10px;
 		margin-bottom: 10px;
+	}
+
+	//-------------------------------------------------------
+	// Header/Function Info Section
+	//-------------------------------------------------------
+	.header-function-info {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding-bottom: 10px;
+		margin-bottom: 10px;
+	}
+
+	.mode-section {
+		display: flex;
+		flex-direction: row;
+		gap: 20px;
+	}
+
+	.mode-item {
+		font-size: 0.9rem;
+	}
+
+	.mode-label {
+		font-weight: 600;
+		color: var(--text);
+	}
+
+	.mode-value {
+		color: var(--theme);
+
+		&.disallowed {
+			color: var(--status-not-started);
+		}
+
+		&.allowed {
+			color: var(--status-done);
+		}
+	}
+
+	.list-section {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+	}
+
+	.list-label {
+		font-weight: 600;
+		font-size: 0.9rem;
+		color: var(--text);
+	}
+
+	.list-items {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 5px;
 	}
 </style>

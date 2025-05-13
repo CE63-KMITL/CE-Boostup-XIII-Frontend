@@ -12,7 +12,7 @@
 </script>
 
 <div class="testcases-list">
-	<Button class="run-all" onclick={runAll}>{staff ? "▷ รันทั้งหมด" : "▷ ส่งโลด"}</Button>
+	<Button class="run-all" onclick={runAll}>{staff ? "▷ รันทั้งหมด" : "▷ ส่ง"}</Button>
 	{#each testCases as testCase, index (testCase)}
 		<div
 			in:fly|global={{ x: 200, duration: 300, delay: 250 }}
