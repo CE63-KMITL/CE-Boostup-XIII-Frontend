@@ -123,6 +123,7 @@
 		align-items: center;
 		justify-content: start;
 		width: 100%;
+		max-width: 25rem;
 		gap: 5px;
 	}
 
@@ -132,7 +133,7 @@
 		padding-right: 0.75rem;
 		width: 100%;
 		max-width: 25rem;
-		background-color: transparent;
+		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
@@ -148,8 +149,7 @@
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 		width: 100%;
-		max-width: 25rem;
-		background-color: transparent;
+		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
