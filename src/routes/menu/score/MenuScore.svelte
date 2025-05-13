@@ -13,7 +13,7 @@
 	import { sleep } from "$lib/normalFunction";
     import type { Unsubscriber } from "svelte/store";
 	import { type Student } from "$lib/constants/student";
-    import { eventNames } from "process";
+	import History from "./components/History.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -64,7 +64,7 @@ HTML Crapp
 					<div id="scl-main">
 						<div class="scl-top">
 							<span>{profile.name}</span>
-							<span style="color: var(--sc-text)">{profile.studentId} </span>
+							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
 						</div>
 						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
 						<div id="scl-detail-bottom">{profile.score}</div>
@@ -112,7 +112,7 @@ HTML Crapp
 					<div id="scl-main">
 						<div class="scl-top">
 							<span>{profile.name}</span>
-							<span style="color: var(--sc-text)">{profile.studentId} </span>
+							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
 						</div>
 						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
 						<div id="scl-detail-bottom">{profile.score}</div>
@@ -142,8 +142,11 @@ Popup Score History
 {#if showPopup}
 	<div class="backdrop" onclick={closePopup} in:azScale out:azScale>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
-			<div>gegegege</div>
-			<button class="sc-history-btn" onclick={closePopup}>ปิด</button>
+			<div id="popup-top">ประวัติคะแนน</div>
+			<div id="popup-middle"><History></History></div>
+			<div id="popup-bottom"> 
+				<button class="sc-history-btn" onclick={closePopup}>ปิด</button> 
+			</div>
 		</div>
 	</div>
 {/if}
@@ -216,7 +219,7 @@ Style SCSS Na
 			}
 
 			:global(#scl-detail-top) {
-				background-color: var(--sc-bg);
+				background-color: var(--sc-orangelight);
 				border: 1px solid var(--outline);
 				border-radius: 10px 10px 0 0;
 				margin: 3% 20px 0px 20px;
@@ -242,7 +245,7 @@ Style SCSS Na
 			}
 
 			:global(Button.scl-btn) {
-				background-color: var(--sc-bg);
+				background-color: var(--sc-orangelight);
 				border: 1px solid var(--outline);
 				font-size: 14px;
 				padding: 2%;
@@ -268,12 +271,12 @@ Style SCSS Na
 			padding-inline: 10px;
 			width: 100%;
 			border-radius: 25px;
+			
 		}
 
 		:global(#sc-below-search) {
 			width: 55%;
 			height: 100%;
-			// padding: 10% 10%;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
@@ -298,32 +301,44 @@ Style SCSS Na
 		justify-content: center;
 		inset: 0;
 		background-color: var(--list-shadow);
-		// z-index: 1000;
 	}
 
 	#popup {
 		background-color: var(--bg);
-		
 		box-shadow: 0 0 20px var(--list-shadow);
 		padding: 15px;
 		border-radius: 20px;
 		width: 90%;
+		height: 70%;
 		max-width: 500px;
-		text-align: center;
+		
+		overflow-y: auto;
 
-		.sc-history-btn {
-			background-color: var(--sc-bg);
-			color: var(--text);
-			width: 50%;
-			padding: 10px;
-			border-radius: 10px;
-			font-size: 1rem;
-			font-weight: 500;
-			transition: background-color 0.3s ease;
+		#popup-middle {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			width: 100%;
 		}
 
-		.sc-history-btn:hover {
-			background-color: var(--theme-dark);
+		#popup-bottom {
+			text-align: center;
+			margin-top: 15px;
+
+			.sc-history-btn {
+				background-color: var(--sc-orangelight);
+				color: var(--text);
+				width: 50%;
+				padding: 10px;
+				border-radius: 10px;
+				font-size: 1rem;
+				font-weight: 500;
+				transition: background-color 0.3s ease;
+			}
+
+			.sc-history-btn:hover {
+				background-color: var(--sc-orangedark);
+			}
 		}
 	}
 
