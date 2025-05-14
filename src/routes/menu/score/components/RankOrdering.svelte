@@ -4,7 +4,6 @@
 	import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 	import { createEventDispatcher } from "svelte";
-    import type { AnyTxtRecord } from "dns";
 
 	// let { index }: { index: number } = $props();
 

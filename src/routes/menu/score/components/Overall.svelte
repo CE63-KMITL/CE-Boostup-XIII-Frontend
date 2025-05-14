@@ -1,7 +1,7 @@
 <script lang="ts">
     import UserIcon from "$lib/components/UserIcon.svelte";
     import RankOrdering from "./RankOrdering.svelte";
-    import { currentSelectStudent } from "../score";
+    import { selectData } from "../score";
 
     let dataOverall: any = [
     { name: "Veerapat Pirultham", id: "67010852", house: "bard", score: 700 },
@@ -19,8 +19,8 @@
 
     function handleUserClick(event: CustomEvent<{ user: any }>) {
         const clickedUser = event.detail.user;
-        $currentSelectStudent = clickedUser;
-        console.log($currentSelectStudent)
+        $selectData = clickedUser;
+        // console.log($selectData)
     }
     
 </script>

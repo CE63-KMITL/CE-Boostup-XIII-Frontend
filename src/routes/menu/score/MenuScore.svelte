@@ -13,7 +13,9 @@
 	import History from "./components/History.svelte";
     import UserIcon from "$lib/components/UserIcon.svelte";
     import ProfileUser from "$lib/components/ProfileUser.svelte";
-	import { currentSelectStudent } from "./score";
+	import { selectData } from "./score";
+    import { dev } from "$app/environment";
+    import User from "$lib/components/Icons/User.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -29,18 +31,27 @@
 	let activeTab = "scoreDetail";
 	
 	let isSearching = "";
-	let selectedStudent = null;
+	let currentSelectData;
 
 	let editMessage: string;
 	let editScore: number;
 
 	// Pop-up Score History
 	let showPopup = false;
-	function openPopup() { showPopup = true; }
-	function closePopup() { showPopup = false; }
+	function showUserHistory(userHistory: any) {
+		currentSelectData = userHistory;
+		showPopup = true;
+	}
+
+	function closeUserHistory(userHistory: any) {
+		if (userHistory.id === $userData.id) {
+			currentSelectData = null;
+		}
+		showPopup = false;
+	}
+
 	function protectClick(event) { event.stopPropagation(); }
 
-	let currentSelectData = $currentSelectStudent;
 
 	function test() {
 		// let datauser = api.call(`/user/data`, { withToken: true });
@@ -88,7 +99,7 @@ HTML Crapp
 						<div id="scl-detail-bottom">{profile.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={currentSelectData=$userData, openPopup} filter={false}>ประวัติคะแนน</Button>
+						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
 			{:else if activeTab == "scEditData"}
@@ -109,7 +120,7 @@ HTML Crapp
 							"
 						/>
 					</Frame>
-					{#if selectedStudent == null && isSearching =="" }
+					{#if currentSelectData}
 						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="sc-instead-ntung-top-profile">
 								<div style="padding: 10px 20px;"> 
@@ -121,7 +132,7 @@ HTML Crapp
 									<div id="scl-detail-bottom">{profile.score}</div>
 									<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 									<div id="scl-detail-bottom">{profile.houseScore}</div> -->
-									<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
+									<Button class="scl-btn" onclick={() => showUserHistory($selectData)} filter={false}>ประวัติคะแนน</Button>
 								</div>
 							</div>
 							<div class="sc-instead-ntung-middle">
@@ -143,13 +154,13 @@ HTML Crapp
 								</div>
 							</div>
 						</div>
-						<!-- <div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+					{:else if currentSelectData == null && isSearching == "" }
+						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="dragon-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
 							<span id="dragontext">CE BOOSTUP</span>
-						</div> -->
-					<!-- {:else} -->
+						</div>
 
 					<!-- 
 					-------------------------------------------------------
@@ -179,7 +190,7 @@ HTML Crapp
 						<div id="scl-detail-bottom">{profile.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
+						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
@@ -201,12 +212,12 @@ Popup Score History
 -->
 
 {#if showPopup}
-	<div class="backdrop" onclick={closePopup} in:azScale out:azScale>
+	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:azScale out:azScale>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
 			<div id="popup-middle"><History userDataHistory={currentSelectData}></History></div>
 			<div id="popup-bottom"> 
-				<button class="sc-history-btn" onclick={closePopup}>ปิด</button> 
+				<button class="sc-history-btn" onclick={() => closeUserHistory(currentSelectData)}>ปิด</button> 
 			</div>
 		</div>
 	</div>
@@ -255,11 +266,8 @@ Style SCSS Na
 		justify-content: center;
 
 		div.scl-image {
-			// height: auto;
-			// width: auto;
-			width: 100%;
+			width: 90%;
 			height: 70%;
-			margin: 60px 0px 0px 0px;
 			padding: 5%;
 		}
 
@@ -344,8 +352,8 @@ Style SCSS Na
 			height: 100%;
 			display: flex;
 			flex-direction: column;
-			margin-top: 40px;
 			align-items: center;
+			justify-content: center;
 
 			.dragon-image { width: 60%; }
 			#dragontext { filter: drop-shadow( 0 2px 3px var(--list-shadow)); }
@@ -499,6 +507,7 @@ Style SCSS Na
 		:global(#scoreTab) {
 			flex-direction: row;
 			align-items: start;
+			justify-content: center;
 
 			div.scl-image {
 				height: auto;
@@ -516,15 +525,27 @@ Style SCSS Na
 			.scl-image {
 				width: 80%;
 			}
-		}
 
-		#sc-below-search {
-			margin-top: 10;
-			.dragon-image { width: 30%; }
+			:global(div#sc-below-search) {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				
+				.dragon-image { width: 30%; }
+			}
 		}
 
 		#popup {
 			max-width: 500px;
+		}
+	}
+
+	@media (max-height: 550px) {
+		:global(#scoreTab-editscore) {
+			:global(div#sc-below-search) {
+				padding: 20% 0;
+			}
 		}
 	}
 </style>
