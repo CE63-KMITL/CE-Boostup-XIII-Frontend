@@ -24,27 +24,6 @@
 			out:fly={{ x: 200, duration: 300 }}
 			class="testcase-item"
 		>
-			{#if !editMode}
-				<div class="testcase-status-container">
-					<div
-						class:show={testCase?.result?.isPass == true}
-						class="testcase-status"
-						style="--color: var(--status-done)"
-					>
-						ผ่านแล้ว ( •̀ ω •́ )✧
-					</div>
-					<div
-						class:show={testCase?.result?.isPass != true}
-						class="testcase-status"
-						style="--color: var(--status-not-started)"
-					>
-						ยังไม่ผ่าน (ಥ_ಥ)
-					</div>
-				</div>
-			{/if}
-
-			<!-- {/if} -->
-
 			<RunCodeStatus result={testCase?.result}></RunCodeStatus>
 
 			<div class="testcaseHeader">
@@ -63,8 +42,7 @@
 					Hidden testcase
 				</Checkbox>
 			{/if}
-
-			{#if !testCase.isHiddenTestcase || editMode}
+			{#if !testCase.isHiddenTestcase || staff}
 				<div class="testcase-details" class:isHiddenTestcase={testCase.isHiddenTestcase}>
 					<div class="testcase-input">Input</div>
 					<textarea class="input" bind:value={testCase.input} disabled={!editMode}></textarea>

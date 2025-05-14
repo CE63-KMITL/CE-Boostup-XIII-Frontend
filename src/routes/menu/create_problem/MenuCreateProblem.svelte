@@ -641,8 +641,8 @@
 					{:else if rightActiveTab === "testcase"}
 						<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
 							<TestCaseContainer
-								testCases={problem.testCases}
-								editMode={true}
+								testCases={problemTestCases}
+								staff={true}
 								runAll={runAllCreateProblem}
 								{removeTestCase}
 								{removeTestCase}
