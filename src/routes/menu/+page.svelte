@@ -18,6 +18,7 @@
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import * as api from "$lib/fetchApi";
 	import MenuScore from "./score/MenuScore.svelte";
+	import MenuProfile from "./profile/MenuProfile.svelte";
 
 	if (IsRole(Role.STAFF)) {
 		$items["create_problem"] = "สร้างโจทย์";
@@ -134,6 +135,14 @@
 		{:else if $currentPage == "create_problem"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<MenuCreateProblem></MenuCreateProblem>
+			</div>
+		{:else if $currentPage == "profile"}
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<MenuProfile></MenuProfile>
+			</div>
+		{:else if $currentPage == "setting"}
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<!-- <MenuSetting></MenuSetting> -->
 			</div>
 		{/if}
 	</div>
