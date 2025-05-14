@@ -11,6 +11,7 @@
     import Search from "$lib/components/Icons/Search.svelte";
     import { searchParams } from "./score";
 	import History from "./components/History.svelte";
+    import UserIcon from "$lib/components/UserIcon.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -69,6 +70,7 @@ HTML Crapp
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
+							<UserIcon data={$userData.icon}></UserIcon>
 							<span>{profile.name}</span>
 							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
 						</div>
@@ -136,6 +138,7 @@ HTML Crapp
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
+							<UserIcon data={$userData.icon}></UserIcon>
 							<span>{profile.name}</span>
 							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
 						</div>

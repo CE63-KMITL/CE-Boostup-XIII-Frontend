@@ -2,6 +2,7 @@
     import RankOrdering from "./RankOrdering.svelte";
     import * as api from "$lib/fetchApi";
     import { onMount } from "svelte";
+    import UserIcon from "$lib/components/UserIcon.svelte";
 
     let dataMyHouse: any[] = [];
     let optionDropdown: any[] = [];
@@ -30,6 +31,7 @@
 
 {#each dataMyHouse as user, i}
     <RankOrdering index={i}>
+        <UserIcon data={user.icon}></UserIcon>
         <div>{user.name}</div>
         <div>{user.studentId}</div>
         <div>{user.score}</div>
