@@ -245,7 +245,10 @@
 				<Checkbox
 					id="staff-mode"
 					selected={$searchParams.staff}
-					onclick={(value) => ($searchParams.staff = value)}>โหมดแก้ไข</Checkbox
+					onclick={(value) => {
+						$searchParams.staff = value;
+						$searchParams.status = null;
+					}}>โหมดแก้ไข</Checkbox
 				>
 			{/if}
 		</div>

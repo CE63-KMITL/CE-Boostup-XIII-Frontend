@@ -7,6 +7,10 @@
 	import "../../app.css";
 	import Button from "../../lib/components/Button.svelte";
 	import { showPopup } from "../../lib/components/PopUp.svelte";
+	import { onMount } from "svelte";
+	import { fade, fly } from "svelte/transition";
+	import { azScale } from "$lib/transition";
+	import { flip } from "svelte/animate";
 
 	let email: string = "";
 	let password: string = "";
@@ -14,54 +18,61 @@
 
 	async function Login() {
 		const res = await api.call("/auth/login", { method: "POST", data: { email, password } });
+		console.log(res.token);
 		if (res.token) {
 			setCookie("token", res.token);
 			goto("/menu");
 		} else {
-			showPopup(`Login failed\n\n${JSON.stringify(res.message)}`);
-			const massage = await showPopup(res.message, true);
-			console.log(massage);
+			showPopup(`ไม่สามารถเข้าสู่ระบบได้\n\n${JSON.stringify(res.message)}`);
+			const massage = await showPopup(res.message);
 		}
 	}
+
+	let loaded = false;
+	onMount(() => {
+		loaded = true;
+	});
 </script>
 
 <div class="Container">
-	<h1 class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
-	<div class="LoginBox">
-		<h1 class="LoginHead">เข้าสู่ระบบ</h1>
-		<div class="InputBox">
-			<div class="EmailBox">
-				<p class="Text">อีเมล</p>
-				<input class="Email" type="email" placeholder="อีเมล" bind:value={email} />
-			</div>
-			<div class="PasswordBox">
-				<p class="Text">รหัสผ่าน</p>
-				<div class="WrapPasswordInput">
-					<input
-						class="Password"
-						id="Password"
-						type={see_password ? "text" : "password"}
-						placeholder="รหัสผ่าน"
-						bind:value={password}
-					/>
-					<button
-						class="IoIosEyeOff"
-						on:click={() => {
-							see_password = !see_password;
-						}}
-					>
-						{#if see_password}
-							<IoIosEye />
-						{:else}
-							<IoIosEyeOff />
-						{/if}
-					</button>
+	{#if loaded}
+		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
+		<div in:azScale={{ delay: 100, duration: 700 }} class="LoginBox">
+			<h1 class="LoginHead">เข้าสู่ระบบ</h1>
+			<div class="InputBox">
+				<div class="EmailBox">
+					<p class="Text">อีเมล</p>
+					<input class="Email" type="email" placeholder="อีเมล" bind:value={email} />
 				</div>
+				<div class="PasswordBox">
+					<p class="Text">รหัสผ่าน</p>
+					<div class="WrapPasswordInput">
+						<input
+							class="Password"
+							id="Password"
+							type={see_password ? "text" : "password"}
+							placeholder="รหัสผ่าน"
+							bind:value={password}
+						/>
+						<button
+							class="IoIosEyeOff"
+							on:click={() => {
+								see_password = !see_password;
+							}}
+						>
+							{#if see_password}
+								<IoIosEye />
+							{:else}
+								<IoIosEyeOff />
+							{/if}
+						</button>
+					</div>
+				</div>
+				<p class="ForgetPassword">ลืมรหัสผ่าน</p>
 			</div>
-			<p class="ForgetPassword">ลืมรหัสผ่าน</p>
+			<Button class="Login" onclick={() => Login()}>Login</Button>
 		</div>
-		<Button class="Login" onclick={() => Login()}>Login</Button>
-	</div>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -115,7 +126,7 @@
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	.WrapPasswordInput {
@@ -123,6 +134,7 @@
 		align-items: center;
 		justify-content: start;
 		width: 100%;
+		max-width: 25rem;
 		gap: 5px;
 	}
 
@@ -132,7 +144,7 @@
 		padding-right: 0.75rem;
 		width: 100%;
 		max-width: 25rem;
-		background-color: transparent;
+		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
@@ -148,8 +160,7 @@
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 		width: 100%;
-		max-width: 25rem;
-		background-color: transparent;
+		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;

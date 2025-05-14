@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as api from "$lib/fetchApi";
-	import { tagsColors } from "$lib/constants/problem";
+	import { statusStaffColors, statusStaffText, tagsColors } from "$lib/constants/problem";
 	import { azScale } from "$lib/transition";
 	import { onMount } from "svelte";
 	import Button from "$lib/components/Button.svelte";
@@ -15,7 +15,8 @@
 	import RadioButton from "$lib/components/RadioButton.svelte";
 	import Loading from "$lib/components/Loading.svelte";
 	import { fade } from "svelte/transition";
-	import { showPopup } from "$lib/components/PopUp.svelte";
+	import { showPopup, type ShowPopupInputs } from "$lib/components/PopUp.svelte";
+	import { goto } from "$app/navigation";
 
 	//-------------------------------------------------------
 	// Component State
@@ -38,18 +39,33 @@
 		functionMode: "disallowed",
 		functions: "",
 		description: "",
+		devStatus: "",
+		rejectedMessage: "" as string | null,
 		author: {
 			id: null,
 			icon: null,
 			name: null,
 		},
+		testCases: [
+			{
+				input: "",
+				isHiddenTestcase: false,
+				expectOutput: "",
+				result: {
+					exit_code: null,
+					exit_status: null,
+					output: null,
+					used_time: null,
+				},
+			},
+		],
 	};
 
 	function getProblemData() {
 		return {
 			title: problem.title,
 			description: problem.description,
-			timeLimit: problem.timeLimit,
+			timeLimit: problem.timeLimit || 100,
 			headerMode: problem.headerMode,
 			headers: problem.headers
 				.trim()
@@ -64,10 +80,10 @@
 			solutionCode,
 			difficulty: problem.difficulty,
 			tags: problem.tags,
-			testCases: testCases.map((testCase) => {
+			testCases: problem.testCases.map((testCase) => {
 				return {
 					input: testCase.input,
-					isHiddenTestcase: testCase.hidden,
+					isHiddenTestcase: testCase.isHiddenTestcase,
 				};
 			}),
 		};
@@ -78,22 +94,6 @@
 	//-------------------------------------------------------
 	let solutionCode: string = "";
 	let defaultCode: string = "";
-
-	//-------------------------------------------------------
-	// Test Case State
-	//-------------------------------------------------------
-	let testCases = [
-		{
-			input: "",
-			hidden: false,
-			result: {
-				exit_code: null,
-				exit_status: null,
-				output: null,
-				used_time: null,
-			},
-		},
-	];
 
 	//-------------------------------------------------------
 	// Input/Output State
@@ -119,11 +119,12 @@
 	// Test Case State Handlers
 	//-------------------------------------------------------
 	function handleAddTestCaseContainer(e) {
-		testCases = [
-			...testCases,
+		problem.testCases = [
+			...problem.testCases,
 			{
 				input: "",
-				hidden: false,
+				isHiddenTestcase: false,
+				expectOutput: "",
 				result: {
 					exit_code: null,
 					exit_status: null,
@@ -139,30 +140,10 @@
 		});
 	}
 
-	// //-------------------------------------------------------
-	// // Solution Code
-	// //-------------------------------------------------------
-	// async function loadSolutionCode() {
-	// 	return localStorage.getItem("solutionCode");
-	// }
-
-	// async function saveSolutionCode(code: string) {
-	// 	console.log("Solution code saved");
-	// 	localStorage.setItem("solutionCode", code);
-	// }
-
-	// //-------------------------------------------------------
-	// // Default Code
-	// //-------------------------------------------------------
-
-	// async function loadDefaultCode() {
-	// 	return localStorage.getItem("defaultCode");
-	// }
-
-	// async function saveDefaultCode(code: string) {
-	// 	console.log("Default code saved");
-	// 	localStorage.setItem("defaultCode", code);
-	// }
+	function removeTestCase(index) {
+		problem.testCases.splice(index, 1);
+		problem.testCases = [...problem.testCases];
+	}
 
 	//-------------------------------------------------------
 	// API Call Functions
@@ -175,35 +156,82 @@
 			used_time: null,
 		};
 
+		const problemData = getProblemData();
+
 		result = await api.call("/run-code", {
 			method: "POST",
 			data: {
 				input: inputText,
 				code: solutionCode,
 				timeout: problem.timeLimit || 1000,
+				functionMode: problemData.functionMode,
+				headerMode: problemData.headerMode,
+				headers: problemData.headers,
+				functions: problemData.functions,
 			},
 			withToken: true,
 		});
 	}
 
+	async function runAllCreateProblem() {
+		const problemData = getProblemData();
+
+		problem.testCases.forEach((val, i) => {
+			val.result.output = "";
+			val.result.exit_status = "RUNNING";
+			val.result.exit_code = null;
+			val.result.used_time = null;
+		});
+
+		problem.testCases = [...problem.testCases];
+
+		const res = await api.call("/run-code/test-cases", {
+			withToken: true,
+			data: {
+				inputs: problem.testCases.map((val) => val.input),
+				timeout: problem.timeLimit || 1000,
+				code: solutionCode,
+				functionMode: problemData.functionMode,
+				headerMode: problemData.headerMode,
+				headers: problemData.headers,
+				functions: problemData.functions,
+			},
+			method: "POST",
+		});
+
+		problem.testCases.forEach((val, i) => {
+			val.result.output = res[i].output;
+			val.result.exit_status = res[i].exit_status;
+			val.result.exit_code = res[i].exit_code;
+			val.result.used_time = res[i].used_time;
+		});
+
+		problem.testCases = [...problem.testCases];
+	}
+
 	async function onCreateProblem() {
 		const problemData = getProblemData();
 
-		console.log(problemData);
-
-		const result = await api.call("/problem", {
+		const result = await api.call(`/problem`, {
 			method: "POST",
 			data: problemData,
 			withToken: true,
 		});
 
-		console.log(result);
+		if (result) {
+			showPopup(`✅ สร้างโจทย์เรียบร้อยแล้ว!`, {
+				สร้างโจทย์เพิ่ม: () => {
+					window.location.href = `/menu?page=create_problem`;
+				},
+				แก้ไขโจทย์: () => {
+					window.location.href = `/menu?page=create_problem&problemId=${result.id}`;
+				},
+			});
+		}
 	}
 
-	async function onUpdateProblem() {
+	async function onUpdateProblem(skip = false) {
 		const problemData = getProblemData();
-
-		console.log(problemData);
 
 		const result = await api.call(`/problem/${problem.id}`, {
 			method: "PATCH",
@@ -211,9 +239,153 @@
 			withToken: true,
 		});
 
-		if (result) {
-			showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!");
+		if (skip) {
+			return result;
 		}
+
+		if (result) {
+			await showPopup("บันทึกข้อมูลเรียบร้อยแล้ว!", {
+				โอเค: () => {
+					window.location.reload();
+				},
+			});
+		}
+
+		return result;
+	}
+
+	//-------------------------------------------------------
+	// Staff Action Functions
+	//-------------------------------------------------------
+	async function reviewProblem() {
+		if (!problem.id) return;
+
+		if (!(await onUpdateProblem(true))) {
+			return;
+		}
+
+		const result = await api.call(`/problem/review/${problem.id}`, {
+			method: "POST",
+			withToken: true,
+		});
+		if (result) {
+			showPopup("โจทย์ถูกส่งเพื่อตรวจสอบแล้ว!", {
+				โอเค: () => {
+					window.location.reload();
+				},
+			});
+		}
+	}
+
+	async function reqApproveProblem() {
+		const result = await api.call(`/problem/approve/${problem.id}`, {
+			method: "POST",
+			withToken: true,
+		});
+		if (result) {
+			showPopup("โจทย์ได้รับการอนุมัติแล้ว!", {
+				โอเค: () => {
+					window.location.reload();
+				},
+			});
+		}
+	}
+
+	async function approveProblem() {
+		if (!problem.id) return;
+
+		if (problem.author?.id == $userData?.id) {
+			await showPopup("⚠️ ไม่แนะนำให้คุณอนุมัติโจทย์ของคุณเอง!", {
+				มันจำเป็นอะ: {
+					primary: true,
+					callback: async () => {
+						reqApproveProblem();
+					},
+				},
+				โอเคไม่ก็ได้: {
+					cancel: true,
+					callback: () => {},
+				},
+			});
+		} else {
+			reqApproveProblem();
+		}
+	}
+
+	async function rejectProblem() {
+		if (!problem.id) return;
+		const inputsForReject: ShowPopupInputs = [
+			{
+				type: "textarea",
+				name: "message",
+				label: "เหตุผลในการให้กลับไปแก้ไข",
+				placeholder: "กรุณาระบุเหตุผล...",
+				required: true,
+			},
+		];
+		showPopup(
+			"ส่งโจทย์กลับบ้าน",
+			{
+				ข้าขอส่งให้เจ้ากลับไปแก้ไขซะ: {
+					primary: true,
+					callback: async (formData) => {
+						if (formData && formData.message) {
+							const res = await api.call(`/problem/reject/${problem.id}`, {
+								method: "POST",
+								data: { message: formData.message },
+								withToken: true,
+							});
+							if (res) {
+								await showPopup("ได้ส่งโจทย์กลับบ้านแล้ว!", {
+									ตกลง: () => {
+										window.location.reload();
+									},
+								});
+							}
+						}
+					},
+				},
+				ยกเลิก: {
+					cancel: true,
+					callback: () => {},
+				},
+			},
+			"large",
+			inputsForReject,
+			true
+		);
+	}
+
+	async function archiveProblem() {
+		if (!problem.id) return;
+		showPopup(
+			"ยืนยันการเก็บโจทย์",
+			{
+				ลาก่อนโจทย์นี้: {
+					primary: true,
+					callback: async () => {
+						const result = await api.call(`/problem/archive/${problem.id}`, {
+							method: "POST",
+							withToken: true,
+						});
+						if (result) {
+							showPopup("โจทย์ได้โบกมือบ๊ายบายให้คุณแล้ว!", {
+								ตกลง: () => {
+									window.location.reload();
+								},
+							});
+						}
+					},
+				},
+				ยกเลิก: {
+					cancel: true,
+					callback: () => {},
+				},
+			},
+			"medium",
+			null,
+			true
+		);
 	}
 
 	//-------------------------------------------------------
@@ -259,12 +431,25 @@
 				if (fetchedProblem.defaultCode) defaultCode = fetchedProblem.defaultCode;
 
 				if (fetchedProblem.testCases)
-					testCases = fetchedProblem.testCases.map((tc) => ({
-						input: tc.input,
-						hidden: tc.isHiddenTestcase,
+					problem.testCases = fetchedProblem.testCases.map((tc) => ({
+						...tc,
 						result: { exit_code: null, exit_status: null, output: null, used_time: null },
 					}));
+
+				if (problem.devStatus === "Rejected" && problem.rejectedMessage) {
+					showPopup(
+						`โจทย์นี้ถูกไม่อนุมัติด้วยเหตุผล: ${problem.rejectedMessage}`,
+						{
+							โอเค: () => {},
+						},
+						"medium"
+					);
+				}
 				loaded = true;
+			} else {
+				await showPopup("ไม่พบโจทย์ที่ระบุ", { ตกลง: () => goto("/menu?page=problem") });
+				loaded = false;
+				return;
 			}
 		} else {
 			loaded = true;
@@ -275,6 +460,11 @@
 <div id="problemCreateContainer" bind:this={mainScrollContainer}>
 	<div class="sectionPanel">
 		{#if loaded}
+			{#if problem.id}
+				<div class="devStatus" style="color: {statusStaffColors[problem.devStatus]};">
+					✿ {statusStaffText[problem.devStatus]} ✿
+				</div>
+			{/if}
 			<div class="mainFrame" in:azScale={{ delay: 250 }} out:azScale>
 				<Tab
 					class="problemCodeContainer"
@@ -303,6 +493,7 @@
 							<div class="problemCreateInputContainer">
 								<div class="headText">
 									ชื่อคนทำโจทย์ : {problem.author?.name || $userData?.name}
+									{problem.author?.name == $userData?.name ? "(คุณ)" : ""}
 								</div>
 							</div>
 
@@ -350,21 +541,22 @@
 
 							<div class="radioButtonContainer">
 								<RadioButton
-									selected={problem.headerMode === "disallowed"}
-									on:click={() => (problem.headerMode = "disallowed")}
-									name="headerMode"
+									selected={(() => {
+										console.log(problem.headerMode);
+										return problem.headerMode == "disallowed";
+									})()}
+									onclick={() => (problem.headerMode = "disallowed")}
 									color="var(--status-not-started)"
 								>
 									ไม่อนุญาตให้ใช้
 								</RadioButton>
 
 								<RadioButton
-									selected={problem.headerMode === "allowed"}
-									on:click={() => (problem.headerMode = "allowed")}
-									name="headerMode"
+									selected={problem.headerMode == "allowed"}
+									onclick={() => (problem.headerMode = "allowed")}
 									color="var(--status-done)"
 								>
-									อนุญาตให้ใช้แค่ที่กำหนด
+									จำเป็นต้องใช้
 								</RadioButton>
 							</div>
 
@@ -374,21 +566,19 @@
 
 							<div class="radioButtonContainer">
 								<RadioButton
-									selected={problem.functionMode === "disallowed"}
-									on:click={() => (problem.functionMode = "disallowed")}
-									name="functionMode"
+									selected={problem.functionMode == "disallowed"}
+									onclick={() => (problem.functionMode = "disallowed")}
 									color="var(--status-not-started)"
 								>
 									ไม่อนุญาตให้ใช้
 								</RadioButton>
 
 								<RadioButton
-									selected={problem.functionMode === "allowed"}
-									on:click={() => (problem.functionMode = "allowed")}
-									name="functionMode"
+									selected={problem.functionMode == "allowed"}
+									onclick={() => (problem.functionMode = "allowed")}
 									color="var(--status-done)"
 								>
-									อนุญาตให้ใช้แค่ที่กำหนด
+									จำเป็นต้องใช้
 								</RadioButton>
 							</div>
 
@@ -409,29 +599,77 @@
 						</div>
 					{:else if rightActiveTab === "testcase"}
 						<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-							<TestCaseContainer {testCases} staff={true} />
-							<Button
-								on:click={handleAddTestCaseContainer}
-								class="addTestCaseContainerButtonFullWidth">เพิ่ม Test Case</Button
+							<TestCaseContainer
+								testCases={problem.testCases}
+								editMode={true}
+								runAll={runAllCreateProblem}
+								{removeTestCase}
+							/>
+							<Button onclick={handleAddTestCaseContainer} class="addTestCase"
+								>เพิ่ม Test Case</Button
 							>
 						</div>
 					{/if}
 				</Tab>
 			</div>
 
-			<Frame class="buttonContainer">
-				{#if problem.id}
-					{#if problem.author?.id == $userData.id}
-						<Button>เก็บโจทย์</Button>
-						<Button onclick={onUpdateProblem}>อัพเดทโจทย์</Button>
+			{@const isAuthor = problem.author?.id == $userData?.id}
+
+			{#if loaded}
+				<div class="buttonContainer">
+					{#if problem.id}
+						{#if problem.devStatus === "Need Review" || problem.devStatus === "Published"}
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--status-not-started)"
+								textColor="var(--status-not-started)"
+								outline="var(--status-not-started)"
+								onclick={rejectProblem}>ให้ไปแก้ไข</Button
+							>
+						{/if}
+						{#if isAuthor}
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--grayed)"
+								textColor="var(--grayed)"
+								outline="var(--grayed)"
+								onclick={archiveProblem}>เก็บโจทย์</Button
+							>
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--status-in-progress)"
+								textColor="var(--status-in-progress)"
+								outline="var(--status-in-progress)"
+								onclick={() => onUpdateProblem()}>อัพเดทโจทย์</Button
+							>
+							{#if problem.devStatus !== "Need Review"}
+								<Button
+									color="var(--bg)"
+									hoverColor="var(--used-time)"
+									textColor="var(--used-time)"
+									outline="var(--used-time)"
+									onclick={reviewProblem}
+									title="ส่งให้ Staff ตรวจสอบ">ส่งเพื่อตรวจสอบ</Button
+								>
+							{/if}
+						{/if}
+
+						{#if problem.devStatus === "Need Review"}
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--status-done)"
+								textColor="var(--status-done)"
+								outline="var(--status-done)"
+								onclick={approveProblem}>อนุมัติโจทย์</Button
+							>
+						{/if}
 					{:else}
-						<Button color="var(--status-not-started)">ไม่อนุมัติ</Button>
-						<Button color="var(--status-done)">อนุมัติ</Button>
+						<Frame style="width: 100%;">
+							<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
+						</Frame>
 					{/if}
-				{:else}
-					<Button onclick={onCreateProblem}>สร้างโจทย์</Button>
-				{/if}
-			</Frame>
+				</div>
+			{/if}
 		{:else}
 			<div class="full" in:fade={{ duration: 250, delay: 250 }} out:fade={{ duration: 250 }}>
 				<Loading></Loading>
@@ -441,13 +679,27 @@
 </div>
 
 <style lang="scss">
+	.devStatus {
+		padding: 10px;
+		background: var(--bg);
+		border-radius: var(--n-border-radius);
+		border: 1px solid var(--outline);
+		font-weight: 600;
+		text-align: center;
+		font-size: 1rem;
+	}
 	//-------------------------------------------------------
 	// Detail Pane Styles
 	//-------------------------------------------------------
+	:global(.addTestCase) {
+		position: sticky;
+		bottom: 0;
+	}
+
 	.details {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	.headText {
@@ -458,7 +710,7 @@
 	.problemCreateInputContainer {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--n-gap);
 		white-space: nowrap;
 	}
 
@@ -471,7 +723,7 @@
 	.radioButtonContainer {
 		display: flex;
 		flex-direction: row;
-		gap: 10px;
+		gap: var(--n-gap);
 		flex-wrap: wrap;
 	}
 
@@ -486,6 +738,10 @@
 		color: var(--text-color);
 		font-family: inherit;
 		font-size: 0.9rem;
+		&:disabled {
+			background-color: var(--bg-disabled);
+			cursor: not-allowed;
+		}
 	}
 
 	//-------------------------------------------------------
@@ -496,7 +752,7 @@
 		flex-direction: row;
 		flex-wrap: wrap;
 		padding: 10px;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	//-------------------------------------------------------
@@ -516,7 +772,7 @@
 		height: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	.mainFrame {
@@ -524,7 +780,7 @@
 		flex-direction: row;
 		height: 100%;
 		width: 100%;
-		gap: 10px;
+		gap: var(--n-gap);
 		flex: 1;
 		min-height: 0;
 	}
@@ -536,7 +792,7 @@
 	:global(.buttonContainer) {
 		display: flex;
 		flex-direction: row;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	//-------------------------------------------------------
@@ -564,11 +820,6 @@
 		width: 100%;
 		box-sizing: border-box;
 		resize: vertical;
-
-		&:disabled {
-			background-color: var(--bg-disabled);
-			cursor: not-allowed;
-		}
 	}
 
 	//-------------------------------------------------------

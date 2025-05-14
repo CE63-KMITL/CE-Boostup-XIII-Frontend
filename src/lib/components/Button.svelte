@@ -1,12 +1,10 @@
 <script lang="ts">
 	export let color = "var(--button-bg)";
-	export let textColor = "var(--button-bg-text)";
+	export let textColor = "var(--button-text)";
+	export let outline = "transparent";
+	export let hoverColor = "";
 
-	export let hoverColor = "255, 255, 255, 0.1";
 	export let filter = true;
-
-	if (!$$restProps.style) $$restProps.style = "";
-	$$restProps.style += `--hoverColor: rgba(${hoverColor});`;
 
 	//--------------------------------------------------------
 
@@ -37,9 +35,10 @@
 <button
 	{...$$restProps}
 	class:filter
+	class:hoverColor={hoverColor != ""}
 	bind:this={This_Button}
 	on:click
-	style="--color : {color}; --text-color : {textColor};"
+	style="--color : {color}; --text-color : {textColor}; --outline-color : {outline}; --hover-color : {hoverColor}"
 >
 	<slot></slot>
 </button>
@@ -56,9 +55,14 @@
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s ease;
+		outline: 1px solid var(--outline-color);
 	}
 
 	.filter:hover {
 		filter: brightness(1.15);
+	}
+
+	.hoverColor:hover {
+		background: color-mix(in srgb, var(--hover-color), var(--bg) 70%);
 	}
 </style>

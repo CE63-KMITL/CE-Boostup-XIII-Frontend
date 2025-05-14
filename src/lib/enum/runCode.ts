@@ -13,4 +13,5 @@ export type RunCodeResult = {
 	exit_status?: RunCodeExitStatusEnum;
 	output?: string;
 	used_time?: number;
+	isPass?: boolean;
 };

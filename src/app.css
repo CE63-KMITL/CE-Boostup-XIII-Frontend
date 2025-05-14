@@ -9,6 +9,14 @@ html {
 	margin: 0;
 	width: 100%;
 	height: 100%;
+
+	--n-gap: 10px;
+}
+
+@media (max-width: 800px) or (max-height: 600px) {
+	html {
+		--n-gap: 5px;
+	}
 }
 
 html:not([dark]) {
@@ -22,7 +30,7 @@ html:not([dark]) {
 	--top-bar-right: rgb(63, 46, 62);
 
 	--button-bg: rgb(169, 132, 77);
-	--button-bg-text: var(--bg);
+	--button-text: var(--bg);
 
 	--theme: #a9844d;
 	--theme-dark: rgb(150, 125, 79);
@@ -79,7 +87,7 @@ html[dark] {
 	--top-bar-right: rgb(22, 22, 22);
 
 	--button-bg: rgb(207, 165, 85);
-	--button-bg-text: var(--text);
+	--button-text: var(--text);
 
 	--theme: #caa561;
 	--theme-dark: rgb(150, 125, 79);
@@ -112,7 +120,7 @@ html[dark] {
 	--darker: rgb(22, 22, 22);
 	--darker-50: rgba(22, 22, 22, 0.5);
 	--outline: rgb(125, 125, 125);
-	--button-bg: radial-gradient(at center top, rgb(190, 152, 80), rgba(153, 120, 48, 0.925));
+	--button-bg: radial-gradient(at center top, rgb(134, 109, 62), rgba(121, 87, 43, 0.925));
 	--bg: rgba(0, 0, 0, 0.8);
 	--bg-50: rgba(0, 0, 0, 0.7);
 
@@ -143,10 +151,6 @@ html[dark] {
 
 *::-webkit-scrollbar-thumb:hover {
 	background: var(--text);
-}
-
-html[dark] > body > #bg {
-	opacity: 0.5;
 }
 
 div:not(.view-line) {
@@ -188,14 +192,17 @@ textarea,
 	width: 100%;
 	box-sizing: border-box;
 	padding: 10px;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 textarea {
 	white-space: pre;
 }
 
+input:not([type="checkbox"]):focus,
 textarea:focus {
 	outline: none !important;
+	border: 1px solid var(--theme);
 }
 
 .stroke-icon path,
@@ -250,4 +257,28 @@ svg {
 	100% {
 		opacity: 0;
 	}
+}
+
+@keyframes background-animation {
+	0% {
+		opacity: 0;
+		transform: scale(1.1);
+		filter: blur(10px);
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+html > body > #bg-container > #bg {
+	transition: all 1s;
+	opacity: 0;
+}
+
+html[dark] > body > #bg-container {
+	opacity: 0.5;
+}
+
+html[loaded] > body > #bg-container > #bg {
+	animation: background-animation 1s ease-out forwards;
 }
