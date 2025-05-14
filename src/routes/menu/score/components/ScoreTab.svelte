@@ -95,12 +95,7 @@
 		loadData();
 	});
 
-	//-------------------------------------------------------
-	// Reactive Declarations
-	//-------------------------------------------------------
-	// Reload data when selectedHouseStore changes and the active tab is 'myHouse'
-	$: if (activeTab === 'myHouse' && $selectedHouseStore) {
-		// Reset pagination state before loading new data for the selected house
+	$: if (activeTab === "myHouse" && $selectedHouseStore) {
 		page = 1;
 		maxPage = null;
 		users = [];
