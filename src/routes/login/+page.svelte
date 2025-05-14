@@ -18,6 +18,7 @@
 
 	async function Login() {
 		const res = await api.call("/auth/login", { method: "POST", data: { email, password } });
+		console.log(res.token);
 		if (res.token) {
 			setCookie("token", res.token);
 			goto("/menu");

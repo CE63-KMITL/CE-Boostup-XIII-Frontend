@@ -15,6 +15,8 @@
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
 	import { items, currentPage, updatePage } from "./pageManager";
 	import { afterNavigate } from "$app/navigation";
+	import UserIcon from "$lib/components/UserIcon.svelte";
+	import * as api from "$lib/fetchApi";
 
 	if (IsRole(Role.STAFF)) {
 		$items["create_problem"] = "สร้างโจทย์";
@@ -99,7 +101,7 @@
 					{:else if $userData.icon}
 						<img src={$userData.icon} alt="Icon" class="circular-icon" />
 					{:else}
-						<User></User>
+						<UserIcon data={$userData.icon}/>
 					{/if}
 				</div>
 
@@ -115,7 +117,6 @@
 			</dir>
 		</div>
 	{/if}
-
 	<div id="content">
 		{#if $currentPage == "code"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
@@ -306,6 +307,15 @@
 		#topbar {
 			height: 50px;
 			padding-inline: 5px;
+		}
+
+		#logo-text {
+			display: none;
+		}
+
+		:global(.usericon) {
+			width: 30px;
+			height: 30px;
 		}
 
 		#page-selector-container {
