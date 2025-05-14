@@ -30,7 +30,7 @@
 </div>
 
 {#each dataMyHouse as user, i}
-    <RankOrdering index={i} id={user.id} on:select={handleUserClick}>
+    <RankOrdering index={i} id={user.id} user={user} on:select={handleUserClick}>
         <UserIcon data={user.icon}></UserIcon>
         <div>{user.name}</div>
         <div>{user.studentId}</div>

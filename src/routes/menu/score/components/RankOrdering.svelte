@@ -5,9 +5,11 @@
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 	import { createEventDispatcher } from "svelte";
 
-	let index: number = $$restProps?.index;
+	// let index: number = $$restProps?.index;
+	export let index: number;
+	export let id: string;
 	export let user: any;
-	
+
 	// for sent event back Ja
 	const dispatch = createEventDispatcher();
 
@@ -15,7 +17,7 @@
 	function handleClick() { dispatch("select", {user}); }
 </script>
 
-<List class="listScores {index < 3 ? 'top' : ''}>" {...$$restProps}
+<List class="listScores {index < 3 ? 'top' : ''}>" id={id}
 	onclick={handleClick}>
 	<div class:image={index <= 2}>
 		{#if index == 0}

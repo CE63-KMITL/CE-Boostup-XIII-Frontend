@@ -9,14 +9,10 @@
 	import { Role } from "$lib/enum/role";
 	import { onMount } from "svelte";
 	import Search from "$lib/components/Icons/Search.svelte";
-	import { searchParams } from "./score";
 	import History from "./components/History.svelte";
     import UserIcon from "$lib/components/UserIcon.svelte";
     import ProfileUser from "$lib/components/ProfileUser.svelte";
 	import { selectData } from "./score";
-    import { dev } from "$app/environment";
-    import User from "$lib/components/Icons/User.svelte";
-    import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
