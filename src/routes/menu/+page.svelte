@@ -17,6 +17,7 @@
 	import { afterNavigate } from "$app/navigation";
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import * as api from "$lib/fetchApi";
+	import MenuScore from "./score/MenuScore.svelte";
 
 	if (IsRole(Role.STAFF)) {
 		$items["create_problem"] = "สร้างโจทย์";
@@ -126,7 +127,11 @@
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<ProblemInMenu></ProblemInMenu>
 			</div>
-		{:else if $currentPage == "score"}{:else if $currentPage == "create_problem"}
+		{:else if $currentPage == "score"}
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<MenuScore></MenuScore>
+			</div>
+		{:else if $currentPage == "create_problem"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<MenuCreateProblem></MenuCreateProblem>
 			</div>

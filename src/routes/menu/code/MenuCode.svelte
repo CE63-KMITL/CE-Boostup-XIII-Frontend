@@ -25,7 +25,7 @@
 	//-------------------------------------------------------
 	let codeText = "";
 	let inputText = "";
-	let result = {
+	let result:any = {
 		exit_code: null,
 		exit_status: null,
 		output: null,

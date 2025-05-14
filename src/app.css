@@ -70,7 +70,10 @@ html:not([dark]) {
 	--bg: rgb(255, 255, 255);
 	--bg-50: rgba(255, 255, 255, 0.8);
 
-	--grayed: #808080;
+	--sc-text-tab: rgb(255, 255, 255);
+	--sc-bg: rgb(241, 213, 161);
+	--sc-text: rgb(169, 132, 77);
+	--sc-button: rgb(95, 75, 94);
 }
 
 html[dark] {
@@ -121,7 +124,9 @@ html[dark] {
 	--bg: rgba(0, 0, 0, 0.8);
 	--bg-50: rgba(0, 0, 0, 0.7);
 
-	--grayed: #808080;
+	--sc-bg: rgb(169, 132, 77);
+	--sc-text: rgb(169, 132, 77);
+	--sc-button: rgb(95, 75, 94);
 
 	background: black;
 }
