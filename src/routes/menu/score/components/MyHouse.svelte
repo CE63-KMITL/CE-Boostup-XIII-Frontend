@@ -10,6 +10,11 @@
     let selectedOptionDropdown: string = "Barbarian";
     // let selectedOptionDropdown: string = $userData.house.charAt(0).toUpperCase() + $userData.house.slice(1);
 
+    function handleUserClick(event: CustomEvent<{ user: any }>) {
+        const clickedUser = event.detail.user;
+        console.log(clickedUser);
+    }
+
     onMount(async () => {
         const house = await api.call(`/houseScores?order=ASC`);
         optionDropdown = house.data;
@@ -32,7 +37,7 @@
 </div>
 
 {#each dataMyHouse as user, i}
-    <RankOrdering index={i}>
+    <RankOrdering index={i} user={user} on:select={handleUserClick}>
         <UserIcon data={user.icon}></UserIcon>
         <div>{user.name}</div>
         <div>{user.studentId}</div>

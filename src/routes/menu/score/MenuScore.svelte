@@ -13,6 +13,7 @@
 	import History from "./components/History.svelte";
     import UserIcon from "$lib/components/UserIcon.svelte";
     import ProfileUser from "$lib/components/ProfileUser.svelte";
+	import { currentSelectStudent } from "./score";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -39,10 +40,11 @@
 	function closePopup() { showPopup = false; }
 	function protectClick(event) { event.stopPropagation(); }
 
+	let currentSelectData = $currentSelectStudent;
+
 	function test() {
 		// let datauser = api.call(`/user/data`, { withToken: true });
 		// console.log(datauser);
-		// console.log($userData);
 	}
 
 	onMount(async () => {
@@ -54,6 +56,11 @@
 		}
 	});
 
+	$: if (currentSelectData) {
+		(async() => {
+			console.log(currentSelectData);
+		})();
+	}
 </script>
 
 <!-- 
@@ -81,7 +88,7 @@ HTML Crapp
 						<div id="scl-detail-bottom">{profile.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
+						<Button class="scl-btn" onclick={currentSelectData=$userData, openPopup} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
 			{:else if activeTab == "scEditData"}
@@ -104,9 +111,18 @@ HTML Crapp
 					</Frame>
 					{#if selectedStudent == null && isSearching =="" }
 						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
-							<div class="sc-instead-ntung-top">
-								<ProfileUser user={$userData}></ProfileUser>
-								<div></div>
+							<div class="sc-instead-ntung-top-profile">
+								<div style="padding: 10px 20px;"> 
+									<ProfileUser user={$userData}/> 
+								</div>
+								<div class="sc-instead-ntung-top-detail">
+
+									<!-- <Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
+									<div id="scl-detail-bottom">{profile.score}</div>
+									<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
+									<div id="scl-detail-bottom">{profile.houseScore}</div> -->
+									<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
+								</div>
 							</div>
 							<div class="sc-instead-ntung-middle">
 								<input 
@@ -188,7 +204,7 @@ Popup Score History
 	<div class="backdrop" onclick={closePopup} in:azScale out:azScale>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
-			<div id="popup-middle"><History></History></div>
+			<div id="popup-middle"><History userDataHistory={currentSelectData}></History></div>
 			<div id="popup-bottom"> 
 				<button class="sc-history-btn" onclick={closePopup}>ปิด</button> 
 			</div>
@@ -349,14 +365,19 @@ Style SCSS Na
 		border-radius: 10px;
 		overflow-y: auto;
 
-		.sc-instead-ntung-top {
+		.sc-instead-ntung-top-profile {
+			display: flex;
+			flex-direction: column;
 			border: 1px solid var(--outline);
 			background-color: var(--sc-bg);
 			width: 100%;
 			height: 370px;
 			margin-bottom: 10px;
 			border-radius: 10px;
-			
+
+			.sc-instead-ntung-top-detail {
+
+			}
 		}
 
 		.sc-instead-ntung-middle {

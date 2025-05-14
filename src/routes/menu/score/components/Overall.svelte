@@ -1,6 +1,7 @@
 <script lang="ts">
     import UserIcon from "$lib/components/UserIcon.svelte";
     import RankOrdering from "./RankOrdering.svelte";
+    import { currentSelectStudent } from "../score";
 
     let dataOverall: any = [
     { name: "Veerapat Pirultham", id: "67010852", house: "bard", score: 700 },
@@ -16,10 +17,16 @@
     { name: "Patsorn Chaiyawan", id: "67010856", house: "healer", score: 620 },
     ];
 
+    function handleUserClick(event: CustomEvent<{ user: any }>) {
+        const clickedUser = event.detail.user;
+        $currentSelectStudent = clickedUser;
+        console.log($currentSelectStudent)
+    }
+    
 </script>
 
 {#each dataOverall as user, i}
-    <RankOrdering index={i}>
+    <RankOrdering index={i} user={user} on:select={handleUserClick}>
         <div id="overall-userIcon"> <UserIcon data={user?.icon}/> </div>
     	<div>{user.name}</div>
     	<div>{user.id}</div>

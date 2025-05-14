@@ -7,6 +7,8 @@ export const searchParams = writable<{ page: number}>({
     page: 1
 });
 
+export const currentSelectStudent = writable(null);
+
 export function getStudentURL(id) {
     return `/menu?page=score&studentId=${id}`;
 }
