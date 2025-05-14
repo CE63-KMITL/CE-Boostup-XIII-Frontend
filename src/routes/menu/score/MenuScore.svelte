@@ -124,15 +124,15 @@ HTML Crapp
 						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="sc-instead-ntung-top-profile">
 								<div style="padding: 10px 20px;"> 
+									<!-- อย่าลืมเปลี่ยน $userData เป็น $selectData -->
 									<ProfileUser user={$userData}/> 
 								</div>
 								<div class="sc-instead-ntung-top-detail">
-
-									<!-- <Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
-									<div id="scl-detail-bottom">{profile.score}</div>
-									<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
-									<div id="scl-detail-bottom">{profile.houseScore}</div> -->
-									<Button class="scl-btn" onclick={() => showUserHistory($selectData)} filter={false}>ประวัติคะแนน</Button>
+									<div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
+									<div id="detail-bottom">{profile.score}</div>
+									<div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
+									<div id="detail-bottom">{profile.houseScore}</div>
+									<Button id="detail-btn" onclick={() => showUserHistory($selectData)} filter={false}>ประวัติคะแนน</Button>
 								</div>
 							</div>
 							<div class="sc-instead-ntung-middle">
@@ -154,21 +154,13 @@ HTML Crapp
 								</div>
 							</div>
 						</div>
-					{:else if currentSelectData == null && isSearching == "" }
+					{:else if currentSelectData == null && isSearching == ""}
 						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="dragon-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
 							<span id="dragontext">CE BOOSTUP</span>
 						</div>
-
-					<!-- 
-					-------------------------------------------------------
-					Below Search in EditScore Tab
-					-------------------------------------------------------
-					-->
-
-						
 					{/if}
 				</div>
 			{/if}
@@ -269,6 +261,7 @@ Style SCSS Na
 			width: 90%;
 			height: 70%;
 			padding: 5%;
+			margin-top: 25%;
 		}
 
 		:global(#scl-main) {
@@ -377,12 +370,39 @@ Style SCSS Na
 			border: 1px solid var(--outline);
 			background-color: var(--sc-bg);
 			width: 100%;
-			height: 370px;
+			height: auto;
+			padding-bottom: 20px;
 			margin-bottom: 10px;
 			border-radius: 10px;
 
 			.sc-instead-ntung-top-detail {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				padding: 0 50px;
 
+				#detail-top {
+					background-color: var(--sc-orangelight);
+					border: 1px solid var(--outline);
+					border-radius: 10px 10px 0 0;
+					text-align: center;
+					padding: 1.5%;
+					width: 100%;
+				}
+
+				#detail-bottom {
+					background-color: var(--bg);
+					border: 1px solid var(--outline);
+					border-radius: 0px 0px 10px 10px;
+					text-align: center;
+					margin-bottom: 15px;
+					padding: 1.5%;
+					width: 100%;
+				}
+
+				:global(#detail-btn) {
+					margin-top: 20px;
+				}
 			}
 		}
 
