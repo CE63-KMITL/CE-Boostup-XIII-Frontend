@@ -12,6 +12,7 @@
     import { searchParams } from "./score";
 	import History from "./components/History.svelte";
     import UserIcon from "$lib/components/UserIcon.svelte";
+    import ProfileUser from "$lib/components/ProfileUser.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -29,6 +30,7 @@
 	let isSearching = "";
 	let selectedStudent = null;
 
+	let editMessage: string;
 	let editScore: number;
 
 	// Pop-up Score History
@@ -90,7 +92,8 @@ HTML Crapp
 							id="search"
 							placeholder="ชื่อ / รหัสนักศึกษา"
 							oninput={(e: any) => {
-								$searchParams["search"] = e.target.value;
+								// $searchParams["search"] = e.target.value;
+								// $searchParams["page"] = e.target.value;
 							}}
 							bind:value={isSearching}
 							style="
@@ -100,13 +103,37 @@ HTML Crapp
 						/>
 					</Frame>
 					{#if selectedStudent == null && isSearching =="" }
-						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+							<div class="sc-instead-ntung-top">
+								<ProfileUser user={$userData}></ProfileUser>
+								<div></div>
+							</div>
+							<div class="sc-instead-ntung-middle">
+								<input 
+									id="inputMessage" 
+									placeholder="หมายเหตุ* (ใส่เหตุผลในการแก้ไขคะแนนด้วยน้า ( •̀ ω •́ )✧)" 
+									type="string" 
+									bind:value={editMessage}/>
+							</div>
+							<div class="sc-instead-ntung-bottom">
+								<input 
+									id="inputScore" 
+									placeholder="คะแนน" 
+									type="number" 
+									bind:value={editScore} />
+								<div id="editScore-btn">
+									<Button class="plusScore-btn" color="var(--sc-plus)">บวกคะแนน</Button>
+									<Button class="minusScore-btn" color="var(--sc-minus)">ลบคะแนน</Button>
+								</div>
+							</div>
+						</div>
+						<!-- <div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="dragon-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
 							<span id="dragontext">CE BOOSTUP</span>
-						</div>
-					{:else}
+						</div> -->
+					<!-- {:else} -->
 
 					<!-- 
 					-------------------------------------------------------
@@ -114,18 +141,7 @@ HTML Crapp
 					-------------------------------------------------------
 					-->
 
-						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
-							<div class="sc-instead-ntung-top">
-
-							</div>
-							<div class="sc-instead-ntung-bottom">
-								<input id="inputScore" placeholder="คะแนน" bind:value={editScore} />
-								<div id="editScore-btn">
-									<Button class="plusScore-btn">บวกคะแนน</Button>
-									<Button class="minusScore-btn">ลบคะแนน</Button>
-								</div>
-							</div>
-						</div>
+						
 					{/if}
 				</div>
 			{/if}
@@ -332,16 +348,22 @@ Style SCSS Na
 		margin: 10px 0;
 		border-radius: 10px;
 		overflow-y: auto;
-		// padding-right: 1%;
 
 		.sc-instead-ntung-top {
 			border: 1px solid var(--outline);
 			background-color: var(--sc-bg);
 			width: 100%;
-			height: 70%;
-			margin-bottom: 15px;
+			height: 370px;
+			margin-bottom: 10px;
 			border-radius: 10px;
 			
+		}
+
+		.sc-instead-ntung-middle {
+			width: 100%;
+			height: auto;
+			margin-bottom: 10px;
+
 		}
 
 		.sc-instead-ntung-bottom {
@@ -352,21 +374,27 @@ Style SCSS Na
 			justify-content: center;
 			align-items: center;
 			width: 100%;
-			height: 25%;
+			height: auto;
+			padding: 20px 0;
 			border-radius: 10px;
 			
 			#inputScore {
-				display: flex;
-				align-items: center;
-				border: 1px; 
+				text-align: center;
 				background-color: transparent;
 				margin-bottom: 10px;
-			}
+				width: 55%;
 
+			}
+			
 			#editScore-btn {
 				display: flex;
-				justify-content: space-between;
-				width: 70%;
+				flex-direction: row;
+				gap: 30px;
+				width: 80%;
+
+				:global(.plusScore-btn) { padding: 10px 20px; }
+				:global(.minusScore-btn) { padding: 10px 20px; }
+
 			}
 		}
 

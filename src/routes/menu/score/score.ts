@@ -3,8 +3,7 @@ import { writable } from "svelte/store";
 import { updatePage } from "../pageManager";
 
 export const selectedIDStudent = writable<string | null>(null);
-export const searchParams = writable<{ search: string;  page: number}>({
-    search: "",
+export const searchParams = writable<{ page: number}>({
     page: 1
 });
 
