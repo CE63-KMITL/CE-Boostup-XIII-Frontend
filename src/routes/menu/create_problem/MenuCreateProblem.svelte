@@ -46,6 +46,19 @@
 			icon: null,
 			name: null,
 		},
+		testCases: [
+			{
+				input: "",
+				isHiddenTestcase: false,
+				expectOutput: "",
+				result: {
+					exit_code: null,
+					exit_status: null,
+					output: null,
+					used_time: null,
+				},
+			},
+		],
 	};
 
 	function getProblemData() {
@@ -67,7 +80,7 @@
 			solutionCode,
 			difficulty: problem.difficulty,
 			tags: problem.tags,
-			testCases: problemTestCases.map((testCase) => {
+			testCases: problem.testCases.map((testCase) => {
 				return {
 					input: testCase.input,
 					isHiddenTestcase: testCase.isHiddenTestcase,
@@ -81,22 +94,6 @@
 	//-------------------------------------------------------
 	let solutionCode: string = "";
 	let defaultCode: string = "";
-
-	//-------------------------------------------------------
-	// Test Case State
-	//-------------------------------------------------------
-	let problemTestCases = [
-		{
-			input: "",
-			isHiddenTestcase: false,
-			result: {
-				exit_code: null,
-				exit_status: null,
-				output: null,
-				used_time: null,
-			},
-		},
-	];
 
 	//-------------------------------------------------------
 	// Input/Output State
@@ -122,11 +119,12 @@
 	// Test Case State Handlers
 	//-------------------------------------------------------
 	function handleAddTestCaseContainer(e) {
-		problemTestCases = [
-			...problemTestCases,
+		problem.testCases = [
+			...problem.testCases,
 			{
 				input: "",
 				isHiddenTestcase: false,
+				expectOutput: "",
 				result: {
 					exit_code: null,
 					exit_status: null,
@@ -143,8 +141,8 @@
 	}
 
 	function removeTestCase(index) {
-		problemTestCases.splice(index, 1);
-		problemTestCases = [...problemTestCases];
+		problem.testCases.splice(index, 1);
+		problem.testCases = [...problem.testCases];
 	}
 
 	//-------------------------------------------------------
@@ -178,19 +176,19 @@
 	async function runAllCreateProblem() {
 		const problemData = getProblemData();
 
-		problemTestCases.forEach((val, i) => {
+		problem.testCases.forEach((val, i) => {
 			val.result.output = "";
 			val.result.exit_status = "RUNNING";
 			val.result.exit_code = null;
 			val.result.used_time = null;
 		});
 
-		problemTestCases = [...problemTestCases];
+		problem.testCases = [...problem.testCases];
 
 		const res = await api.call("/run-code/test-cases", {
 			withToken: true,
 			data: {
-				inputs: problemTestCases.map((val) => val.input),
+				inputs: problem.testCases.map((val) => val.input),
 				timeout: problem.timeLimit || 1000,
 				code: solutionCode,
 				functionMode: problemData.functionMode,
@@ -201,14 +199,14 @@
 			method: "POST",
 		});
 
-		problemTestCases.forEach((val, i) => {
+		problem.testCases.forEach((val, i) => {
 			val.result.output = res[i].output;
 			val.result.exit_status = res[i].exit_status;
 			val.result.exit_code = res[i].exit_code;
 			val.result.used_time = res[i].used_time;
 		});
 
-		problemTestCases = [...problemTestCases];
+		problem.testCases = [...problem.testCases];
 	}
 
 	async function onCreateProblem() {
@@ -433,9 +431,8 @@
 				if (fetchedProblem.defaultCode) defaultCode = fetchedProblem.defaultCode;
 
 				if (fetchedProblem.testCases)
-					problemTestCases = fetchedProblem.testCases.map((tc) => ({
-						input: tc.input,
-						isHiddenTestcase: tc.isHiddenTestcase,
+					problem.testCases = fetchedProblem.testCases.map((tc) => ({
+						...tc,
 						result: { exit_code: null, exit_status: null, output: null, used_time: null },
 					}));
 
@@ -603,7 +600,7 @@
 					{:else if rightActiveTab === "testcase"}
 						<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
 							<TestCaseContainer
-								testCases={problemTestCases}
+								testCases={problem.testCases}
 								staff={true}
 								runAll={runAllCreateProblem}
 								{removeTestCase}

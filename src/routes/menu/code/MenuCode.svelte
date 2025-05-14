@@ -39,26 +39,6 @@
 	let problem: { [key: string]: any } = {};
 
 	//-------------------------------------------------------
-	// Test Case State (Static or Placeholder)
-	//-------------------------------------------------------
-	const testCases = [
-		{
-			input: "",
-			hidden: false,
-			result: {
-				exit_code: null,
-			},
-		},
-		{
-			input: "",
-			hidden: true,
-			result: {
-				exit_code: null,
-			},
-		},
-	];
-
-	//-------------------------------------------------------
 	// Code Persistence Functions
 	//-------------------------------------------------------
 	async function loadCode() {
@@ -106,6 +86,7 @@
 				method: "POST",
 				data: {
 					input: inputText,
+					code: codeText,
 				},
 				withToken: true,
 			});
@@ -118,6 +99,31 @@
 				},
 				withToken: true,
 			});
+		}
+	}
+
+	async function onSubmission() {
+		for (let i = 0; i < problem.testCases.length; i++) {
+			problem.testCases[i].result = {
+				exit_code: null,
+				exit_status: "RUNNING",
+				output: null,
+				used_time: null,
+			};
+		}
+
+		const result = await api.call(`/problem/submission/${problem.id}`, {
+			method: "POST",
+			data: {
+				code: codeText,
+			},
+			withToken: true,
+		});
+
+		if (result) {
+			for (let i = 0; i < problem.testCases.length; i++) {
+				problem.testCases[i].result = result[i];
+			}
 		}
 	}
 
@@ -136,7 +142,7 @@
 			currentProblemId = problemIdFromUrl;
 			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "ส่ง" };
 			activeTab = "details";
-			problem = await api.call(`/problem/${currentProblemId}`, { withToken: true });
+			problem = await api.call(`/problem/code/${currentProblemId}`, { withToken: true });
 			console.log(problem);
 		}
 		codeText = await loadCode();
@@ -161,7 +167,7 @@
 					</div>
 				{:else if activeTab === "testcase"}
 					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer staff={false} testCases={problem.testCases} />
+						<TestCaseContainer runAll={onSubmission} editMode={false} testCases={problem.testCases} />
 					</div>
 				{/if}
 			</Tab>

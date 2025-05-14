@@ -31,10 +31,8 @@
 	.status-container {
 		display: flex;
 		gap: var(--n-gap);
+          flex-wrap: wrap;
 
-		div {
-			font-size: 1rem;
-		}
 	}
 
 	.used-time,

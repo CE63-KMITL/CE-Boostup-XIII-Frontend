@@ -256,7 +256,7 @@
 								? "var(--status-done)"
 								: button.cancel
 									? "var(--status-not-started)"
-									: ""}
+									: "transparent"}
 							hoverColor={button.primary
 								? "var(--status-done)"
 								: button.cancel
