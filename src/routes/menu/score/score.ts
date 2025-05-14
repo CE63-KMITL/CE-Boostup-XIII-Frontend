@@ -18,3 +18,8 @@ export function goToStudentURL(id) {
     pushState(scurl, null);
     updatePage("score");
 }
+
+//-------------------------------------------------------
+// House Store
+//-------------------------------------------------------
+export const selectedHouseStore = writable<string>('Barbarian');
