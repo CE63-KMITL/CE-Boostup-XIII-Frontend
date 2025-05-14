@@ -5,8 +5,6 @@
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 	import { createEventDispatcher } from "svelte";
 
-	// let { index }: { index: number } = $props();
-
 	export let index: number;
 	export let user: any;
 

@@ -16,6 +16,7 @@
 	import { selectData } from "./score";
     import { dev } from "$app/environment";
     import User from "$lib/components/Icons/User.svelte";
+    import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -52,6 +53,11 @@
 
 	function protectClick(event) { event.stopPropagation(); }
 
+
+	// Plus & Substract 
+	function callEditScore(setUserId: string, setAmount: number, setMessage: string) {
+
+	}
 
 	function test() {
 		// let datauser = api.call(`/user/data`, { withToken: true });
@@ -125,11 +131,11 @@ HTML Crapp
 							<div class="sc-instead-ntung-top-profile">
 								<div style="padding: 10px 20px;"> 
 									<!-- อย่าลืมเปลี่ยน $userData เป็น $selectData -->
-									<ProfileUser user={$userData}/> 
+									<ProfileUser user={$selectData}/> 
 								</div>
 								<div class="sc-instead-ntung-top-detail">
 									<div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
-									<div id="detail-bottom">{profile.score}</div>
+									<div id="detail-bottom">{$selectData.score}</div>
 									<div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
 									<div id="detail-bottom">{profile.houseScore}</div>
 									<Button id="detail-btn" onclick={() => showUserHistory($selectData)} filter={false}>ประวัติคะแนน</Button>

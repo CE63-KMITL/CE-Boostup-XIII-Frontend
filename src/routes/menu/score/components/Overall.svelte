@@ -20,7 +20,6 @@
     function handleUserClick(event: CustomEvent<{ user: any }>) {
         const clickedUser = event.detail.user;
         $selectData = clickedUser;
-        // console.log($selectData)
     }
     
 </script>
