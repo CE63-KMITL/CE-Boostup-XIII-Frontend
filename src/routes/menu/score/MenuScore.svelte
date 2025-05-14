@@ -5,14 +5,12 @@
 	import Tab from "$lib/components/Tab.svelte";
 	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
-	import { IsRole } from "$lib/auth.local";
-	import { Role } from "$lib/enum/role";
-	import { onDestroy, onMount } from "svelte";
-	import Search from "$lib/components/Icons/Search.svelte";
-	import { searchParams, selectedIDStudent } from "./score";
-	import { sleep } from "$lib/normalFunction";
-	import type { Unsubscriber } from "svelte/store";
-	import { type Student } from "$lib/constants/student";
+    import { IsRole, userData } from "$lib/auth.local";
+    import { Role } from "$lib/enum/role";
+    import { onMount } from "svelte";
+    import Search from "$lib/components/Icons/Search.svelte";
+    import { searchParams } from "./score";
+	import History from "./components/History.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -26,190 +24,32 @@
 
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
-
+	
 	let isSearching = "";
 	let selectedStudent = null;
-	let allStudents: (Student | string)[] = [];
 
-	// let studentSelectorElement;
-	// let studentDetailsElement;
+	let editScore: number;
 
-	let maxPageSC;
-	let oldQuerySC = "";
-	let needLoad = false;
-	let isloaded = false;
+	// Pop-up Score History
+	let showPopup = false;
+	function openPopup() { showPopup = true; }
+	function closePopup() { showPopup = false; }
+	function protectClick(event) { event.stopPropagation(); }
 
-	/*
-    -------------------------------------------------------
-    Score History
-    -------------------------------------------------------
-    */
-
-	let showHistory = false;
-	function openHistory() {
-		showHistory = true;
-	}
-	function closeHistory() {
-		showHistory = false;
-	}
-	function protectClick(event) {
-		event.stopPropagation();
-	}
-
-	/*
-    -------------------------------------------------------
-    Help Functions
-    -------------------------------------------------------
-    */
-
-	async function getQuerySC() {
-		const searchQuerySC = { search: $searchParams["search"] };
-
-		const querySC = Object.entries(searchQuerySC)
-			.filter(([_, value]) => value !== null && value !== "" && (!Array.isArray(value) || value.length > 0))
-			.map(([key, value]) => {
-				if (Array.isArray(value)) {
-					let stringSC = "";
-					value.forEach((elementSC) => {
-						stringSC += `&${key}=${elementSC}`;
-					});
-					return stringSC;
-				}
-				return `${key}=${value}`;
-			})
-			.join("&");
-		return querySC;
-	}
-
-	/*
-    -------------------------------------------------------
-    Animation Functions Coolๆ
-    -------------------------------------------------------
-    */
-
-	async function runProblemListAnimation(dataIds: string[]) {
-		for (let i = 0; i < dataIds.length; i++) {
-			const dataId = dataIds[i];
-			const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
-
-			if (element) {
-				element.style.animation = `slide-in 0.2s ease-out forwards`;
-				await sleep(70);
-			}
-		}
-	}
-
-	/*
-    -------------------------------------------------------
-    Data Functions
-    -------------------------------------------------------
-    */
-
-	async function updateStudents(isLoadMoreSC = false) {
-		const querySC = await getQuerySC();
-		if (querySC === oldQuerySC && (!isLoadMoreSC || maxPageSC <= $searchParams.page)) return;
-		oldQuerySC = querySC;
-
-		if (isLoadMoreSC) {
-			searchParams.update((params) => ({
-				...params,
-				page: params.page + 1
-			}));
-			// $searchParams.page++;
-			allStudents = [...allStudents, "loading"];
-		} else {
-			$selectedIDStudent = null;
-			$searchParams.page = 1;
-			isloaded = false;
-			allStudents = [];
-		}
-
-		const getAllStudents = await api.call(
-			`/user/search?${querySC}$page=${Number($searchParams.page)}`,
-			{ withToken: true }
-		);
-
-		console.log(getAllStudents);
-
-		if (getAllStudents && getAllStudents.data.length > 0 ) {
-			if (isLoadMoreSC) {
-				allStudents = [...allStudents.slice(0, -1), ...getAllStudents.data];
-			} else {
-				allStudents = getAllStudents.data;
-				maxPageSC = getAllStudents.totalPage;
-				isloaded = true;
-			}
-
-			requestAnimationFrame(() => {
-				runProblemListAnimation(getAllStudents.data.map((item) => item.id));
-			});
-
-		} else {
-			if (isLoadMoreSC) {
-				allStudents = allStudents.slice(0, -1);
-				$searchParams.page--;
-			} else {
-				maxPageSC = null;
-				allStudents = [];
-				isloaded = true;
-			}
-		}
-	}
-
-	async function loadMoreSC() {
-		if (needLoad) return;
-		console.log("need load na");
-		needLoad = true;
-		await updateStudents(true);
-		needLoad = false;
-	}
-
-	async function updateStudentsDetail() {
-		if(!$selectedIDStudent) return;
-	}
-
-	/*
-    -------------------------------------------------------
-    Cycle Na Won Won Pai
-    -------------------------------------------------------
-    */
-
-	// let subscribeSelectedIDStudent: Unsubscriber;
-	// let subscribeSearchParams: Unsubscriber;
+	// function test() {
+	// 	let datauser = api.call(`/user/data`, { withToken: true });
+	// 	console.log(datauser);
+	// }
 
 	onMount(async () => {
-		// studentSelectorElement = document.querySelector("#")
-		// studentDetailsElement;
-
-		// await updateStudents();
-
-		// subscribeSearchParams = searchParams.subscribe(() => {
-		// 	updateStudents();
-		// });
-		// subscribeSelectedIDStudent = selectedIDStudent.subscribe(async () => {
-		// 	selectedStudent = null;
-
-		// 	const studentData =
-		// 		allStudents.find((student) => typeof student === "object" && student.id === $selectedIDStudent) || selectedStudent;
-
-		// 	if (studentData) {
-		// 		studentData.detail = await api.call(`/user/${studentData.id}`, {
-		// 			withToken: true
-		// 		});
-		// 	}
-		// 	selectedStudent = studentData;
-		// });
+		// test();
 
 		if (IsRole(Role.STAFF)) {
-			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
+			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
 			activeTab = "scEditData";
 		}
 	});
 
-	// onDestroy(() => {
-	// 	if (subscribeSearchParams) subscribeSearchParams();
-	// 	if (subscribeSelectedIDStudent) subscribeSelectedIDStudent();
-	// });
 </script>
 
 <!-- 
@@ -230,29 +70,20 @@ HTML Crapp
 					<div id="scl-main">
 						<div class="scl-top">
 							<span>{profile.name}</span>
-							<span style="color: var(--sc-text)">{profile.studentId} </span>
+							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
 						</div>
 						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
 						<div id="scl-detail-bottom">{profile.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" filter={false}>ประวัติคะแนน</Button>
-						<!-- onclick={openHistory} -->
-						<!-- {#if showHistory}
-							<div class="backdrop" onclick={closeHistory}>
-								<div id="popup" onclick={protectClick}>
-									<div>Hello, World</div>
-									<Button onclick={closeHistory}>Close Ja</Button>
-								</div>
-							</div>
-						{/if} -->
+						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
 						<Search></Search>
-						<input
+						<input 
 							id="search"
 							placeholder="ชื่อ / รหัสนักศึกษา"
 							oninput={(e: any) => {
@@ -260,22 +91,37 @@ HTML Crapp
 							}}
 							bind:value={isSearching}
 							style="
-								border: 0; 
-								background-color: transparent;
-								padding: 5px;
-								"
+							border: 0px;
+							background-color: transparent;
+							"
 						/>
 					</Frame>
-					{#if selectedStudent == null && isSearching == ""}
-						<div
-							id="sc-below-search"
-							in:azScale={{ size: 0.99, delay: 250 }}
-							out:azScale={{ size: 0.99, duration: 100 }}
-						>
+					{#if selectedStudent == null && isSearching =="" }
+						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="scl-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
 							<span id="dragontext">CE BOOSTUP</span>
+						</div>
+					{:else}
+
+					<!-- 
+					-------------------------------------------------------
+					Below Search in EditScore Tab
+					-------------------------------------------------------
+					-->
+
+						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+							<div class="sc-instead-ntung-top">
+
+							</div>
+							<div class="sc-instead-ntung-bottom">
+								<input id="inputScore" placeholder="คะแนน" bind:value={editScore} />
+								<div id="editScore-btn">
+									<Button class="plusScore-btn">บวกคะแนน</Button>
+									<Button class="minusScore-btn">ลบคะแนน</Button>
+								</div>
+							</div>
 						</div>
 					{/if}
 				</div>
@@ -291,22 +137,13 @@ HTML Crapp
 					<div id="scl-main">
 						<div class="scl-top">
 							<span>{profile.name}</span>
-							<span style="color: var(--sc-text)">{profile.studentId} </span>
+							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
 						</div>
 						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
 						<div id="scl-detail-bottom">{profile.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" filter={false}>ประวัติคะแนน</Button>
-						<!-- onclick={openHistory} -->
-						<!-- {#if showHistory}
-							<div class="backdrop" onclick={closeHistory}>
-								<div id="popup" onclick={protectClick}>
-									<div>Hello, World</div>
-									<Button onclick={closeHistory}>Close Ja</Button>
-								</div>
-							</div>
-						{/if} -->
+						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
@@ -314,22 +151,30 @@ HTML Crapp
 			{/if}
 		</Tab>
 	{/if}
-
+	
 	<!-- SC-Right Side -->
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
 	</Frame>
 </div>
 
-<!-- {#if showHistory}
-	<div class="backdrop" onclick={closeHistory}>
-		<div id="popup" onclick={protectClick}>
-			<h2>Popup</h2>
-			<p>Detail kub</p>
-			<Button onclick={closeHistory}>Close Ja</Button>
+<!-- 
+-------------------------------------------------------
+Popup Score History
+-------------------------------------------------------
+-->
+
+{#if showPopup}
+	<div class="backdrop" onclick={closePopup} in:azScale out:azScale>
+		<div id="popup" onclick={protectClick} in:azScale out:azScale>
+			<div id="popup-top">ประวัติคะแนน</div>
+			<div id="popup-middle"><History></History></div>
+			<div id="popup-bottom"> 
+				<button class="sc-history-btn" onclick={closePopup}>ปิด</button> 
+			</div>
 		</div>
 	</div>
-{/if} -->
+{/if}
 
 <!-- 
 -------------------------------------------------------
@@ -399,7 +244,7 @@ Style SCSS Na
 			}
 
 			:global(#scl-detail-top) {
-				background-color: var(--sc-bg);
+				background-color: var(--sc-orangelight);
 				border: 1px solid var(--outline);
 				border-radius: 10px 10px 0 0;
 				margin: 3% 20px 0px 20px;
@@ -425,7 +270,7 @@ Style SCSS Na
 			}
 
 			:global(Button.scl-btn) {
-				background-color: var(--sc-bg);
+				background-color: var(--sc-orangelight);
 				border: 1px solid var(--outline);
 				font-size: 14px;
 				padding: 2%;
@@ -435,6 +280,7 @@ Style SCSS Na
 				color: var(--text);
 			}
 		}
+		
 	}
 	:global(#scoreTab-editscore) {
 		padding: 1% 20px;
@@ -446,7 +292,7 @@ Style SCSS Na
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			padding: 0%;
+			padding: 0px;
 			padding-inline: 10px;
 			width: 100%;
 			border-radius: 25px;
@@ -455,7 +301,6 @@ Style SCSS Na
 		:global(#sc-below-search) {
 			width: 55%;
 			height: 100%;
-			// padding: 10% 10%;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
@@ -463,10 +308,122 @@ Style SCSS Na
 		}
 
 		span#dragontext {
-			filter: drop-shadow(0 2px 3px var(--list-shadow));
-			font-size: 16px;
+			filter: drop-shadow( 0 2px 3px var(--list-shadow));
+			font-size: 20px;
 		}
 	}
+
+
+// -------------------------------------------------------
+// 	Score History Pop-up
+// -------------------------------------------------------
+
+	.sc-instead-ntung {
+		width: 100%;
+		height: 100%;
+		margin: 10px 0;
+		border-radius: 10px;
+		overflow-y: auto;
+		// padding-right: 1%;
+
+		.sc-instead-ntung-top {
+			border: 1px solid var(--outline);
+			background-color: var(--sc-bg);
+			width: 100%;
+			height: 70%;
+			margin-bottom: 15px;
+			border-radius: 10px;
+			
+		}
+
+		.sc-instead-ntung-bottom {
+			border: 1px solid var(--outline);
+			background-color: var(--sc-bg);
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 25%;
+			border-radius: 10px;
+			
+			#inputScore {
+				display: flex;
+				align-items: center;
+				border: 1px; 
+				background-color: transparent;
+				margin-bottom: 10px;
+			}
+
+			#editScore-btn {
+				display: flex;
+				justify-content: space-between;
+				width: 70%;
+			}
+		}
+
+	}
+
+
+// -------------------------------------------------------
+// 	Score History Pop-up
+// -------------------------------------------------------
+
+	.backdrop {
+		position: fixed;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		inset: 0;
+		background-color: var(--sc-shadow);
+	}
+
+	#popup {
+		display: flex;
+		flex-direction: column;
+		background-color: var(--sc-bg);
+		box-shadow: 0 0 20px var(--list-shadow);
+		padding: 15px;
+		border-radius: 20px;
+		width: 90%;
+		height: 75%;
+		max-width: 500px;
+
+		#popup-middle {
+			display: flex;
+			flex-direction: column;
+			margin-top: 10px;
+			padding: 1%;
+			overflow-y: auto;
+		}
+
+		#popup-bottom {
+			text-align: center;
+			margin-top: 15px;
+
+			.sc-history-btn {
+				background-color: var(--sc-orangelight);
+				color: var(--text);
+				width: 50%;
+				padding: 10px;
+				border-radius: 10px;
+				font-size: 1rem;
+				font-weight: 500;
+				transition: background-color 0.3s ease;
+			}
+
+			.sc-history-btn:hover {
+				background-color: var(--sc-orangedark);
+			}
+		}
+	}
+
+	
+
+// -------------------------------------------------------
+// 	Mobile phone Mode
+// -------------------------------------------------------
+
 
 	@media (max-width: 920px) {
 		#Score {
@@ -486,6 +443,13 @@ Style SCSS Na
 		:global(#scoreTab) {
 			flex-direction: row;
 			align-items: start;
+
+			div.scl-image {
+				height: auto;
+				width: 90%;
+				padding: 0px;
+				margin-top: 0px;
+			}
 		}
 
 		:global(#scoreTab-editscore) {
@@ -500,6 +464,10 @@ Style SCSS Na
 			.scl-image {
 				width: 80%;
 			}
+		}
+
+		#popup {
+			max-width: 500px;
 		}
 	}
 </style>

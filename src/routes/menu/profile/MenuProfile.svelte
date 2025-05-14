@@ -229,15 +229,6 @@
 		display: flex;
 	}
 
-	:global(.usericon) {
-		width: 50px;
-		height: 50px;
-		border: 1px solid #ddd;
-		border-radius: 50%;
-		margin-top: 3vh;
-		margin-left: 2vw;
-	}
-
 	.bio_info .name_id {
 		font-size: 1.1vw;
 		margin-top: 4vh;
@@ -342,12 +333,6 @@
 			align-items: center;
 		}
 
-		:global(.usericon) {
-			width: 150px;
-			height: 150px;
-			margin: 2vh auto;
-		}
-
 		.bio_info .name_id {
 			font-size: 4vw;
 			margin: 1vh auto;
@@ -366,12 +351,6 @@
 			width: 60vw;
 			height: 45vh;
 			margin: 3vh auto;
-		}
-
-		:global(.usericon) {
-			width: 100px;
-			height: 100px;
-			margin: 2vh auto;
 		}
 	}
 </style>

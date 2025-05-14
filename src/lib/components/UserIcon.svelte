@@ -1,15 +1,15 @@
 <script>
-    export let data;
+	export let data;
 </script>
 
 <img src={data} alt="icon" class="usericon" />
 
 <style lang="scss">
-	:global(.usericon) {
-		width: 50px;
-		height: 50px;
+	.usericon {
+		width: 100%;
+		height: 100%;
 		border: 1px solid #ddd;
 		border-radius: 50%;
-		margin-left:50px;
+		margin-left: 50px;
 	}
 </style>

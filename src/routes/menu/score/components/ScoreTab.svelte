@@ -65,7 +65,7 @@
 	}
 
 	.tab-header.active {
-		background-color: var(--sc-button);
+		background-color: var(--sc-tab);
 		color: var(--sc-text-tab);
 	}
 	.scroll{

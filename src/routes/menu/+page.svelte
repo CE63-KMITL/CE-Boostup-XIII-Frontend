@@ -327,11 +327,6 @@
 			display: none;
 		}
 
-		:global(.usericon) {
-			width: 30px;
-			height: 30px;
-		}
-
 		#page-selector-container {
 			.page-selector {
 				font-size: 0.8rem;
