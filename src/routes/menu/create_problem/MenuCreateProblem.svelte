@@ -601,7 +601,7 @@
 						<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
 							<TestCaseContainer
 								testCases={problem.testCases}
-								staff={true}
+								editMode={true}
 								runAll={runAllCreateProblem}
 								{removeTestCase}
 							/>

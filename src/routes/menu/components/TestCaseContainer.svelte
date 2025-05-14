@@ -24,22 +24,24 @@
 			out:fly={{ x: 200, duration: 300 }}
 			class="testcase-item"
 		>
-			<div class="testcase-status-container">
-				<div
-					class:show={testCase?.result?.isPass == true}
-					class="testcase-status"
-					style="--color: var(--status-done)"
-				>
-					ผ่านแล้ว ( •̀ ω •́ )✧
+			{#if !editMode}
+				<div class="testcase-status-container">
+					<div
+						class:show={testCase?.result?.isPass == true}
+						class="testcase-status"
+						style="--color: var(--status-done)"
+					>
+						ผ่านแล้ว ( •̀ ω •́ )✧
+					</div>
+					<div
+						class:show={testCase?.result?.isPass != true}
+						class="testcase-status"
+						style="--color: var(--status-not-started)"
+					>
+						ยังไม่ผ่าน (ಥ_ಥ)
+					</div>
 				</div>
-				<div
-					class:show={testCase?.result?.isPass != true}
-					class="testcase-status"
-					style="--color: var(--status-not-started)"
-				>
-					ยังไม่ผ่าน (ಥ_ಥ)
-				</div>
-			</div>
+			{/if}
 
 			<!-- {/if} -->
 
@@ -58,6 +60,7 @@
 					Hidden testcase
 				</Checkbox>
 			{/if}
+
 			{#if !testCase.isHiddenTestcase || editMode}
 				<div class="testcase-details" class:isHiddenTestcase={testCase.isHiddenTestcase}>
 					<div class="testcase-input">Input</div>
