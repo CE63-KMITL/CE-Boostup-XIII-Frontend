@@ -2,11 +2,15 @@
 	import { goto } from "$app/navigation";
 	import { setCookie } from "$lib/cookie";
 	import * as api from "$lib/fetchApi";
-	import { onMount } from "svelte";
 	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 	import "../../app.css";
-	import Button from "../../components/Button.svelte";
+	import Button from "../../lib/components/Button.svelte";
+	import { showPopup } from "../../lib/components/PopUp.svelte";
+	import { onMount } from "svelte";
+	import { fade, fly } from "svelte/transition";
+	import { azScale } from "$lib/transition";
+	import { flip } from "svelte/animate";
 
 	let email: string = "";
 	let password: string = "";
@@ -19,48 +23,56 @@
 			setCookie("token", res.token);
 			goto("/menu");
 		} else {
-			alert(`Login failed\n\n${JSON.stringify(res.message)}`);
+			showPopup(`ไม่สามารถเข้าสู่ระบบได้\n\n${JSON.stringify(res.message)}`);
+			const massage = await showPopup(res.message);
 		}
 	}
+
+	let loaded = false;
+	onMount(() => {
+		loaded = true;
+	});
 </script>
 
 <div class="Container">
-	<h1 class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
-	<div class="LoginBox">
-		<h1 class="LoginHead">เข้าสู่ระบบ</h1>
-		<div class="InputBox">
-			<div class="EmailBox">
-				<p class="Text">อีเมล</p>
-				<input class="Email" type="email" placeholder="อีเมล" bind:value={email} />
-			</div>
-			<div class="PasswordBox">
-				<p class="Text">รหัสผ่าน</p>
-				<div class="WrapPasswordInput">
-					<input
-						class="Password"
-						id="Password"
-						type={see_password ? "text" : "password"}
-						placeholder="รหัสผ่าน"
-						bind:value={password}
-					/>
-					<button
-						class="IoIosEyeOff"
-						on:click={() => {
-							see_password = !see_password;
-						}}
-					>
-						{#if see_password}
-							<IoIosEye />
-						{:else}
-							<IoIosEyeOff />
-						{/if}
-					</button>
+	{#if loaded}
+		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
+		<div in:azScale={{ delay: 100, duration: 700 }} class="LoginBox">
+			<h1 class="LoginHead">เข้าสู่ระบบ</h1>
+			<div class="InputBox">
+				<div class="EmailBox">
+					<p class="Text">อีเมล</p>
+					<input class="Email" type="email" placeholder="อีเมล" bind:value={email} />
 				</div>
+				<div class="PasswordBox">
+					<p class="Text">รหัสผ่าน</p>
+					<div class="WrapPasswordInput">
+						<input
+							class="Password"
+							id="Password"
+							type={see_password ? "text" : "password"}
+							placeholder="รหัสผ่าน"
+							bind:value={password}
+						/>
+						<button
+							class="IoIosEyeOff"
+							on:click={() => {
+								see_password = !see_password;
+							}}
+						>
+							{#if see_password}
+								<IoIosEye />
+							{:else}
+								<IoIosEyeOff />
+							{/if}
+						</button>
+					</div>
+				</div>
+				<p class="ForgetPassword">ลืมรหัสผ่าน</p>
 			</div>
-			<p class="ForgetPassword">ลืมรหัสผ่าน</p>
+			<Button class="Login" onclick={() => Login()}>Login</Button>
 		</div>
-		<Button class="Login" on:click={() => Login()}>Login</Button>
-	</div>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -93,18 +105,18 @@
 		width: 25%;
 		padding: 1rem;
 		padding-top: 0px;
+		gap: 1rem;
 		margin-left: 0.75rem;
 		margin-right: 0.75rem;
-		border: 1px solid var(--theme-dark-text);
+		border: 1px solid var(--theme-dark);
 		border-radius: 15px;
 		background-color: var(--bg-50);
-		opacity: 50;
 	}
 
 	.LoginHead {
 		font-size: 3.5rem;
 		font-weight: 700;
-		margin-top: 3rem;
+		margin-top: 2rem;
 		color: var(--theme-dark-text);
 	}
 
@@ -114,7 +126,7 @@
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
-		gap: 10px;
+		gap: var(--n-gap);
 	}
 
 	.WrapPasswordInput {
@@ -122,6 +134,7 @@
 		align-items: center;
 		justify-content: start;
 		width: 100%;
+		max-width: 25rem;
 		gap: 5px;
 	}
 
@@ -131,14 +144,14 @@
 		padding-right: 0.75rem;
 		width: 100%;
 		max-width: 25rem;
-		background-color: transparent;
-		border: 1px solid var(--theme-dark-text);
+		background-color: var(--bg);
+		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
 	}
 
 	.Email::placeholder {
-		color: var(--theme-dark-text);
+		color: var(--theme-dark);
 		font-weight: 400;
 	}
 
@@ -147,15 +160,14 @@
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 		width: 100%;
-		max-width: 25rem;
-		background-color: transparent;
-		border: 1px solid var(--theme-dark-text);
+		background-color: var(--bg);
+		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
 		font-size: 1.125rem;
 	}
 
 	.Password::placeholder {
-		color: var(--theme-dark-text);
+		color: var(--theme-dark);
 		font-weight: 400;
 	}
 
@@ -164,24 +176,24 @@
 	}
 
 	.IoIosEyeOff :global(svg) {
-		fill: var(--theme-dark-text);
+		fill: var(--theme-dark);
 	}
 
 	.ForgetPassword {
-		color: var(--theme-dark-text);
+		color: var(--theme-dark);
 		cursor: pointer;
 		font-size: 1.125rem;
 		text-decoration: underline;
 	}
 
 	:global(.Login) {
-		margin-bottom: 3rem;
+		margin-bottom: 2rem;
 	}
 
 	.Text {
 		font-size: 1.5rem;
 		font-weight: 600;
-		color: var(--theme-dark-text);
+		color: var(--theme-dark);
 	}
 
 	@media only screen and (max-width: 500px) {
