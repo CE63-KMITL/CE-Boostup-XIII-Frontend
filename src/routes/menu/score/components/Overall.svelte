@@ -20,7 +20,7 @@
 
 {#each dataOverall as user, i}
     <RankOrdering index={i}>
-        <UserIcon data={user?.icon}/>
+        <div id="overall-userIcon"> <UserIcon data={user?.icon}/> </div>
     	<div>{user.name}</div>
     	<div>{user.id}</div>
     	<div>{user.house}</div>
@@ -29,8 +29,8 @@
 {/each}
 
 <style lang="scss">
-    :global(.OverallSize) {
-		display: flex;
-        background-color: var(--sc-bg);
+    #overall-userIcon {
+        height: 100%;
+        // width: 10%;
     }
 </style>

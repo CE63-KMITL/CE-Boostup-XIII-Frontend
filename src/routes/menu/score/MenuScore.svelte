@@ -70,7 +70,7 @@ HTML Crapp
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
-							<UserIcon data={$userData.icon}></UserIcon>
+							<div id="scl-top-userIcon"> <UserIcon data={$userData.icon}></UserIcon> </div>
 							<span>{profile.name}</span>
 							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
 						</div>
@@ -244,6 +244,11 @@ Style SCSS Na
 				display: flex;
 				justify-content: space-between;
 				padding: 5% 5% 0 5%;
+
+				#scl-top-userIcon {
+					width: 15%;
+					height: 100%;
+				}
 			}
 
 			:global(#scl-detail-top) {

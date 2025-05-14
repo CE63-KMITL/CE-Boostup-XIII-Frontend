@@ -36,7 +36,7 @@
 	<div class="id">{problem.id}</div>
 	<div>
 		<div class="title">{problem.title}</div>
-		<UserIcon data={problem.author?.icon}/>
+		<div class="author-icon"> <UserIcon data={problem.author?.icon}/> </div>
 		<div class="author">{problem.author?.name}</div>
 	</div>
 
@@ -118,6 +118,10 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.author-icon { 
+		display: flex; //ทำให้ไม่ว่างเฉยๆ ลบออกแล้วก็เปลี่ยนเป็นอย่างอื่นเรยเลย
 	}
 
 	.author {
