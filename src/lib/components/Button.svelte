@@ -50,7 +50,7 @@
 		background: var(--color);
 		color: var(--text-color);
 		border: none;
-		border-radius: 5px;
+		border-radius: var(--n-border-radius);
 		font-size: 1rem;
 		font-weight: 500;
 		cursor: pointer;

@@ -3,7 +3,7 @@
 @import "tailwindcss/utilities";
 
 html {
-	--n-border-radius: 10px;
+	--n-border-radius: 20px;
 
 	font-family: "Noto Sans Thai";
 	margin: 0;

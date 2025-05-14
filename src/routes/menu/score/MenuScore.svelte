@@ -5,11 +5,11 @@
 	import Tab from "$lib/components/Tab.svelte";
 	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
-    import { IsRole, userData } from "$lib/auth.local";
-    import { Role } from "$lib/enum/role";
-    import { onMount } from "svelte";
-    import Search from "$lib/components/Icons/Search.svelte";
-    import { searchParams } from "./score";
+	import { IsRole, userData } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
+	import { onMount } from "svelte";
+	import Search from "$lib/components/Icons/Search.svelte";
+	import { searchParams } from "./score";
 	import History from "./components/History.svelte";
     import UserIcon from "$lib/components/UserIcon.svelte";
     import ProfileUser from "$lib/components/ProfileUser.svelte";
@@ -29,7 +29,7 @@
 
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
-	
+
 	let isSearching = "";
 	let currentSelectData;
 
@@ -62,7 +62,7 @@
 		test();
 
 		if (IsRole(Role.STAFF)) {
-			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
+			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
 		}
 	});
@@ -106,7 +106,7 @@ HTML Crapp
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
 						<Search></Search>
-						<input 
+						<input
 							id="search"
 							placeholder="ชื่อ / รหัสนักศึกษา"
 							oninput={(e: any) => {
@@ -198,7 +198,7 @@ HTML Crapp
 			{/if}
 		</Tab>
 	{/if}
-	
+
 	<!-- SC-Right Side -->
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
@@ -236,7 +236,7 @@ Style SCSS Na
 		display: flex;
 		flex-direction: row;
 		gap: 1%;
-		padding: 2% 5% 2% 5%;
+		padding: 2% 5%;
 		box-sizing: border-box;
 		container-type: size;
 
@@ -329,7 +329,6 @@ Style SCSS Na
 				color: var(--text);
 			}
 		}
-		
 	}
 	:global(#scoreTab-editscore) {
 		padding: 1% 20px;
@@ -361,10 +360,9 @@ Style SCSS Na
 		}
 	}
 
-
-// -------------------------------------------------------
-// 	Score History Pop-up
-// -------------------------------------------------------
+	// -------------------------------------------------------
+	// 	Score History Pop-up
+	// -------------------------------------------------------
 
 	.sc-instead-ntung {
 		width: 100%;
@@ -406,7 +404,7 @@ Style SCSS Na
 			height: auto;
 			padding: 20px 0;
 			border-radius: 10px;
-			
+
 			#inputScore {
 				text-align: center;
 				background-color: transparent;
@@ -426,7 +424,6 @@ Style SCSS Na
 
 			}
 		}
-
 	}
 
 

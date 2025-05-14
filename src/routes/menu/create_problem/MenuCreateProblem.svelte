@@ -686,6 +686,7 @@
 		border: 1px solid var(--outline);
 		font-weight: 600;
 		text-align: center;
+		box-shadow: 0 4px 24px var(--list-shadow);
 		font-size: 1rem;
 	}
 	//-------------------------------------------------------
@@ -765,6 +766,7 @@
 
 	:global(div.problemCodeContainer) {
 		width: 60%;
+		box-shadow: 0 4px 24px var(--list-shadow);
 	}
 
 	.sectionPanel {

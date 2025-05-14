@@ -25,7 +25,7 @@
 	//-------------------------------------------------------
 	let codeText = "";
 	let inputText = "";
-	let result:any = {
+	let result: any = {
 		exit_code: null,
 		exit_status: null,
 		output: null,
@@ -174,7 +174,7 @@
 		</div>
 
 		{#if IsRole(Role.STAFF)}
-			<Frame>
+			<Frame shadow={true}>
 				<Button onclick={onViewProblem}>แก้ไขโจทย์</Button>
 			</Frame>
 		{/if}
@@ -211,6 +211,7 @@
 			display: flex;
 			flex-direction: column;
 			width: 60%;
+			box-shadow: 0 4px 24px var(--list-shadow);
 			gap: var(--n-gap);
 		}
 

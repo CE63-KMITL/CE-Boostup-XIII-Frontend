@@ -214,6 +214,8 @@
 	}
 
 	#content {
+		max-width: 1800px;
+		width: 100%;
 		position: relative;
 		height: calc(100% - 70px);
 		z-index: -1;
