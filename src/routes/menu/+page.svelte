@@ -102,7 +102,7 @@
 					{:else if $userData.icon}
 						<img src={$userData.icon} alt="Icon" class="circular-icon" />
 					{:else}
-						<UserIcon data={$userData.icon}/>
+						<UserIcon data={$userData.icon} />
 					{/if}
 				</div>
 
@@ -199,7 +199,7 @@
 		z-index: 2;
 		cursor: pointer;
 		transition: all 0.2s;
-          gap: var(--n-gap);
+		gap: var(--n-gap);
 
 		&:hover {
 			transform: scale(1.1);

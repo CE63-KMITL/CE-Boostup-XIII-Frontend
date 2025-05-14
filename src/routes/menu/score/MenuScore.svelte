@@ -5,15 +5,14 @@
 	import Tab from "$lib/components/Tab.svelte";
 	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
-    import { IsRole } from "$lib/auth.local";
-    import { Role } from "$lib/enum/role";
-    import { onDestroy, onMount } from "svelte";
-    import Search from "$lib/components/Icons/Search.svelte";
-    import { searchParams, selectedIDStudent } from "./score";
+	import { IsRole } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
+	import { onDestroy, onMount } from "svelte";
+	import Search from "$lib/components/Icons/Search.svelte";
+	import { searchParams, selectedIDStudent } from "./score";
 	import { sleep } from "$lib/normalFunction";
-    import type { Unsubscriber } from "svelte/store";
+	import type { Unsubscriber } from "svelte/store";
 	import { type Student } from "$lib/constants/student";
-    import { eventNames } from "process";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -31,7 +30,7 @@
 	let isSearching = "";
 	let selectedStudent = null;
 	let allStudents: (Student | string)[] = [];
-	
+
 	// let studentSelectorElement;
 	// let studentDetailsElement;
 
@@ -62,9 +61,9 @@
 
 	// 	const querySC = Object.entries(searchQuerySC)
 	// 		.filter(
-	// 			([_, value]) => 
-	// 			value !== null && 
-	// 			value !== "" && 
+	// 			([_, value]) =>
+	// 			value !== null &&
+	// 			value !== "" &&
 	// 			(!Array.isArray(value) || value.length > 0)
 	// 		)
 	// 		.map(([key, value]) => {
@@ -167,7 +166,7 @@
 	// async function updateStudentsDetail() {
 	// 	if(!$selectedIDStudent) return;
 	// }
-	
+
 	/*
     -------------------------------------------------------
     Cycle Na Won Won Pai
@@ -189,9 +188,9 @@
 		// subscribeSelectedIDStudent = selectedIDStudent.subscribe(async () => {
 		// 	selectedStudent = null;
 
-		// 	const studentData = 
+		// 	const studentData =
 		// 		allStudents.find((student) => typeof student === "object" && student.id === $selectedIDStudent) || selectedStudent;
-		
+
 		// 	if (studentData) {
 		// 		studentData.detail = await api.call(`/user/${studentData.id}`, {
 		// 			withToken: true
@@ -201,7 +200,7 @@
 		// });
 
 		if (IsRole(Role.STAFF)) {
-			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
+			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
 		}
 	});
@@ -210,7 +209,6 @@
 	// 	if (subscribeSearchParams) subscribeSearchParams();
 	// 	if (subscribeSelectedIDStudent) subscribeSelectedIDStudent();
 	// });
-
 </script>
 
 <!-- 
@@ -253,7 +251,7 @@ HTML Crapp
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
 						<Search></Search>
-						<input 
+						<input
 							id="search"
 							placeholder="ชื่อ / รหัสนักศึกษา"
 							oninput={(e: any) => {
@@ -268,7 +266,11 @@ HTML Crapp
 						/>
 					</Frame>
 					{#if selectedStudent == null && isSearching == ""}
-						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+						<div
+							id="sc-below-search"
+							in:azScale={{ size: 0.99, delay: 250 }}
+							out:azScale={{ size: 0.99, duration: 100 }}
+						>
 							<div class="scl-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
@@ -311,7 +313,7 @@ HTML Crapp
 			{/if}
 		</Tab>
 	{/if}
-	
+
 	<!-- SC-Right Side -->
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
@@ -327,7 +329,6 @@ HTML Crapp
 		</div>
 	</div>
 {/if} -->
-
 
 <!-- 
 -------------------------------------------------------
@@ -433,7 +434,6 @@ Style SCSS Na
 				color: var(--text);
 			}
 		}
-		
 	}
 	:global(#scoreTab-editscore) {
 		padding: 1% 20px;
@@ -462,7 +462,7 @@ Style SCSS Na
 		}
 
 		span#dragontext {
-			filter: drop-shadow( 0 2px 3px var(--list-shadow));
+			filter: drop-shadow(0 2px 3px var(--list-shadow));
 			font-size: 16px;
 		}
 	}
