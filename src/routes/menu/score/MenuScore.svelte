@@ -108,6 +108,8 @@ HTML Crapp
 						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
+			{:else if activeTab == "claimPrice"}
+				<div class="full">claimPrice naja</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
@@ -171,30 +173,6 @@ HTML Crapp
 				</div>
 			{/if}
 		</Tab>
-	{:else if IsRole(Role.MEMEBER)}
-		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
-			{#if activeTab == "scoreDetail"}
-				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<div class="scl-image">
-						<img src={profile.cardImg} alt="" />
-					</div>
-					<div id="scl-main">
-						<div class="scl-top">
-							<UserIcon data={$userData.icon}></UserIcon>
-							<span>{profile.name}</span>
-							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
-						</div>
-						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
-						<div id="scl-detail-bottom">{profile.score}</div>
-						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
-						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}>ประวัติคะแนน</Button>
-					</div>
-				</div>
-			{:else if activeTab == "claimPrice"}
-				<div class="full">claimPrice naja</div>
-			{/if}
-		</Tab>
 	{/if}
 
 	<!-- SC-Right Side -->
@@ -244,6 +222,8 @@ Style SCSS Na
 		}
 
 		:global(#sc-right) {
+			display: flex;
+			flex-direction: column;
 			border-radius: 20px;
 			box-shadow: 0 4px 24px var(--list-shadow);
 			padding: 1% 2%;
