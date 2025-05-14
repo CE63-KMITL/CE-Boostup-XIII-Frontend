@@ -1,19 +1,15 @@
 <script lang="ts">
     import UserIcon from "./UserIcon.svelte";
     
-    export let user;
+    export let user: any;
 </script>
-
-<!-- {#if data}
-	<img src={data} alt="icon" class="usericon" />
-{/if} -->
 
 <div class="wholeProfile">
     <div class="wholeProfile-top">
         <div id="profileImage"> <UserIcon data={user.icon}></UserIcon> </div>
         <div id="nameID">
             <span>{user.name}</span>
-            <span>{user.studentId}</span>
+            <span style="color: var(--sc-orangedark);">{user.studentId}</span>
         </div>
     </div>
     <div class="wholeProfile-bottom">
@@ -25,17 +21,26 @@
 <style lang="scss">
 
 .wholeProfile {
+    display: flex;
+    flex-direction: column;
+
     .wholeProfile-top {
-        #profileImage {
-            
-        }
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 5px;
 
+        #profileImage { width: 25%; }
         #nameID {
-
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: left;
+            margin-left: 10px;
         }
     }
     .wholeProfile-bottom {
-
+        display: flex;
+        flex-direction: column;
     }
 }
 
