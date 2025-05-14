@@ -83,14 +83,6 @@
 		user-select: none;
 		container-type: size;
 	}
-	
-	#usericon {
-		width: 50px;
-		height: 50px;
-		border: 1px solid #ddd;
-		border-radius: 50%;
-		margin-left:50px;
-	}
 
 	#page-selector-container {
 		display: flex;
@@ -130,7 +122,7 @@
 			display: none;
 		}
 
-		#usericon {
+		:global(.usericon) {
 			width: 30px;
 			height: 30px;
 		}
