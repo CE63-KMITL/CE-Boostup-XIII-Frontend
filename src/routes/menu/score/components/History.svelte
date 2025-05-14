@@ -1,20 +1,22 @@
 <script lang="ts">
+    import * as api from "$lib/fetchApi";
+    import { onMount } from "svelte";
+    import { userData } from "$lib/auth.local";
 
-    let dataScoreHistory = [
-        {changeId: "111111", userId: "feefefef-efepfefef", amount: 100, date: "02/12", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 1"},
-        {changeId: "222222", userId: "qeqeqeqe-qeqeqeqeq", amount: -100, date: "30/01", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 2"},
-        {changeId: "333333", userId: "zczczczc-zczczczcz", amount: 100, date: "24/07", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 3"},
-        {changeId: "444444", userId: "vrvrvrvr-vrvrvrvrv", amount: 100, date: "15/04", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 4"},
-        {changeId: "555555", userId: "tqtqtqtq-tqtqtqtqt", amount: -100, date: "20/10", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 5"},
-        {changeId: "111111", userId: "feefefef-efepfefef", amount: 100, date: "02/12", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 1"},
-        {changeId: "222222", userId: "qeqeqeqe-qeqeqeqeq", amount: -100, date: "30/01", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 2"},
-        {changeId: "333333", userId: "zczczczc-zczczczcz", amount: 100, date: "24/07", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 3"},
-        {changeId: "444444", userId: "vrvrvrvr-vrvrvrvrv", amount: 100, date: "15/04", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 4"},
-        {changeId: "555555", userId: "tqtqtqtq-tqtqtqtqt", amount: -100, date: "20/10", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 5"},
-    ]
+    let dataScoreHistory: any[] = []; 
+
+    function formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("th-TH",{ day: "2-digit", month: "2-digit" });
+    }
+
+    onMount(async () => {
+        const scoreHistory = await api.call(`/user/score/${$userData.id}`);
+        dataScoreHistory = scoreHistory.scoreLogs;
+
+    });
 
 </script>
-
 
 {#each dataScoreHistory as data}
     <div class="sc-history-score-main">
@@ -25,8 +27,8 @@
         {/if}
         <div>{data.message}</div>
         <div id="sc-right-history">
-            <span>{data.modifiedBy}</span>
-            <span style="color: var(--sc-orangedark);" >{data.date}</span>
+            <span>{data.modifiedBy.name}</span>
+            <span style="color: var(--sc-orangedark);" >{formatDate(data.date)}</span>
         </div>
     </div>
 {/each}

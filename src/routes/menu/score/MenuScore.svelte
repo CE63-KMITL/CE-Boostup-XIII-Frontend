@@ -7,12 +7,9 @@
 	import { azScale } from "$lib/transition";
     import { IsRole, userData } from "$lib/auth.local";
     import { Role } from "$lib/enum/role";
-    import { onDestroy, onMount } from "svelte";
+    import { onMount } from "svelte";
     import Search from "$lib/components/Icons/Search.svelte";
     import { searchParams, selectedIDStudent } from "./score";
-	import { sleep } from "$lib/normalFunction";
-    import type { Unsubscriber } from "svelte/store";
-	import { type Student } from "$lib/constants/student";
 	import History from "./components/History.svelte";
 
 	const profile = {
@@ -36,59 +33,10 @@
 	function closePopup() { showPopup = false; }
 	function protectClick(event) { event.stopPropagation(); }
 
+	$userData
 	function test() {
 
-		// $userData
-		// $userData.icon , $userData.id etc.
-		// icon, id(userId), name, studentId, role, house, score
-
-		// method: "POST" or method: "GET"
-		// data: {...}
-		// withToken: true
-
-
-		// --------------------- GET ---------------------
-
-		// 💜💜💜 //
-		// House - get All house score (use ASC or DESC)
-		// let houseScore = api.call(`/houseScores?order=ASC`);
-			// get score by house name (one by one)
-			// let houseScore = api.call(`/houseScores/barbarian`);
-
-
-		// MyHouse - get all users in a specific house  /house/ชื่อบ้าน
-		// let houseScore = api.call(`/house/barbarian`);
-
-		// Pop-up - ใช้ userId หาเอา score กับ scoreLogs ที่เก็บ history มา
-		// let user = api.call(`/user/score/${$userData.id}`);
 		
-		// Selected user to get N'tung page - ใช้ userId หา data ทั้งหมดของคนนั้นๆ
-		// let user = api.call(`/user/${$userData.id}`, {withToken: true});
-
-
-		// --------------------- Editing Data ---------------------
-
-		// + Score to selected user
-		// let user = api.call(`/user/score/add`, {
-		// 	method: "POST",
-		// 	data: { userId: "userที่จะเพิ่มคะแนน", amount: 100, message: "จ๊ะเอ๋~ ตัวเองง" },
-		// 	withToken: true
-		// });
-
-		// - Score to selected user
-		// let user = api.call(`/user/score/subtract`, {
-		// 	method: "POST",
-		// 	data: { userId: "userที่จะเพิ่มคะแนน", amount: 100, message: "จ๊ะเอ๋~ ตัวเองง" },
-		// 	withToken: true
-		// });
-		
-
-		// --------------------- Search ---------------------
-		// /user/search?page=1&limit=16&orderByScore=true&role=dev
-
-
-		// console.log(houseScore);
-		// console.log(user);
 
 	}
 
@@ -126,7 +74,7 @@ HTML Crapp
 						<div id="scl-detail-bottom">{profile.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={test} filter={false}>ประวัติคะแนน</Button>
+						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
 			{:else if activeTab == "scEditData"}

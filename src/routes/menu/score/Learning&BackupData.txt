@@ -1,0 +1,64 @@
+-- MyHouse Tab --
+    const optionDropdown: { value: string; }[] = [
+        { value: 'Barbarian' }, { value: 'Rogue' }, { value: 'Sorcerer' },{ value: 'Bard' }, 
+        { value: 'Monk' }, { value: 'Paladin' }, { value: 'Wizard' }, { value: 'Priest' }, 
+        { value: 'Ranger' }, { value: 'Warlock' }, { value: 'Samurai' }, ];
+    let dataMyHouse = [
+        { name: "Veerapat Pirultham", studnetId: "67010852", score: 720 },
+        { name: "Nattapong Suksiri", studnetId: "67010853", score: 700 },
+        { name: "Kamonchai Lekbun", studnetId: "67010854", score: 680 },
+        { name: "Somsak Pradchaphet", studnetId: "67010855", score: 650 },
+        { name: "Patsorn Chaiyawan", studnetId: "67010856", score: 640 }, ];
+
+-- scoreHistory btn --
+    let dataScoreHistory = [
+        {changeId: "111111", userId: "feefefef-efepfefef", amount: 100, date: "02/12", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 1"},
+        {changeId: "222222", userId: "qeqeqeqe-qeqeqeqeq", amount: -100, date: "30/01", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 2"},
+        {changeId: "333333", userId: "zczczczc-zczczczcz", amount: 100, date: "24/07", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 3"},
+        {changeId: "444444", userId: "vrvrvrvr-vrvrvrvrv", amount: 100, date: "15/04", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 4"},
+        {changeId: "555555", userId: "tqtqtqtq-tqtqtqtqt", amount: -100, date: "20/10", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 5"},
+        {changeId: "111111", userId: "feefefef-efepfefef", amount: 100, date: "02/12", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 1"},
+        {changeId: "222222", userId: "qeqeqeqe-qeqeqeqeq", amount: -100, date: "30/01", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 2"},
+        {changeId: "333333", userId: "zczczczc-zczczczcz", amount: 100, date: "24/07", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 3"},
+        {changeId: "444444", userId: "vrvrvrvr-vrvrvrvrv", amount: 100, date: "15/04", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 4"},
+        {changeId: "555555", userId: "tqtqtqtq-tqtqtqtqt", amount: -100, date: "20/10", modifiedBy: "ฉันเองง", message: "จ๊ะเอ๋ตัวเองง 5"}, ]
+
+-- Learning --
+    $userData
+    $userData.icon , $userData.id etc.
+    icon, id(userId), name, studentId, role, house, score
+    method: "POST" or method: "GET"
+    data: {...}
+    withToken: true
+    --------------------- GET ---------------------
+    // 💜💜💜 //
+    House - get All house score (use ASC or DESC)
+    let houseScore = api.call(`/houseScores?order=ASC`);
+        // get score by house name (one by one)
+        // let houseScore = api.call(`/houseScores/barbarian`);
+
+    MyHouse - get all users in a specific house  /house/ชื่อบ้าน
+    let houseScore = api.call(`/house/barbarian`);
+
+    Pop-up - ใช้ userId หาเอา score กับ scoreLogs ที่เก็บ history มา
+    let user = api.call(`/user/score/${$userData.id}`);
+    // 💜💜💜 //
+
+    Selected user to get N'tung page - ใช้ userId หา data ทั้งหมดของคนนั้นๆ
+    let user = api.call(`/user/${$userData.id}`, {withToken: true});
+    --------------------- Editing Data ---------------------
+    + Score to selected user
+    let user = api.call(`/user/score/add`, {
+    	method: "POST",
+    	data: { userId: "userที่จะเพิ่มคะแนน", amount: 100, message: "จ๊ะเอ๋~ ตัวเองง" },
+    	withToken: true
+    });
+    - Score to selected user
+    let user = api.call(`/user/score/subtract`, {
+    	method: "POST",
+    	data: { userId: "userที่จะเพิ่มคะแนน", amount: 100, message: "จ๊ะเอ๋~ ตัวเองง" },
+    	withToken: true
+    });
+
+    --------------------- Search ---------------------
+    /user/search?page=1&limit=16&orderByScore=true&role=dev
