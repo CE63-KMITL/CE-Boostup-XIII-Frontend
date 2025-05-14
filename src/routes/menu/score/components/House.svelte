@@ -13,11 +13,10 @@
 
 </script>
 
-
-{#each dataHouse as user, i}
+{#each dataHouse as house, i}
     <RankOrdering index={i}>
-        <div style="width: 60%; text-align: left;">{user.name.charAt(0).toUpperCase() + user.name.slice(1)}</div>
-    	<div>{user.value}</div>
+        <div style="width: 60%; text-align: left;">{house.name.charAt(0).toUpperCase() + house.name.slice(1)}</div>
+    	<div>{house.value}</div>
     </RankOrdering>
 {/each}
 

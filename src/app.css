@@ -75,7 +75,7 @@ html:not([dark]) {
 	--sc-shadow: rgba(0, 0, 0, 0.5);
 	--sc-orangelight: rgb(241, 213, 161);
 	--sc-orangedark: rgb(169, 132, 77);
-	--sc-bg-popup: rgb(255, 255, 255);
+	--sc-bg: rgb(255, 255, 255);
 	--sc-plus: rgb(153 185 139);
 	--sc-minus: rgb(226 113 113);
 }
@@ -133,7 +133,7 @@ html[dark] {
 	--sc-shadow: rgba(0, 0, 0, 0.5);
 	--sc-orangelight: rgb(169, 132, 77);
 	--sc-orangedark: rgb(169, 132, 77);
-	--sc-bg-popup: rgb(0, 0, 0);
+	--sc-bg: rgb(0, 0, 0);
 	--sc-plus: rgb(153 185 139);
 	--sc-minus: rgb(226 113 113);
 

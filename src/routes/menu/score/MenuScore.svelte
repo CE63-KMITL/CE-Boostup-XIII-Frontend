@@ -9,7 +9,7 @@
     import { Role } from "$lib/enum/role";
     import { onMount } from "svelte";
     import Search from "$lib/components/Icons/Search.svelte";
-    import { searchParams, selectedIDStudent } from "./score";
+    import { searchParams } from "./score";
 	import History from "./components/History.svelte";
 
 	const profile = {
@@ -28,19 +28,21 @@
 	let isSearching = "";
 	let selectedStudent = null;
 
+	let editScore: number;
+
+	// Pop-up Score History
 	let showPopup = false;
 	function openPopup() { showPopup = true; }
 	function closePopup() { showPopup = false; }
 	function protectClick(event) { event.stopPropagation(); }
 
-	$userData
-	function test() {
-
-		
-
-	}
+	// function test() {
+	// 	let datauser = api.call(`/user/data`, { withToken: true });
+	// 	console.log(datauser);
+	// }
 
 	onMount(async () => {
+		// test();
 
 		if (IsRole(Role.STAFF)) {
 			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
@@ -92,15 +94,34 @@ HTML Crapp
 							border: 0px;
 							background-color: transparent;
 							"
-
 						/>
 					</Frame>
-					{#if selectedStudent == null && isSearching == ""}
+					{#if selectedStudent == null && isSearching =="" }
 						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="scl-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
 							<span id="dragontext">CE BOOSTUP</span>
+						</div>
+					{:else}
+
+					<!-- 
+					-------------------------------------------------------
+					Below Search in EditScore Tab
+					-------------------------------------------------------
+					-->
+
+						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+							<div class="sc-instead-ntung-top">
+
+							</div>
+							<div class="sc-instead-ntung-bottom">
+								<input id="inputScore" placeholder="คะแนน" bind:value={editScore} />
+								<div id="editScore-btn">
+									<Button class="plusScore-btn">บวกคะแนน</Button>
+									<Button class="minusScore-btn">ลบคะแนน</Button>
+								</div>
+							</div>
 						</div>
 					{/if}
 				</div>
@@ -271,7 +292,7 @@ Style SCSS Na
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			padding: 0%;
+			padding: 0px;
 			padding-inline: 10px;
 			width: 100%;
 			border-radius: 25px;
@@ -288,8 +309,59 @@ Style SCSS Na
 
 		span#dragontext {
 			filter: drop-shadow( 0 2px 3px var(--list-shadow));
-			font-size: 16px;
+			font-size: 20px;
 		}
+	}
+
+
+// -------------------------------------------------------
+// 	Score History Pop-up
+// -------------------------------------------------------
+
+	.sc-instead-ntung {
+		width: 100%;
+		height: 100%;
+		margin: 10px 0;
+		border-radius: 10px;
+		overflow-y: auto;
+		// padding-right: 1%;
+
+		.sc-instead-ntung-top {
+			border: 1px solid var(--outline);
+			background-color: var(--sc-bg);
+			width: 100%;
+			height: 70%;
+			margin-bottom: 15px;
+			border-radius: 10px;
+			
+		}
+
+		.sc-instead-ntung-bottom {
+			border: 1px solid var(--outline);
+			background-color: var(--sc-bg);
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 25%;
+			border-radius: 10px;
+			
+			#inputScore {
+				display: flex;
+				align-items: center;
+				border: 1px; 
+				background-color: transparent;
+				margin-bottom: 10px;
+			}
+
+			#editScore-btn {
+				display: flex;
+				justify-content: space-between;
+				width: 70%;
+			}
+		}
+
 	}
 
 
@@ -309,7 +381,7 @@ Style SCSS Na
 	#popup {
 		display: flex;
 		flex-direction: column;
-		background-color: var(--sc-bg-popup);
+		background-color: var(--sc-bg);
 		box-shadow: 0 0 20px var(--list-shadow);
 		padding: 15px;
 		border-radius: 20px;
