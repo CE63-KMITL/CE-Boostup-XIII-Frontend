@@ -37,13 +37,14 @@
 	function closePopup() { showPopup = false; }
 	function protectClick(event) { event.stopPropagation(); }
 
-	// function test() {
-	// 	let datauser = api.call(`/user/data`, { withToken: true });
-	// 	console.log(datauser);
-	// }
+	function test() {
+		// let datauser = api.call(`/user/data`, { withToken: true });
+		// console.log(datauser);
+		// console.log($userData);
+	}
 
 	onMount(async () => {
-		// test();
+		test();
 
 		if (IsRole(Role.STAFF)) {
 			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
@@ -100,7 +101,7 @@ HTML Crapp
 					</Frame>
 					{#if selectedStudent == null && isSearching =="" }
 						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
-							<div class="scl-image">
+							<div class="dragon-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
 							<span id="dragontext">CE BOOSTUP</span>
@@ -307,17 +308,16 @@ Style SCSS Na
 		}
 
 		:global(#sc-below-search) {
-			width: 55%;
+			width: 100%;
 			height: 100%;
 			display: flex;
 			flex-direction: column;
-			justify-content: center;
+			margin-top: 40px;
 			align-items: center;
-		}
 
-		span#dragontext {
-			filter: drop-shadow( 0 2px 3px var(--list-shadow));
-			font-size: 20px;
+			.dragon-image { width: 60%; }
+			#dragontext { filter: drop-shadow( 0 2px 3px var(--list-shadow)); }
+
 		}
 	}
 
@@ -432,8 +432,7 @@ Style SCSS Na
 // 	Mobile phone Mode
 // -------------------------------------------------------
 
-
-	@media (max-width: 920px) {
+	@media (max-width: 920px){
 		#Score {
 			flex-direction: column;
 
@@ -465,13 +464,14 @@ Style SCSS Na
 			align-items: center;
 			flex-direction: column;
 
-			// :global(#sc-below-search) {
-			// 	display: none;
-			// }
-
 			.scl-image {
 				width: 80%;
 			}
+		}
+
+		#sc-below-search {
+			margin-top: 10;
+			.dragon-image { width: 30%; }
 		}
 
 		#popup {

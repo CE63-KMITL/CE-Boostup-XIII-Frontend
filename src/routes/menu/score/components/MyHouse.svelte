@@ -3,10 +3,12 @@
     import * as api from "$lib/fetchApi";
     import { onMount } from "svelte";
     import UserIcon from "$lib/components/UserIcon.svelte";
+    import { userData } from "$lib/auth.local";
 
     let dataMyHouse: any[] = [];
     let optionDropdown: any[] = [];
     let selectedOptionDropdown: string = "Barbarian";
+    // let selectedOptionDropdown: string = $userData.house.charAt(0).toUpperCase() + $userData.house.slice(1);
 
     onMount(async () => {
         const house = await api.call(`/houseScores?order=ASC`);
