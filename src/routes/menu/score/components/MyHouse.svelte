@@ -1,36 +1,52 @@
 <script lang="ts">
     import RankOrdering from "./RankOrdering.svelte";
-    
-    let selectedOptionDropdown: string = "Barbarian";
-    const optionDropdown: { value: string; }[] = [
-    { value: 'Barbarian' }, { value: 'Rogue' }, { value: 'Sorcerer' },{ value: 'Bard' }, 
-    { value: 'Monk' }, { value: 'Paladin' }, { value: 'Wizard' }, { value: 'Priest' }, 
-    { value: 'Ranger' }, { value: 'Fighter' }, { value: 'Warlock' }, { value: 'Samurai' },
-    ];
+    import * as api from "$lib/fetchApi";
+    import { onMount } from "svelte";
 
-    let dataMyHouse = [
-    { name: "Veerapat Pirultham", id: "67010852", score: 720 },
-    { name: "Nattapong Suksiri", id: "67010853", score: 700 },
-    { name: "Kamonchai Lekbun", id: "67010854", score: 680 },
-    { name: "Somsak Pradchaphet", id: "67010855", score: 650 },
-    { name: "Patsorn Chaiyawan", id: "67010856", score: 640 },
-    ];
+    // MyHouse - get ข้อมูลของคนในบ้าน /house/ชื่อบ้าน
+	// let houseScore = api.call(`/house/barbarian`);
+
+    let dataMyHouse: any[] = [];
+    let optionDropdown: any[] = [];
+    let selectedOptionDropdown: string = "Barbarian";
+    // const optionDropdown: { value: string; }[] = [
+    // { value: 'Barbarian' }, { value: 'Rogue' }, { value: 'Sorcerer' },{ value: 'Bard' }, 
+    // { value: 'Monk' }, { value: 'Paladin' }, { value: 'Wizard' }, { value: 'Priest' }, 
+    // { value: 'Ranger' }, { value: 'Warlock' }, { value: 'Samurai' },
+    // ];
+
+    // let dataMyHouse = [
+    // { name: "Veerapat Pirultham", studnetId: "67010852", score: 720 },
+    // { name: "Nattapong Suksiri", studnetId: "67010853", score: 700 },
+    // { name: "Kamonchai Lekbun", studnetId: "67010854", score: 680 },
+    // { name: "Somsak Pradchaphet", studnetId: "67010855", score: 650 },
+    // { name: "Patsorn Chaiyawan", studnetId: "67010856", score: 640 },
+    // ];
+
+    onMount(async () => {
+        const house = await api.call(`/houseScores?order=ASC`);
+        optionDropdown = house.data;
+
+        const myHouse = await api.call(`/house/${selectedOptionDropdown.toLowerCase()}`)
+        dataMyHouse = myHouse.users;
+
+    });
 
 </script>
 
 <div class="myHouseLeaderboard">
     <select id="dropdown" bind:value={selectedOptionDropdown}>
         {#each optionDropdown as option}
-            <option>{option.value}</option>
+            <option>{option.name.charAt(0).toUpperCase() + option.name.slice(1)}</option>
         {/each}
     </select>
-    <!-- <p>choice: {selectedOptionDropdown}</p> -->
-    <!-- <p>{selectedOptionDropdown}</p> -->
+    <!-- <p>{selectedOptionDropdown.toLowerCase()}</p> -->
 </div>
+
 {#each dataMyHouse as user, i}
     <RankOrdering index={i}>
         <div>{user.name}</div>
-        <div>{user.id}</div>
+        <div>{user.studentId}</div>
         <div>{user.score}</div>
     </RankOrdering>
 {/each}
