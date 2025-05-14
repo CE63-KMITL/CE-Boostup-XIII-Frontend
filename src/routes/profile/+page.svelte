@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import * as api from "$lib/fetchApi";
   import houseIcon from "./house-placeholder.png";
-  import userIcon from "./user-placeholder.png";
+  import UserIcon from "../../components/UserIcon.svelte";
 
   // convert date to dd/mm format
   function convertDate(dateString) {
@@ -46,7 +46,7 @@
 
       <div class="profile_info">
         <div class="bio_info">
-          <img src={userIcon} alt="user" class="icon" />
+          <UserIcon data={user?.icon} />
           <div class="name_id">
             <div class="name">{user?.name}</div>
             <div class="id">{user?.studentId?user?.studentId:"NULL"}</div>
@@ -226,7 +226,7 @@
     display: flex;
   }
 
-  .bio_info .icon {
+  :global(.usericon) {
     width: 50px;
     height: 50px;
     border: 1px solid #ddd;
@@ -339,7 +339,7 @@
     align-items: center;
   }
 
-  .bio_info .icon {
+  :global(.usericon) {
     width: 150px;
     height: 150px;
     margin: 2vh auto;
@@ -365,7 +365,7 @@
     margin: 3vh auto;
   }
   
-    .bio_info .icon {
+    :global(.usericon) {
     width: 100px;
     height: 100px;
     margin: 2vh auto;

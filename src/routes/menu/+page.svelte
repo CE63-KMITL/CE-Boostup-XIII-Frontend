@@ -3,6 +3,8 @@
 	import { onMount } from "svelte";
 	import Fullscreen from "../../components/Fullscreen.svelte";
 	import ProblemInMenu from "../problem/ProblemInMenu.svelte";
+	import UserIcon from "../../components/UserIcon.svelte";
+	import * as api from "$lib/fetchApi";
 
 	export let data;
 	const items = { problem: "โจทย์", score: "คะแนน" };
@@ -19,6 +21,11 @@
 		selected = name;
 		pushState(url, null);
 	};
+
+	let user = null;
+	onMount(async () => {
+		user = await api.call('/user/me', { method: 'GET', withToken: true });
+	})
 </script>
 
 <Fullscreen>
@@ -34,7 +41,7 @@
 				</button>
 			{/each}
 		</div>
-		<img alt="icon" id="usericon" />
+		<UserIcon data={user?.icon}/>
 	</div>
 	<div id="content">
 		<ProblemInMenu {data}></ProblemInMenu>
