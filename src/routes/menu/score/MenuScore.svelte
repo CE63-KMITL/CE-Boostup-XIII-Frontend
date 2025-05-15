@@ -138,18 +138,18 @@ HTML Crapp
 							"
 						/>
 					</Frame>
-					{#if currentSelectData}
+					{#if currentSelectData != null}
 						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="sc-instead-ntung-top-profile">
 								<div style="padding: 10px 20px;"> 
 
 									<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
 
-									<ProfileUser user={$selectData}/> 
+									<ProfileUser user={$selectData.data}/> 
 								</div>
 								<div class="sc-instead-ntung-top-detail">
 									<div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
-									<div id="detail-bottom">{$selectData.score}</div>
+									<div id="detail-bottom">{$selectData.data.score}</div>
 									<div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
 									<div id="detail-bottom">{profile.houseScore}</div>
 									<Button id="detail-btn" onclick={() => showUserHistory($selectData)} filter={false}>ประวัติคะแนน</Button>
@@ -169,9 +169,9 @@ HTML Crapp
 									type="number" 
 									bind:value={editScore} />
 								<div id="editScore-btn">
-									<Button class="plusScore-btn" onclick={() => setEditScore("+", $selectData.id, editScore, editMessage)} 
+									<Button class="plusScore-btn" onclick={() => setEditScore("+", $selectData.data.id, editScore, editMessage)} 
 										color="var(--sc-plus)">บวกคะแนน</Button>
-									<Button class="minusScore-btn" onclick={() => setEditScore("-", $selectData.id, editScore, editMessage)} 
+									<Button class="minusScore-btn" onclick={() => setEditScore("-", $selectData.data.id, editScore, editMessage)} 
 										color="var(--sc-minus)">ลบคะแนน</Button>
 								</div>
 							</div>

@@ -6,19 +6,24 @@
 
     export let data;
 
-    function handleUserClick(event: CustomEvent<{ user: any }>) {
-        let clickedUser = event.detail.user;
-        $selectData = clickedUser;
-        console.log(clickedUser);
-    }
+    let selectedUserData: { row: number; data: any } | null = null;
+    $: console.log(selectedUserData);
 
+    function handleSelect(event) {
+        selectedUserData = event.detail;
+        selectData.set(event.detail);
+    }
 </script>
 
 {#each data as user, i}
     {#if user == "loading"}
 		<LoadingList></LoadingList>
 	{:else}
-        <RankOrdering index={i} id={user.id} user={user} on:select={handleUserClick}>
+        <RankOrdering 
+        index={i} 
+        id={user.id} 
+        user={user} 
+        on:select={handleSelect}>
             <div><UserIcon data={user?.icon}/></div>
         	<div>{user.name}</div>
         	<div>{user.studentId}</div>

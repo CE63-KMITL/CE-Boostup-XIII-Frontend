@@ -14,7 +14,10 @@
 	const dispatch = createEventDispatcher();
 
 	// set event with user data
-	function handleClick() { dispatch("select", {user}); } 
+	function handleClick() { dispatch("select", {
+		row: index,
+		data: user
+	}); } 
 
 </script>
 
