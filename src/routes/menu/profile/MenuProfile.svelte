@@ -223,7 +223,7 @@
     color: var(--text);
   }
 
-  @media (max-width: 1024px) {
+  @media only screen and (max-width: 1024px) and (min-height: 600px) {
     .Container {
       flex-direction: column;
       align-items: center;
@@ -283,7 +283,7 @@
     }
   }
 
-  @media (max-width: 432px) {
+  @media only screen and (max-width: 430px) and (min-height: 500px) {
     .Container {
       flex-direction: column;
       align-items: center;
