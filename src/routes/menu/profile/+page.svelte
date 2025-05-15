@@ -25,6 +25,7 @@
 
       <div class="profile_info">
         <div class="bio_info">
+          <!--TODO: EDIT PROFILE-->
           <img src={icon} alt="รูปนักผจญภัย" class="icon" />
           <div class="name_id">
             <div>(name)</div>

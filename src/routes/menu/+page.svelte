@@ -15,6 +15,7 @@
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
 	import { items, currentPage, updatePage } from "./pageManager";
 	import { afterNavigate } from "$app/navigation";
+  import MenuSetting from "./setting/MenuSetting.svelte";
 
 	if (IsRole(Role.STAFF)) {
 		$items["create_problem"] = "สร้างโจทย์";
@@ -123,6 +124,10 @@
 		{:else if $currentPage == "score"}{:else if $currentPage == "create_problem"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<MenuCreateProblem></MenuCreateProblem>
+			</div>
+		{:else if $currentPage == "setting"}
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<MenuSetting></MenuSetting>
 			</div>
 		{/if}
 	</div>
