@@ -119,6 +119,7 @@
 <div class="scroll" bind:this={scrollElement}>
 	{#if activeTab == "overall"}
 		<div in:azScale={{ delay: 250 }} out:azScale>
+			<!-- <Overall></Overall> -->
 			<Overall data={users}></Overall>
 		</div>
 	{:else if activeTab == "house"}
@@ -127,6 +128,7 @@
 		</div>
 	{:else if activeTab == "myHouse"}
 		<div in:azScale={{ delay: 250 }} out:azScale>
+			<!-- <MyHouse></MyHouse> -->
 			<MyHouse dataMyHouse={users}></MyHouse>
 		</div>
 	{/if}

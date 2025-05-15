@@ -5,7 +5,21 @@
     import UserIcon from "$lib/components/UserIcon.svelte";
     import { userData } from "$lib/auth.local";
     import { selectedHouseStore } from "../score";
+
     export let dataMyHouse: any[] = [];
+	// let dataMyHouse = [
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "barbarian", score: 2700 },
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "sorcerer", score: 1700 },
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "rogue", score: 700 },
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "wizard", score: 100 },
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "bard", score: 30 },
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "paladin", score: 1 },
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "monk", score: 20 },
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "samurai", score: 3300 },
+	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "ranger", score: 7400 },
+    // ];
+
+
     let optionDropdown: any[] = [];
     // let selectedOptionDropdown: string = "Barbarian";
     // let selectedOptionDropdown: string = $userData.house.charAt(0).toUpperCase() + $userData.house.slice(1);
@@ -31,10 +45,10 @@
 
 {#each dataMyHouse as user, i}
     <RankOrdering index={i} id={user.id} user={user} on:select={handleUserClick}>
-        <UserIcon data={user.icon}></UserIcon>
+		<div><UserIcon data={user.icon}></UserIcon></div>
         <div>{user.name}</div>
         <div>{user.studentId}</div>
-        <div>{user.score}</div>
+        <div style="text-align: right; padding-inline-end: 2%;">{user.score}</div>
     </RankOrdering>
 {/each}
 

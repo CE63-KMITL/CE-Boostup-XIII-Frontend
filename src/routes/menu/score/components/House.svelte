@@ -18,17 +18,21 @@
 </script>
 
 {#each dataHouse as house, i}
-    <RankOrdering index={i} user={house} id={house.id} on:select={handleUserClick}>
-        <div style="width: 40%; text-align: left;">{house.name.charAt(0).toUpperCase() + house.name.slice(1)}</div>
-    	<div style="text-align: right;   padding-inline-end: 3%;" >{house.value}</div>
+    <RankOrdering index={i} id={house.id} user={house} on:select={handleUserClick}>
+        <div style="min-width: 50%; width: 100px; text-align: left; padding-inline-start: 4%;">{house.name.charAt(0).toUpperCase() + house.name.slice(1)}</div>
+    	<div style="text-align: right; padding-inline-end: 3%;" >{house.value}</div>
     </RankOrdering>
 {/each}
 
 
 <style lang="scss">
     :global(.nameHouse){
-        width: 40%;
+        width: 100%;
         text-align: left;
-      
+        padding-inline-start: 3%;
+    }
+    :global(.valueHouse){
+        text-align: right;
+        padding-inline-end: 3%;
     }
 </style>
