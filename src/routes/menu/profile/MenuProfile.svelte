@@ -126,7 +126,6 @@
 
   .profile_box {
     display: flex;
-    margin-top: 1.5vh;
     margin-left:3vw;
     margin-bottom:5vh;
   }
@@ -164,7 +163,7 @@
   }
 
   .profile .score_header {
-    font-size: 0.7rem;
+    font-size: 1rem;
     background: var(--light-yellow, #F1D5A1);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -172,7 +171,7 @@
   }
 
   .profile .score_body {
-    font-size: 0.7rem;
+    font-size: 1rem;
     background-color: var(--list-bg);
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -222,5 +221,131 @@
     margin-top: 3vh;
     margin-left: 2vw;
     color: var(--text);
+  }
+
+  @media (max-width: 1024px) {
+    .Container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .profile, .score_history {
+      width: 100%;
+      max-width: 90vw;
+    }
+
+    .profile {
+      height:auto;
+      padding-bottom:2rem;
+      padding-left:5.5vw;
+    }
+
+    .houseicon {
+      width: 25vw;
+    }
+
+    .score_history {
+      height:9vh;
+    }
+
+    .profile_box {
+      width: 100%;
+      margin: 0;
+      gap: 2rem;
+    }
+
+    .profile_info {
+      height:34.2vh;
+      width: 50vw;
+      margin-bottom:4vh;
+      padding-bottom:4vh;
+    }
+
+    .profile .score_table {
+      margin-top:6vh;
+      width: 100%;
+      max-width: 500px; 
+      height:1vh;
+      margin-top:3vh;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    
+
+    h1 {
+      font-size: 2rem; 
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+    }
+  }
+
+  @media (max-width: 432px) {
+    .Container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .profile, .score_history {
+      width: 100%;
+      max-width: 90vw;
+    }
+
+    .bio_info, .personal_info {
+      margin-left:25vw;
+    }
+
+    .profile {
+      height:auto;
+    }
+
+
+    .score_history {
+      height:9vh;
+    }
+
+    .profile_box {
+      flex-direction: column;
+      width: 100%;
+      margin-left:-10px;
+    }
+
+    .profile_info {
+      height:100%;
+      width: 90%;
+      margin:auto;
+      margin-bottom:4vh;
+      padding-bottom:4vh;
+    }
+
+    .houseicon {
+      width: 50%;
+      max-width: 250px;
+      margin: 0 auto;
+    }
+
+    .profile .score_table {
+      margin-top:6vh;
+      width: 100%;
+      max-width: 250px; 
+      height:1vh;
+      margin-top:3vh;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    
+
+    h1 {
+      font-size: 2rem; 
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+    }
   }
 </style>
