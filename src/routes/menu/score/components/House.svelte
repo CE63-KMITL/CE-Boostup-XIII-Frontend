@@ -17,8 +17,6 @@
     onMount(async () => {
         const res = await api.call(`/houseScores?order=ASC`);
         dataHouse = res.data;
-
-        
     });
 
 </script>

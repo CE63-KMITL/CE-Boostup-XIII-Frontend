@@ -28,7 +28,8 @@
 	let activeTab = "scoreDetail";
 
 	let isSearching = "";
-	let currentSelectData;
+	let historyWay;
+	let currentSelectData = null;
 
 	// Edit Score (Add+ & Substract(Minus-))
 	let editMessage: string;
@@ -59,7 +60,12 @@
 	// Pop-up Score History
 	let showHistoryPopup = false;
 	function showUserHistory(userHistory: any) {
-		currentSelectData = userHistory;
+		if (userHistory == $userData) {
+			historyWay = userHistory;
+			currentSelectData = userHistory;
+		} else if (userHistory == $selectData) {
+			historyWay = userHistory.data;
+		} 
 		showHistoryPopup = true;
 	}
 
@@ -80,11 +86,9 @@
 		}
 	});
 
-	$: if (currentSelectData) {
-		(async() => {
-			console.log(currentSelectData);
-		})();
-	}
+	$: console.log("This is your currentData na",currentSelectData);
+
+	$: console.log("Your selectData has changed.",$selectData);
 </script>
 
 <!-- 
@@ -138,7 +142,7 @@ HTML Crapp
 							"
 						/>
 					</Frame>
-					{#if currentSelectData != null}
+					{#if $selectData != null}
 						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="sc-instead-ntung-top-profile">
 								<div style="padding: 10px 20px;"> 
@@ -176,7 +180,7 @@ HTML Crapp
 								</div>
 							</div>
 						</div>
-					{:else if currentSelectData == null && isSearching == ""}
+					{:else if $selectData == null && isSearching == ""}
 						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="dragon-image">
 								<img src={"dragon-logo.png"} alt="" />
@@ -202,12 +206,14 @@ Popup Score History
 -->
 
 {#if showHistoryPopup}
+
+
 	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:azScale out:azScale>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
-			<div id="popup-middle"><History userDataHistory={currentSelectData}></History></div>
+			<div id="popup-middle"><History userDataHistory={historyWay}></History></div>
 			<div id="popup-bottom"> 
-				<button class="sc-history-btn" onclick={() => closeUserHistory(currentSelectData)}>ปิด</button> 
+				<button class="sc-history-btn" onclick={() => closeUserHistory(historyWay)}>ปิด</button> 
 			</div>
 		</div>
 	</div>

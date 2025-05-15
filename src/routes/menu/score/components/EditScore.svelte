@@ -21,7 +21,7 @@
     async function callAddSubstract() {
         const scoreSubstract = await api.call(`/user/score/subtract` , {
             method: "POST",
-            data: {getData},
+            data: getData,
             withToken: true
         });
         showPopup("ลบคะแนนเรียบร้อยแล้วค่าา~ `(*>﹏<*)′ ");
