@@ -105,7 +105,7 @@
     display: flex;
     justify-content: center;
     overflow:auto;
-    gap: 2vw;
+    gap: 2rem;
     min-height: 100vh;
     width: 100vw;
     padding-top: 2rem;
@@ -180,7 +180,7 @@
 
   .profile_info {
     width: 25vw;
-    height: 51.8vh;
+    height: 54vh;
     min-height: 8rem;
     margin-top: 5vh;
     margin-left:1.5vw;
@@ -331,6 +331,7 @@
       max-width: 250px; 
       height:1vh;
       margin-top:3vh;
+      margin-bottom:3vh;
       margin-left:auto;
       margin-right:auto;
     }
