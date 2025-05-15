@@ -23,16 +23,3 @@
     	<div style="text-align: right; padding-inline-end: 3%;" >{house.value}</div>
     </RankOrdering>
 {/each}
-
-
-<style lang="scss">
-    :global(.nameHouse){
-        width: 100%;
-        text-align: left;
-        padding-inline-start: 3%;
-    }
-    :global(.valueHouse){
-        text-align: right;
-        padding-inline-end: 3%;
-    }
-</style>

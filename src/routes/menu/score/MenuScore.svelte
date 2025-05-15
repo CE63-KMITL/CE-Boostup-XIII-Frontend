@@ -3,7 +3,6 @@
 	import ScoreTab from "./components/ScoreTab.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import Tab from "$lib/components/Tab.svelte";
-	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
 	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
