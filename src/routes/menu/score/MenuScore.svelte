@@ -12,6 +12,8 @@
 	import { searchParams } from "./score";
 	import History from "./components/History.svelte";
 	import Claim from "./components/Claim.svelte";
+	import { fade } from "svelte/transition";
+	import StaffClaim from "./components/StaffClaim.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -30,6 +32,15 @@
 	let selectedStudent = null;
 
 	let editScore: number;
+
+	//Pop-up Staff Cliam
+	let showStaffClaim = false;
+	function openStaffClaim() {
+		showStaffClaim = true;
+	}
+	function closeStaffClaim() {
+		showStaffClaim = false;
+	}
 
 	// Pop-up Score History
 	let showPopup = false;
@@ -91,7 +102,7 @@ HTML Crapp
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
-				<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<div id="scoreTab-claim" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Claim></Claim>
 				</div>
 			{:else if activeTab == "scEditData"}
@@ -159,12 +170,26 @@ HTML Crapp
 
 <!-- 
 -------------------------------------------------------
+Staff Claim
+-------------------------------------------------------
+-->
+
+{#if showStaffClaim && IsRole(Role.STAFF)}
+	<div class="backdrop" onclick={closePopup} in:fade out:fade>
+		<div id="popup" onclick={protectClick} in:azScale out:azScale>
+			<StaffClaim onClose={closeStaffClaim} selectedUser={selectedStudent} />
+		</div>
+	</div>
+{/if}
+
+<!-- 
+-------------------------------------------------------
 Popup Score History
 -------------------------------------------------------
 -->
 
 {#if showPopup}
-	<div class="backdrop" onclick={closePopup} in:azScale out:azScale>
+	<div class="backdrop" onclick={closePopup} in:fade out:fade>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
 			<div id="popup-middle"><History></History></div>

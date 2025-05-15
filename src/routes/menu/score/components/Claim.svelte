@@ -34,11 +34,14 @@
 			maxPoints = 0;
 		}
 
-		const totalRewards = allRewards.length;
-		const completedRewards = allRewards.filter((r) => r.status !== "locked").length;
-		progressPercentage = totalRewards > 0 ? (completedRewards / totalRewards) * 100 : 0;
+		progressPercentage = ($userData.score ?? 0 / maxPoints) * 100;
 	});
 </script>
+
+<div class="score-display">
+	<h2 class="score-label">คะแนนปัจจุบัน</h2>
+	<p class="current-score">{$userData.score ?? 0}</p>
+</div>
 
 <div class="progress-container">
 	<div class="progress-line">
@@ -52,134 +55,156 @@
 		{#each allRewards as reward, i (i)}
 			{@const leftPosition = maxPoints > 0 ? (reward.points / maxPoints) * 100 : 0}
 			<div class="checkpoint status-{reward.status}" style="left: {leftPosition}%;">
-				<img src="/rewards/{reward.name}.png" alt={reward.name} />
+				<img src="/rewards/{reward.name}.png" alt="" />
 				<span class="checkpoint-label">{reward.name} ({reward.points})</span>
 			</div>
 		{/each}
 	</div>
 </div>
 
-<!---------------------------------------------------------
-Reward Table
---------------------------------------------------------->
-<div class="reward-table-container">
-	<table>
-		<thead>
-			<tr>
-				<th>ภาพ</th>
-				<th>ชื่อ</th>
-				<th>ต้องการคะแนนอีก</th>
-				<th>สถานะ</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each allRewards as reward, i (i)}
-				<tr>
-					<td>
-						<img src="/rewards/{reward.name}.png" alt={reward.name} width="40" height="40" />
-					</td>
-					<td>{reward.name}</td>
-					<td>
-						{#if reward.status === "locked"}
-							{reward.points}
-						{:else}
-							-
-						{/if}
-					</td>
-					<td class="status-{reward.status}">
-						{#if reward.status === "redeemed"}
-							แลกแล้ว<br />(‾◡◝)
-						{:else if reward.status === "available"}
-							สามารถแลกได้<br />ヾ(≧▽≦*)o
-						{:else if reward.status === "locked"}
-							พยายามเข้า<br />(.❛ ᴗ ❛ .)
-						{/if}
-					</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+<div class="reward-list-container">
+	<div class="reward-header">
+		<div class="reward-header-item" title="ภาพ">ภาพ</div>
+		<div class="reward-header-item" title="ชื่อ">ชื่อ</div>
+		<div class="reward-header-item" title="ต้องการคะแนนอีก">ต้องการคะแนนอีก</div>
+		<div class="reward-header-item" title="สถานะ">สถานะ</div>
+	</div>
+	<div class="reward-items">
+		{#each allRewards as reward, i (i)}
+			<div class="reward-item">
+				<div class="reward-item-image">
+					<img src="/rewards/{reward.name}.png" alt="" width="40" height="40" />
+				</div>
+				<div class="reward-item-name">{reward.name}</div>
+				<div class="reward-item-needed-score">
+					{#if reward.status === "locked"}
+						{reward.points}
+					{:else}
+						-
+					{/if}
+				</div>
+				<div class="reward-item-status status-{reward.status}">
+					{#if reward.status === "redeemed"}
+						แลกแล้ว<br />(‾◡◝)
+					{:else if reward.status === "available"}
+						สามารถแลกได้<br />ヾ(≧▽≦*)o
+					{:else if reward.status === "locked"}
+						พยายามเข้า<br />(.❛ ᴗ ❛ .)
+					{/if}
+				</div>
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
-	/*-------------------------------------------------------
-	Reward Table Styling
-	-------------------------------------------------------*/
-
-	.reward-table-container {
-		border-radius: var(--n-border-radius);
-		overflow: hidden;
-		overflow-y: auto;
-		border: 1px solid var(--outline);
-	}
-
-	.reward-table-container table {
+	.reward-list-container {
 		width: 100%;
-		border-collapse: collapse;
-		margin-top: 0;
+		border-radius: var(--n-border-radius);
+		display: flex;
+		flex-direction: column;
 	}
 
-	.reward-table-container th,
-	.reward-table-container td {
+	.reward-header {
+		display: flex;
 		padding: 10px;
+		background-color: var(--bg);
+		font-weight: bold;
+		color: var(--text);
+		border-radius: 999px;
+		box-shadow: 0 2px 10px var(--list-shadow);
+		z-index: 2;
+		white-space: pre;
+	}
+
+	.reward-header-item {
+		text-align: center;
+		text-overflow: ellipsis;
+		padding: 5px;
+		overflow: hidden;
+	}
+
+	.reward-header-item:nth-child(1) {
+		text-align: center;
+		width: 60px;
+		flex-shrink: 0;
+	}
+	.reward-header-item:nth-child(2) {
 		text-align: left;
+		width: 20%;
+	}
+	.reward-header-item:nth-child(3) {
+		text-align: center;
+		width: 30%;
+	}
+	.reward-header-item:nth-child(4) {
+		text-align: center;
+		width: 40%;
+	}
+
+	.reward-items {
+		overflow-y: auto;
+		height: 100%;
+	}
+
+	.reward-item {
+		display: flex;
+		padding: 10px;
+		border-bottom: 1px solid var(--darker);
+		align-items: center;
 		color: var(--text);
 	}
 
-	.reward-table-container th {
-		background-color: var(--bg);
-		font-weight: bold;
+	.reward-item:last-child {
+		border-bottom: none;
 	}
 
-	.reward-table-container td img {
-		width: 50px;
-		height: 50px;
+	.reward-item-image {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 60px;
+		flex-shrink: 0;
+	}
+
+	.reward-item img {
+		width: 40px;
+		height: 40px;
 		border-radius: 50%;
 		object-fit: cover;
 		border: 1px solid var(--outline);
 		background-color: var(--bg);
-		text-align: center;
 	}
 
-	/* Adjust column width as needed */
-	.reward-table-container th:nth-child(1),
-	.reward-table-container td:nth-child(1) {
-		min-width: 70px;
-		width: 60px; /* Image column */
-		text-align: center;
+	.reward-item-name {
+		text-align: left;
+		padding: 0 5px;
+		width: 20%;
 	}
 
-	.reward-table-container th:nth-child(2),
-	.reward-table-container td:nth-child(2) {
-		width: 20%; /* Needed Score column */
+	.reward-item-needed-score {
 		text-align: center;
+		padding: 0 5px;
+		width: 30%;
 	}
 
-	.reward-table-container th:nth-child(3),
-	.reward-table-container td:nth-child(3) {
-		width: 30%; /* Needed Score column */
+	.reward-item-status {
 		text-align: center;
+		font-weight: bold;
+		padding: 0 5px;
+		width: 40%;
 	}
 
-	.reward-table-container th:nth-child(4),
-	.reward-table-container td:nth-child(4) {
-		width: 50%; /* Status column */
-		text-align: center;
-	}
-
-	.reward-table-container td.status-redeemed {
+	.reward-item-status.status-redeemed {
 		color: var(--status-done);
-		font-weight: bold; /* Optional: make text bold */
 	}
 
-	.reward-table-container td.status-available {
+	.reward-item-status.status-available {
 		color: var(--status-in-progress);
-		font-weight: bold; /* Optional: make text bold */
 	}
 
-	.reward-table-container td.status-locked {
+	.reward-item-status.status-locked {
 		color: var(--status-not-started);
-		font-weight: bold; /* Optional: make text bold */
 	}
 
 	/*-------------------------------------------------------
@@ -189,8 +214,10 @@ Reward Table
 		width: 80%;
 		margin: 1% auto;
 		position: relative;
+		margin-top: 20px;
 		padding-top: 50px;
 		padding-bottom: 10px;
+		filter: drop-shadow(0 2px 3px var(--list-shadow));
 	}
 
 	.progress-line {
@@ -206,13 +233,14 @@ Reward Table
 		position: relative;
 		overflow: hidden;
 		border: 1px solid var(--outline);
+
+		background: var(--bg);
 	}
 
 	.progress-fill {
 		height: 100%;
 		background-color: var(--status-done);
 		transition: width 0.5s ease-in-out;
-		border-radius: 8px;
 		z-index: 2;
 		position: relative;
 	}
@@ -221,9 +249,9 @@ Reward Table
 		position: absolute;
 		top: 0;
 		bottom: 0;
-		width: 2px;
+		width: 1px;
 		background-color: var(--outline);
-		z-index: 1;
+		z-index: 2;
 		transform: translateX(-50%);
 	}
 
@@ -241,7 +269,6 @@ Reward Table
 		width: 40px;
 		height: 40px;
 		background-color: #fff;
-		border: 1px solid var(--darker);
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
@@ -288,21 +315,40 @@ Reward Table
 
 	.checkpoint-label {
 		position: absolute;
-		top: -30px;
+		top: -20px;
 		left: 50%;
 		transform: translateX(-50%);
 		white-space: nowrap;
 		font-size: 0.8em;
 		color: var(--text);
-		opacity: 0; /* Changed from 1 to 0 */
+		opacity: 0;
 		transition: opacity 0.3s ease-in-out;
 		pointer-events: none;
 		z-index: 4;
 		text-align: center;
 	}
 
-	/* New rule for hover effect */
 	.checkpoint:hover .checkpoint-label {
 		opacity: 1;
+	}
+
+	/*-------------------------------------------------------
+	Current Score Styling
+-------------------------------------------------------*/
+	.score-display {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+
+	.score-label {
+		font-size: 2em; /* ทำให้ label มีขนาดใหญ่ */
+		color: var(--text);
+		margin-bottom: 5px;
+	}
+
+	.current-score {
+		font-size: 2em;
+		font-weight: 700;
+		color: var(--text);
 	}
 </style>
