@@ -5,7 +5,6 @@
 	import houseIcon from "./house-placeholder.png";
 	import UserIcon from "$lib/components/UserIcon.svelte";
 
-	// convert date to dd/mm format
 	function convertDate(dateString) {
 		const date = new Date(dateString);
 		const options: Intl.DateTimeFormatOptions = {
@@ -20,7 +19,6 @@
 	let scoreLog = null;
 
 	onMount(async () => {
-		// Fetch user data
 		user = await api.call("/user/data", { method: "GET", withToken: true });
 		console.log(user);
 	});
@@ -206,14 +204,14 @@
   }
   .bio_info .name_id {
     font-size: 1.1rem;
-    margin-top: 4vh;
+    margin-top: 5vh;
     margin-left: 1.5vw;
   }
   .bio_info .name_id .name {
     color: var(--text);
   }
   .bio_info .name_id .id {
-    color: var(--theme-dark-text);
+    color: var(--theme-dark);
   }
   
   .personal_info {
