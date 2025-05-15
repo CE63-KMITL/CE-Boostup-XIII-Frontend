@@ -20,6 +20,7 @@
 	import HeaderDifficulty from "./Header-Difficulty.svelte";
 	import HeaderTags from "./Header-Tags.svelte";
 	import ProblemRow from "./ProblemRow.svelte";
+	import { pagination } from "$lib/paginaion";
 
 	export let loading = false;
 	export let loadMore;
@@ -34,18 +35,8 @@
 		const problem_table = document.getElementById("problem-table");
 		const head_list: HTMLElement = document.querySelector("#problem-table #header");
 
-		function updateScroll() {
-			head_list.setAttribute("top", problem_table.scrollTop > 0 ? "false" : "true");
-
-			if (!loading && problem_table.scrollHeight - problem_table.scrollTop - problem_table.clientHeight < 20) {
-				loadMore();
-			}
-		}
-
 		if (problem_table) {
-			problem_table.addEventListener("scroll", updateScroll);
-
-			updateScroll();
+			pagination(problem_table, loadMore);
 		}
 	});
 </script>

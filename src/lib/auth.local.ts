@@ -3,9 +3,12 @@ import { Role } from "./enum/role";
 
 export const userData = writable({
 	id: null,
-	name: null,
 	role: null,
 	icon: null,
+	name: null,
+	studentId: null,
+	score: null,
+	house: null,
 });
 
 export function IsRole(role: Role) {

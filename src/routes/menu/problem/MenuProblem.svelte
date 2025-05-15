@@ -21,6 +21,7 @@
 	import Loading from "$lib/components/Loading.svelte";
 	import { fade, fly } from "svelte/transition";
 	import { azScale } from "$lib/transition";
+	import { runProblemListAnimation } from "$lib/animation";
 
 	/*
      -------------------------------------------------------
@@ -43,17 +44,6 @@
      Helper Functions
      -------------------------------------------------------
      */
-	async function runProblemListAnimation(dataIds: string[]) {
-		for (let i = 0; i < dataIds.length; i++) {
-			const dataId = dataIds[i];
-			const element: HTMLDivElement = document.querySelector(`[data-problem-id="${dataId}"]`);
-
-			if (element) {
-				element.style.animation = `slide-in 0.2s ease-out forwards`;
-				await sleep(70);
-			}
-		}
-	}
 
 	async function getQueryString() {
 		const searchQuery = {
@@ -128,8 +118,13 @@
 				loaded = true;
 			}
 
-			requestAnimationFrame(() => {
-				runProblemListAnimation(getAllProblems.data.map((item) => item.id));
+			requestAnimationFrame(async () => {
+				const dataIds = getAllProblems.data.map((item) => item.id);
+				const elements = [];
+				for (let i = 0; i < dataIds.length; i++) {
+					elements.push(document.querySelector(`[data-problem-id="${dataIds[i]}"]`));
+				}
+				await runProblemListAnimation(elements);
 			});
 		} else {
 			if (isLoadMore) {
@@ -144,7 +139,7 @@
 	}
 
 	async function loadMore() {
-		if (loadingMore) return;
+		if (loadingMore || !loaded) return;
 		console.log("load more");
 		loadingMore = true;
 		await updateProblems(true);
@@ -317,10 +312,6 @@
 				display: none;
 				margin-bottom: 10px;
 			}
-		}
-
-		:global(.problem-list) {
-			opacity: 0;
 		}
 
 		:global(#header) {

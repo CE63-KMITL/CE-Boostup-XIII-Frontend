@@ -5,13 +5,15 @@
 	import Tab from "$lib/components/Tab.svelte";
 	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
-    import { IsRole, userData } from "$lib/auth.local";
-    import { Role } from "$lib/enum/role";
-    import { onMount } from "svelte";
-    import Search from "$lib/components/Icons/Search.svelte";
-    import { searchParams } from "./score";
+	import { IsRole, userData } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
+	import { onMount } from "svelte";
+	import Search from "$lib/components/Icons/Search.svelte";
 	import History from "./components/History.svelte";
     import UserIcon from "$lib/components/UserIcon.svelte";
+    import ProfileUser from "$lib/components/ProfileUser.svelte";
+	import { selectData } from "./score";
+    import EditScore from "./components/EditScore.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -25,32 +27,65 @@
 
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
-	
-	let isSearching = "";
-	let selectedStudent = null;
 
+	let isSearching = "";
+	let currentSelectData;
+
+	// Edit Score (Add+ & Substract(Minus-))
+	let editMessage: string;
 	let editScore: number;
 
+	let editMethod = "";
+	let dataEditScore = {
+		userId: "",
+		amount: 0,
+		message: "" }
+	let showEditScore = false;
+	// let showEditScore = true;
+	
+		// Plus & Substract 
+	function callEditScore() { showEditScore = true; }
+	function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
+		
+		//setMehtod need to be "+" or "-" Naja to check method in component
+		editMethod = setMethod;
+		dataEditScore = {
+			userId: setUserId,
+			amount: setAmount,
+			message: setMessage, }
+		
+		callEditScore();
+	}
+
 	// Pop-up Score History
-	let showPopup = false;
-	function openPopup() { showPopup = true; }
-	function closePopup() { showPopup = false; }
+	let showHistoryPopup = false;
+	function showUserHistory(userHistory: any) {
+		currentSelectData = userHistory;
+		showHistoryPopup = true;
+	}
+
+	function closeUserHistory(userHistory: any) {
+		if (userHistory.id === $userData.id) {
+			currentSelectData = null;
+		}
+		showHistoryPopup = false;
+	}
+
 	function protectClick(event) { event.stopPropagation(); }
 
-	// function test() {
-	// 	let datauser = api.call(`/user/data`, { withToken: true });
-	// 	console.log(datauser);
-	// }
-
 	onMount(async () => {
-		// test();
 
 		if (IsRole(Role.STAFF)) {
-			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
+			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
 		}
 	});
 
+	$: if (currentSelectData) {
+		(async() => {
+			console.log(currentSelectData);
+		})();
+	}
 </script>
 
 <!-- 
@@ -70,26 +105,32 @@ HTML Crapp
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
+
+							<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
+
 							<div id="scl-top-userIcon"> <UserIcon data={$userData.icon}></UserIcon> </div>
-							<span>{profile.name}</span>
-							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
+							<span>{$userData.name}</span>
+							<span style="color: var(--sc-orangedark)">{$userData.studentId} </span>
 						</div>
 						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
-						<div id="scl-detail-bottom">{profile.score}</div>
+						<div id="scl-detail-bottom">{$userData.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
+						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
+			{:else if activeTab == "claimPrice"}
+				<div class="full">claimPrice naja</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
 						<Search></Search>
-						<input 
+						<input
 							id="search"
 							placeholder="ชื่อ / รหัสนักศึกษา"
 							oninput={(e: any) => {
-								$searchParams["search"] = e.target.value;
+								// $searchParams["search"] = e.target.value;
+								// $searchParams["page"] = e.target.value;
 							}}
 							bind:value={isSearching}
 							style="
@@ -98,63 +139,57 @@ HTML Crapp
 							"
 						/>
 					</Frame>
-					{#if selectedStudent == null && isSearching =="" }
+					{#if currentSelectData}
+						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+							<div class="sc-instead-ntung-top-profile">
+								<div style="padding: 10px 20px;"> 
+
+									<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
+
+									<ProfileUser user={$selectData}/> 
+								</div>
+								<div class="sc-instead-ntung-top-detail">
+									<div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
+									<div id="detail-bottom">{$selectData.score}</div>
+									<div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
+									<div id="detail-bottom">{profile.houseScore}</div>
+									<Button id="detail-btn" onclick={() => showUserHistory($selectData)} filter={false}>ประวัติคะแนน</Button>
+								</div>
+							</div>
+							<div class="sc-instead-ntung-middle">
+								<input 
+									id="inputMessage" 
+									placeholder="หมายเหตุ* (ใส่เหตุผลในการแก้ไขคะแนนด้วยน้า ( •̀ ω •́ )✧)" 
+									type="string" 
+									bind:value={editMessage}/>
+							</div>
+							<div class="sc-instead-ntung-bottom">
+								<input 
+									id="inputScore" 
+									placeholder="คะแนน" 
+									type="number" 
+									bind:value={editScore} />
+								<div id="editScore-btn">
+									<Button class="plusScore-btn" onclick={() => setEditScore("+", $selectData.id, editScore, editMessage)} 
+										color="var(--sc-plus)">บวกคะแนน</Button>
+									<Button class="minusScore-btn" onclick={() => setEditScore("-", $selectData.id, editScore, editMessage)} 
+										color="var(--sc-minus)">ลบคะแนน</Button>
+								</div>
+							</div>
+						</div>
+					{:else if currentSelectData == null && isSearching == ""}
 						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
-							<div class="scl-image">
+							<div class="dragon-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
 							<span id="dragontext">CE BOOSTUP</span>
-						</div>
-					{:else}
-
-					<!-- 
-					-------------------------------------------------------
-					Below Search in EditScore Tab
-					-------------------------------------------------------
-					-->
-
-						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
-							<div class="sc-instead-ntung-top">
-
-							</div>
-							<div class="sc-instead-ntung-bottom">
-								<input id="inputScore" placeholder="คะแนน" bind:value={editScore} />
-								<div id="editScore-btn">
-									<Button class="plusScore-btn">บวกคะแนน</Button>
-									<Button class="minusScore-btn">ลบคะแนน</Button>
-								</div>
-							</div>
 						</div>
 					{/if}
 				</div>
 			{/if}
 		</Tab>
-	{:else if IsRole(Role.MEMEBER)}
-		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
-			{#if activeTab == "scoreDetail"}
-				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<div class="scl-image">
-						<img src={profile.cardImg} alt="" />
-					</div>
-					<div id="scl-main">
-						<div class="scl-top">
-							<UserIcon data={$userData.icon}></UserIcon>
-							<span>{profile.name}</span>
-							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
-						</div>
-						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
-						<div id="scl-detail-bottom">{profile.score}</div>
-						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
-						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
-					</div>
-				</div>
-			{:else if activeTab == "claimPrice"}
-				<div class="full">claimPrice naja</div>
-			{/if}
-		</Tab>
 	{/if}
-	
+
 	<!-- SC-Right Side -->
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
@@ -167,18 +202,27 @@ Popup Score History
 -------------------------------------------------------
 -->
 
-{#if showPopup}
-	<div class="backdrop" onclick={closePopup} in:azScale out:azScale>
+{#if showHistoryPopup}
+	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:azScale out:azScale>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
-			<div id="popup-middle"><History></History></div>
+			<div id="popup-middle"><History userDataHistory={currentSelectData}></History></div>
 			<div id="popup-bottom"> 
-				<button class="sc-history-btn" onclick={closePopup}>ปิด</button> 
+				<button class="sc-history-btn" onclick={() => closeUserHistory(currentSelectData)}>ปิด</button> 
 			</div>
 		</div>
 	</div>
 {/if}
 
+<!-- 
+-------------------------------------------------------
+Popup Score History
+-------------------------------------------------------
+-->
+
+{#if showEditScore}
+	<EditScore getMethod={editMethod} getData={dataEditScore}/>
+{/if}
 <!-- 
 -------------------------------------------------------
 Style SCSS Na
@@ -192,7 +236,7 @@ Style SCSS Na
 		display: flex;
 		flex-direction: row;
 		gap: 1%;
-		padding: 2% 5% 2% 5%;
+		padding: 2% 5%;
 		box-sizing: border-box;
 		container-type: size;
 
@@ -202,6 +246,8 @@ Style SCSS Na
 		}
 
 		:global(#sc-right) {
+			display: flex;
+			flex-direction: column;
 			border-radius: 20px;
 			box-shadow: 0 4px 24px var(--list-shadow);
 			padding: 1% 2%;
@@ -222,12 +268,10 @@ Style SCSS Na
 		justify-content: center;
 
 		div.scl-image {
-			// height: auto;
-			// width: auto;
-			width: 100%;
+			width: 90%;
 			height: 70%;
-			margin: 60px 0px 0px 0px;
 			padding: 5%;
+			margin-top: 25%;
 		}
 
 		:global(#scl-main) {
@@ -288,7 +332,6 @@ Style SCSS Na
 				color: var(--text);
 			}
 		}
-		
 	}
 	:global(#scoreTab-editscore) {
 		padding: 1% 20px;
@@ -307,24 +350,22 @@ Style SCSS Na
 		}
 
 		:global(#sc-below-search) {
-			width: 55%;
+			width: 100%;
 			height: 100%;
 			display: flex;
 			flex-direction: column;
-			justify-content: center;
 			align-items: center;
-		}
+			justify-content: center;
 
-		span#dragontext {
-			filter: drop-shadow( 0 2px 3px var(--list-shadow));
-			font-size: 20px;
+			.dragon-image { width: 60%; }
+			#dragontext { filter: drop-shadow( 0 2px 3px var(--list-shadow)); }
+
 		}
 	}
 
-
-// -------------------------------------------------------
-// 	Score History Pop-up
-// -------------------------------------------------------
+	// -------------------------------------------------------
+	// 	Score History Pop-up
+	// -------------------------------------------------------
 
 	.sc-instead-ntung {
 		width: 100%;
@@ -332,16 +373,54 @@ Style SCSS Na
 		margin: 10px 0;
 		border-radius: 10px;
 		overflow-y: auto;
-		// padding-right: 1%;
 
-		.sc-instead-ntung-top {
+		.sc-instead-ntung-top-profile {
+			display: flex;
+			flex-direction: column;
 			border: 1px solid var(--outline);
 			background-color: var(--sc-bg);
 			width: 100%;
-			height: 70%;
-			margin-bottom: 15px;
+			height: auto;
+			padding-bottom: 20px;
+			margin-bottom: 10px;
 			border-radius: 10px;
-			
+
+			.sc-instead-ntung-top-detail {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				padding: 0 50px;
+
+				#detail-top {
+					background-color: var(--sc-orangelight);
+					border: 1px solid var(--outline);
+					border-radius: 10px 10px 0 0;
+					text-align: center;
+					padding: 1.5%;
+					width: 100%;
+				}
+
+				#detail-bottom {
+					background-color: var(--bg);
+					border: 1px solid var(--outline);
+					border-radius: 0px 0px 10px 10px;
+					text-align: center;
+					margin-bottom: 15px;
+					padding: 1.5%;
+					width: 100%;
+				}
+
+				:global(#detail-btn) {
+					margin-top: 20px;
+				}
+			}
+		}
+
+		.sc-instead-ntung-middle {
+			width: 100%;
+			height: auto;
+			margin-bottom: 10px;
+
 		}
 
 		.sc-instead-ntung-bottom {
@@ -352,24 +431,29 @@ Style SCSS Na
 			justify-content: center;
 			align-items: center;
 			width: 100%;
-			height: 25%;
+			height: auto;
+			padding: 20px 0;
 			border-radius: 10px;
-			
+
 			#inputScore {
-				display: flex;
-				align-items: center;
-				border: 1px; 
+				text-align: center;
 				background-color: transparent;
 				margin-bottom: 10px;
-			}
+				width: 55%;
 
+			}
+			
 			#editScore-btn {
 				display: flex;
-				justify-content: space-between;
-				width: 70%;
+				flex-direction: row;
+				gap: 30px;
+				width: 80%;
+
+				:global(.plusScore-btn) { padding: 10px 20px; }
+				:global(.minusScore-btn) { padding: 10px 20px; }
+
 			}
 		}
-
 	}
 
 
@@ -432,8 +516,7 @@ Style SCSS Na
 // 	Mobile phone Mode
 // -------------------------------------------------------
 
-
-	@media (max-width: 920px) {
+	@media (max-width: 920px){
 		#Score {
 			flex-direction: column;
 
@@ -451,6 +534,7 @@ Style SCSS Na
 		:global(#scoreTab) {
 			flex-direction: row;
 			align-items: start;
+			justify-content: center;
 
 			div.scl-image {
 				height: auto;
@@ -465,17 +549,30 @@ Style SCSS Na
 			align-items: center;
 			flex-direction: column;
 
-			// :global(#sc-below-search) {
-			// 	display: none;
-			// }
-
 			.scl-image {
 				width: 80%;
+			}
+
+			:global(div#sc-below-search) {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				
+				.dragon-image { width: 30%; }
 			}
 		}
 
 		#popup {
 			max-width: 500px;
+		}
+	}
+
+	@media (max-height: 550px) {
+		:global(#scoreTab-editscore) {
+			:global(div#sc-below-search) {
+				padding: 20% 0;
+			}
 		}
 	}
 </style>

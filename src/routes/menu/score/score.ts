@@ -3,10 +3,11 @@ import { writable } from "svelte/store";
 import { updatePage } from "../pageManager";
 
 export const selectedIDStudent = writable<string | null>(null);
-export const searchParams = writable<{ search: string;  page: number}>({
-    search: "",
+export const searchParams = writable<{ page: number}>({
     page: 1
 });
+
+export const selectData = writable(null);
 
 export function getStudentURL(id) {
     return `/menu?page=score&studentId=${id}`;
@@ -18,3 +19,8 @@ export function goToStudentURL(id) {
     pushState(scurl, null);
     updatePage("score");
 }
+
+//-------------------------------------------------------
+// House Store
+//-------------------------------------------------------
+export const selectedHouseStore = writable<string>('Barbarian');

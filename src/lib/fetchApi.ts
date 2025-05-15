@@ -1,7 +1,7 @@
 import { goto } from "$app/navigation";
 import { getCookie } from "./cookie";
-import { say } from "./normalFunction";
 import { showPopup } from "$lib/components/PopUp.svelte";
+import { say } from "./normalFunction";
 
 const API_HOST = import.meta.env.VITE_API_HOST;
 

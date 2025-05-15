@@ -3,11 +3,21 @@
 	import BadgeGold from "$lib/components/Icons/Badge_Gold.svelte";
 	import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
+	import { createEventDispatcher } from "svelte";
 
-	let { index }: { index: number } = $props();
+	// let index: number = $$restProps?.index;
+	export let index: number;
+	export let id: string;
+	export let user: any;
+
+	// for sent event back Ja
+	const dispatch = createEventDispatcher();
+
+	// set event with user data
+	function handleClick() { dispatch("select", {user}); }
 </script>
 
-<List class="listScores {index < 3 ? 'top' : ''}>">
+<List class="listScores {index < 3 ? 'top' : ''}" id={id} on:click={handleClick}>
 	<div class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>
@@ -20,7 +30,6 @@
 		{/if}
 	</div>
 	<slot></slot>
-	<!-- {@render content()} -->
 </List>
 
 <style lang="scss">
