@@ -18,7 +18,7 @@
 </script>
 
 {#each dataHouse as house, i}
-    <RankOrdering index={i} user={house} on:select={handleUserClick}>
+    <RankOrdering index={i} user={house} id={house.id} on:select={handleUserClick}>
         <div style="width: 40%; text-align: left;">{house.name.charAt(0).toUpperCase() + house.name.slice(1)}</div>
     	<div style="text-align: right;   padding-inline-end: 3%;" >{house.value}</div>
     </RankOrdering>

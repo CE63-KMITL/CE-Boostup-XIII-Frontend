@@ -17,8 +17,7 @@
 	function handleClick() { dispatch("select", {user}); }
 </script>
 
-<List class="listScores {index < 3 ? 'top' : ''}>" id={id}
-	onclick={handleClick}>
+<List class="listScores {index < 3 ? 'top' : ''}" id={id} on:click={handleClick}>
 	<div class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>

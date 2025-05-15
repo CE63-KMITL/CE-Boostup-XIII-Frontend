@@ -13,6 +13,7 @@
     import UserIcon from "$lib/components/UserIcon.svelte";
     import ProfileUser from "$lib/components/ProfileUser.svelte";
 	import { selectData } from "./score";
+    import EditScore from "./components/EditScore.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -30,38 +31,49 @@
 	let isSearching = "";
 	let currentSelectData;
 
+	// Edit Score (Add+ & Substract(Minus-))
 	let editMessage: string;
 	let editScore: number;
 
+	let editMethod = "";
+	let dataEditScore = {
+		userId: "",
+		amount: 0,
+		message: "" }
+	let showEditScore = false;
+	// let showEditScore = true;
+	
+		// Plus & Substract 
+	function callEditScore() { showEditScore = true; }
+	function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
+		
+		//setMehtod need to be "+" or "-" Naja to check method in component
+		editMethod = setMethod;
+		dataEditScore = {
+			userId: setUserId,
+			amount: setAmount,
+			message: setMessage, }
+		
+		callEditScore();
+	}
+
 	// Pop-up Score History
-	let showPopup = false;
+	let showHistoryPopup = false;
 	function showUserHistory(userHistory: any) {
 		currentSelectData = userHistory;
-		showPopup = true;
+		showHistoryPopup = true;
 	}
 
 	function closeUserHistory(userHistory: any) {
 		if (userHistory.id === $userData.id) {
 			currentSelectData = null;
 		}
-		showPopup = false;
+		showHistoryPopup = false;
 	}
 
 	function protectClick(event) { event.stopPropagation(); }
 
-
-	// Plus & Substract 
-	function callEditScore(setUserId: string, setAmount: number, setMessage: string) {
-
-	}
-
-	function test() {
-		// let datauser = api.call(`/user/data`, { withToken: true });
-		// console.log(datauser);
-	}
-
 	onMount(async () => {
-		test();
 
 		if (IsRole(Role.STAFF)) {
 			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
@@ -93,12 +105,15 @@ HTML Crapp
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
+
+							<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
+
 							<div id="scl-top-userIcon"> <UserIcon data={$userData.icon}></UserIcon> </div>
-							<span>{profile.name}</span>
-							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
+							<span>{$userData.name}</span>
+							<span style="color: var(--sc-orangedark)">{$userData.studentId} </span>
 						</div>
 						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
-						<div id="scl-detail-bottom">{profile.score}</div>
+						<div id="scl-detail-bottom">{$userData.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
 						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}>ประวัติคะแนน</Button>
@@ -128,7 +143,9 @@ HTML Crapp
 						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="sc-instead-ntung-top-profile">
 								<div style="padding: 10px 20px;"> 
-									<!-- อย่าลืมเปลี่ยน $userData เป็น $selectData -->
+
+									<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
+
 									<ProfileUser user={$selectData}/> 
 								</div>
 								<div class="sc-instead-ntung-top-detail">
@@ -153,8 +170,10 @@ HTML Crapp
 									type="number" 
 									bind:value={editScore} />
 								<div id="editScore-btn">
-									<Button class="plusScore-btn" color="var(--sc-plus)">บวกคะแนน</Button>
-									<Button class="minusScore-btn" color="var(--sc-minus)">ลบคะแนน</Button>
+									<Button class="plusScore-btn" onclick={() => setEditScore("+", $selectData.id, editScore, editMessage)} 
+										color="var(--sc-plus)">บวกคะแนน</Button>
+									<Button class="minusScore-btn" onclick={() => setEditScore("-", $selectData.id, editScore, editMessage)} 
+										color="var(--sc-minus)">ลบคะแนน</Button>
 								</div>
 							</div>
 						</div>
@@ -183,7 +202,7 @@ Popup Score History
 -------------------------------------------------------
 -->
 
-{#if showPopup}
+{#if showHistoryPopup}
 	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:azScale out:azScale>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
@@ -195,6 +214,15 @@ Popup Score History
 	</div>
 {/if}
 
+<!-- 
+-------------------------------------------------------
+Popup Score History
+-------------------------------------------------------
+-->
+
+{#if showEditScore}
+	<EditScore getMethod={editMethod} getData={dataEditScore}/>
+{/if}
 <!-- 
 -------------------------------------------------------
 Style SCSS Na
