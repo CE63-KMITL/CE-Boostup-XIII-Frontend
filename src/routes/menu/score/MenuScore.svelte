@@ -5,11 +5,11 @@
 	import Tab from "$lib/components/Tab.svelte";
 	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
-    import { IsRole, userData } from "$lib/auth.local";
-    import { Role } from "$lib/enum/role";
-    import { onMount } from "svelte";
-    import Search from "$lib/components/Icons/Search.svelte";
-    import { searchParams } from "./score";
+	import { IsRole, userData } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
+	import { onMount } from "svelte";
+	import Search from "$lib/components/Icons/Search.svelte";
+	import { searchParams } from "./score";
 	import History from "./components/History.svelte";
 
 	const profile = {
@@ -24,7 +24,7 @@
 
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
-	
+
 	let isSearching = "";
 	let selectedStudent = null;
 
@@ -32,9 +32,15 @@
 
 	// Pop-up Score History
 	let showPopup = false;
-	function openPopup() { showPopup = true; }
-	function closePopup() { showPopup = false; }
-	function protectClick(event) { event.stopPropagation(); }
+	function openPopup() {
+		showPopup = true;
+	}
+	function closePopup() {
+		showPopup = false;
+	}
+	function protectClick(event) {
+		event.stopPropagation();
+	}
 
 	// function test() {
 	// 	let datauser = api.call(`/user/data`, { withToken: true });
@@ -45,11 +51,10 @@
 		// test();
 
 		if (IsRole(Role.STAFF)) {
-			headerTabs = { scData: "ข้อมูล" , scEditData: "แก้ไขคะแนน" }
+			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
 		}
 	});
-
 </script>
 
 <!-- 
@@ -79,11 +84,13 @@ HTML Crapp
 						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
 					</div>
 				</div>
+			{:else if activeTab == "claimPrice"}
+				<div class="full">claimPrice naja</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
 						<Search></Search>
-						<input 
+						<input
 							id="search"
 							placeholder="ชื่อ / รหัสนักศึกษา"
 							oninput={(e: any) => {
@@ -96,25 +103,30 @@ HTML Crapp
 							"
 						/>
 					</Frame>
-					{#if selectedStudent == null && isSearching =="" }
-						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+					{#if selectedStudent == null && isSearching == ""}
+						<div
+							id="sc-below-search"
+							in:azScale={{ size: 0.99, delay: 250 }}
+							out:azScale={{ size: 0.99, duration: 100 }}
+						>
 							<div class="scl-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
 							<span id="dragontext">CE BOOSTUP</span>
 						</div>
 					{:else}
-
-					<!-- 
+						<!-- 
 					-------------------------------------------------------
 					Below Search in EditScore Tab
 					-------------------------------------------------------
 					-->
 
-						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
-							<div class="sc-instead-ntung-top">
-
-							</div>
+						<div
+							class="sc-instead-ntung"
+							in:azScale={{ size: 0.99, delay: 250 }}
+							out:azScale={{ size: 0.99, duration: 100 }}
+						>
+							<div class="sc-instead-ntung-top"></div>
 							<div class="sc-instead-ntung-bottom">
 								<input id="inputScore" placeholder="คะแนน" bind:value={editScore} />
 								<div id="editScore-btn">
@@ -127,31 +139,8 @@ HTML Crapp
 				</div>
 			{/if}
 		</Tab>
-	{:else if IsRole(Role.MEMEBER)}
-		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
-			{#if activeTab == "scoreDetail"}
-				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<div class="scl-image">
-						<img src={profile.cardImg} alt="" />
-					</div>
-					<div id="scl-main">
-						<div class="scl-top">
-							<span>{profile.name}</span>
-							<span style="color: var(--sc-orangedark)">{profile.studentId} </span>
-						</div>
-						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
-						<div id="scl-detail-bottom">{profile.score}</div>
-						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
-						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={openPopup} filter={false}>ประวัติคะแนน</Button>
-					</div>
-				</div>
-			{:else if activeTab == "claimPrice"}
-				<div class="full">claimPrice naja</div>
-			{/if}
-		</Tab>
 	{/if}
-	
+
 	<!-- SC-Right Side -->
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
@@ -169,8 +158,8 @@ Popup Score History
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
 			<div id="popup-middle"><History></History></div>
-			<div id="popup-bottom"> 
-				<button class="sc-history-btn" onclick={closePopup}>ปิด</button> 
+			<div id="popup-bottom">
+				<button class="sc-history-btn" onclick={closePopup}>ปิด</button>
 			</div>
 		</div>
 	</div>
@@ -189,7 +178,7 @@ Style SCSS Na
 		display: flex;
 		flex-direction: row;
 		gap: 1%;
-		padding: 2% 5% 2% 5%;
+		padding: 2% 5%;
 		box-sizing: border-box;
 		container-type: size;
 
@@ -199,6 +188,8 @@ Style SCSS Na
 		}
 
 		:global(#sc-right) {
+			display: flex;
+			flex-direction: column;
 			border-radius: 20px;
 			box-shadow: 0 4px 24px var(--list-shadow);
 			padding: 1% 2%;
@@ -280,7 +271,6 @@ Style SCSS Na
 				color: var(--text);
 			}
 		}
-		
 	}
 	:global(#scoreTab-editscore) {
 		padding: 1% 20px;
@@ -308,15 +298,14 @@ Style SCSS Na
 		}
 
 		span#dragontext {
-			filter: drop-shadow( 0 2px 3px var(--list-shadow));
+			filter: drop-shadow(0 2px 3px var(--list-shadow));
 			font-size: 20px;
 		}
 	}
 
-
-// -------------------------------------------------------
-// 	Score History Pop-up
-// -------------------------------------------------------
+	// -------------------------------------------------------
+	// 	Score History Pop-up
+	// -------------------------------------------------------
 
 	.sc-instead-ntung {
 		width: 100%;
@@ -333,7 +322,6 @@ Style SCSS Na
 			height: 70%;
 			margin-bottom: 15px;
 			border-radius: 10px;
-			
 		}
 
 		.sc-instead-ntung-bottom {
@@ -346,11 +334,11 @@ Style SCSS Na
 			width: 100%;
 			height: 25%;
 			border-radius: 10px;
-			
+
 			#inputScore {
 				display: flex;
 				align-items: center;
-				border: 1px; 
+				border: 1px;
 				background-color: transparent;
 				margin-bottom: 10px;
 			}
@@ -361,13 +349,11 @@ Style SCSS Na
 				width: 70%;
 			}
 		}
-
 	}
 
-
-// -------------------------------------------------------
-// 	Score History Pop-up
-// -------------------------------------------------------
+	// -------------------------------------------------------
+	// 	Score History Pop-up
+	// -------------------------------------------------------
 
 	.backdrop {
 		position: fixed;
@@ -418,12 +404,9 @@ Style SCSS Na
 		}
 	}
 
-	
-
-// -------------------------------------------------------
-// 	Mobile phone Mode
-// -------------------------------------------------------
-
+	// -------------------------------------------------------
+	// 	Mobile phone Mode
+	// -------------------------------------------------------
 
 	@media (max-width: 920px) {
 		#Score {

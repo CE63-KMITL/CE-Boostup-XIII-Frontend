@@ -17,6 +17,8 @@
 	import { fade } from "svelte/transition";
 	import { showPopup, type ShowPopupInputs } from "$lib/components/PopUp.svelte";
 	import { goto } from "$app/navigation";
+	import { updatePage } from "../pageManager";
+	import { sleep } from "$lib/normalFunction";
 
 	//-------------------------------------------------------
 	// Component State
@@ -388,6 +390,10 @@
 		);
 	}
 
+	async function onCreateOwnProblem() {
+		window.location.href = `/menu?page=create_problem`;
+	}
+
 	//-------------------------------------------------------
 	// Lifecycle
 	//-------------------------------------------------------
@@ -652,6 +658,14 @@
 									title="ส่งให้ Staff ตรวจสอบ">ส่งเพื่อตรวจสอบ</Button
 								>
 							{/if}
+						{:else}
+							<Button
+								color="var(--bg)"
+								hoverColor="var(--status-in-progress)"
+								textColor="var(--status-in-progress)"
+								outline="var(--status-in-progress)"
+								onclick={onCreateOwnProblem}>สร้างโจทย์ของตัวเอง</Button
+							>
 						{/if}
 
 						{#if problem.devStatus === "Need Review"}
@@ -686,6 +700,7 @@
 		border: 1px solid var(--outline);
 		font-weight: 600;
 		text-align: center;
+		box-shadow: 0 4px 24px var(--list-shadow);
 		font-size: 1rem;
 	}
 	//-------------------------------------------------------
@@ -765,6 +780,7 @@
 
 	:global(div.problemCodeContainer) {
 		width: 60%;
+		box-shadow: 0 4px 24px var(--list-shadow);
 	}
 
 	.sectionPanel {

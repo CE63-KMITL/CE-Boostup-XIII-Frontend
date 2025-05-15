@@ -4,10 +4,10 @@
 	import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 
-	let { index }: { index: number } = $props();
+	let index: number = $$restProps?.index;
 </script>
 
-<List class="listScores {index < 3 ? 'top' : ''}>">
+<List class="listScores {index < 3 ? 'top' : ''}>" {...$$restProps}>
 	<div class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>
