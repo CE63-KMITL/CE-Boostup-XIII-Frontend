@@ -35,6 +35,18 @@
 		const problem_table = document.getElementById("problem-table");
 		const head_list: HTMLElement = document.querySelector("#problem-table #header");
 
+		function onScoll() {
+			if (problem_table.scrollTop == 0) {
+				head_list.setAttribute("top", "true");
+			} else {
+				head_list.removeAttribute("top");
+			}
+		}
+
+		problem_table.addEventListener("scroll", onScoll);
+
+		onScoll();
+
 		if (problem_table) {
 			pagination(problem_table, loadMore);
 		}

@@ -280,7 +280,6 @@ svg {
 }
 
 html > body > #bg-container > #bg {
-	transition: all 1s;
 	opacity: 0;
 }
 
