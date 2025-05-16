@@ -44,6 +44,7 @@
 	"dependencies": {
 		"monaco-editor": "^0.52.2",
 		"monaco-themes": "^0.4.4",
+		"svelte-easy-crop": "^4.0.1",
 		"svelte-icons": "^2.1.0"
 	}
 }

@@ -5,7 +5,7 @@ export default defineConfig(({ mode }) => {
 	return {
 		plugins: [sveltekit()],
 		server: {
-			port: 3001,
+			port: 3517,
 		},
 	};
 });
