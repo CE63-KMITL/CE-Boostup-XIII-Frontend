@@ -14,6 +14,9 @@
 	import { selectData } from "./score";
     import EditScore from "./components/EditScore.svelte";
     import { showPopup } from "$lib/components/PopUp.svelte";
+	import Claim from "./components/Claim.svelte";
+	import { fade } from "svelte/transition";
+	import StaffClaim from "./components/StaffClaim.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -35,6 +38,15 @@
 	// Edit Score (Add+ & Substract(Minus-))
 	let editMessage: string;
 	let editScore: number;
+
+	//Pop-up Staff Cliam
+	let showStaffClaim = false;
+	function openStaffClaim() {
+		showStaffClaim = true;
+	}
+	function closeStaffClaim() {
+		showStaffClaim = false;
+	}
 
 	let editMethod = "";
 	let dataEditScore = {
@@ -95,6 +107,10 @@
 			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
 		}
+
+		if (!$userData.id) {
+			headerTabs = {};
+		}
 	});
 
 	$: console.log("This is your currentData na",currentSelectData);
@@ -110,8 +126,9 @@ HTML Crapp
 
 <div id="Score">
 	<!-- SC-Left Side -->
-	{#if IsRole(Role.STAFF)}
-		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
+
+	<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
+		{#if $userData.id}
 			{#if activeTab == "scData"}
 				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
@@ -134,7 +151,9 @@ HTML Crapp
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
-				<div class="full">claimPrice naja</div>
+				<div id="scoreTab-claim" class="full" in:azScale={{ delay: 250 }} out:azScale>
+					<Claim></Claim>
+				</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
@@ -203,14 +222,30 @@ HTML Crapp
 					{/if}
 				</div>
 			{/if}
-		</Tab>
-	{/if}
+		{:else}
+			กรุณาเข้าสู่ระบบก่อนใช้งาน
+		{/if}
+	</Tab>
 
 	<!-- SC-Right Side -->
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
 	</Frame>
 </div>
+
+<!-- 
+-------------------------------------------------------
+Staff Claim
+-------------------------------------------------------
+-->
+
+{#if showStaffClaim && IsRole(Role.STAFF)}
+	<div class="backdrop" onclick={closePopup} in:fade out:fade>
+		<div id="popup" onclick={protectClick} in:azScale out:azScale>
+			<StaffClaim onClose={closeStaffClaim} selectedUser={selectedStudent} />
+		</div>
+	</div>
+{/if}
 
 <!-- 
 -------------------------------------------------------

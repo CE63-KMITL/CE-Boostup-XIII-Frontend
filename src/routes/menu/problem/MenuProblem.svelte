@@ -175,7 +175,7 @@
 				selectedProblem;
 
 			if (problemData) {
-				problemData.detail = await api.call(`/problem/detail/${problemData.id}`, {
+				problemData.description = await api.call(`/problem/detail/${problemData.id}`, {
 					withToken: true,
 				});
 			}
