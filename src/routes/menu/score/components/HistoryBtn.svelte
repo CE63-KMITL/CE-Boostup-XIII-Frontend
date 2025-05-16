@@ -17,7 +17,7 @@
 		if (userHistory == $userData) {
 			historyWay = userHistory;
 			currentSelectData = userHistory;
-		} else if (userHistory == $selectData) {
+		} else {
 			historyWay = userHistory.data;
 		}
 		showHistoryPopup = true;
