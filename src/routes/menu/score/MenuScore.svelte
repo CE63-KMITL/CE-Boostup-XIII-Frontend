@@ -13,6 +13,7 @@
     import ProfileUser from "$lib/components/ProfileUser.svelte";
 	import { selectData } from "./score";
     import EditScore from "./components/EditScore.svelte";
+    import { showPopup } from "$lib/components/PopUp.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -41,20 +42,29 @@
 		amount: 0,
 		message: "" }
 	let showEditScore = false;
-	// let showEditScore = true;
-	
 		// Plus & Substract 
-	function callEditScore() { showEditScore = true; }
+	function openEditScore() { showEditScore = true; }
+	function closeEditScore() { showEditScore = false; }
 	function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
-		
 		//setMehtod need to be "+" or "-" Naja to check method in component
-		editMethod = setMethod;
-		dataEditScore = {
-			userId: setUserId,
-			amount: setAmount,
-			message: setMessage, }
-		
-		callEditScore();
+		if (setAmount == null || setAmount == 0) {
+			showPopup("กรุณาใส่คะแนนที่ต้องการแก้ไขด้วยน้า ( •̀ ω •́ )✧");
+			return;
+		} else if (setMessage == null || setMessage == "") {
+			showPopup("กรุณาใส่หมายเหตุด้วยน้า ( •̀ ω •́ )✧");
+			return;
+		} else {
+			editMethod = setMethod;
+			dataEditScore = {
+				userId: setUserId,
+				amount: setAmount,
+				message: setMessage, }
+			
+			editMessage = null;
+			editScore = null;
+
+			openEditScore();
+		}
 	}
 
 	// Pop-up Score History
@@ -77,6 +87,7 @@
 	}
 
 	function protectClick(event) { event.stopPropagation(); }
+	function setSelectDataToNull() { selectData.set(null); }
 
 	onMount(async () => {
 
@@ -87,8 +98,8 @@
 	});
 
 	$: console.log("This is your currentData na",currentSelectData);
-
 	$: console.log("Your selectData has changed.",$selectData);
+
 </script>
 
 <!-- 
@@ -142,7 +153,9 @@ HTML Crapp
 							"
 						/>
 					</Frame>
-					{#if $selectData != null}
+					{#if isSearching != ""}
+						<div>{setSelectDataToNull()}</div>
+					{:else if $selectData != null}
 						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="sc-instead-ntung-top-profile">
 								<div style="padding: 10px 20px;"> 
@@ -206,8 +219,6 @@ Popup Score History
 -->
 
 {#if showHistoryPopup}
-
-
 	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:azScale out:azScale>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
@@ -227,6 +238,7 @@ Popup Score History
 
 {#if showEditScore}
 	<EditScore getMethod={editMethod} getData={dataEditScore}/>
+	<div>{closeEditScore()}</div>
 {/if}
 <!-- 
 -------------------------------------------------------

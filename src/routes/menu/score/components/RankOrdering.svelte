@@ -4,6 +4,7 @@
 	import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 	import { createEventDispatcher } from "svelte";
+	import { azScale } from "$lib/transition";
 
 	//let index: number = $$restProps?.index;
 	export let index: number;

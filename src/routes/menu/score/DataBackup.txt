@@ -23,3 +23,7 @@ MyHouse.svelte
 	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "samurai", score: 3300 },
 	// 	{ icon: null, name: "Veerapat Pirultham", studentId: "67010852", house: "ranger", score: 7400 },
     // ];
+
+
+// let selectedOptionDropdown: string = "Barbarian";
+// let selectedOptionDropdown: string = $userData.house.charAt(0).toUpperCase() + $userData.house.slice(1);

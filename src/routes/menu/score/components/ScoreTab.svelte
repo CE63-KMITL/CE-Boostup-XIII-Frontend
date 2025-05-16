@@ -11,6 +11,7 @@
 	import { onMount } from "svelte";
 	import * as api from "$lib/fetchApi";
 	import { runProblemListAnimation } from "$lib/animation";
+	import { scoreRefreshTrigger } from "../score";
 
 	//-------------------------------------------------------
 	// Stores
@@ -48,6 +49,9 @@
 				})();
 				query = `orderByScore=true&house=${houseValue.toLowerCase()}`;
 				break;
+			// case "myHouse":
+			// 	query = `orderByScore=true&house=${$selectedHouseStore}`;
+			// 	break;
 		}
 
 		users = [...users, "loading"];
@@ -56,7 +60,9 @@
 			withToken: true,
 		});
 		users = [...users.slice(0, -1)];
-		console.log(result);
+		// console.log(result);
+		console.log("📦 ข้อมูลใหม่ที่โหลด:", result);
+		// console.log("📦 ข้อมูลใหม่ที่โหลด:", result.data);
 
 		if (result) {
 			users = [...users, ...result.data];
@@ -102,6 +108,14 @@
 		loading = false;
 		loadData();
 	}
+	$: if ($scoreRefreshTrigger !== null) {
+		page = 1;
+		maxPage = null;
+		users = [];
+		loading = false;
+		loadData();
+		console.log("🌀 trigger เปลี่ยนแล้ว:", $scoreRefreshTrigger);
+	}
 </script>
 
 <Frame blur-bg {...$$restProps} class={"score-tab-container " + $$restProps.class}>
@@ -119,7 +133,6 @@
 <div class="scroll" bind:this={scrollElement}>
 	{#if activeTab == "overall"}
 		<div in:azScale={{ delay: 250 }} out:azScale>
-			<!-- <Overall></Overall> -->
 			<Overall data={users}></Overall>
 		</div>
 	{:else if activeTab == "house"}
@@ -128,7 +141,6 @@
 		</div>
 	{:else if activeTab == "myHouse"}
 		<div in:azScale={{ delay: 250 }} out:azScale>
-			<!-- <MyHouse></MyHouse> -->
 			<MyHouse dataMyHouse={users}></MyHouse>
 		</div>
 	{/if}
