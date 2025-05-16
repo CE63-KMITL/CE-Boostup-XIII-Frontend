@@ -35,28 +35,15 @@ export async function refreshHouseList() {
 	console.log("🚦 เริ่ม refreshHouseList()");
 	const selectedData = get(selectData);
 	try {
-		const data = await api.call(`/user/${selectedData.data.id}`, {
+		const data = await api.call(`/user/score-data/${selectedData.data.id}`, {
 			withToken: true,
 		});
 
-		selectData.set({
-			row: selectedData.row,
-			data: data,
-		});
+		console.log(selectedData.data.id);
 
-		houseList.set(data);
+		selectedData.data = data;
 
-		// Update for selectData to sync
-		if (selectedData) {
-			const update = data.find((h) => h.id === selectedData.data.id);
-
-			console.log("🔍 หา update house ใน data:", update);
-
-			if (update) {
-				selectData.set(update);
-				console.log("✅ set selectData เป็น update เรียบร้อย");
-			}
-		}
+		console.log("📦 ข้อมูลใหม่ที่โหลด2:", data);
 	} catch (error) {
 		console.error("❌ Error fetching house list:", error);
 	}

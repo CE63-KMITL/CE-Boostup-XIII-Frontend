@@ -45,7 +45,7 @@
 			dataEditScore = {
 				userId: setUserId,
 				amount: setAmount,
-				message: setMessage == "" ?? null,
+				message: setMessage,
 			};
 
 			editMessage = null;
