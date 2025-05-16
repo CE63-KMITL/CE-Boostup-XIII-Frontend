@@ -54,7 +54,7 @@
 			// 	break;
 		}
 
-		users = [...users, "loading"];
+		users = [...users, "loading"]; 
 		const result = await api.call(`/user/search?page=${page}&${query}`, {
 			method: "GET",
 			withToken: true,
