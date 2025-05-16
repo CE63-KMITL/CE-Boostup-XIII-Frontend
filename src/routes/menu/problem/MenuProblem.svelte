@@ -251,13 +251,11 @@
 	</Frame>
 	<Frame id="right" blur-bg>
 		{#if selectedProblem}
-			<div class="full" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
-				<Button
-					class="close-problem-detail"
-					onclick={() => {
-						$selectedProblemId = null;
-					}}>ปิด</Button
-				>
+			<div
+				class="full gap-2"
+				in:azScale={{ size: 0.99, delay: 250 }}
+				out:azScale={{ size: 0.99, duration: 100 }}
+			>
 				<ProblemDetail padding={false} problem={selectedProblem} />
 				<Button
 					class="submit-btn"
@@ -275,6 +273,16 @@
 						ทำโจทย์
 					{/if}
 				</Button>
+				<Button
+					color="var(--bg)"
+					hoverColor="var(--status-not-started)"
+					textColor="var(--status-not-started)"
+					outline="var(--status-not-started)"
+					class="close-problem-detail"
+					onclick={() => {
+						$selectedProblemId = null;
+					}}>ปิด</Button
+				>
 			</div>
 		{:else}
 			<div class="full" in:fade={{ duration: 250, delay: 250 }} out:fade={{ duration: 250 }}>

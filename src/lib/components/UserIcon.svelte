@@ -13,7 +13,7 @@
 <style lang="scss">
 	.usericon {
 		aspect-ratio: 1/1;
-		width: 100%;
+		width: auto;
 		height: 100%;
 		border: 1px solid #ddd;
 		border-radius: 50%;

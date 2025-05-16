@@ -7,6 +7,7 @@
 	import HistoryBtn from "./HistoryBtn.svelte";
 	import EditScore from "./EditScore.svelte";
 	import StaffClaimBtn from "./StaffClaimBtn.svelte";
+	import { say } from "$lib/normalFunction";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -37,17 +38,14 @@
 	function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
 		//setMehtod need to be "+" or "-" Naja to check method in component
 		if (setAmount == null || setAmount == 0) {
-			showPopup("กรุณาใส่คะแนนที่ต้องการแก้ไขด้วยน้า ( •̀ ω •́ )✧");
-			return;
-		} else if (setMessage == null || setMessage == "") {
-			showPopup("กรุณาใส่หมายเหตุด้วยน้า ( •̀ ω •́ )✧");
+			showPopup(say("กรุณาใส่คะแนนที่ต้องการแก้ไขด้วยน้า", "( •̀ ω •́ )✧"));
 			return;
 		} else {
 			editMethod = setMethod;
 			dataEditScore = {
 				userId: setUserId,
 				amount: setAmount,
-				message: setMessage,
+				message: setMessage == "" ?? null,
 			};
 
 			editMessage = null;

@@ -112,7 +112,14 @@ HTML Crapp
 	<div id="sc-bottom" class:show={$selectData != null}>
 		{#if $selectData != null}
 			<div in:azScale={{ delay: 250 }} out:azScale class="full">
-				<Button onclick={setSelectDataToNull}>ปิด</Button>
+				<EditSelectedUser></EditSelectedUser>
+				<Button
+					color="var(--bg)"
+					hoverColor="var(--status-not-started)"
+					textColor="var(--status-not-started)"
+					outline="var(--status-not-started)"
+					onclick={setSelectDataToNull}>ปิด</Button
+				>
 			</div>
 		{/if}
 	</div>
@@ -129,7 +136,7 @@ Style SCSS Na
 		z-index: 1;
 	}
 	:global(#sc-bottom) {
-		height: 70%;
+		height: 90%;
 		opacity: 1;
 		position: absolute;
 		bottom: 0;
@@ -177,6 +184,7 @@ Style SCSS Na
 			padding: 1% 2%;
 			width: 60%;
 			height: 100%;
+			overflow: hidden;
 		}
 	}
 
@@ -439,13 +447,12 @@ Style SCSS Na
 			flex-direction: column;
 
 			:global(#sc-left) {
-				width: 100%;
-				height: 35%;
+				display: none;
 			}
 
 			:global(#sc-right) {
 				width: auto;
-				height: 60%;
+				height: 100%;
 			}
 		}
 

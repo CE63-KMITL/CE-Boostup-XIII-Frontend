@@ -15,14 +15,16 @@
 	const dispatch = createEventDispatcher();
 
 	// set event with user data
-	function handleClick() { dispatch("select", {
-		row: index,
-		data: user
-	}); } 
-
+	function handleClick() {
+		if (user.role == "staff") return;
+		dispatch("select", {
+			row: index,
+			data: user,
+		});
+	}
 </script>
 
-<List class="listScores {index < 3 ? 'top' : ''}" id={id} onclick={handleClick}>
+<List class="listScores {index < 3 ? 'top' : ''} {user.role == 'staff' ? 'staff' : ''}" {id} onclick={handleClick}>
 	<div class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>
@@ -46,6 +48,9 @@
 		padding: 10px;
 		height: 50px;
 		background-color: var(--bg);
+		align-items: center;
+		// opacity: 0;
+
 		:global(> div) {
 			text-align: center;
 			white-space: nowrap;
@@ -57,7 +62,7 @@
 			}
 			&:nth-child(2) {
 				width: 5%;
-				min-width: 10%;
+				min-width: 40px;
 				max-width: 10%;
 			}
 			&:nth-child(3) {
@@ -81,16 +86,21 @@
 		}
 	}
 
+	:global(div.listScores.staff) {
+		outline: 1px solid var(--used-time);
+		background: color-mix(in srgb, var(--used-time), var(--bg) 80%) !important;
+	}
+
 	.image {
-		margin-top: -25px;
+		margin-top: -10px;
 		display: flex;
 		justify-content: center;
 	}
-	
+
 	:global(.houseIcon) {
 		display: flex;
-        justify-content: center;
-        transform: scale(1);
+		justify-content: center;
+		transform: scale(1);
 		margin-top: -15px;
 		margin-left: 20px;
 	}
