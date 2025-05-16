@@ -8,13 +8,10 @@
 	import { Role } from "$lib/enum/role";
 	import { onMount } from "svelte";
 	import UserIcon from "$lib/components/UserIcon.svelte";
-	import ProfileUser from "$lib/components/ProfileUser.svelte";
-	import { selectData, selectedIDStudent } from "./score";
-	import EditScore from "./components/EditScore.svelte";
-	import { showPopup, closePopup } from "$lib/components/PopUp.svelte";
+	import { popup, selectData } from "./score";
+	import { closePopup } from "$lib/components/PopUp.svelte";
 	import Claim from "./components/Claim.svelte";
 	import { fade } from "svelte/transition";
-	import StaffClaim from "./components/StaffClaim.svelte";
 	import HistoryBtn from "./components/HistoryBtn.svelte";
 	import EditSelectedUser from "./components/EditSelectedUser.svelte";
 
@@ -50,6 +47,14 @@
 		}
 	});
 </script>
+
+{#if $popup}
+	<div class="backdrop" onclick={closePopup} in:fade out:fade>
+		<div id="popup" in:azScale out:azScale>
+			{@render $popup()}
+		</div>
+	</div>
+{/if}
 
 <!-- 
 -------------------------------------------------------
@@ -120,6 +125,9 @@ Style SCSS Na
 -->
 
 <style lang="scss">
+	.backdrop {
+		z-index: 1;
+	}
 	:global(#sc-bottom) {
 		height: 70%;
 		opacity: 1;
