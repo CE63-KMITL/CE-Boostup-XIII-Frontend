@@ -17,7 +17,7 @@
 	import { fade } from "svelte/transition";
 	import { showPopup, type ShowPopupInputs } from "$lib/components/PopUp.svelte";
 	import { goto } from "$app/navigation";
-	import { updatePage } from "../pageManager";
+	import { mobile, updatePage } from "../pageManager";
 	import { sleep } from "$lib/normalFunction";
 
 	//-------------------------------------------------------
@@ -26,6 +26,36 @@
 	let mainScrollContainer: HTMLElement | null = null;
 	let rightActiveTab: string = "details";
 	let leftActiveTab: string = "solutionCode";
+
+	let leftHeaderTabs;
+	let rightHeaderTabs;
+
+	$: {
+		if ($mobile == true) {
+			leftActiveTab = "solutionCode";
+			rightActiveTab = "";
+			leftHeaderTabs = {
+				solutionCode: "โค้ด",
+				defaultCode: "โค้ดเริ่มต้น",
+				details: "รายละเอียดโจทย์",
+				inputOutput: "รันโค้ด",
+				testcase: "Test case",
+			};
+			rightHeaderTabs = {};
+		} else {
+			leftActiveTab = "solutionCode";
+			rightActiveTab = "details";
+			leftHeaderTabs = {
+				solutionCode: "โค้ด",
+				defaultCode: "โค้ดเริ่มต้น",
+			};
+			rightHeaderTabs = {
+				details: "รายละเอียดโจทย์",
+				inputOutput: "รันโค้ด",
+				testcase: "Test case",
+			};
+		}
+	}
 
 	//-------------------------------------------------------
 	// Problem Data State
@@ -106,15 +136,6 @@
 		exit_status: null,
 		output: null,
 		used_time: null,
-	};
-
-	//-------------------------------------------------------
-	// UI State
-	//-------------------------------------------------------
-	let headerTabs: { [key: string]: string } = {
-		details: "รายละเอียดโจทย์",
-		inputOutput: "รันโค้ด",
-		testcase: "Test case",
 	};
 
 	//-------------------------------------------------------
@@ -463,6 +484,130 @@
 	});
 </script>
 
+{#snippet contentElement(activeTab)}
+	{#if activeTab === "solutionCode"}
+		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+			<CodeEditor bind:value={solutionCode} />
+		</div>
+	{:else if activeTab === "defaultCode"}
+		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+			<CodeEditor bind:value={defaultCode} />
+		</div>
+	{:else if activeTab === "details"}
+		<div class="full details" in:azScale={{ delay: 250 }} out:azScale>
+			<div class="problemCreateInputContainer">
+				<div class="headText">ชื่อโจทย์ :</div>
+				<input bind:value={problem.title} placeholder="โจทย์ของคนสุดเทพ" />
+			</div>
+			<div class="problemCreateInputContainer">
+				<div class="headText">
+					ชื่อคนทำโจทย์ : {problem.author?.name || $userData?.name}
+					{problem.author?.name == $userData?.name ? "(คุณ)" : ""}
+				</div>
+			</div>
+
+			<div class="headText">ความยาก</div>
+
+			<div class="difficulty">
+				<Stars bind:difficulty={problem.difficulty}></Stars>
+				<div class="difficultySlider">
+					<input type="range" step="0.5" min="0.5" max="5" bind:value={problem.difficulty} />
+					<div style="width: 40px; text-align: end">{problem.difficulty}</div>
+				</div>
+			</div>
+
+			<div class="headText">เวลาสูงสุดที่อนุญาตให้รัน (ms)</div>
+
+			<input type="number" bind:value={problem.timeLimit} placeholder="1000" />
+
+			<div class="headText">ประเภท (Tags)</div>
+
+			<Frame class="tagsBox">
+				{#each Object.keys(tagsColors) as tag}
+					<Checkbox
+						color={tagsColors[tag]}
+						value={tag}
+						checked={problem.tags.includes(tag)}
+						onSelect={() => {
+							if (!problem.tags.includes(tag)) {
+								problem.tags = [...problem.tags, tag];
+							}
+						}}
+						onUnselect={() => {
+							problem.tags = problem.tags.filter((t) => t !== tag);
+						}}>{tag}</Checkbox
+					>
+				{/each}
+			</Frame>
+
+			<div class="headText">Headers</div>
+
+			<div class="radioButtonContainer">
+				<RadioButton
+					selected={(() => {
+						console.log(problem.headerMode);
+						return problem.headerMode == "disallowed";
+					})()}
+					onclick={() => (problem.headerMode = "disallowed")}
+					color="var(--status-not-started)"
+				>
+					ไม่อนุญาตให้ใช้
+				</RadioButton>
+
+				<RadioButton
+					selected={problem.headerMode == "allowed"}
+					onclick={() => (problem.headerMode = "allowed")}
+					color="var(--status-done)"
+				>
+					จำเป็นต้องใช้
+				</RadioButton>
+			</div>
+
+			<input bind:value={problem.headers} placeholder="stdio.h,string.h" />
+
+			<div class="headText">Functions</div>
+
+			<div class="radioButtonContainer">
+				<RadioButton
+					selected={problem.functionMode == "disallowed"}
+					onclick={() => (problem.functionMode = "disallowed")}
+					color="var(--status-not-started)"
+				>
+					ไม่อนุญาตให้ใช้
+				</RadioButton>
+
+				<RadioButton
+					selected={problem.functionMode == "allowed"}
+					onclick={() => (problem.functionMode = "allowed")}
+					color="var(--status-done)"
+				>
+					จำเป็นต้องใช้
+				</RadioButton>
+			</div>
+
+			<input bind:value={problem.functions} placeholder="for,while,if" />
+
+			<div class="headText">รายละเอียดโจทย์</div>
+
+			<textarea class="description" placeholder="รายละเอียดโจทย์" bind:value={problem.description}> </textarea>
+		</div>
+	{:else if activeTab === "inputOutput"}
+		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+			<InputOutput {onRunCode} bind:inputText bind:result />
+		</div>
+	{:else if activeTab === "testcase"}
+		<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
+			<TestCaseContainer
+				testCases={problem.testCases}
+				editMode={true}
+				runAll={runAllCreateProblem}
+				{removeTestCase}
+			/>
+			<Button onclick={handleAddTestCaseContainer} class="addTestCase">เพิ่ม Test Case</Button>
+		</div>
+	{/if}
+{/snippet}
+
 <div id="problemCreateContainer" bind:this={mainScrollContainer}>
 	<div class="sectionPanel">
 		{#if loaded}
@@ -471,151 +616,19 @@
 					✿ {statusStaffText[problem.devStatus]} ✿
 				</div>
 			{/if}
+
 			<div class="mainFrame" in:azScale={{ delay: 250 }} out:azScale>
 				<Tab
 					class="problemCodeContainer"
 					margin={false}
-					headers={{ solutionCode: "เฉลย", defaultCode: "โค้ดเริ่มต้น" }}
+					headers={leftHeaderTabs}
 					bind:activeTab={leftActiveTab}
 				>
-					{#if leftActiveTab === "solutionCode"}
-						<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-							<CodeEditor bind:value={solutionCode} />
-						</div>
-					{:else if leftActiveTab === "defaultCode"}
-						<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-							<CodeEditor bind:value={defaultCode} />
-						</div>
-					{/if}
+					{@render contentElement(leftActiveTab)}
 				</Tab>
 
-				<Tab class="side" margin={false} headers={headerTabs} bind:activeTab={rightActiveTab}>
-					{#if rightActiveTab === "details"}
-						<div class="full details" in:azScale={{ delay: 250 }} out:azScale>
-							<div class="problemCreateInputContainer">
-								<div class="headText">ชื่อโจทย์ :</div>
-								<input bind:value={problem.title} placeholder="โจทย์ของคนสุดเทพ" />
-							</div>
-							<div class="problemCreateInputContainer">
-								<div class="headText">
-									ชื่อคนทำโจทย์ : {problem.author?.name || $userData?.name}
-									{problem.author?.name == $userData?.name ? "(คุณ)" : ""}
-								</div>
-							</div>
-
-							<div class="headText">ความยาก</div>
-
-							<div class="difficulty">
-								<Stars bind:difficulty={problem.difficulty}></Stars>
-								<div class="difficultySlider">
-									<input
-										type="range"
-										step="0.5"
-										min="0.5"
-										max="5"
-										bind:value={problem.difficulty}
-									/>
-									<div style="width: 40px; text-align: end">{problem.difficulty}</div>
-								</div>
-							</div>
-
-							<div class="headText">เวลาสูงสุดที่อนุญาตให้รัน (ms)</div>
-
-							<input type="number" bind:value={problem.timeLimit} placeholder="1000" />
-
-							<div class="headText">ประเภท (Tags)</div>
-
-							<Frame class="tagsBox">
-								{#each Object.keys(tagsColors) as tag}
-									<Checkbox
-										color={tagsColors[tag]}
-										value={tag}
-										checked={problem.tags.includes(tag)}
-										onSelect={() => {
-											if (!problem.tags.includes(tag)) {
-												problem.tags = [...problem.tags, tag];
-											}
-										}}
-										onUnselect={() => {
-											problem.tags = problem.tags.filter((t) => t !== tag);
-										}}>{tag}</Checkbox
-									>
-								{/each}
-							</Frame>
-
-							<div class="headText">Headers</div>
-
-							<div class="radioButtonContainer">
-								<RadioButton
-									selected={(() => {
-										console.log(problem.headerMode);
-										return problem.headerMode == "disallowed";
-									})()}
-									onclick={() => (problem.headerMode = "disallowed")}
-									color="var(--status-not-started)"
-								>
-									ไม่อนุญาตให้ใช้
-								</RadioButton>
-
-								<RadioButton
-									selected={problem.headerMode == "allowed"}
-									onclick={() => (problem.headerMode = "allowed")}
-									color="var(--status-done)"
-								>
-									จำเป็นต้องใช้
-								</RadioButton>
-							</div>
-
-							<input bind:value={problem.headers} placeholder="stdio.h,string.h" />
-
-							<div class="headText">Functions</div>
-
-							<div class="radioButtonContainer">
-								<RadioButton
-									selected={problem.functionMode == "disallowed"}
-									onclick={() => (problem.functionMode = "disallowed")}
-									color="var(--status-not-started)"
-								>
-									ไม่อนุญาตให้ใช้
-								</RadioButton>
-
-								<RadioButton
-									selected={problem.functionMode == "allowed"}
-									onclick={() => (problem.functionMode = "allowed")}
-									color="var(--status-done)"
-								>
-									จำเป็นต้องใช้
-								</RadioButton>
-							</div>
-
-							<input bind:value={problem.functions} placeholder="for,while,if" />
-
-							<div class="headText">รายละเอียดโจทย์</div>
-
-							<textarea
-								class="description"
-								placeholder="รายละเอียดโจทย์"
-								bind:value={problem.description}
-							>
-							</textarea>
-						</div>
-					{:else if rightActiveTab === "inputOutput"}
-						<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-							<InputOutput {onRunCode} bind:inputText bind:result />
-						</div>
-					{:else if rightActiveTab === "testcase"}
-						<div class="full testcase-section" in:azScale={{ delay: 250 }} out:azScale>
-							<TestCaseContainer
-								testCases={problem.testCases}
-								editMode={true}
-								runAll={runAllCreateProblem}
-								{removeTestCase}
-							/>
-							<Button onclick={handleAddTestCaseContainer} class="addTestCase"
-								>เพิ่ม Test Case</Button
-							>
-						</div>
-					{/if}
+				<Tab class="side" margin={false} headers={rightHeaderTabs} bind:activeTab={rightActiveTab}>
+					{@render contentElement(rightActiveTab)}
 				</Tab>
 			</div>
 
@@ -841,18 +854,17 @@
 	//-------------------------------------------------------
 	// Responsive Styles
 	//-------------------------------------------------------
-	@media (max-width: 800px) {
+	:global(html[mobile]) {
 		.mainFrame {
 			flex-direction: column;
 
 			:global(.problemCodeContainer) {
 				width: auto;
-				height: 50%;
+				height: 100%;
 			}
 
 			:global(div.side) {
-				width: auto;
-				height: 50%;
+				display: none;
 			}
 		}
 

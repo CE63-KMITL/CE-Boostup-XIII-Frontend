@@ -11,14 +11,16 @@
 	import Button from "$lib/components/Button.svelte";
 	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
-	import { updatePage } from "../pageManager";
+	import { mobile, updatePage } from "../pageManager";
 	import { showPopup } from "$lib/components/PopUp.svelte";
 
 	//-------------------------------------------------------
 	// Component State
 	//-------------------------------------------------------
-	let activeTab = "inputOutput";
-	let headerTabs: { [key: string]: string } = { inputOutput: "รันโค้ด" };
+	let leftActiveTab;
+	let rightActiveTab;
+	let rightHeaderTabs;
+	let leftHeaderTabs;
 
 	//-------------------------------------------------------
 	// Code and Input/Output State
@@ -134,42 +136,83 @@
 	//-------------------------------------------------------
 	// Lifecycle
 	//-------------------------------------------------------
+
+	let problemIdFromUrl;
+
 	onMount(async () => {
 		const url = new URL(window.location.href);
-		const problemIdFromUrl = url.searchParams.get("problemId");
+		problemIdFromUrl = url.searchParams.get("problemId");
 
 		if (problemIdFromUrl) {
 			currentProblemId = problemIdFromUrl;
-			headerTabs = { details: "รายละเอียดโจทย์", ...headerTabs, testcase: "ส่ง" };
-			activeTab = "details";
 			problem = await api.call(`/problem/code/${currentProblemId}`, { withToken: true });
-			console.log(problem);
 		}
+
 		codeText = await loadCode();
 	});
+
+	$: {
+		if ($mobile == true) {
+			leftActiveTab = "code";
+
+			if (problemIdFromUrl) {
+				leftHeaderTabs = {
+					code: "โค้ด",
+					details: "รายละเอียดโจทย์",
+					inputOutput: "รันโค้ด",
+					testcase: "ส่ง",
+				};
+			} else {
+				leftHeaderTabs = {
+					code: "โค้ด",
+					inputOutput: "รันโค้ด",
+				};
+			}
+
+			rightActiveTab = "";
+			rightHeaderTabs = {};
+		} else {
+			leftActiveTab = "code";
+			rightActiveTab = "details";
+			leftHeaderTabs = { code: "โค้ด" };
+
+			if (problemIdFromUrl) {
+				rightHeaderTabs = { details: "รายละเอียดโจทย์", inputOutput: "รันโค้ด", testcase: "ส่ง" };
+			} else {
+				rightActiveTab = "inputOutput";
+				rightHeaderTabs = { inputOutput: "รันโค้ด" };
+			}
+		}
+	}
 </script>
+
+{#snippet contentElement(activeTab)}
+	{#if activeTab === "details"}
+		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+			<ProblemDetail {problem}></ProblemDetail>
+		</div>
+	{:else if activeTab === "inputOutput"}
+		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+			<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
+		</div>
+	{:else if activeTab === "testcase"}
+		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+			<TestCaseContainer runAll={onSubmission} editMode={false} testCases={problem.testCases} />
+		</div>
+	{:else if activeTab === "code"}
+		<CodeEditor bind:value={codeText} {saveCode} {loadCode}></CodeEditor>
+	{/if}
+{/snippet}
 
 <div class="component">
 	<div class="full mainFrame">
 		<div class="full subFrame">
-			<Frame blur-bg margin={false} class="ProblemContainer">
-				<CodeEditor bind:value={codeText} {saveCode} {loadCode}></CodeEditor>
-			</Frame>
+			<Tab margin={false} class="ProblemContainer" headers={leftHeaderTabs} bind:activeTab={leftActiveTab}>
+				{@render contentElement(leftActiveTab)}
+			</Tab>
 
-			<Tab margin={false} class="side" headers={headerTabs} bind:activeTab>
-				{#if activeTab === "details"}
-					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<ProblemDetail {problem}></ProblemDetail>
-					</div>
-				{:else if activeTab === "inputOutput"}
-					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<InputOutput {onRunCode} bind:inputText bind:result></InputOutput>
-					</div>
-				{:else if activeTab === "testcase"}
-					<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-						<TestCaseContainer runAll={onSubmission} editMode={false} testCases={problem.testCases} />
-					</div>
-				{/if}
+			<Tab margin={false} class="side" headers={rightHeaderTabs} bind:activeTab={rightActiveTab}>
+				{@render contentElement(rightActiveTab)}
 			</Tab>
 		</div>
 
@@ -218,24 +261,20 @@
 		:global(.side) {
 			width: 40%;
 		}
+	}
 
-		//-------------------------------------------------------
-		// Responsive Styles
-		//-------------------------------------------------------
-		@media (max-width: 800px) {
-			.subFrame {
-				flex-direction: column;
-			}
+	:global(html[mobile] .component) {
+		:global(.subFrame) {
+			flex-direction: column;
+		}
 
-			:global(.ProblemContainer) {
-				width: auto;
-				height: 50%;
-			}
+		:global(.ProblemContainer) {
+			width: auto;
+			height: 100%;
+		}
 
-			:global(div.side) {
-				width: auto;
-				height: 50%;
-			}
+		:global(div.side) {
+			display: none;
 		}
 	}
 </style>

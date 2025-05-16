@@ -11,6 +11,8 @@
 	import { onMount } from "svelte";
 	import * as api from "$lib/fetchApi";
 	import { runProblemListAnimation } from "$lib/animation";
+	import { scoreRefreshTrigger } from "../score";
+	import Search from "$lib/components/Icons/Search.svelte";
 
 	//-------------------------------------------------------
 	// Stores
@@ -20,6 +22,7 @@
 	let headerTabs: { [key: string]: string } = { overall: "Overall", house: "House", myHouse: "MyHouse" };
 	let activeTab = "overall";
 	let scrollElement;
+	let searchText = "";
 
 	async function selectTab(tabName: string) {
 		activeTab = tabName;
@@ -39,7 +42,7 @@
 		let query = "";
 		switch (activeTab) {
 			case "overall":
-				query = "orderByScore=true";
+				query = `orderByScore=true&searchText=${searchText}`;
 				break;
 			case "myHouse":
 				let houseValue = "";
@@ -56,7 +59,9 @@
 			withToken: true,
 		});
 		users = [...users.slice(0, -1)];
-		console.log(result);
+		// console.log(result);
+		console.log("📦 ข้อมูลใหม่ที่โหลด:", result);
+		// console.log("📦 ข้อมูลใหม่ที่โหลด:", result.data);
 
 		if (result) {
 			users = [...users, ...result.data];
@@ -102,6 +107,31 @@
 		loading = false;
 		loadData();
 	}
+	$: if ($scoreRefreshTrigger !== null) {
+		page = 1;
+		maxPage = null;
+		users = [];
+		loading = false;
+		loadData();
+		console.log("🌀 trigger เปลี่ยนแล้ว:", $scoreRefreshTrigger);
+	}
+
+	let typeDelay = null;
+	$: {
+		searchText;
+
+		if (typeDelay) {
+			clearTimeout(typeDelay);
+		}
+
+		typeDelay = setTimeout(() => {
+			page = 1;
+			maxPage = null;
+			users = [];
+			loading = false;
+			loadData();
+		}, 250);
+	}
 </script>
 
 <Frame blur-bg {...$$restProps} class={"score-tab-container " + $$restProps.class}>
@@ -118,6 +148,18 @@
 </Frame>
 <div class="scroll" bind:this={scrollElement}>
 	{#if activeTab == "overall"}
+		<div class="sc-search-frame" in:azScale={{ delay: 250 }} out:azScale>
+			<Search></Search>
+			<input
+				id="search"
+				placeholder="ชื่อ / รหัสนักศึกษา"
+				style="
+				border: 0px;
+				background-color: transparent;
+				"
+				bind:value={searchText}
+			/>
+		</div>
 		<div in:azScale={{ delay: 250 }} out:azScale>
 			<Overall data={users}></Overall>
 		</div>
@@ -167,5 +209,17 @@
 		height: 100%;
 		overflow-y: auto;
 		overflow-x: hidden;
+	}
+
+	.sc-search-frame {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		background-color: var(--bg);
+		border: 1px solid var(--outline);
+		padding: 0px;
+		padding-inline: 10px;
+		width: 100%;
+		border-radius: 25px;
 	}
 </style>

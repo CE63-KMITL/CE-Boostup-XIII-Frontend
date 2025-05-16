@@ -9,7 +9,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 	let userData;
 
 	if (token) {
-		// console.log(token);
+		console.log(token);
 		try {
 			const response = await fetch(`http://${BACK_HOST}/user/data`, {
 				method: "GET",

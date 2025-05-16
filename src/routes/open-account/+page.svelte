@@ -15,7 +15,7 @@
 	let text_re_password: string = "";
 	let see_password: boolean = false;
 	let recheck_password: boolean = false;
-	let name: string;
+	let name: string = "";
 
 	async function onOpenAccount() {
 		if (text_password == "" || text_re_password == "") {

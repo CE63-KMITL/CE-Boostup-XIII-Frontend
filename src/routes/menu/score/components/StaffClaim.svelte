@@ -1,24 +1,19 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import StaffPanel from "../../../TestCollectable-item/StaffPanel.svelte";
 	import * as api from "$lib/fetchApi";
 	import { showPopup } from "$lib/components/PopUp.svelte";
 	import { say } from "$lib/normalFunction";
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import { userData } from "$lib/auth.local";
+	import { selectData } from "../score";
+	import Button from "$lib/components/Button.svelte";
 
 	export let onClose = null;
 
 	//-------------------------------------------------------
 	// Props
 	//-------------------------------------------------------
-	export let selectedUser = {
-		id: "awdawdawdawdad",
-		icon: "",
-		name: "awdwadawdawdwadwad",
-		studentId: "12312312",
-		score: 0,
-	};
+	export let selectedUser;
 
 	//-------------------------------------------------------
 	// State
@@ -32,6 +27,7 @@
 		reward: string;
 	}[] = [];
 
+	$: selectedUser = $selectData?.data;
 	$: nextReward = userRewards.find((m) => m.points > selectedUser.score) || false;
 	$: pointsToNextReward = nextReward ? nextReward.points - selectedUser.score : 0;
 
@@ -60,17 +56,21 @@
 			return;
 		}
 		try {
-			const result = await api.call(`/rewards/user/${$userData.id}/status`, {
+			const result = await api.call(`/rewards/user/${$selectData.data?.id}/status`, {
 				withToken: true,
 			});
 
 			data = result?.data;
+
+			console.log(data);
 
 			let fetchedRewards = [
 				...(data?.redeemed || []).map((r) => ({ ...r, status: "redeemed" as const })),
 				...(data?.available || []).map((r) => ({ ...r, status: "available" as const })),
 				...(data?.locked || []).map((r) => ({ ...r, status: "locked" as const })),
 			].sort((a, b) => a.points - b.points);
+
+			console.log(fetchedRewards);
 
 			userRewards = fetchedRewards;
 		} catch (error) {
@@ -83,44 +83,36 @@
 	// Functions
 	//-------------------------------------------------------
 
-	async function handleMarkAsRedeemed(reward: (typeof userRewards)[0]) {
-		try {
-			const result = await api.call("/rewards/redeem", {
-				method: "POST",
-				data: { userId: selectedUser.id, rewardId: reward.id },
-				withToken: true,
-			});
+     async function handleMarkAsRedeemed(reward: (typeof userRewards)[0]) {
+          try {
+               await api.call("/rewards/redeem", {
+                    method: "POST",
+                    data: { userId: selectedUser.id, rewardId: reward.id },
+                    withToken: true,
+               });
 
-			if (result?.data) {
-				showPopup(say("Marked as redeemed successfully!", "(*´▽`*)"));
-				fetchUserRewards(selectedUser.id); // Refresh the list
-			} else {
-				showPopup(say("Failed to mark as redeemed.", "(;´Д`)"));
-			}
-		} catch (error: any) {
-			console.error("Error marking reward as redeemed:", error);
-			showPopup(say(`Error: ${error.message || "An error occurred"}`, "(｡•́︿•̀｡)"));
-		}
-	}
+               showPopup(say("ทำเครื่องหมายว่ารับรางวัลแล้วสำเร็จ!", "(*´▽`*)"));
+               fetchUserRewards(selectedUser.id);
+          } catch (error: any) {
+               console.error("Error marking reward as redeemed:", error);
+               showPopup(say(`ข้อผิดพลาด: ${error.message || "เกิดข้อผิดพลาดขึ้น"}`, "(｡•́︿•̀｡)"));
+          }
+     }
 
-	async function handleRemoveRedeemed(reward: (typeof userRewards)[0]) {
-		try {
-			const result = await api.call(`/rewards/redeem/${reward.id}/cancel`, {
-				method: "DELETE",
-				withToken: true,
-			});
+     async function handleRemoveRedeemed(reward: (typeof userRewards)[0]) {
+          try {
+               await api.call(`/rewards/redeem/${reward.id}/cancel`, {
+                    method: "DELETE",
+                    withToken: true,
+               });
 
-			if (result?.data) {
-				showPopup(say("Redeemed reward removed successfully!", "(●'◡'●)"));
-				fetchUserRewards(selectedUser.id); // Refresh the list
-			} else {
-				showPopup(say("Failed to remove redeemed reward.", "(っ °Д °;)っ"));
-			}
-		} catch (error: any) {
-			console.error("Error removing redeemed reward:", error);
-			showPopup(say(`Error: ${error.message || "An error occurred"}`, "o(TヘTo)"));
-		}
-	}
+               showPopup(say("ยกเลิกรางวัลที่รับไปแล้วสำเร็จ!", "(●'◡'●)"));
+               fetchUserRewards(selectedUser.id);
+          } catch (error: any) {
+               console.error("Error removing redeemed reward:", error);
+               showPopup(say(`ข้อผิดพลาด: ${error.message || "เกิดข้อผิดพลาดขึ้น"}`, "o(TヘTo)"));
+          }
+     }
 </script>
 
 <!---------------------------------------------------------
@@ -178,13 +170,9 @@ HTML Structure
 					</td>
 					<td data-label="การจัดการ">
 						{#if reward.status === "redeemed"}
-							<button on:click={() => handleRemoveRedeemed(reward)} class="cancel-button">
-								ยกเลิก
-							</button>
+							<Button onclick={() => handleRemoveRedeemed(reward)}>ยกเลิก</Button>
 						{:else if reward.status === "available"}
-							<button on:click={() => handleMarkAsRedeemed(reward)} class="confirm-button">
-								ยืนยัน
-							</button>
+							<Button onclick={() => handleMarkAsRedeemed(reward)}>ยืนยัน</Button>
 						{:else}
 							<button disabled class="confirm-button"> เงื่อนไขไม่เพียงพอ </button>
 						{/if}

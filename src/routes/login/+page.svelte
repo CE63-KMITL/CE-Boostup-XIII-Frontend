@@ -17,13 +17,32 @@
 	let see_password: boolean = false;
 
 	async function Login() {
+		//-------------------------------------------------------
+		// Form Validation
+		//-------------------------------------------------------
+		if (!email || !password) {
+			await showPopup("โปรดกรอกอีเมลและรหัสผ่าน");
+			return;
+		}
+
+		//-------------------------------------------------------
+		// Email Format Validation
+		//-------------------------------------------------------
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			await showPopup("รูปแบบอีเมลไม่ถูกต้อง");
+			return;
+		}
+
+		//-------------------------------------------------------
+		// API Call
+		//-------------------------------------------------------
 		const res = await api.call("/auth/login", { method: "POST", data: { email, password } });
 		console.log(res.token);
 		if (res.token) {
 			setCookie("token", res.token);
 			goto("/menu");
 		} else {
-			showPopup(`ไม่สามารถเข้าสู่ระบบได้\n\n${JSON.stringify(res.message)}`);
 			const massage = await showPopup(res.message);
 		}
 	}
@@ -63,6 +82,60 @@
 		);
 	}
 
+	//-------------------------------------------------------
+	// Request Password Reset
+	//-------------------------------------------------------
+	//-------------------------------------------------------
+	// Request Password Reset
+	//-------------------------------------------------------
+	async function onRequestResetPassword() {
+		const inputsForReset: ShowPopupInputs = [
+			{
+				type: "text",
+				name: "email",
+				label: "อีเมล",
+				placeholder: "อีเมลของคุณ",
+				required: true,
+			},
+		];
+
+		showPopup(
+			"รีเซ็ตรหัสผ่าน",
+			{
+				ยืนยัน: {
+					primary: true,
+					callback: async (formData) => {
+						if (formData && formData.email) {
+							try {
+								const res = await api.call("/auth/request-reset-password", {
+									method: "POST",
+									data: { email: formData.email },
+								});
+								if (res) {
+									await showPopup(res, {
+										ตกลง: () => {},
+									});
+								} else {
+									await showPopup("เราได้ทำการส่งการรีเซ็ตรหัสผ่านไปยังอีเมลของคุณแล้ว!", {
+										ตกลง: () => {},
+									});
+								}
+							} catch (error: any) {
+								console.error("Error requesting password reset:", error);
+								await showPopup(error.message || "เกิดข้อผิดพลาดในการร้องขอรีเซ็ตรหัสผ่าน");
+							}
+						} else {
+							await showPopup("โปรดกรอกอีเมลเพื่อรีเซ็ตรหัสผ่าน");
+						}
+					},
+				},
+				ยกเลิก: { cancel: true, callback: () => {} },
+			},
+			"large",
+			inputsForReset
+		);
+	}
+
 	let loaded = false;
 	onMount(() => {
 		loaded = true;
@@ -77,7 +150,18 @@
 			<div class="InputBox">
 				<div class="EmailBox">
 					<p class="Text">อีเมล</p>
-					<input class="Email" type="email" placeholder="อีเมล" bind:value={email} />
+					<input
+						class="Email"
+						type="email"
+						placeholder="อีเมล"
+						bind:value={email}
+						on:keydown={(event) => {
+							if (event.key === "Enter") {
+								event.preventDefault();
+								document.getElementById("Password")?.focus();
+							}
+						}}
+					/>
 				</div>
 				<div class="PasswordBox">
 					<p class="Text">รหัสผ่าน</p>
@@ -88,10 +172,16 @@
 							type={see_password ? "text" : "password"}
 							placeholder="รหัสผ่าน"
 							bind:value={password}
+							on:keydown={(event) => {
+								if (event.key === "Enter") {
+									event.preventDefault();
+									Login();
+								}
+							}}
 						/>
 						<button
 							class="IoIosEyeOff"
-							onclick={() => {
+							on:click={() => {
 								see_password = !see_password;
 							}}
 						>
@@ -104,11 +194,11 @@
 					</div>
 				</div>
 				<div class="ForgetAndCreate">
-					<p class="ForgetPassword">ลืมรหัสผ่าน</p>
-					<p class="ForgetPassword" onclick={onCreateAccount}>สร้างบัญชี</p>
+					<p class="ForgetPassword" on:click={onRequestResetPassword}>ลืมรหัสผ่าน</p>
+					<p class="ForgetPassword" on:click={onCreateAccount}>สร้างบัญชี</p>
 				</div>
 			</div>
-			<Button class="Login" onclick={() => Login()}>Login</Button>
+			<Button class="Login" on:click={() => Login()}>Login</Button>
 		</div>
 	{/if}
 </div>
