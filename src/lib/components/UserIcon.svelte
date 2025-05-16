@@ -5,6 +5,7 @@
 
   let showCrop = false;
   let initalCropPosition = { x: 0, y: 0 };
+  let pixelCrop = { x: 0, y: 0, height: 0, width: 0 };
 
   export let data;
   let base64Image = "";
@@ -27,15 +28,14 @@
     reader.readAsDataURL(file);
   }
 
-  async function createImage(url) {
-    return new Promise((resolve, reject) => {
+  const createImage = (url): Promise<HTMLImageElement> =>
+    new Promise((resolve, reject) => {
       const image = new Image();
       image.addEventListener("load", () => resolve(image));
       image.addEventListener("error", (error) => reject(error));
       image.setAttribute("crossOrigin", "anonymous"); // needed to avoid cross-origin issues on CodeSandbox
       image.src = url;
     });
-  }
 
   async function getCroppedImage(imageSrc, pixelCrop) {
     const image = await createImage(imageSrc);
@@ -49,7 +49,7 @@
     canvas.height = pixelCrop.height;
 
     ctx.drawImage(
-      canvas,
+      image,
       pixelCrop.x,
       pixelCrop.y,
       pixelCrop.width,
@@ -60,30 +60,33 @@
       pixelCrop.height
     );
 
-    return canvas.toDataURL("image/jpeg");
+    // As a blob
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((file) => {
+        resolve(URL.createObjectURL(file));
+      }, "image/jpeg");
+    });
   }
 
-  async function handleImageCrop(e) {
+  async function handleImageCrop() {
     try {
-      // Convert image to Base64
-      const reader = new FileReader();
-      reader.onload = async () => {
-        base64Image = (reader.result as string).split(",")[1]; // remove data:image/...;base64,
-        data = reader.result as string;
+      // Change to the new cropped image
+      data = await getCroppedImage(data, pixelCrop);
+      // Base64 String
+      let uploadData = data.split(",")[1];
+      // Send to backend
+      const response = await fetch("/api/profile/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: uploadData }),
+      });
 
-        // Send to backend
-        const response = await fetch("/api/profile/upload", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: base64Image }),
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-        } else {
-          console.error("Upload failed");
-        }
-      };
+      if (response.ok) {
+        const result = await response.json();
+      } else {
+        console.error("Upload failed");
+      }
+      showCrop = false;
     } catch (e) {}
   }
 </script>
@@ -96,6 +99,13 @@
         crop={initalCropPosition}
         cropShape={"round"}
         aspect={1}
+        oncropcomplete={(details) => {
+          const pixels = details.pixels;
+          pixelCrop.x = pixels.x;
+          pixelCrop.y = pixels.y;
+          pixelCrop.width = pixels.width;
+          pixelCrop.height = pixels.height;
+        }}
       />
     </div>
     <Button onclick={handleImageCrop}>Crop Image</Button>
