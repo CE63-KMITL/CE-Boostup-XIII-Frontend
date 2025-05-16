@@ -13,7 +13,7 @@
     import ProfileUser from "$lib/components/ProfileUser.svelte";
 	import { selectData } from "./score";
     import EditScore from "./components/EditScore.svelte";
-    import { showPopup } from "$lib/components/PopUp.svelte";
+    import { showPopup , closePopup } from "$lib/components/PopUp.svelte";
 	import Claim from "./components/Claim.svelte";
 	import { fade } from "svelte/transition";
 	import StaffClaim from "./components/StaffClaim.svelte";
@@ -242,7 +242,7 @@ Staff Claim
 {#if showStaffClaim && IsRole(Role.STAFF)}
 	<div class="backdrop" onclick={closePopup} in:fade out:fade>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
-			<StaffClaim onClose={closeStaffClaim} selectedUser={selectedStudent} />
+			<StaffClaim onClose={closeStaffClaim} selectedUser={currentSelectData} />
 		</div>
 	</div>
 {/if}
