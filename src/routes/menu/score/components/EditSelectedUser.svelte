@@ -1,4 +1,131 @@
 <script lang="ts">
-
+    import { selectData } from "../score";
+    import { showPopup } from "$lib/components/PopUp.svelte";
+    import { azScale } from "$lib/transition";
+    import ProfileUser from "$lib/components/ProfileUser.svelte";
+    import Button from "$lib/components/Button.svelte";
+    import HistoryBtn from "./HistoryBtn.svelte";
+    import EditScore from "./EditScore.svelte";
     
+    
+    const profile = {
+		name: "เพ็ญพิชชา ปานจันทร์",
+		studentId: "68010662",
+		rank: 23,
+		score: 300,
+		houseRank: 5,
+		houseScore: 1200,
+		cardImg: "/house/warlock.png",
+	};
+
+    let editMessage: string;
+	let editScore: number;
+    let editMethod = "";
+	let dataEditScore = {
+		userId: "",
+		amount: 0,
+		message: "",
+	};
+	let showEditScore = false;
+
+    function openEditScore() { showEditScore = true; }
+	function closeEditScore() { showEditScore = false; }
+	function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
+		//setMehtod need to be "+" or "-" Naja to check method in component
+		if (setAmount == null || setAmount == 0) {
+			showPopup("กรุณาใส่คะแนนที่ต้องการแก้ไขด้วยน้า ( •̀ ω •́ )✧");
+			return;
+		} else if (setMessage == null || setMessage == "") {
+			showPopup("กรุณาใส่หมายเหตุด้วยน้า ( •̀ ω •́ )✧");
+			return;
+		} else {
+			editMethod = setMethod;
+			dataEditScore = {
+				userId: setUserId,
+				amount: setAmount,
+				message: setMessage,
+			};
+
+			editMessage = null;
+			editScore = null;
+
+			openEditScore();
+		}
+	}
+
 </script>
+
+{#if $selectData != null}
+    <div
+        class="sc-instead-ntung"
+        in:azScale={{ size: 0.99, delay: 250 }}
+        out:azScale={{ size: 0.99, duration: 100 }}
+    >
+        <div class="sc-instead-ntung-top-profile">
+            <div style="padding: 10px 20px;">
+                <!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
+
+                <ProfileUser user={$selectData.data} />
+            </div>
+            <div class="sc-instead-ntung-top-detail">
+                <div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
+                <div id="detail-bottom">{$selectData.data.score}</div>
+                <div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
+                <div id="detail-bottom">{profile.houseScore}</div>
+                <!-- <Button
+                    id="detail-btn"
+                    onclick={() => showUserHistory($selectData)}
+                    filter={false}>ประวัติคะแนน</Button> -->
+                <HistoryBtn giveMeYourUserData={$selectData}></HistoryBtn>
+            </div>
+        </div>
+        <div class="sc-instead-ntung-middle">
+            <input
+                id="inputMessage"
+                placeholder="หมายเหตุ* (ใส่เหตุผลในการแก้ไขคะแนนด้วยน้า ( •̀ ω •́ )✧)"
+                type="string"
+                bind:value={editMessage}
+            />
+        </div>
+        <div class="sc-instead-ntung-bottom">
+            <input
+                id="inputScore"
+                placeholder="คะแนน"
+                type="number"
+                bind:value={editScore}
+            />
+            <div id="editScore-btn">
+                <Button
+                    class="plusScore-btn"
+                    onclick={() =>
+                        setEditScore("+", $selectData.data.id, editScore, editMessage)}
+                    color="var(--sc-plus)">บวกคะแนน</Button
+                >
+                <Button
+                    class="minusScore-btn"
+                    onclick={() =>
+                        setEditScore("-", $selectData.data.id, editScore, editMessage)}
+                    color="var(--sc-minus)">ลบคะแนน</Button
+                >
+            </div>
+        </div>
+    </div>
+{:else if $selectData == null}
+    <div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+        <div class="dragon-image">
+            <img src={"dragon-logo.png"} alt="" />
+        </div>
+        <span id="dragontext">CE BOOSTUP</span>
+    </div>
+{/if}
+
+<!-- 
+-------------------------------------------------------
+Popup Edit Score
+-------------------------------------------------------
+-->
+
+{#if showEditScore}
+	<EditScore getMethod={editMethod} getData={dataEditScore} />
+	<div>{closeEditScore()}</div>
+{/if}

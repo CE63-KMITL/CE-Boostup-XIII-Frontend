@@ -133,7 +133,7 @@
 </Frame>
 <div class="scroll" bind:this={scrollElement}>
 	{#if activeTab == "overall"}
-		<div class="sc-search-frame">
+		<div class="sc-search-frame" in:azScale={{ delay: 250 }} out:azScale>
 			<Search></Search>
 			<input
 				id="search"
