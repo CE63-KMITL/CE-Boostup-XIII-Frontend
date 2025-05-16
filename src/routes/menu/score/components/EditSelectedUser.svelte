@@ -16,7 +16,6 @@
 		score: 300,
 		houseRank: 5,
 		houseScore: 1200,
-		cardImg: "/house/warlock.png",
 	};
 
 	let editMessage: string;
@@ -59,16 +58,14 @@
 {#if $selectData != null}
 	<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 		<div class="sc-instead-ntung-top-profile">
-			<div style="padding: 10px 20px;">
-				<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
-
+			<div style="padding: 10px 20px; ">
 				<ProfileUser user={$selectData.data} />
 			</div>
 			<div class="sc-instead-ntung-top-detail">
-				<div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
+				<div id="detail-top">นักผจญภัยอันดับที่ {$selectData.data.rank}</div>
 				<div id="detail-bottom">{$selectData.data.score}</div>
-				<div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
-				<div id="detail-bottom">{profile.houseScore}</div>
+				<div id="detail-top">บ้านอันดับที่ {$selectData.data.houseRank}</div>
+				<div id="detail-bottom">{$selectData.data.houseScore}</div>
 				<div id="detail-btn">
 					<StaffClaimBtn currentSelectData={$selectData}></StaffClaimBtn>
 					<HistoryBtn giveMeYourUserData={$selectData} />
@@ -122,8 +119,8 @@ Popup Edit Score
 <style>
 	:global(#detail-btn) {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		width: 100%;
-		gap: 20px;
+		gap: 5px;
 	}
 </style>

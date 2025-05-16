@@ -40,7 +40,7 @@
 		document.title = $items[$currentPage];
 
 		function onResize() {
-			$mobile = window.innerWidth < window.innerHeight;
+			$mobile = window.innerHeight / window.innerWidth >= 1.25;
 		}
 		onResize();
 		window.addEventListener("resize", onResize);

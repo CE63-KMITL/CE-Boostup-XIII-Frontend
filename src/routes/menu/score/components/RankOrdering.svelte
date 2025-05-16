@@ -5,6 +5,7 @@
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 	import { createEventDispatcher } from "svelte";
 	import { azScale } from "$lib/transition";
+	import { refreshHouseList } from "../score";
 
 	//let index: number = $$restProps?.index;
 	export let index: number;
@@ -21,6 +22,8 @@
 			row: index,
 			data: user,
 		});
+
+		refreshHouseList();
 	}
 </script>
 

@@ -24,6 +24,9 @@ export const selectData = writable<{
 		email: string | null;
 		name: string | null;
 		score: number | null;
+		rank: number | null;
+		houseRank: number | null;
+		houseScore: number | null;
 		createdAt: string | null;
 		updatedAt: string | null;
 	};
@@ -39,9 +42,12 @@ export async function refreshHouseList() {
 			withToken: true,
 		});
 
-		console.log(selectedData.data.id);
+		console.log(selectedData.data);
 
-		selectedData.data = data;
+		selectData.set({
+			row: selectedData.row,
+			data: data,
+		});
 
 		console.log("📦 ข้อมูลใหม่ที่โหลด2:", data);
 	} catch (error) {

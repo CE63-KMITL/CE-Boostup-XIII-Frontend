@@ -14,6 +14,7 @@
 	import { fade } from "svelte/transition";
 	import HistoryBtn from "./components/HistoryBtn.svelte";
 	import EditSelectedUser from "./components/EditSelectedUser.svelte";
+	import * as api from "$lib/fetchApi";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -22,7 +23,6 @@
 		score: 300,
 		houseRank: 5,
 		houseScore: 1200,
-		cardImg: "/house/warlock.png",
 	};
 
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
@@ -45,7 +45,13 @@
 		if (!$userData.id) {
 			headerTabs = {};
 		}
+
+		userScoreData = await api.call(`/user/score-data/${$userData.id}`, {
+			withToken: true,
+		});
 	});
+
+	let userScoreData;
 </script>
 
 {#if $popup}
@@ -66,11 +72,11 @@ HTML Crapp
 	<!-- SC-Left Side -->
 
 	<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
-		{#if $userData.id}
+		{#if userScoreData?.id}
 			{#if activeTab == "scoreDetail"}
 				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
-						<img src={profile.cardImg} alt="" />
+						<img src="/house/{$userData.house}.png" alt="" />
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
@@ -80,14 +86,14 @@ HTML Crapp
 							<span>{$userData.name}</span>
 							<span style="color: var(--sc-orangedark)">{$userData.studentId} </span>
 						</div>
-						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {profile.rank}</Frame>
-						<div id="scl-detail-bottom">{$userData.score}</div>
-						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
-						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<!-- <Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}
+						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {userScoreData?.rank}</Frame>
+						<div id="scl-detail-bottom">{userScoreData?.score}</div>
+						<Frame id="scl-detail-top">บ้านอันดับที่ {userScoreData?.houseRank}</Frame>
+						<div id="scl-detail-bottom">{userScoreData?.houseScore}</div>
+						<!-- <Button class="scl-btn" onclick={() => showUserHistory(userScoreData)} filter={false}
 							>ประวัติคะแนน</Button
 						> -->
-						<HistoryBtn giveMeYourUserData={$userData}></HistoryBtn>
+						<HistoryBtn giveMeYourUserData={userScoreData}></HistoryBtn>
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
