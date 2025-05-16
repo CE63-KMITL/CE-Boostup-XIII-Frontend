@@ -24,7 +24,7 @@
 		{:else if data.amount > 0}
 			<div style="color: var(--sc-plus);">+{data.amount}</div>
 		{/if}
-		<div>{data.message}</div>
+		<div class="message">{data.message}</div>
 		<div id="sc-right-history">
 			<span>{data.modifiedBy.name}</span>
 			<span style="color: var(--sc-orangedark);">{formatDate(data.date)}</span>
@@ -33,6 +33,10 @@
 {/each}
 
 <style lang="scss">
+	.message {
+		padding-inline: 10px;
+	}
+
 	.sc-history-score-main {
 		display: flex;
 		flex-direction: row;

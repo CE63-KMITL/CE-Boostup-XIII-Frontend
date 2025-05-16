@@ -6,6 +6,8 @@
 	import { createEventDispatcher } from "svelte";
 	import { azScale } from "$lib/transition";
 	import { refreshHouseList } from "../score";
+	import { IsRole, userData } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
 
 	//let index: number = $$restProps?.index;
 	export let index: number;
@@ -17,7 +19,8 @@
 
 	// set event with user data
 	function handleClick() {
-		if (user.role == "staff") return;
+		if (!IsRole(Role.STAFF) || user.role == "staff") return;
+
 		dispatch("select", {
 			row: index,
 			data: user,

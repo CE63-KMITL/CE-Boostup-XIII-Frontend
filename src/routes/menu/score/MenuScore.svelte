@@ -82,8 +82,10 @@ HTML Crapp
 						<div class="scl-top">
 							<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
 
-							<div id="scl-top-userIcon"><UserIcon data={$userData.icon}></UserIcon></div>
-							<span>{$userData.name}</span>
+							<div id="scl-top-userIcon">
+								<UserIcon name={$userData.name} data={$userData.icon}></UserIcon>
+							</div>
+							<span class="scl-top-name">{$userData.name}</span>
 							<span style="color: var(--sc-orangedark)">{$userData.studentId} </span>
 						</div>
 						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {userScoreData?.rank}</Frame>
@@ -138,6 +140,12 @@ Style SCSS Na
 -->
 
 <style lang="scss">
+	.scl-top-name {
+		width: 100%;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+	}
 	.backdrop {
 		z-index: 1;
 	}
@@ -180,6 +188,7 @@ Style SCSS Na
 		:global(#sc-left) {
 			border-radius: 20px;
 			width: 35%;
+			border: transparent;
 		}
 
 		:global(#sc-right) {
@@ -206,9 +215,15 @@ Style SCSS Na
 		justify-content: center;
 
 		div.scl-image {
-			width: 90%;
-			height: auto;
-			padding: 5%;
+			height: 50%;
+			padding: 1%;
+
+			img {
+				min-width: fit-content;
+				height: 100%;
+				border-radius: var(--n-border-radius);
+				box-shadow: 0 4px 24px var(--list-shadow);
+			}
 		}
 
 		:global(#scl-main) {
@@ -225,10 +240,14 @@ Style SCSS Na
 				display: flex;
 				justify-content: space-between;
 				padding: 5% 5% 0 5%;
+				align-items: center;
+				gap: 5px;
 
 				#scl-top-userIcon {
+					min-width: 50px;
 					width: 15%;
 					height: 100%;
+					aspect-ratio: 1/1;
 				}
 			}
 

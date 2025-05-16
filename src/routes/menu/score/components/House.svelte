@@ -17,7 +17,7 @@
 		console.log(selectedHouseData);
 	}
 	function imageHousePath(filename: string): string {
-		return `/house/${filename}.png`;
+		return `/house-transparent/${filename}.png`;
 	}
 
 	onMount(async () => {

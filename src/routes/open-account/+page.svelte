@@ -6,6 +6,9 @@
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 	import { showPopup } from "$lib/components/PopUp.svelte";
 	import { setCookie } from "$lib/cookie";
+	import { onMount } from "svelte";
+	import { fly } from "svelte/transition";
+	import { azScale } from "$lib/transition";
 
 	$: editName = $page.url.searchParams.get("editName");
 	$: email = $page.url.searchParams.get("email");
@@ -43,75 +46,95 @@
 			window.location.href = "/menu";
 		}
 	}
+
+	let loaded = false;
+	onMount(() => {
+		loaded = true;
+	});
 </script>
 
-<div class="registerContainer">
-	<div class="registerBox">
-		<h1 class="registerHead">ข้อมูลผู้ใช้</h1>
-		{#if editName != "false"}
-			<div class="nameBox">
-				<p class="Text">ชื่อผู้ใช้</p>
-				<input type="text" class="name" placeholder="ชื่อผู้ใช้" bind:value={name} />
+{#if loaded}
+	<div class="registerContainer">
+		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
+		<div in:azScale={{ delay: 100, duration: 700 }} class="registerBox">
+			<h1 in:fly={{ y: 100, delay: 100, duration: 700 }} class="registerHead">ข้อมูลผู้ใช้</h1>
+			{#if editName != "false"}
+				<div class="nameBox">
+					<p class="Text">ชื่อผู้ใช้</p>
+					<input type="text" class="name" placeholder="ชื่อผู้ใช้" bind:value={name} />
+				</div>
+			{/if}
+			<div in:fly={{ y: 100, delay: 140, duration: 700 }} class="passwordBox">
+				<p class="Text">รหัสผ่าน</p>
+				<div class="wrap">
+					<input
+						type={see_password ? "text" : "password"}
+						class="password"
+						placeholder="รหัสผ่าน"
+						bind:value={text_password}
+					/>
+					<button
+						class="IoIosEyeOff"
+						on:click={() => {
+							see_password = !see_password;
+						}}
+					>
+						{#if see_password}
+							<IoIosEye />
+						{:else}
+							<IoIosEyeOff />
+						{/if}
+					</button>
+				</div>
 			</div>
-		{/if}
-		<div class="passwordBox">
-			<p class="Text">รหัสผ่าน</p>
-			<div class="wrap">
-				<input
-					type={see_password ? "text" : "password"}
-					class="password"
-					placeholder="รหัสผ่าน"
-					bind:value={text_password}
-				/>
-				<button
-					class="IoIosEyeOff"
-					on:click={() => {
-						see_password = !see_password;
-					}}
-				>
-					{#if see_password}
-						<IoIosEye />
-					{:else}
-						<IoIosEyeOff />
-					{/if}
-				</button>
+			<div in:fly={{ y: 100, delay: 300, duration: 700 }} class="recheckBox">
+				<p class="Text">ยืนยันรหัสผ่าน</p>
+				<div class="wrap">
+					<input
+						type={recheck_password ? "text" : "password"}
+						class="recheck"
+						placeholder="ยืนยันรหัสผ่าน"
+						bind:value={text_re_password}
+					/>
+					<button
+						class="IoIosEyeOff"
+						on:click={() => {
+							recheck_password = !recheck_password;
+						}}
+					>
+						{#if recheck_password}
+							<IoIosEye />
+						{:else}
+							<IoIosEyeOff />
+						{/if}
+					</button>
+				</div>
+			</div>
+			<div in:fly={{ y: 100, delay: 400, duration: 700 }} class="full">
+				<Button class="confirm" onclick={onOpenAccount}>ยืนยัน</Button>
 			</div>
 		</div>
-		<div class="recheckBox">
-			<p class="Text">ยืนยันรหัสผ่าน</p>
-			<div class="wrap">
-				<input
-					type={recheck_password ? "text" : "password"}
-					class="recheck"
-					placeholder="ยืนยันรหัสผ่าน"
-					bind:value={text_re_password}
-				/>
-				<button
-					class="IoIosEyeOff"
-					on:click={() => {
-						recheck_password = !recheck_password;
-					}}
-				>
-					{#if recheck_password}
-						<IoIosEye />
-					{:else}
-						<IoIosEyeOff />
-					{/if}
-				</button>
-			</div>
-		</div>
-		<Button class="confirm" onclick={onOpenAccount}>ยืนยัน</Button>
 	</div>
-</div>
+{/if}
 
 <style lang="scss">
+	.Head {
+		color: var(--tag-text);
+		text-shadow: 0px 4px var(--list-shadow);
+		text-align: center;
+		font-size: 3.5rem;
+		font-weight: 700;
+	}
+
 	.registerContainer {
 		width: 100%;
 		height: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		flex-direction: column;
 	}
+
 	.registerBox {
 		display: flex;
 		flex-direction: column;
@@ -127,6 +150,7 @@
 		border: 1px solid var(--theme-dark);
 		border-radius: 15px;
 		background-color: var(--bg-50);
+		backdrop-filter: blur(5px);
 	}
 	.registerHead {
 		font-size: 3.5rem;
@@ -147,7 +171,7 @@
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 		width: 100%;
-		max-width: 25rem;
+
 		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
@@ -163,7 +187,7 @@
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
-		max-width: 25rem;
+
 		gap: 5px;
 	}
 	.password {
@@ -186,7 +210,7 @@
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
-		max-width: 25rem;
+
 		gap: 5px;
 		margin-bottom: 2rem;
 	}

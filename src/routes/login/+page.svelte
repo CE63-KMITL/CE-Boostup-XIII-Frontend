@@ -146,9 +146,9 @@
 	{#if loaded}
 		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
 		<div in:azScale={{ delay: 100, duration: 700 }} class="LoginBox">
-			<h1 class="LoginHead">เข้าสู่ระบบ</h1>
+			<h1 in:fly={{ y: 100, delay: 100, duration: 700 }} class="LoginHead">เข้าสู่ระบบ</h1>
 			<div class="InputBox">
-				<div class="EmailBox">
+				<div in:fly={{ y: 100, delay: 140, duration: 700 }} class="EmailBox">
 					<p class="Text">อีเมล</p>
 					<input
 						class="Email"
@@ -163,7 +163,7 @@
 						}}
 					/>
 				</div>
-				<div class="PasswordBox">
+				<div in:fly={{ y: 100, delay: 300, duration: 700 }} class="PasswordBox">
 					<p class="Text">รหัสผ่าน</p>
 					<div class="WrapPasswordInput">
 						<input
@@ -193,12 +193,14 @@
 						</button>
 					</div>
 				</div>
-				<div class="ForgetAndCreate">
+				<div in:fly={{ y: 100, delay: 350, duration: 700 }} class="ForgetAndCreate">
 					<p class="ForgetPassword" on:click={onRequestResetPassword}>ลืมรหัสผ่าน</p>
 					<p class="ForgetPassword" on:click={onCreateAccount}>สร้างบัญชี</p>
 				</div>
 			</div>
-			<Button class="Login" on:click={() => Login()}>Login</Button>
+			<div in:fly={{ y: 100, delay: 400, duration: 700 }} class="full">
+				<Button class="Login" on:click={() => Login()}>Login</Button>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -231,6 +233,7 @@
 	}
 
 	.LoginBox {
+		backdrop-filter: blur(5px);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -268,7 +271,6 @@
 		align-items: center;
 		justify-content: start;
 		width: 100%;
-		max-width: 25rem;
 		gap: 5px;
 	}
 
@@ -277,7 +279,6 @@
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 		width: 100%;
-		max-width: 25rem;
 		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;
