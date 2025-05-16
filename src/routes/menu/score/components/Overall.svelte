@@ -6,25 +6,25 @@
 
     export let data;
 
-    // let data = [
-    // { name: "Veerapat Pirultham", id: "67010852", house: "bard", score: 700 },
-    // ];
+    let selectedUserData: { row: number; data: any } | null = null;
+    $: console.log(selectedUserData);
 
-    function handleUserClick(event: CustomEvent<{ user: any }>) {
-        const clickedUser = event.detail.user;
-        $selectData = clickedUser;
-        console.log(clickedUser);
-        console.log($selectData);
+    function handleSelect(event) {
+        selectedUserData = event.detail;
+        selectData.set(event.detail);
     }
-
 </script>
 
 {#each data as user, i}
     {#if user == "loading"}
 		<LoadingList></LoadingList>
 	{:else}
-        <RankOrdering index={i} id={user.id} user={user} on:select={handleUserClick}>
-            <div id="overall-userIcon"> <UserIcon data={user?.icon}/> </div>
+        <RankOrdering 
+        index={i} 
+        id={user.id} 
+        user={user} 
+        on:select={handleSelect}>
+            <div><UserIcon data={user?.icon}/></div>
         	<div>{user.name}</div>
         	<div>{user.studentId}</div>
         	<div>{user.house}</div>
@@ -32,10 +32,3 @@
         </RankOrdering>
     {/if}
 {/each}
-
-<style lang="scss">
-    #overall-userIcon {
-        height: 100%;
-        // width: 10%;
-    }
-</style>

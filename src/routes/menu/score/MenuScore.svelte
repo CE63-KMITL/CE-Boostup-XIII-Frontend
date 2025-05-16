@@ -3,7 +3,6 @@
 	import ScoreTab from "./components/ScoreTab.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import Tab from "$lib/components/Tab.svelte";
-	import * as api from "$lib/fetchApi";
 	import { azScale } from "$lib/transition";
 	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
@@ -14,6 +13,10 @@
     import ProfileUser from "$lib/components/ProfileUser.svelte";
 	import { selectData } from "./score";
     import EditScore from "./components/EditScore.svelte";
+    import { showPopup , closePopup } from "$lib/components/PopUp.svelte";
+	import Claim from "./components/Claim.svelte";
+	import { fade } from "svelte/transition";
+	import StaffClaim from "./components/StaffClaim.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -29,11 +32,21 @@
 	let activeTab = "scoreDetail";
 
 	let isSearching = "";
-	let currentSelectData;
+	let historyWay;
+	let currentSelectData = null;
 
 	// Edit Score (Add+ & Substract(Minus-))
 	let editMessage: string;
 	let editScore: number;
+
+	//Pop-up Staff Cliam
+	let showStaffClaim = false;
+	function openStaffClaim() {
+		showStaffClaim = true;
+	}
+	function closeStaffClaim() {
+		showStaffClaim = false;
+	}
 
 	let editMethod = "";
 	let dataEditScore = {
@@ -41,26 +54,40 @@
 		amount: 0,
 		message: "" }
 	let showEditScore = false;
-	// let showEditScore = true;
-	
 		// Plus & Substract 
-	function callEditScore() { showEditScore = true; }
+	function openEditScore() { showEditScore = true; }
+	function closeEditScore() { showEditScore = false; }
 	function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
-		
 		//setMehtod need to be "+" or "-" Naja to check method in component
-		editMethod = setMethod;
-		dataEditScore = {
-			userId: setUserId,
-			amount: setAmount,
-			message: setMessage, }
-		
-		callEditScore();
+		if (setAmount == null || setAmount == 0) {
+			showPopup("กรุณาใส่คะแนนที่ต้องการแก้ไขด้วยน้า ( •̀ ω •́ )✧");
+			return;
+		} else if (setMessage == null || setMessage == "") {
+			showPopup("กรุณาใส่หมายเหตุด้วยน้า ( •̀ ω •́ )✧");
+			return;
+		} else {
+			editMethod = setMethod;
+			dataEditScore = {
+				userId: setUserId,
+				amount: setAmount,
+				message: setMessage, }
+			
+			editMessage = null;
+			editScore = null;
+
+			openEditScore();
+		}
 	}
 
 	// Pop-up Score History
 	let showHistoryPopup = false;
 	function showUserHistory(userHistory: any) {
-		currentSelectData = userHistory;
+		if (userHistory == $userData) {
+			historyWay = userHistory;
+			currentSelectData = userHistory;
+		} else if (userHistory == $selectData) {
+			historyWay = userHistory.data;
+		} 
 		showHistoryPopup = true;
 	}
 
@@ -72,6 +99,7 @@
 	}
 
 	function protectClick(event) { event.stopPropagation(); }
+	function setSelectDataToNull() { selectData.set(null); }
 
 	onMount(async () => {
 
@@ -79,13 +107,15 @@
 			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
 		}
+
+		if (!$userData.id) {
+			headerTabs = {};
+		}
 	});
 
-	$: if (currentSelectData) {
-		(async() => {
-			console.log(currentSelectData);
-		})();
-	}
+	$: console.log("This is your currentData na",currentSelectData);
+	$: console.log("Your selectData has changed.",$selectData);
+
 </script>
 
 <!-- 
@@ -96,8 +126,9 @@ HTML Crapp
 
 <div id="Score">
 	<!-- SC-Left Side -->
-	{#if IsRole(Role.STAFF)}
-		<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
+
+	<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
+		{#if $userData.id}
 			{#if activeTab == "scData"}
 				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
@@ -120,7 +151,9 @@ HTML Crapp
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
-				<div class="full">claimPrice naja</div>
+				<div id="scoreTab-claim" class="full" in:azScale={{ delay: 250 }} out:azScale>
+					<Claim></Claim>
+				</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<Frame id="sc-search-frame">
@@ -137,20 +170,23 @@ HTML Crapp
 							border: 0px;
 							background-color: transparent;
 							"
+							
 						/>
 					</Frame>
-					{#if currentSelectData}
+					{#if isSearching != ""}
+						<div>{setSelectDataToNull()}</div>
+					{:else if $selectData != null}
 						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="sc-instead-ntung-top-profile">
 								<div style="padding: 10px 20px;"> 
 
 									<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
 
-									<ProfileUser user={$selectData}/> 
+									<ProfileUser user={$selectData.data}/> 
 								</div>
 								<div class="sc-instead-ntung-top-detail">
 									<div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
-									<div id="detail-bottom">{$selectData.score}</div>
+									<div id="detail-bottom">{$selectData.data.score}</div>
 									<div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
 									<div id="detail-bottom">{profile.houseScore}</div>
 									<Button id="detail-btn" onclick={() => showUserHistory($selectData)} filter={false}>ประวัติคะแนน</Button>
@@ -170,14 +206,14 @@ HTML Crapp
 									type="number" 
 									bind:value={editScore} />
 								<div id="editScore-btn">
-									<Button class="plusScore-btn" onclick={() => setEditScore("+", $selectData.id, editScore, editMessage)} 
+									<Button class="plusScore-btn" onclick={() => setEditScore("+", $selectData.data.id, editScore, editMessage)} 
 										color="var(--sc-plus)">บวกคะแนน</Button>
-									<Button class="minusScore-btn" onclick={() => setEditScore("-", $selectData.id, editScore, editMessage)} 
+									<Button class="minusScore-btn" onclick={() => setEditScore("-", $selectData.data.id, editScore, editMessage)} 
 										color="var(--sc-minus)">ลบคะแนน</Button>
 								</div>
 							</div>
 						</div>
-					{:else if currentSelectData == null && isSearching == ""}
+					{:else if $selectData == null && isSearching == ""}
 						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
 							<div class="dragon-image">
 								<img src={"dragon-logo.png"} alt="" />
@@ -187,14 +223,30 @@ HTML Crapp
 					{/if}
 				</div>
 			{/if}
-		</Tab>
-	{/if}
+		{:else}
+			กรุณาเข้าสู่ระบบก่อนใช้งาน
+		{/if}
+	</Tab>
 
 	<!-- SC-Right Side -->
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
 	</Frame>
 </div>
+
+<!-- 
+-------------------------------------------------------
+Staff Claim
+-------------------------------------------------------
+-->
+
+{#if showStaffClaim && IsRole(Role.STAFF)}
+	<div class="backdrop" onclick={closePopup} in:fade out:fade>
+		<div id="popup" onclick={protectClick} in:azScale out:azScale>
+			<StaffClaim onClose={closeStaffClaim} selectedUser={currentSelectData} />
+		</div>
+	</div>
+{/if}
 
 <!-- 
 -------------------------------------------------------
@@ -206,9 +258,9 @@ Popup Score History
 	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:azScale out:azScale>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
-			<div id="popup-middle"><History userDataHistory={currentSelectData}></History></div>
+			<div id="popup-middle"><History userDataHistory={historyWay}></History></div>
 			<div id="popup-bottom"> 
-				<button class="sc-history-btn" onclick={() => closeUserHistory(currentSelectData)}>ปิด</button> 
+				<button class="sc-history-btn" onclick={() => closeUserHistory(historyWay)}>ปิด</button> 
 			</div>
 		</div>
 	</div>
@@ -222,6 +274,7 @@ Popup Score History
 
 {#if showEditScore}
 	<EditScore getMethod={editMethod} getData={dataEditScore}/>
+	<div>{closeEditScore()}</div>
 {/if}
 <!-- 
 -------------------------------------------------------

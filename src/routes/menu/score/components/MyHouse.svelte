@@ -3,16 +3,19 @@
     import * as api from "$lib/fetchApi";
     import { onMount } from "svelte";
     import UserIcon from "$lib/components/UserIcon.svelte";
-    import { userData } from "$lib/auth.local";
     import { selectedHouseStore } from "../score";
-    export let dataMyHouse: any[] = [];
-    let optionDropdown: any[] = [];
-    // let selectedOptionDropdown: string = "Barbarian";
-    // let selectedOptionDropdown: string = $userData.house.charAt(0).toUpperCase() + $userData.house.slice(1);
+    import { selectData } from "../score";
 
-    function handleUserClick(event: CustomEvent<{ user: any }>) {
-        const clickedUser = event.detail.user;
-        console.log(clickedUser);
+    export let dataMyHouse: any[] = [];
+
+    let optionDropdown: any[] = [];
+
+	let selectedMyHouseData;
+
+    function handleHouseClick(event) {
+        selectedMyHouseData = event.detail;
+		selectData.set(event.detail);
+        console.log(selectedMyHouseData);
     }
 
 	onMount(async () => {
@@ -30,11 +33,11 @@
 </div>
 
 {#each dataMyHouse as user, i}
-    <RankOrdering index={i} id={user.id} user={user} on:select={handleUserClick}>
-        <UserIcon data={user.icon}></UserIcon>
+    <RankOrdering index={i} id={user.id} user={user} on:select={handleHouseClick}>
+		<div><UserIcon data={user.icon}></UserIcon></div>
         <div>{user.name}</div>
         <div>{user.studentId}</div>
-        <div>{user.score}</div>
+        <div style="text-align: right; padding-inline-end: 2%;">{user.score}</div>
     </RankOrdering>
 {/each}
 
