@@ -1,7 +1,7 @@
 import { goto } from "$app/navigation";
 import { getCookie } from "./cookie";
-import { say } from "./normalFunction";
 import { showPopup } from "$lib/components/PopUp.svelte";
+import { say } from "./normalFunction";
 
 const API_HOST = import.meta.env.VITE_API_HOST;
 
@@ -51,7 +51,7 @@ export async function call(
 			if (!response.ok) {
 				showPopup(
 					say(
-						`${route}\n\n⚠️ เกิดข้อผิดพลาด\n\nโปรดติดต่อ CE63@KMITL\n\n${responseData.error ?? ""}\n${
+						`${route}\n\n⚠️ เกิดข้อผิดพลาด\n\n${responseData.error ?? ""}\n${
 							typeof responseData.message == "object"
 								? JSON.stringify(responseData.message)
 								: responseData.message

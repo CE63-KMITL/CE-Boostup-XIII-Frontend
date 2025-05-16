@@ -12,7 +12,7 @@
 <Frame blur-bg {...$$restProps} class={"tab-container " + $$restProps.class}>
 	<div class="tab-headers">
 		{#each Object.keys(headers) as headerId}
-			<button class="tab-header" class:active={activeTab === headerId} on:click={() => selectTab(headerId)}>
+			<button class="tab-header" class:active={activeTab === headerId} on:click={() => selectTab(headerId)} style={$$restProps.style}}>
 				{headers[headerId]}
 			</button>
 		{/each}

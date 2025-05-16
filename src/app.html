@@ -17,19 +17,33 @@
 		}
 
 		document.title = "CE BOOST UP XIII";
+
+		window.addEventListener(
+			"load",
+			() => {
+				document.documentElement.setAttribute("loaded", "");
+			},
+			{ once: true }
+		);
 	</script>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<style>
-			body > #bg {
-				position: fixed;
+			#bg-container > #bg {
 				width: 100%;
 				height: 100%;
 				z-index: -1;
 				object-fit: cover;
 			}
+
+               body > #bg-container {
+                    position: fixed;
+                    width: 100%;
+                    height: 100%;
+                    z-index: -1;
+               }
 
 			body {
 				margin: 0;
@@ -41,7 +55,9 @@
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<img id="bg" src="%sveltekit.assets%/bgboostup.png" />
+		<div id="bg-container"">
+			<img id="bg" src="%sveltekit.assets%/bgboostup.png" />
+		</div>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

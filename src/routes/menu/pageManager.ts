@@ -5,9 +5,12 @@ export const items = writable({ code: "ทำโจทย์", problem: "โจ�
 
 export let currentPage = writable("");
 
-export const updatePage = (name, setState = true) => {
+export const updatePage = (name, setState = true, clear = false) => {
 	if (name == currentPage) return;
 	let url = new URL(window.location.href);
+	if (clear) {
+		url.searchParams.forEach((value, key) => url.searchParams.delete(key));
+	}
 	url.searchParams.set("page", name);
 	currentPage.set(name);
 	if (setState) pushState(url, null);

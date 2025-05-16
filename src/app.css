@@ -3,12 +3,20 @@
 @import "tailwindcss/utilities";
 
 html {
-	--n-border-radius: 10px;
+	--n-border-radius: 20px;
 
 	font-family: "Noto Sans Thai";
 	margin: 0;
 	width: 100%;
 	height: 100%;
+
+	--n-gap: 10px;
+}
+
+@media (max-width: 800px) or (max-height: 600px) {
+	html {
+		--n-gap: 5px;
+	}
 }
 
 html:not([dark]) {
@@ -22,7 +30,7 @@ html:not([dark]) {
 	--top-bar-right: rgb(63, 46, 62);
 
 	--button-bg: rgb(169, 132, 77);
-	--button-bg-text: var(--bg);
+	--button-text: var(--bg);
 
 	--theme: #a9844d;
 	--theme-dark: rgb(150, 125, 79);
@@ -62,12 +70,19 @@ html:not([dark]) {
 	--bg: rgb(255, 255, 255);
 	--bg-50: rgba(255, 255, 255, 0.8);
 
-	--grayed: #808080;
+	--sc-text-tab: rgb(255, 255, 255);
+	--sc-tab: rgb(95, 75, 94);
+	--sc-shadow: rgba(0, 0, 0, 0.5);
+	--sc-orangelight: rgb(241, 213, 161);
+	--sc-orangedark: rgb(169, 132, 77);
+	--sc-bg: rgb(255, 255, 255);
+	--sc-plus: rgb(153 185 139);
+	--sc-minus: rgb(226 113 113);
 }
 
 html[dark] {
 	--top-bar-circle-selected: var(--top-bar-selected);
-	--top-bar-selected: rgb(139, 120, 57);
+	--top-bar-selected: var(--theme);
 	--top-bar-hover: rgba(107, 94, 35, 0.274);
 	--top-bar-text: rgb(255, 255, 255);
 
@@ -76,7 +91,7 @@ html[dark] {
 	--top-bar-right: rgb(22, 22, 22);
 
 	--button-bg: rgb(207, 165, 85);
-	--button-bg-text: var(--text);
+	--button-text: var(--text);
 
 	--theme: #caa561;
 	--theme-dark: rgb(150, 125, 79);
@@ -109,11 +124,18 @@ html[dark] {
 	--darker: rgb(22, 22, 22);
 	--darker-50: rgba(22, 22, 22, 0.5);
 	--outline: rgb(125, 125, 125);
-	--button-bg: radial-gradient(at center top, rgb(190, 152, 80), rgba(153, 120, 48, 0.925));
+	--button-bg: radial-gradient(at center top, rgb(177, 146, 80), rgba(168, 130, 72, 0.925));
 	--bg: rgba(0, 0, 0, 0.8);
 	--bg-50: rgba(0, 0, 0, 0.7);
 
-	--grayed: #808080;
+	--sc-text: rgb(169, 132, 77);
+	--sc-tab: rgb(95, 75, 94);
+	--sc-shadow: rgba(0, 0, 0, 0.5);
+	--sc-orangelight: rgb(169, 132, 77);
+	--sc-orangedark: rgb(169, 132, 77);
+	--sc-bg: rgb(0, 0, 0);
+	--sc-plus: rgb(153 185 139);
+	--sc-minus: rgb(226 113 113);
 
 	background: black;
 }
@@ -138,10 +160,6 @@ html[dark] {
 
 *::-webkit-scrollbar-thumb:hover {
 	background: var(--text);
-}
-
-html[dark] > body > #bg {
-	opacity: 0.5;
 }
 
 div:not(.view-line) {
@@ -183,14 +201,17 @@ textarea,
 	width: 100%;
 	box-sizing: border-box;
 	padding: 10px;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 textarea {
 	white-space: pre;
 }
 
+input:not([type="checkbox"]):focus,
 textarea:focus {
 	outline: none !important;
+	border: 1px solid var(--theme);
 }
 
 .stroke-icon path,
@@ -245,4 +266,27 @@ svg {
 	100% {
 		opacity: 0;
 	}
+}
+
+@keyframes background-animation {
+	0% {
+		opacity: 0;
+		transform: scale(1.1);
+		filter: blur(10px);
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+html > body > #bg-container > #bg {
+	opacity: 0;
+}
+
+html[dark] > body > #bg-container {
+	opacity: 0.5;
+}
+
+html[loaded] > body > #bg-container > #bg {
+	animation: background-animation 1s ease-out forwards;
 }

@@ -1,0 +1,29 @@
+<script lang="ts">
+    import RankOrdering from "./RankOrdering.svelte";
+    import * as api from "$lib/fetchApi";
+    import { onMount } from "svelte";
+
+    let dataHouse: any[] = [];
+
+    onMount(async () => {
+        const res = await api.call(`/houseScores?order=ASC`);
+        dataHouse = res.data;
+
+    });
+
+</script>
+
+{#each dataHouse as house, i}
+    <RankOrdering index={i}>
+        <div style="width: 60%; text-align: left;">{house.name.charAt(0).toUpperCase() + house.name.slice(1)}</div>
+    	<div>{house.value}</div>
+    </RankOrdering>
+{/each}
+
+
+<style lang="scss">
+    :global(.TEST){
+        width: 60%;
+        text-align: left;
+    }
+</style>

@@ -15,7 +15,7 @@ export const searchParams = writable({
 	difficulty: null,
 	minDifficulty: 0.5,
 	maxDifficulty: 5,
-	difficultySortBy: "ASC",
+	difficultySortBy: null,
 	status: null,
 	page: 1,
 	staff: false,

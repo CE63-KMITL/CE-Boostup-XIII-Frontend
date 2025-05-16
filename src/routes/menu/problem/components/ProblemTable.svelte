@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { statusColors, statusText, type Problem } from "$lib/constants/problem";
+	import {
+		statusColors,
+		statusText,
+		statusStaffColors,
+		statusStaffText,
+		type Problem,
+	} from "$lib/constants/problem";
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
 	import HeaderSelection from "$lib/components/HeaderSelection.svelte";
@@ -14,6 +20,7 @@
 	import HeaderDifficulty from "./Header-Difficulty.svelte";
 	import HeaderTags from "./Header-Tags.svelte";
 	import ProblemRow from "./ProblemRow.svelte";
+	import { pagination } from "$lib/paginaion";
 
 	export let loading = false;
 	export let loadMore;
@@ -28,18 +35,20 @@
 		const problem_table = document.getElementById("problem-table");
 		const head_list: HTMLElement = document.querySelector("#problem-table #header");
 
-		function updateScroll() {
-			head_list.setAttribute("top", problem_table.scrollTop > 0 ? "false" : "true");
-
-			if (!loading && problem_table.scrollHeight - problem_table.scrollTop - problem_table.clientHeight < 20) {
-				loadMore();
+		function onScoll() {
+			if (problem_table.scrollTop == 0) {
+				head_list.setAttribute("top", "true");
+			} else {
+				head_list.removeAttribute("top");
 			}
 		}
 
-		if (problem_table) {
-			problem_table.addEventListener("scroll", updateScroll);
+		problem_table.addEventListener("scroll", onScoll);
 
-			updateScroll();
+		onScoll();
+
+		if (problem_table) {
+			pagination(problem_table, loadMore);
 		}
 	});
 </script>
@@ -94,38 +103,96 @@
 				สถานะ <Filter></Filter>
 			</div>
 			<HeaderSelection toggleSelector={statusElement}>
-				<RadioButton
-					name="status"
-					onclick={() => {
-						$searchParams.status = null;
-					}}
-					selected={true}
-					>ทั้งหมด
-				</RadioButton>
-				<RadioButton
-					name="status"
-					color={statusColors["Done"]}
-					onclick={() => {
-						$searchParams.status = "Done";
-					}}
-					>{statusText["Done"]}
-				</RadioButton>
-				<RadioButton
-					name="status"
-					color={statusColors["In Progress"]}
-					onclick={() => {
-						$searchParams.status = "In Progress";
-					}}
-					>{statusText["In Progress"]}
-				</RadioButton>
-				<RadioButton
-					name="status"
-					color={statusColors["Not Started"]}
-					onclick={() => {
-						$searchParams.status = "Not Started";
-					}}
-					>{statusText["Not Started"]}
-				</RadioButton>
+				{#if $searchParams.staff}
+					<RadioButton
+						name="status"
+						onclick={() => {
+							$searchParams.status = null;
+						}}
+						selected={!$searchParams.status}
+						>ทั้งหมด
+					</RadioButton>
+					<RadioButton
+						name="status"
+						color={statusStaffColors["In Progress"]}
+						onclick={() => {
+							$searchParams.status = "In Progress";
+						}}
+						selected={$searchParams.status == "In Progress"}
+						>{statusStaffText["In Progress"]}
+					</RadioButton>
+					<RadioButton
+						name="status"
+						color={statusStaffColors["Need Review"]}
+						onclick={() => {
+							$searchParams.status = "Need Review";
+						}}
+						selected={$searchParams.status == "Need Review"}
+						>{statusStaffText["Need Review"]}
+					</RadioButton>
+					<RadioButton
+						name="status"
+						color={statusStaffColors["Published"]}
+						onclick={() => {
+							$searchParams.status = "Published";
+						}}
+						selected={$searchParams.status == "Published"}
+						>{statusStaffText["Published"]}
+					</RadioButton>
+					<RadioButton
+						name="status"
+						color={statusStaffColors["Rejected"]}
+						onclick={() => {
+							$searchParams.status = "Rejected";
+						}}
+						selected={$searchParams.status == "Rejected"}
+						>{statusStaffText["Rejected"]}
+					</RadioButton>
+					<RadioButton
+						name="status"
+						onclick={() => {
+							$searchParams.status = "Archived";
+						}}
+						selected={$searchParams.status == "Archived"}
+						>{statusStaffText["Archived"]}
+					</RadioButton>
+				{:else}
+					<RadioButton
+						name="status"
+						onclick={() => {
+							$searchParams.status = null;
+						}}
+						selected={!$searchParams.status}
+						>ทั้งหมด
+					</RadioButton>
+					<RadioButton
+						name="status"
+						color={statusColors["Done"]}
+						onclick={() => {
+							$searchParams.status = "Done";
+						}}
+						selected={$searchParams.status == "Done"}
+						>{statusText["Done"]}
+					</RadioButton>
+					<RadioButton
+						name="status"
+						color={statusColors["In Progress"]}
+						onclick={() => {
+							$searchParams.status = "In Progress";
+						}}
+						selected={$searchParams.status == "In Progress"}
+						>{statusText["In Progress"]}
+					</RadioButton>
+					<RadioButton
+						name="status"
+						color={statusColors["Not Started"]}
+						onclick={() => {
+							$searchParams.status = "Not Started";
+						}}
+						selected={$searchParams.status == "Not Started"}
+						>{statusText["Not Started"]}
+					</RadioButton>
+				{/if}
 			</HeaderSelection>
 		</div>
 		<div class="do-now"></div>
@@ -230,7 +297,7 @@
 				display: flex;
 				flex-direction: row;
 				align-items: center;
-				gap: 10px;
+				gap: var(--n-gap);
 
 				:global(> div) {
 					&:nth-child(1) {
@@ -258,6 +325,7 @@
 				&:nth-child(4) {
 					width: 20%;
 					text-align: center;
+					flex-shrink: 0;
 				}
 				&:nth-child(5) {
 					width: 15%;

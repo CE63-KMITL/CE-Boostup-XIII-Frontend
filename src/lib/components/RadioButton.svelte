@@ -6,24 +6,24 @@
 	export let selected = false;
 
 	let thisElement: HTMLDivElement;
-	let thisRadioButton: HTMLInputElement;
+	let thisCheckbox: HTMLInputElement;
+	let textContentElement: HTMLDivElement;
 
 	onMount(() => {
 		thisElement.addEventListener("click", () => {
-			thisRadioButton.checked = true;
-			if (onclick) {
-				onclick();
-			}
+			onclick?.();
 		});
-
-		if (selected) thisElement.click();
 	});
+
+	$: if (thisElement && textContentElement) {
+		thisElement.title = textContentElement.textContent?.trim() || '';
+	}
 </script>
 
-<div class="radio-container" style="--color : {color};" bind:this={thisElement}>
-	<input type="radio" {...$$restProps} bind:this={thisRadioButton} />
+<div class="radio-container" style="--color : {color};" {...$$restProps} bind:this={thisElement}>
+	<input type="checkbox" bind:this={thisCheckbox} bind:checked={selected} />
 	<span>
-		<div class="text-content"><slot></slot></div>
+		<div class="text-content" bind:this={textContentElement}><slot></slot></div>
 	</span>
 </div>
 

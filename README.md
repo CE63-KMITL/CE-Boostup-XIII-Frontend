@@ -1,6 +1,6 @@
 ## Description
 
-CE boostup 13 Website (Front-end) use [Svelte](https://github.com/sveltejs/svelte) framework and [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss).
+CE boostup 13 Website (Front-end) use [Svelte](https://github.com/sveltejs/svelte) framework
 
 ## Setup
 
