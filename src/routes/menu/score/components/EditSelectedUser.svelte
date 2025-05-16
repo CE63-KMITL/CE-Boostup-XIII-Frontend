@@ -6,6 +6,7 @@
     import Button from "$lib/components/Button.svelte";
     import HistoryBtn from "./HistoryBtn.svelte";
     import EditScore from "./EditScore.svelte";
+    import StaffClaimBtn from "./StaffClaimBtn.svelte";
     
     
     const profile = {
@@ -72,11 +73,11 @@
                 <div id="detail-bottom">{$selectData.data.score}</div>
                 <div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
                 <div id="detail-bottom">{profile.houseScore}</div>
-                <!-- <Button
-                    id="detail-btn"
-                    onclick={() => showUserHistory($selectData)}
-                    filter={false}>ประวัติคะแนน</Button> -->
-                <HistoryBtn giveMeYourUserData={$selectData}></HistoryBtn>
+                <div id="detail-btn">
+                    <StaffClaimBtn currentSelectData={$selectData}></StaffClaimBtn>
+                    <HistoryBtn giveMeYourUserData={$selectData}/>
+                </div>
+                
             </div>
         </div>
         <div class="sc-instead-ntung-middle">
@@ -129,3 +130,12 @@ Popup Edit Score
 	<EditScore getMethod={editMethod} getData={dataEditScore} />
 	<div>{closeEditScore()}</div>
 {/if}
+
+<style>
+    :global(#detail-btn) {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 20px;
+    }
+</style>

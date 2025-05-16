@@ -31,30 +31,12 @@
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
 
-	let currentSelectData = null;
-
-
-
-	//Pop-up Staff Cliam
-	let showStaffClaim = false;
-	function openStaffClaim() {
-		showStaffClaim = true;
-	}
-	function closeStaffClaim() {
-		showStaffClaim = false;
-	}
-	//
-
 	function imageHousePath(filename: string): string {
         return `/house/${filename}.png`;
     }
 
 	function setSelectDataToNull() {
 		selectData.set(null);
-	}
-
-	function protectClick(event) {
-		event.stopPropagation();
 	}
 
 	onMount(async () => {
@@ -131,20 +113,6 @@ HTML Crapp
 		{/if}
 	</div>
 </div>
-
-<!-- 
--------------------------------------------------------
-Staff Claim
--------------------------------------------------------
--->
-
-{#if showStaffClaim && IsRole(Role.STAFF)}
-	<div class="backdrop" onclick={closePopup} in:fade out:fade>
-		<div id="popup" onclick={protectClick} in:azScale out:azScale>
-			<StaffClaim onClose={closeStaffClaim} selectedUser={currentSelectData} />
-		</div>
-	</div>
-{/if}
 
 <!-- 
 -------------------------------------------------------
