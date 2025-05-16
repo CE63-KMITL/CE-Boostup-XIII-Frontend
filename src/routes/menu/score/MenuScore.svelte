@@ -165,22 +165,7 @@ HTML Crapp
 				</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<Frame id="sc-search-frame">
-						<Search></Search>
-						<input
-							id="search"
-							placeholder="ชื่อ / รหัสนักศึกษา"
-							oninput={(e: any) => {
-								// $searchParams["search"] = e.target.value;
-								// $searchParams["page"] = e.target.value;
-							}}
-							bind:value={isSearching}
-							style="
-							border: 0px;
-							background-color: transparent;
-							"
-						/>
-					</Frame>
+					
 					{#if isSearching != ""}
 						<div>{setSelectDataToNull()}</div>
 					{:else if $selectData != null}
@@ -420,16 +405,6 @@ Style SCSS Na
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-
-		:global(#sc-search-frame) {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			padding: 0px;
-			padding-inline: 10px;
-			width: 100%;
-			border-radius: 25px;
-		}
 
 		:global(#sc-below-search) {
 			width: 100%;
