@@ -12,6 +12,7 @@
 	import * as api from "$lib/fetchApi";
 	import { runProblemListAnimation } from "$lib/animation";
 	import { scoreRefreshTrigger } from "../score";
+	import Search from "$lib/components/Icons/Search.svelte";
 
 	//-------------------------------------------------------
 	// Stores
@@ -132,6 +133,17 @@
 </Frame>
 <div class="scroll" bind:this={scrollElement}>
 	{#if activeTab == "overall"}
+		<div class="sc-search-frame" in:azScale={{ delay: 250 }} out:azScale>
+			<Search></Search>
+			<input
+				id="search"
+				placeholder="ชื่อ / รหัสนักศึกษา"
+				style="
+				border: 0px;
+				background-color: transparent;
+				"
+			/>
+		</div>
 		<div in:azScale={{ delay: 250 }} out:azScale>
 			<Overall data={users}></Overall>
 		</div>
@@ -182,4 +194,19 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 	}
+
+	.sc-search-frame {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		background-color: var(--bg);
+		border: 1px solid var(--outline);
+		padding: 0px;
+		padding-inline: 10px;
+		width: 100%;
+		border-radius: 25px;
+	}
+
+
+	
 </style>

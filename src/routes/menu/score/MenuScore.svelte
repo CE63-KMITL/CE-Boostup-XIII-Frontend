@@ -7,8 +7,6 @@
 	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
 	import { onMount } from "svelte";
-	import Search from "$lib/components/Icons/Search.svelte";
-	import History from "./components/History.svelte";
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import ProfileUser from "$lib/components/ProfileUser.svelte";
 	import { selectData, selectedIDStudent } from "./score";
@@ -17,6 +15,8 @@
 	import Claim from "./components/Claim.svelte";
 	import { fade } from "svelte/transition";
 	import StaffClaim from "./components/StaffClaim.svelte";
+	import HistoryBtn from "./components/HistoryBtn.svelte";
+	import EditSelectedUser from "./components/EditSelectedUser.svelte";
 
 	const profile = {
 		name: "เพ็ญพิชชา ปานจันทร์",
@@ -31,13 +31,9 @@
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
 
-	let isSearching = "";
-	let historyWay;
 	let currentSelectData = null;
 
-	// Edit Score (Add+ & Substract(Minus-))
-	let editMessage: string;
-	let editScore: number;
+
 
 	//Pop-up Staff Cliam
 	let showStaffClaim = false;
@@ -47,68 +43,18 @@
 	function closeStaffClaim() {
 		showStaffClaim = false;
 	}
+	//
 
-	let editMethod = "";
-	let dataEditScore = {
-		userId: "",
-		amount: 0,
-		message: "",
-	};
-	let showEditScore = false;
-	// Plus & Substract
-	function openEditScore() {
-		showEditScore = true;
-	}
-	function closeEditScore() {
-		showEditScore = false;
-	}
-	function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
-		//setMehtod need to be "+" or "-" Naja to check method in component
-		if (setAmount == null || setAmount == 0) {
-			showPopup("กรุณาใส่คะแนนที่ต้องการแก้ไขด้วยน้า ( •̀ ω •́ )✧");
-			return;
-		} else if (setMessage == null || setMessage == "") {
-			showPopup("กรุณาใส่หมายเหตุด้วยน้า ( •̀ ω •́ )✧");
-			return;
-		} else {
-			editMethod = setMethod;
-			dataEditScore = {
-				userId: setUserId,
-				amount: setAmount,
-				message: setMessage,
-			};
+	function imageHousePath(filename: string): string {
+        return `/house/${filename}.png`;
+    }
 
-			editMessage = null;
-			editScore = null;
-
-			openEditScore();
-		}
-	}
-
-	// Pop-up Score History
-	let showHistoryPopup = false;
-	function showUserHistory(userHistory: any) {
-		if (userHistory == $userData) {
-			historyWay = userHistory;
-			currentSelectData = userHistory;
-		} else if (userHistory == $selectData) {
-			historyWay = userHistory.data;
-		}
-		showHistoryPopup = true;
-	}
-
-	function closeUserHistory(userHistory: any) {
-		if (userHistory.id === $userData.id) {
-			currentSelectData = null;
-		}
-		showHistoryPopup = false;
+	function setSelectDataToNull() {
+		selectData.set(null);
 	}
 
 	function protectClick(event) {
 		event.stopPropagation();
-	}
-	function setSelectDataToNull() {
-		selectData.set(null);
 	}
 
 	onMount(async () => {
@@ -122,8 +68,6 @@
 		}
 	});
 
-	$: console.log("This is your currentData na", currentSelectData);
-	$: console.log("Your selectData has changed.", $selectData);
 </script>
 
 <!-- 
@@ -154,9 +98,10 @@ HTML Crapp
 						<div id="scl-detail-bottom">{$userData.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}
+						<!-- <Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}
 							>ประวัติคะแนน</Button
-						>
+						> -->
+						<HistoryBtn giveMeYourUserData={$userData}></HistoryBtn>
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
@@ -165,91 +110,7 @@ HTML Crapp
 				</div>
 			{:else if activeTab == "scEditData"}
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
-					<Frame id="sc-search-frame">
-						<Search></Search>
-						<input
-							id="search"
-							placeholder="ชื่อ / รหัสนักศึกษา"
-							oninput={(e: any) => {
-								// $searchParams["search"] = e.target.value;
-								// $searchParams["page"] = e.target.value;
-							}}
-							bind:value={isSearching}
-							style="
-							border: 0px;
-							background-color: transparent;
-							"
-						/>
-					</Frame>
-					{#if isSearching != ""}
-						<div>{setSelectDataToNull()}</div>
-					{:else if $selectData != null}
-						<div
-							class="sc-instead-ntung"
-							in:azScale={{ size: 0.99, delay: 250 }}
-							out:azScale={{ size: 0.99, duration: 100 }}
-						>
-							<div class="sc-instead-ntung-top-profile">
-								<div style="padding: 10px 20px;">
-									<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
-
-									<ProfileUser user={$selectData.data} />
-								</div>
-								<div class="sc-instead-ntung-top-detail">
-									<div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
-									<div id="detail-bottom">{$selectData.data.score}</div>
-									<div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
-									<div id="detail-bottom">{profile.houseScore}</div>
-									<Button
-										id="detail-btn"
-										onclick={() => showUserHistory($selectData)}
-										filter={false}>ประวัติคะแนน</Button
-									>
-								</div>
-							</div>
-							<div class="sc-instead-ntung-middle">
-								<input
-									id="inputMessage"
-									placeholder="หมายเหตุ* (ใส่เหตุผลในการแก้ไขคะแนนด้วยน้า ( •̀ ω •́ )✧)"
-									type="string"
-									bind:value={editMessage}
-								/>
-							</div>
-							<div class="sc-instead-ntung-bottom">
-								<input
-									id="inputScore"
-									placeholder="คะแนน"
-									type="number"
-									bind:value={editScore}
-								/>
-								<div id="editScore-btn">
-									<Button
-										class="plusScore-btn"
-										onclick={() =>
-											setEditScore("+", $selectData.data.id, editScore, editMessage)}
-										color="var(--sc-plus)">บวกคะแนน</Button
-									>
-									<Button
-										class="minusScore-btn"
-										onclick={() =>
-											setEditScore("-", $selectData.data.id, editScore, editMessage)}
-										color="var(--sc-minus)">ลบคะแนน</Button
-									>
-								</div>
-							</div>
-						</div>
-					{:else if $selectData == null && isSearching == ""}
-						<div
-							id="sc-below-search"
-							in:azScale={{ size: 0.99, delay: 250 }}
-							out:azScale={{ size: 0.99, duration: 100 }}
-						>
-							<div class="dragon-image">
-								<img src={"dragon-logo.png"} alt="" />
-							</div>
-							<span id="dragontext">CE BOOSTUP</span>
-						</div>
-					{/if}
+					<EditSelectedUser></EditSelectedUser>
 				</div>
 			{/if}
 		{:else}
@@ -283,35 +144,6 @@ Staff Claim
 			<StaffClaim onClose={closeStaffClaim} selectedUser={currentSelectData} />
 		</div>
 	</div>
-{/if}
-
-<!-- 
--------------------------------------------------------
-Popup Score History
--------------------------------------------------------
--->
-
-{#if showHistoryPopup}
-	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:fade out:fade>
-		<div id="popup" onclick={protectClick} in:azScale out:azScale>
-			<div id="popup-top">ประวัติคะแนน</div>
-			<div id="popup-middle"><History userDataHistory={historyWay}></History></div>
-			<div id="popup-bottom">
-				<button class="sc-history-btn" onclick={() => closeUserHistory(historyWay)}>ปิด</button>
-			</div>
-		</div>
-	</div>
-{/if}
-
-<!-- 
--------------------------------------------------------
-Popup Score History
--------------------------------------------------------
--->
-
-{#if showEditScore}
-	<EditScore getMethod={editMethod} getData={dataEditScore} />
-	<div>{closeEditScore()}</div>
 {/if}
 
 <!-- 
@@ -455,16 +287,6 @@ Style SCSS Na
 		flex-direction: column;
 		align-items: center;
 
-		:global(#sc-search-frame) {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			padding: 0px;
-			padding-inline: 10px;
-			width: 100%;
-			border-radius: 25px;
-		}
-
 		:global(#sc-below-search) {
 			width: 100%;
 			height: 100%;
@@ -473,10 +295,10 @@ Style SCSS Na
 			align-items: center;
 			justify-content: center;
 
-			.dragon-image {
+			:global(.dragon-image) {
 				width: 60%;
 			}
-			#dragontext {
+			:global(#dragontext) {
 				filter: drop-shadow(0 2px 3px var(--list-shadow));
 			}
 		}
@@ -486,14 +308,14 @@ Style SCSS Na
 	// 	Score History Pop-up
 	// -------------------------------------------------------
 
-	.sc-instead-ntung {
+	:global(.sc-instead-ntung) {
 		width: 100%;
 		height: 100%;
 		margin: 10px 0;
 		border-radius: 10px;
 		overflow-y: auto;
 
-		.sc-instead-ntung-top-profile {
+		:global(.sc-instead-ntung-top-profile) {
 			display: flex;
 			flex-direction: column;
 			border: 1px solid var(--outline);
@@ -504,13 +326,13 @@ Style SCSS Na
 			margin-bottom: 10px;
 			border-radius: 10px;
 
-			.sc-instead-ntung-top-detail {
+			:global(.sc-instead-ntung-top-detail) {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 				padding: 0 50px;
 
-				#detail-top {
+				:global(#detail-top) {
 					background-color: var(--sc-orangelight);
 					border: 1px solid var(--outline);
 					border-radius: 10px 10px 0 0;
@@ -519,7 +341,7 @@ Style SCSS Na
 					width: 100%;
 				}
 
-				#detail-bottom {
+				:global(#detail-bottom) {
 					background-color: var(--bg);
 					border: 1px solid var(--outline);
 					border-radius: 0px 0px 10px 10px;
@@ -535,13 +357,13 @@ Style SCSS Na
 			}
 		}
 
-		.sc-instead-ntung-middle {
+		:global(.sc-instead-ntung-middle) {
 			width: 100%;
 			height: auto;
 			margin-bottom: 10px;
 		}
 
-		.sc-instead-ntung-bottom {
+		:global(.sc-instead-ntung-bottom) {
 			border: 1px solid var(--outline);
 			background-color: var(--sc-bg);
 			display: flex;
@@ -553,14 +375,14 @@ Style SCSS Na
 			padding: 20px 0;
 			border-radius: 10px;
 
-			#inputScore {
+			:global(#inputScore) {
 				text-align: center;
 				background-color: transparent;
 				margin-bottom: 10px;
 				width: 55%;
 			}
 
-			#editScore-btn {
+			:global(#editScore-btn) {
 				display: flex;
 				flex-direction: row;
 				gap: 30px;
@@ -580,7 +402,7 @@ Style SCSS Na
 	// 	Score History Pop-up
 	// -------------------------------------------------------
 
-	.backdrop {
+	:global(.backdrop) {
 		position: fixed;
 		display: flex;
 		align-items: center;
@@ -589,7 +411,7 @@ Style SCSS Na
 		background-color: var(--sc-shadow);
 	}
 
-	#popup {
+	:global(#popup) {
 		display: flex;
 		flex-direction: column;
 		background-color: var(--sc-bg);
@@ -600,7 +422,7 @@ Style SCSS Na
 		height: 75%;
 		max-width: 500px;
 
-		#popup-middle {
+		:global(#popup-middle) {
 			display: flex;
 			flex-direction: column;
 			margin-top: 10px;
@@ -608,11 +430,11 @@ Style SCSS Na
 			overflow-y: auto;
 		}
 
-		#popup-bottom {
+		:global(#popup-bottom) {
 			text-align: center;
 			margin-top: 15px;
 
-			.sc-history-btn {
+			:global(.sc-history-btn) {
 				background-color: var(--sc-orangelight);
 				color: var(--text);
 				width: 50%;
@@ -623,7 +445,7 @@ Style SCSS Na
 				transition: background-color 0.3s ease;
 			}
 
-			.sc-history-btn:hover {
+			:global(.sc-history-btn:hover) {
 				background-color: var(--sc-orangedark);
 			}
 		}
@@ -657,7 +479,7 @@ Style SCSS Na
 			align-items: start;
 			justify-content: center;
 
-			div.scl-image {
+			:global(div.scl-image) {
 				height: auto;
 				width: 90%;
 				padding: 0px;
@@ -670,7 +492,7 @@ Style SCSS Na
 			align-items: center;
 			flex-direction: column;
 
-			.scl-image {
+			:global(.scl-image) {
 				width: 80%;
 			}
 
@@ -680,13 +502,13 @@ Style SCSS Na
 				display: flex;
 				justify-content: center;
 
-				.dragon-image {
+				:global(.dragon-image) {
 					width: 30%;
 				}
 			}
 		}
 
-		#popup {
+		:global(#popup) {
 			max-width: 500px;
 		}
 	}

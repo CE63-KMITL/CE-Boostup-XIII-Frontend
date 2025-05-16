@@ -39,15 +39,6 @@ export async function refreshHouseList() {
             withToken: true
         });
 
-        // console.log("✅ ได้ข้อมูล:", res);
-        // console.log("🧪 res:", res);
-        // console.log("🧪 typeof res:", typeof res);
-        // console.log("🧪 isObject:", typeof res === "object" && res !== null && !Array.isArray(res));
-
-        // const data = await res.json();
-
-        console.log("📦 json data:", data);
-
         selectData.set({
             row: selectedData.row,
             data: data
@@ -66,10 +57,6 @@ export async function refreshHouseList() {
                 console.log("✅ set selectData เป็น update เรียบร้อย");
             }
         }
-
-        console.log("🏠 houseList ที่โหลดใหม่:", data);
-        console.log("🔥 selectData ปัจจุบัน:", get(selectData));
-        console.log("🏁 refreshHouseList() จบแล้ว");
     } catch (error) {
         console.error("❌ Error fetching house list:", error);
     }
