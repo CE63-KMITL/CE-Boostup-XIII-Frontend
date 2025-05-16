@@ -10,18 +10,20 @@
 </script>
 
 <Frame blur-bg {...$$restProps} class={"tab-container " + $$restProps.class}>
-	<div class="tab-headers">
-		{#each Object.keys(headers) as headerId}
-			<button
-				class="tab-header"
-				class:active={activeTab === headerId}
-				on:click={() => selectTab(headerId)}
-				style="{$$restProps.style}}"
-			>
-				{headers[headerId]}
-			</button>
-		{/each}
-	</div>
+	{#if Object.keys(headers)?.length > 1}
+		<div class="tab-headers">
+			{#each Object.keys(headers) as headerId}
+				<button
+					class="tab-header"
+					class:active={activeTab === headerId}
+					on:click={() => selectTab(headerId)}
+					style="{$$restProps.style}}"
+				>
+					{headers[headerId]}
+				</button>
+			{/each}
+		</div>
+	{/if}
 	<div class="tab-content">
 		<slot></slot>
 	</div>

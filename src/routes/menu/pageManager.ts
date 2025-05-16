@@ -2,6 +2,7 @@ import { pushState } from "$app/navigation";
 import { get, writable } from "svelte/store";
 
 export const items = writable({ code: "ทำโจทย์", problem: "โจทย์", score: "คะแนน" });
+export const mobile = writable(false);
 
 export let currentPage = writable("");
 
