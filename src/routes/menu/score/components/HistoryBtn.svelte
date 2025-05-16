@@ -1,17 +1,17 @@
 <script lang="ts">
-    import { userData } from "$lib/auth.local";
-    import { selectData } from "../score";
-    import { azScale } from "$lib/transition";
-    import { fade } from "svelte/transition";
-    import Button from "$lib/components/Button.svelte";
-    import History from "./History.svelte";
+	import { userData } from "$lib/auth.local";
+	import { popup, selectData } from "../score";
+	import { azScale } from "$lib/transition";
+	import { fade } from "svelte/transition";
+	import Button from "$lib/components/Button.svelte";
+	import History from "./History.svelte";
 
-    export let giveMeYourUserData;
+	export let giveMeYourUserData;
 
-    let currentSelectData = null;
+	let currentSelectData = null;
 
-    let showHistoryPopup = false;
-    let historyWay;
+	let showHistoryPopup = false;
+	let historyWay;
 
 	function showUserHistory(userHistory: any) {
 		if (userHistory == $userData) {
@@ -21,6 +21,8 @@
 			historyWay = userHistory.data;
 		}
 		showHistoryPopup = true;
+
+		$popup = thisPopup;
 	}
 
 	function closeUserHistory(userHistory: any) {
@@ -28,6 +30,8 @@
 			currentSelectData = null;
 		}
 		showHistoryPopup = false;
+
+		$popup = null;
 	}
 
 	function protectClick(event) {
@@ -43,14 +47,10 @@ Popup Score History
 -------------------------------------------------------
 -->
 
-{#if showHistoryPopup}
-	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:fade out:fade>
-		<div id="popup" onclick={protectClick} in:azScale out:azScale>
-			<div id="popup-top">ประวัติคะแนน</div>
-			<div id="popup-middle"><History userDataHistory={historyWay}></History></div>
-			<div id="popup-bottom">
-				<button class="sc-history-btn" onclick={() => closeUserHistory(historyWay)}>ปิด</button>
-			</div>
-		</div>
+{#snippet thisPopup()}
+	<div id="popup-top">ประวัติคะแนน</div>
+	<div id="popup-middle"><History userDataHistory={historyWay}></History></div>
+	<div id="popup-bottom">
+		<button class="sc-history-btn" onclick={() => closeUserHistory(historyWay)}>ปิด</button>
 	</div>
-{/if}
+{/snippet}
