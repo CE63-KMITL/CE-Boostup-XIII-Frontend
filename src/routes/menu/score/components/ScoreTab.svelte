@@ -22,6 +22,7 @@
 	let headerTabs: { [key: string]: string } = { overall: "Overall", house: "House", myHouse: "MyHouse" };
 	let activeTab = "overall";
 	let scrollElement;
+	let searchText = "";
 
 	async function selectTab(tabName: string) {
 		activeTab = tabName;
@@ -41,7 +42,7 @@
 		let query = "";
 		switch (activeTab) {
 			case "overall":
-				query = "orderByScore=true";
+				query = `orderByScore=true&searchText=${searchText}`;
 				break;
 			case "myHouse":
 				let houseValue = "";
@@ -50,12 +51,9 @@
 				})();
 				query = `orderByScore=true&house=${houseValue.toLowerCase()}`;
 				break;
-			// case "myHouse":
-			// 	query = `orderByScore=true&house=${$selectedHouseStore}`;
-			// 	break;
 		}
 
-		users = [...users, "loading"]; 
+		users = [...users, "loading"];
 		const result = await api.call(`/user/search?page=${page}&${query}`, {
 			method: "GET",
 			withToken: true,
@@ -117,6 +115,23 @@
 		loadData();
 		console.log("🌀 trigger เปลี่ยนแล้ว:", $scoreRefreshTrigger);
 	}
+
+	let typeDelay = null;
+	$: {
+		searchText;
+
+		if (typeDelay) {
+			clearTimeout(typeDelay);
+		}
+
+		typeDelay = setTimeout(() => {
+			page = 1;
+			maxPage = null;
+			users = [];
+			loading = false;
+			loadData();
+		}, 250);
+	}
 </script>
 
 <Frame blur-bg {...$$restProps} class={"score-tab-container " + $$restProps.class}>
@@ -142,6 +157,7 @@
 				border: 0px;
 				background-color: transparent;
 				"
+				bind:value={searchText}
 			/>
 		</div>
 		<div in:azScale={{ delay: 250 }} out:azScale>
@@ -206,7 +222,4 @@
 		width: 100%;
 		border-radius: 25px;
 	}
-
-
-	
 </style>
