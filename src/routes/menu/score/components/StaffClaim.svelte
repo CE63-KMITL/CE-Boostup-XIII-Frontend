@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import StaffPanel from "../../../TestCollectable-item/StaffPanel.svelte";
 	import * as api from "$lib/fetchApi";
 	import { showPopup } from "$lib/components/PopUp.svelte";
 	import { say } from "$lib/normalFunction";

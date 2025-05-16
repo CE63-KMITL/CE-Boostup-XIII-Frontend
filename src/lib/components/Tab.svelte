@@ -12,7 +12,12 @@
 <Frame blur-bg {...$$restProps} class={"tab-container " + $$restProps.class}>
 	<div class="tab-headers">
 		{#each Object.keys(headers) as headerId}
-			<button class="tab-header" class:active={activeTab === headerId} on:click={() => selectTab(headerId)} style={$$restProps.style}}>
+			<button
+				class="tab-header"
+				class:active={activeTab === headerId}
+				on:click={() => selectTab(headerId)}
+				style="{$$restProps.style}}"
+			>
 				{headers[headerId]}
 			</button>
 		{/each}
@@ -32,7 +37,6 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		border: 1px solid var(--outline);
 		border-radius: var(--n-border-radius);
 		overflow: hidden;
 		padding: 0;

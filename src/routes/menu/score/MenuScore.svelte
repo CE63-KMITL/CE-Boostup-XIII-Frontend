@@ -9,11 +9,11 @@
 	import { onMount } from "svelte";
 	import Search from "$lib/components/Icons/Search.svelte";
 	import History from "./components/History.svelte";
-    import UserIcon from "$lib/components/UserIcon.svelte";
-    import ProfileUser from "$lib/components/ProfileUser.svelte";
+	import UserIcon from "$lib/components/UserIcon.svelte";
+	import ProfileUser from "$lib/components/ProfileUser.svelte";
 	import { selectData } from "./score";
-    import EditScore from "./components/EditScore.svelte";
-    import { showPopup , closePopup } from "$lib/components/PopUp.svelte";
+	import EditScore from "./components/EditScore.svelte";
+	import { showPopup, closePopup } from "$lib/components/PopUp.svelte";
 	import Claim from "./components/Claim.svelte";
 	import { fade } from "svelte/transition";
 	import StaffClaim from "./components/StaffClaim.svelte";
@@ -52,11 +52,16 @@
 	let dataEditScore = {
 		userId: "",
 		amount: 0,
-		message: "" }
+		message: "",
+	};
 	let showEditScore = false;
-		// Plus & Substract 
-	function openEditScore() { showEditScore = true; }
-	function closeEditScore() { showEditScore = false; }
+	// Plus & Substract
+	function openEditScore() {
+		showEditScore = true;
+	}
+	function closeEditScore() {
+		showEditScore = false;
+	}
 	function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
 		//setMehtod need to be "+" or "-" Naja to check method in component
 		if (setAmount == null || setAmount == 0) {
@@ -70,8 +75,9 @@
 			dataEditScore = {
 				userId: setUserId,
 				amount: setAmount,
-				message: setMessage, }
-			
+				message: setMessage,
+			};
+
 			editMessage = null;
 			editScore = null;
 
@@ -87,7 +93,7 @@
 			currentSelectData = userHistory;
 		} else if (userHistory == $selectData) {
 			historyWay = userHistory.data;
-		} 
+		}
 		showHistoryPopup = true;
 	}
 
@@ -98,11 +104,14 @@
 		showHistoryPopup = false;
 	}
 
-	function protectClick(event) { event.stopPropagation(); }
-	function setSelectDataToNull() { selectData.set(null); }
+	function protectClick(event) {
+		event.stopPropagation();
+	}
+	function setSelectDataToNull() {
+		selectData.set(null);
+	}
 
 	onMount(async () => {
-
 		if (IsRole(Role.STAFF)) {
 			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
@@ -113,9 +122,8 @@
 		}
 	});
 
-	$: console.log("This is your currentData na",currentSelectData);
-	$: console.log("Your selectData has changed.",$selectData);
-
+	$: console.log("This is your currentData na", currentSelectData);
+	$: console.log("Your selectData has changed.", $selectData);
 </script>
 
 <!-- 
@@ -129,17 +137,16 @@ HTML Crapp
 
 	<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
 		{#if $userData.id}
-			{#if activeTab == "scData"}
+			{#if activeTab == "scoreDetail"}
 				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
 						<img src={profile.cardImg} alt="" />
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
-
 							<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
 
-							<div id="scl-top-userIcon"> <UserIcon data={$userData.icon}></UserIcon> </div>
+							<div id="scl-top-userIcon"><UserIcon data={$userData.icon}></UserIcon></div>
 							<span>{$userData.name}</span>
 							<span style="color: var(--sc-orangedark)">{$userData.studentId} </span>
 						</div>
@@ -147,7 +154,9 @@ HTML Crapp
 						<div id="scl-detail-bottom">{$userData.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {profile.houseRank}</Frame>
 						<div id="scl-detail-bottom">{profile.houseScore}</div>
-						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}>ประวัติคะแนน</Button>
+						<Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}
+							>ประวัติคะแนน</Button
+						>
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}
@@ -170,51 +179,71 @@ HTML Crapp
 							border: 0px;
 							background-color: transparent;
 							"
-							
 						/>
 					</Frame>
 					{#if isSearching != ""}
 						<div>{setSelectDataToNull()}</div>
 					{:else if $selectData != null}
-						<div class="sc-instead-ntung" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+						<div
+							class="sc-instead-ntung"
+							in:azScale={{ size: 0.99, delay: 250 }}
+							out:azScale={{ size: 0.99, duration: 100 }}
+						>
 							<div class="sc-instead-ntung-top-profile">
-								<div style="padding: 10px 20px;"> 
-
+								<div style="padding: 10px 20px;">
 									<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
 
-									<ProfileUser user={$selectData.data}/> 
+									<ProfileUser user={$selectData.data} />
 								</div>
 								<div class="sc-instead-ntung-top-detail">
 									<div id="detail-top">นักผจญภัยอันดับที่ {profile.rank}</div>
 									<div id="detail-bottom">{$selectData.data.score}</div>
 									<div id="detail-top">บ้านอันดับที่ {profile.houseRank}</div>
 									<div id="detail-bottom">{profile.houseScore}</div>
-									<Button id="detail-btn" onclick={() => showUserHistory($selectData)} filter={false}>ประวัติคะแนน</Button>
+									<Button
+										id="detail-btn"
+										onclick={() => showUserHistory($selectData)}
+										filter={false}>ประวัติคะแนน</Button
+									>
 								</div>
 							</div>
 							<div class="sc-instead-ntung-middle">
-								<input 
-									id="inputMessage" 
-									placeholder="หมายเหตุ* (ใส่เหตุผลในการแก้ไขคะแนนด้วยน้า ( •̀ ω •́ )✧)" 
-									type="string" 
-									bind:value={editMessage}/>
+								<input
+									id="inputMessage"
+									placeholder="หมายเหตุ* (ใส่เหตุผลในการแก้ไขคะแนนด้วยน้า ( •̀ ω •́ )✧)"
+									type="string"
+									bind:value={editMessage}
+								/>
 							</div>
 							<div class="sc-instead-ntung-bottom">
-								<input 
-									id="inputScore" 
-									placeholder="คะแนน" 
-									type="number" 
-									bind:value={editScore} />
+								<input
+									id="inputScore"
+									placeholder="คะแนน"
+									type="number"
+									bind:value={editScore}
+								/>
 								<div id="editScore-btn">
-									<Button class="plusScore-btn" onclick={() => setEditScore("+", $selectData.data.id, editScore, editMessage)} 
-										color="var(--sc-plus)">บวกคะแนน</Button>
-									<Button class="minusScore-btn" onclick={() => setEditScore("-", $selectData.data.id, editScore, editMessage)} 
-										color="var(--sc-minus)">ลบคะแนน</Button>
+									<Button
+										class="plusScore-btn"
+										onclick={() =>
+											setEditScore("+", $selectData.data.id, editScore, editMessage)}
+										color="var(--sc-plus)">บวกคะแนน</Button
+									>
+									<Button
+										class="minusScore-btn"
+										onclick={() =>
+											setEditScore("-", $selectData.data.id, editScore, editMessage)}
+										color="var(--sc-minus)">ลบคะแนน</Button
+									>
 								</div>
 							</div>
 						</div>
 					{:else if $selectData == null && isSearching == ""}
-						<div id="sc-below-search" in:azScale={{ size: 0.99, delay: 250 }} out:azScale={{ size: 0.99, duration: 100 }}>
+						<div
+							id="sc-below-search"
+							in:azScale={{ size: 0.99, delay: 250 }}
+							out:azScale={{ size: 0.99, duration: 100 }}
+						>
 							<div class="dragon-image">
 								<img src={"dragon-logo.png"} alt="" />
 							</div>
@@ -255,12 +284,12 @@ Popup Score History
 -->
 
 {#if showHistoryPopup}
-	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:azScale out:azScale>
+	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:fade out:fade>
 		<div id="popup" onclick={protectClick} in:azScale out:azScale>
 			<div id="popup-top">ประวัติคะแนน</div>
 			<div id="popup-middle"><History userDataHistory={historyWay}></History></div>
-			<div id="popup-bottom"> 
-				<button class="sc-history-btn" onclick={() => closeUserHistory(historyWay)}>ปิด</button> 
+			<div id="popup-bottom">
+				<button class="sc-history-btn" onclick={() => closeUserHistory(historyWay)}>ปิด</button>
 			</div>
 		</div>
 	</div>
@@ -273,9 +302,10 @@ Popup Score History
 -->
 
 {#if showEditScore}
-	<EditScore getMethod={editMethod} getData={dataEditScore}/>
+	<EditScore getMethod={editMethod} getData={dataEditScore} />
 	<div>{closeEditScore()}</div>
 {/if}
+
 <!-- 
 -------------------------------------------------------
 Style SCSS Na
@@ -322,9 +352,8 @@ Style SCSS Na
 
 		div.scl-image {
 			width: 90%;
-			height: 70%;
+			height: auto;
 			padding: 5%;
-			margin-top: 25%;
 		}
 
 		:global(#scl-main) {
@@ -410,9 +439,12 @@ Style SCSS Na
 			align-items: center;
 			justify-content: center;
 
-			.dragon-image { width: 60%; }
-			#dragontext { filter: drop-shadow( 0 2px 3px var(--list-shadow)); }
-
+			.dragon-image {
+				width: 60%;
+			}
+			#dragontext {
+				filter: drop-shadow(0 2px 3px var(--list-shadow));
+			}
 		}
 	}
 
@@ -473,7 +505,6 @@ Style SCSS Na
 			width: 100%;
 			height: auto;
 			margin-bottom: 10px;
-
 		}
 
 		.sc-instead-ntung-bottom {
@@ -493,26 +524,27 @@ Style SCSS Na
 				background-color: transparent;
 				margin-bottom: 10px;
 				width: 55%;
-
 			}
-			
+
 			#editScore-btn {
 				display: flex;
 				flex-direction: row;
 				gap: 30px;
 				width: 80%;
 
-				:global(.plusScore-btn) { padding: 10px 20px; }
-				:global(.minusScore-btn) { padding: 10px 20px; }
-
+				:global(.plusScore-btn) {
+					padding: 10px 20px;
+				}
+				:global(.minusScore-btn) {
+					padding: 10px 20px;
+				}
 			}
 		}
 	}
 
-
-// -------------------------------------------------------
-// 	Score History Pop-up
-// -------------------------------------------------------
+	// -------------------------------------------------------
+	// 	Score History Pop-up
+	// -------------------------------------------------------
 
 	.backdrop {
 		position: fixed;
@@ -563,13 +595,11 @@ Style SCSS Na
 		}
 	}
 
-	
+	// -------------------------------------------------------
+	// 	Mobile phone Mode
+	// -------------------------------------------------------
 
-// -------------------------------------------------------
-// 	Mobile phone Mode
-// -------------------------------------------------------
-
-	@media (max-width: 920px){
+	:global(html[mobile]) {
 		#Score {
 			flex-direction: column;
 
@@ -611,8 +641,10 @@ Style SCSS Na
 				height: 100%;
 				display: flex;
 				justify-content: center;
-				
-				.dragon-image { width: 30%; }
+
+				.dragon-image {
+					width: 30%;
+				}
 			}
 		}
 

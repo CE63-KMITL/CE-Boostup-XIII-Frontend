@@ -218,24 +218,21 @@
 		:global(.side) {
 			width: 40%;
 		}
+	}
 
-		//-------------------------------------------------------
-		// Responsive Styles
-		//-------------------------------------------------------
-		@media (max-width: 800px) {
-			.subFrame {
-				flex-direction: column;
-			}
+	:global(html[mobile] .component) {
+		:global(.subFrame) {
+			flex-direction: column;
+		}
 
-			:global(.ProblemContainer) {
-				width: auto;
-				height: 50%;
-			}
+		:global(.ProblemContainer) {
+			width: auto;
+			height: 50%;
+		}
 
-			:global(div.side) {
-				width: auto;
-				height: 50%;
-			}
+		:global(div.side) {
+			width: auto;
+			height: 50%;
 		}
 	}
 </style>

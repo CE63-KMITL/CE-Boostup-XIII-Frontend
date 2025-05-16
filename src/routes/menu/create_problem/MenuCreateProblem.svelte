@@ -841,7 +841,7 @@
 	//-------------------------------------------------------
 	// Responsive Styles
 	//-------------------------------------------------------
-	@media (max-width: 800px) {
+	:global(html[mobile]) {
 		.mainFrame {
 			flex-direction: column;
 

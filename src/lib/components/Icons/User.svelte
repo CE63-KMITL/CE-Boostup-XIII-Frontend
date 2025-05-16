@@ -14,13 +14,3 @@
 		stroke-linejoin="round"
 	/>
 </svg>
-
-<style lang="scss">
-	.stroke-icon {
-		aspect-ratio: 1/1;
-		width: 100%;
-		height: 100%;
-		border: 1px solid #ddd;
-		border-radius: 50%;
-	}
-</style>
