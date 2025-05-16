@@ -1,5 +1,6 @@
 <script lang="ts">
   import { theme } from "./shared.svelte";
+  import Checkbox from "../../../lib/components/Checkbox.svelte"
 
   function changeTheme() {
     const url = new URL(window.location.href);
@@ -18,15 +19,35 @@
 
 <div class="container">
   {#if !theme.isDark}
-    <button onclick={changeTheme}>Enable Dark Mode</button>
+    <Checkbox onclick={changeTheme}>Enable Dark Mode</Checkbox>
   {:else}
-    <button onclick={changeTheme}>Disable Dark Mode</button>
+    <Checkbox onclick={changeTheme}>Disable Dark Mode</Checkbox>
   {/if}
 </div>
 
 <style lang="scss">
   .container {
     width: 100%;
-    height: 100%;
+    height: 80%;
+    background-color: var(--bg-50);
+    border-radius: 20px;
+    box-shadow: 0 4px 24px var(--list-shadow);
+    margin-top: 50px;
+    margin-bottom: 30px;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 90%;
+    min-width: 10%;
+    box-sizing: border-box;
+
+    :global([dark]) & {
+      background-color: var(--bg-50);
+      box-shadow: 0 4px 24px var(--list-shadow);
+    }
   }
 </style>
