@@ -9,7 +9,7 @@
 	import { onMount } from "svelte";
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import ProfileUser from "$lib/components/ProfileUser.svelte";
-	import { selectData } from "./score";
+	import { selectData, selectedIDStudent } from "./score";
 	import EditScore from "./components/EditScore.svelte";
 	import { showPopup, closePopup } from "$lib/components/PopUp.svelte";
 	import Claim from "./components/Claim.svelte";
@@ -171,6 +171,14 @@ HTML Crapp
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
 	</Frame>
+
+	<div id="sc-bottom" class:show={$selectData != null}>
+		{#if $selectData != null}
+			<div in:azScale={{ delay: 250 }} out:azScale class="full">
+				<Button onclick={setSelectDataToNull}>ปิด</Button>
+			</div>
+		{/if}
+	</div>
 </div>
 
 <!-- 
@@ -223,6 +231,32 @@ Style SCSS Na
 -->
 
 <style lang="scss">
+	:global(#sc-bottom) {
+		height: 70%;
+		opacity: 1;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		left: 0;
+		flex-direction: column;
+		display: none;
+		background: var(--bg-50);
+		padding: 10px;
+		border: 1px solid var(--outline);
+		border-radius: var(--n-border-radius) var(--n-border-radius) 0 0;
+		backdrop-filter: blur(5px);
+		transition: all 0.25s ease-out;
+	}
+
+	:global(#sc-bottom:not(.show)) {
+		height: 0;
+		padding: 0;
+		opacity: 0;
+	}
+
+	// :global(#sc-bottom.show) {
+	// }
+
 	#Score {
 		width: 100%;
 		height: 100%;
@@ -500,6 +534,10 @@ Style SCSS Na
 	// -------------------------------------------------------
 
 	:global(html[mobile]) {
+		:global(#sc-bottom) {
+			display: flex;
+		}
+
 		#Score {
 			flex-direction: column;
 
