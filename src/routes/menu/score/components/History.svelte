@@ -1,7 +1,8 @@
 <script lang="ts">
     import * as api from "$lib/fetchApi";
     import { onMount } from "svelte";
-    import { userData } from "$lib/auth.local";
+
+    export let userDataHistory: any;
 
     let dataScoreHistory: any[] = []; 
 
@@ -11,7 +12,7 @@
     }
 
     onMount(async () => {
-        const scoreHistory = await api.call(`/user/score/${$userData.id}`);
+        const scoreHistory = await api.call(`/user/score/${userDataHistory.id}`);
         dataScoreHistory = scoreHistory.scoreLogs;
 
     });

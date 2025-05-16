@@ -100,8 +100,6 @@
 				>
 					{#if $userData.role == null}
 						ล็อคอิน
-					{:else if $userData.icon}
-						<img src={$userData.icon} alt="Icon" class="circular-icon" />
 					{:else}
 						<UserIcon data={$userData.icon} />
 					{/if}

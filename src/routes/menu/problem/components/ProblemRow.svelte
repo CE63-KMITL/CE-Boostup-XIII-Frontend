@@ -19,6 +19,7 @@
 	import List from "$lib/components/List.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
+    import UserIcon from "$lib/components/UserIcon.svelte";
 
 	export let problem: Problem;
 
@@ -35,6 +36,7 @@
 	<div class="id">{problem.id}</div>
 	<div>
 		<div class="title">{problem.title}</div>
+		<div class="author-icon"> <UserIcon data={problem.author?.icon}/> </div>
 		<div class="author">{problem.author?.name}</div>
 	</div>
 
@@ -116,6 +118,10 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.author-icon { 
+		width: 2rem;
 	}
 
 	.author {
