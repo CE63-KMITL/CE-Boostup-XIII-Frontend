@@ -33,8 +33,6 @@
 
 	let currentSelectData = null;
 
-
-
 	//Pop-up Staff Cliam
 	let showStaffClaim = false;
 	function openStaffClaim() {
@@ -46,8 +44,8 @@
 	//
 
 	function imageHousePath(filename: string): string {
-        return `/house/${filename}.png`;
-    }
+		return `/house/${filename}.png`;
+	}
 
 	function setSelectDataToNull() {
 		selectData.set(null);
@@ -59,7 +57,7 @@
 
 	onMount(async () => {
 		if (IsRole(Role.STAFF)) {
-			headerTabs = { scData: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
+			headerTabs = { scoreDetail: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
 		}
 
@@ -67,7 +65,6 @@
 			headerTabs = {};
 		}
 	});
-
 </script>
 
 <!-- 
