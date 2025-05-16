@@ -5,19 +5,14 @@
 	import { say } from "$lib/normalFunction";
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import { userData } from "$lib/auth.local";
+	import { selectData } from "../score";
 
 	export let onClose = null;
 
 	//-------------------------------------------------------
 	// Props
 	//-------------------------------------------------------
-	export let selectedUser = {
-		id: "awdawdawdawdad",
-		icon: "",
-		name: "awdwadawdawdwadwad",
-		studentId: "12312312",
-		score: 0,
-	};
+	export let selectedUser;
 
 	//-------------------------------------------------------
 	// State
@@ -31,6 +26,7 @@
 		reward: string;
 	}[] = [];
 
+	$: selectedUser = $selectData?.data;
 	$: nextReward = userRewards.find((m) => m.points > selectedUser.score) || false;
 	$: pointsToNextReward = nextReward ? nextReward.points - selectedUser.score : 0;
 

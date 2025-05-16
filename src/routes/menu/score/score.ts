@@ -23,7 +23,7 @@ export const selectData = writable<{
 		role: string | null;
 		email: string | null;
 		name: string | null;
-		score: string | null;
+		score: number | null;
 		createdAt: string | null;
 		updatedAt: string | null;
 	};
