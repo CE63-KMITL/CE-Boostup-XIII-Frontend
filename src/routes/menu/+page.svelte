@@ -15,6 +15,7 @@
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
 	import { items, currentPage, updatePage, mobile } from "./pageManager";
 	import { afterNavigate } from "$app/navigation";
+  import MenuSetting from "./setting/MenuSetting.svelte";
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import * as api from "$lib/fetchApi";
 	import MenuScore from "./score/MenuScore.svelte";
@@ -141,12 +142,12 @@
 				<MenuCreateProblem></MenuCreateProblem>
 			</div>
 		{:else if $currentPage == "profile"}
-			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<MenuProfile></MenuProfile>
-			</div>
+		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+			<MenuProfile></MenuProfile>
+		</div>
 		{:else if $currentPage == "setting"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-				<!-- <MenuSetting></MenuSetting> -->
+				<MenuSetting></MenuSetting>
 			</div>
 		{/if}
 	</div>
