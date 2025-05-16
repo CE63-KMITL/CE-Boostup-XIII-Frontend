@@ -4,9 +4,8 @@
 	import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 	import { createEventDispatcher } from "svelte";
-	import { azScale } from "$lib/transition";
 
-	//let index: number = $$restProps?.index;
+	// let index: number = $$restProps?.index;
 	export let index: number;
 	export let id: string;
 	export let user: any;
@@ -15,14 +14,10 @@
 	const dispatch = createEventDispatcher();
 
 	// set event with user data
-	function handleClick() { dispatch("select", {
-		row: index,
-		data: user
-	}); } 
-
+	function handleClick() { dispatch("select", {user}); }
 </script>
 
-<List class="listScores {index < 3 ? 'top' : ''}" id={id} onclick={handleClick}>
+<List class="listScores {index < 3 ? 'top' : ''}" id={id} on:click={handleClick}>
 	<div class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>
@@ -40,7 +35,6 @@
 <style lang="scss">
 	:global(.listScores) {
 		display: flex;
-		flex-direction: row;
 		justify-content: space-between;
 		margin-top: 12px;
 		padding: 10px;
@@ -54,18 +48,14 @@
 				width: 5%;
 				min-width: 10%;
 				max-width: 10%;
-			}
-			&:nth-child(2) {
-				width: 5%;
-				min-width: 10%;
-				max-width: 10%;
+				z-index: 3;
 			}
 			&:nth-child(3) {
-				width: 32%;
+				width: 15%;
+				min-width: 150px;
+				min-width: 35%;
 				text-overflow: ellipsis;
 				overflow: hidden;
-				text-align: left;
-				padding-inline-start: 2%;
 			}
 			&:nth-child(4) {
 				width: 15%;
@@ -75,8 +65,6 @@
 			}
 			&:nth-child(6) {
 				width: 8%;
-				text-align: right;
-				padding-inline-end: 2%;
 			}
 		}
 	}
@@ -85,13 +73,5 @@
 		margin-top: -25px;
 		display: flex;
 		justify-content: center;
-	}
-	
-	:global(.houseIcon) {
-		display: flex;
-        justify-content: center;
-        transform: scale(1);
-		margin-top: -15px;
-		margin-left: 20px;
 	}
 </style>

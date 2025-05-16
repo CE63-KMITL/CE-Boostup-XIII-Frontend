@@ -6,7 +6,7 @@
 	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
 	import "../../app.css";
 	import Button from "../../lib/components/Button.svelte";
-	import { showPopup, type ShowPopupInputs } from "../../lib/components/PopUp.svelte";
+	import { showPopup } from "../../lib/components/PopUp.svelte";
 	import { onMount } from "svelte";
 	import { fade, fly } from "svelte/transition";
 	import { azScale } from "$lib/transition";
@@ -26,41 +26,6 @@
 			showPopup(`ไม่สามารถเข้าสู่ระบบได้\n\n${JSON.stringify(res.message)}`);
 			const massage = await showPopup(res.message);
 		}
-	}
-
-	async function onCreateAccount() {
-		const inputsForCreate: ShowPopupInputs = [
-			{
-				type: "text",
-				name: "email",
-				label: "อีเมล",
-				placeholder: "อีเมลของคุณ",
-				required: true,
-			},
-		];
-
-		showPopup(
-			"สร้างบัญชีผู้ใช้",
-			{
-				ยืนยัน: {
-					primary: true,
-					callback: async (formData) => {
-						if (formData && formData.email) {
-							await api.call(`/auth/register-open-account`, {
-								method: "POST",
-								data: { email: formData.email },
-							});
-							await showPopup("เราได้ทำการส่งอีเมลให้คุณแล้ว!\nกรุณาตรวจสอบอีเมลของคุณ (❁´◡`❁)", {
-								ตกลง: () => {},
-							});
-						}
-					},
-				},
-				ยกเลิก: { cancel: true, callback: () => {} },
-			},
-			"large",
-			inputsForCreate
-		);
 	}
 
 	let loaded = false;
@@ -91,7 +56,7 @@
 						/>
 						<button
 							class="IoIosEyeOff"
-							onclick={() => {
+							on:click={() => {
 								see_password = !see_password;
 							}}
 						>
@@ -103,10 +68,7 @@
 						</button>
 					</div>
 				</div>
-				<div class="ForgetAndCreate">
-					<p class="ForgetPassword">ลืมรหัสผ่าน</p>
-					<p class="ForgetPassword" onclick={onCreateAccount}>สร้างบัญชี</p>
-				</div>
+				<p class="ForgetPassword">ลืมรหัสผ่าน</p>
 			</div>
 			<Button class="Login" onclick={() => Login()}>Login</Button>
 		</div>
@@ -114,12 +76,6 @@
 </div>
 
 <style lang="scss">
-	.ForgetAndCreate {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		width: 100%;
-	}
 	.Container {
 		display: flex;
 		flex-direction: column;
