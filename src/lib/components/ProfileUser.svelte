@@ -6,7 +6,7 @@
 
 <div class="wholeProfile">
 	<div class="wholeProfile-top">
-		<div id="profileImage"><UserIcon data={user?.icon}></UserIcon></div>
+		<div id="profileImage"><UserIcon name={user?.name} data={user?.icon}></UserIcon></div>
 		<div id="nameID">
 			<span class="name">{user?.name}</span>
 			<span style="color: var(--sc-orangedark);">{user?.studentId}</span>

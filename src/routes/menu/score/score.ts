@@ -35,21 +35,16 @@ export const houseList = writable([]);
 export const scoreRefreshTrigger = writable(0);
 
 export async function refreshHouseList() {
-	console.log("🚦 เริ่ม refreshHouseList()");
 	const selectedData = get(selectData);
 	try {
-		const data = await api.call(`/user/score-data/${selectedData.data.id}`, {
+		const data = await api.call(`/user/full-data/${selectedData.data.id}`, {
 			withToken: true,
 		});
-
-		console.log(selectedData.data);
 
 		selectData.set({
 			row: selectedData.row,
 			data: data,
 		});
-
-		console.log("📦 ข้อมูลใหม่ที่โหลด2:", data);
 	} catch (error) {
 		console.error("❌ Error fetching house list:", error);
 	}

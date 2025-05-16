@@ -34,7 +34,6 @@
 		let url = new URL(window.location.href);
 		if (!url.searchParams.get("page")) {
 			url.searchParams.append("page", "problem");
-			console.log(url);
 			window.history.pushState(null, null, url);
 		}
 		$currentPage = url.searchParams.get("page");

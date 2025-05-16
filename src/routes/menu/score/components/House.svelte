@@ -7,27 +7,20 @@
 	let selectedHouseData;
 	let res;
 
-	// function handleUserClick(event: CustomEvent<{ user: any }>) {
-	//     selectedHouseData = event.detail.user;
-	//     console.log(selectedHouseData);
-	// }
-
 	function handleHouseClick(event) {
 		selectedHouseData = event.detail;
-		console.log(selectedHouseData);
 	}
 	function imageHousePath(filename: string): string {
 		return `/house-transparent/${filename}.png`;
 	}
 
 	onMount(async () => {
-		res = await api.call(`/houseScores?order=DESC`);
+		res = await api.call(`/houseScores?orderBy=DESC`);
 		dataHouse = res.data;
 	});
 
 	$: if (res) {
 		dataHouse = res.data;
-		console.log(dataHouse);
 	}
 </script>
 

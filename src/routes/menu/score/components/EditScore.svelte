@@ -49,6 +49,5 @@
 
 	onMount(() => {
 		handleScore();
-		console.log("🚀 EditScore ถูกโหลดแล้ว!");
 	});
 </script>

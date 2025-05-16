@@ -46,12 +46,14 @@
 			headerTabs = {};
 		}
 
-		userScoreData = await api.call(`/user/score-data/${$userData.id}`, {
+		const result = await api.call(`/user/full-data/${$userData.id}`, {
 			withToken: true,
 		});
-	});
 
-	let userScoreData;
+		if (result) {
+			$userData = { ...$userData, ...result };
+		}
+	});
 </script>
 
 {#if $popup}
@@ -72,7 +74,7 @@ HTML Crapp
 	<!-- SC-Left Side -->
 
 	<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
-		{#if userScoreData?.id}
+		{#if $userData?.id}
 			{#if activeTab == "scoreDetail"}
 				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
@@ -88,14 +90,14 @@ HTML Crapp
 							<span class="scl-top-name">{$userData.name}</span>
 							<span style="color: var(--sc-orangedark)">{$userData.studentId} </span>
 						</div>
-						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {userScoreData?.rank}</Frame>
-						<div id="scl-detail-bottom">{userScoreData?.score}</div>
-						<Frame id="scl-detail-top">บ้านอันดับที่ {userScoreData?.houseRank}</Frame>
-						<div id="scl-detail-bottom">{userScoreData?.houseScore}</div>
-						<!-- <Button class="scl-btn" onclick={() => showUserHistory(userScoreData)} filter={false}
+						<Frame id="scl-detail-top">นักผจญภัยอันดับที่ {$userData?.rank}</Frame>
+						<div id="scl-detail-bottom">{$userData?.score}</div>
+						<Frame id="scl-detail-top">บ้านอันดับที่ {$userData?.houseRank}</Frame>
+						<div id="scl-detail-bottom">{$userData?.houseScore}</div>
+						<!-- <Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}
 							>ประวัติคะแนน</Button
 						> -->
-						<HistoryBtn giveMeYourUserData={userScoreData}></HistoryBtn>
+						<HistoryBtn giveMeYourUserData={$userData}></HistoryBtn>
 					</div>
 				</div>
 			{:else if activeTab == "claimPrice"}

@@ -7,7 +7,6 @@
 	export let data;
 
 	let selectedUserData: { row: number; data: any } | null = null;
-	$: console.log(selectedUserData);
 
 	function handleSelect(event) {
 		selectedUserData = event.detail;
@@ -20,7 +19,7 @@
 		<LoadingList></LoadingList>
 	{:else}
 		<RankOrdering index={i} id={user.id} {user} on:select={handleSelect}>
-			<div class="usericon"><UserIcon data={user?.icon} /></div>
+			<div class="usericon"><UserIcon name={user.name} data={user?.icon} /></div>
 			<div>{user.name}</div>
 			<div>{user.studentId}</div>
 			<div>{user.house}</div>

@@ -38,12 +38,11 @@
 		// API Call
 		//-------------------------------------------------------
 		const res = await api.call("/auth/login", { method: "POST", data: { email, password } });
-		console.log(res.token);
 		if (res.token) {
 			setCookie("token", res.token);
 			goto("/menu");
 		} else {
-			const massage = await showPopup(res.message);
+			await showPopup(res.message);
 		}
 	}
 

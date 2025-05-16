@@ -1,25 +1,24 @@
 <script lang="ts">
-    import RankOrdering from "./RankOrdering.svelte";
-    import * as api from "$lib/fetchApi";
-    import { onMount } from "svelte";
-    import UserIcon from "$lib/components/UserIcon.svelte";
-    import { selectedHouseStore } from "../score";
-    import { selectData } from "../score";
+	import RankOrdering from "./RankOrdering.svelte";
+	import * as api from "$lib/fetchApi";
+	import { onMount } from "svelte";
+	import UserIcon from "$lib/components/UserIcon.svelte";
+	import { selectedHouseStore } from "../score";
+	import { selectData } from "../score";
 
-    export let dataMyHouse: any[] = [];
+	export let dataMyHouse: any[] = [];
 
-    let optionDropdown: any[] = [];
+	let optionDropdown: any[] = [];
 
 	let selectedMyHouseData;
 
-    function handleHouseClick(event) {
-        selectedMyHouseData = event.detail;
+	function handleHouseClick(event) {
+		selectedMyHouseData = event.detail;
 		selectData.set(event.detail);
-        console.log(selectedMyHouseData);
-    }
+	}
 
 	onMount(async () => {
-		const house = await api.call(`/houseScores?order=ASC`);
+		const house = await api.call(`/houseScores?orderBy=ASC`);
 		optionDropdown = house.data;
 	});
 </script>
@@ -33,12 +32,12 @@
 </div>
 
 {#each dataMyHouse as user, i}
-    <RankOrdering index={i} id={user.id} user={user} on:select={handleHouseClick}>
-		<div><UserIcon data={user.icon}></UserIcon></div>
-        <div>{user.name}</div>
-        <div>{user.studentId}</div>
-        <div style="text-align: right; padding-inline-end: 2%;">{user.score}</div>
-    </RankOrdering>
+	<RankOrdering index={i} id={user.id} {user} on:select={handleHouseClick}>
+		<div><UserIcon name={user.name} data={user.icon}></UserIcon></div>
+		<div>{user.name}</div>
+		<div>{user.studentId}</div>
+		<div style="text-align: right; padding-inline-end: 2%;">{user.score}</div>
+	</RankOrdering>
 {/each}
 
 <style lang="scss">

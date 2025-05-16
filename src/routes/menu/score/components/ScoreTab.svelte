@@ -59,9 +59,6 @@
 			withToken: true,
 		});
 		users = [...users.slice(0, -1)];
-		// console.log(result);
-		console.log("📦 ข้อมูลใหม่ที่โหลด:", result);
-		// console.log("📦 ข้อมูลใหม่ที่โหลด:", result.data);
 
 		if (result) {
 			users = [...users, ...result.data];
@@ -113,7 +110,6 @@
 		users = [];
 		loading = false;
 		loadData();
-		console.log("🌀 trigger เปลี่ยนแล้ว:", $scoreRefreshTrigger);
 	}
 
 	let typeDelay = null;

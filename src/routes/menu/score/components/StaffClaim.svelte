@@ -62,15 +62,11 @@
 
 			data = result?.data;
 
-			console.log(data);
-
 			let fetchedRewards = [
 				...(data?.redeemed || []).map((r) => ({ ...r, status: "redeemed" as const })),
 				...(data?.available || []).map((r) => ({ ...r, status: "available" as const })),
 				...(data?.locked || []).map((r) => ({ ...r, status: "locked" as const })),
 			].sort((a, b) => a.points - b.points);
-
-			console.log(fetchedRewards);
 
 			userRewards = fetchedRewards;
 		} catch (error) {
@@ -83,36 +79,36 @@
 	// Functions
 	//-------------------------------------------------------
 
-     async function handleMarkAsRedeemed(reward: (typeof userRewards)[0]) {
-          try {
-               await api.call("/rewards/redeem", {
-                    method: "POST",
-                    data: { userId: selectedUser.id, rewardId: reward.id },
-                    withToken: true,
-               });
+	async function handleMarkAsRedeemed(reward: (typeof userRewards)[0]) {
+		try {
+			await api.call("/rewards/redeem", {
+				method: "POST",
+				data: { userId: selectedUser.id, rewardId: reward.id },
+				withToken: true,
+			});
 
-               showPopup(say("ทำเครื่องหมายว่ารับรางวัลแล้วสำเร็จ!", "(*´▽`*)"));
-               fetchUserRewards(selectedUser.id);
-          } catch (error: any) {
-               console.error("Error marking reward as redeemed:", error);
-               showPopup(say(`ข้อผิดพลาด: ${error.message || "เกิดข้อผิดพลาดขึ้น"}`, "(｡•́︿•̀｡)"));
-          }
-     }
+			showPopup(say("ทำเครื่องหมายว่ารับรางวัลแล้วสำเร็จ!", "(*´▽`*)"));
+			fetchUserRewards(selectedUser.id);
+		} catch (error: any) {
+			console.error("Error marking reward as redeemed:", error);
+			showPopup(say(`ข้อผิดพลาด: ${error.message || "เกิดข้อผิดพลาดขึ้น"}`, "(｡•́︿•̀｡)"));
+		}
+	}
 
-     async function handleRemoveRedeemed(reward: (typeof userRewards)[0]) {
-          try {
-               await api.call(`/rewards/redeem/${reward.id}/cancel`, {
-                    method: "DELETE",
-                    withToken: true,
-               });
+	async function handleRemoveRedeemed(reward: (typeof userRewards)[0]) {
+		try {
+			await api.call(`/rewards/redeem/${reward.id}/cancel`, {
+				method: "DELETE",
+				withToken: true,
+			});
 
-               showPopup(say("ยกเลิกรางวัลที่รับไปแล้วสำเร็จ!", "(●'◡'●)"));
-               fetchUserRewards(selectedUser.id);
-          } catch (error: any) {
-               console.error("Error removing redeemed reward:", error);
-               showPopup(say(`ข้อผิดพลาด: ${error.message || "เกิดข้อผิดพลาดขึ้น"}`, "o(TヘTo)"));
-          }
-     }
+			showPopup(say("ยกเลิกรางวัลที่รับไปแล้วสำเร็จ!", "(●'◡'●)"));
+			fetchUserRewards(selectedUser.id);
+		} catch (error: any) {
+			console.error("Error removing redeemed reward:", error);
+			showPopup(say(`ข้อผิดพลาด: ${error.message || "เกิดข้อผิดพลาดขึ้น"}`, "o(TヘTo)"));
+		}
+	}
 </script>
 
 <!---------------------------------------------------------
@@ -120,12 +116,12 @@ HTML Structure
 --------------------------------------------------------->
 <div class="panel-header">
 	<h2>หน้าจอจัดการสำหรับสตาฟ</h2>
-	<button class="close-button" on:click={onClose}>×</button>
+	<button class="close-button" on:click={onClose}>x</button>
 </div>
 
 <div class="user-details">
 	<div class="user-icon">
-		<UserIcon data={selectedUser.icon} />
+		<UserIcon name={selectedUser.name} data={selectedUser.icon} />
 	</div>
 	<h3>{selectedUser.name}</h3>
 	<p>รหัสนักศึกษา: {selectedUser.studentId}</p>

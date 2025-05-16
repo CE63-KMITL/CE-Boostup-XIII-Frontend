@@ -124,7 +124,6 @@ export async function initMonaco() {
 	if (Monaco) {
 		try {
 			while (Monaco == "loading") {
-				console.log(Monaco);
 				await sleep(100);
 			}
 		} catch (error) {}

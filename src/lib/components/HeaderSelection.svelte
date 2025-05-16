@@ -6,7 +6,6 @@
 	let ThisHeaderSelection: HTMLElement;
 
 	onMount(() => {
-		console.log(toggleSelector);
 		if (toggleSelector) {
 			toggleSelector.addEventListener("click", () => {
 				if (ThisHeaderSelection?.getAttribute("open") === "true") {

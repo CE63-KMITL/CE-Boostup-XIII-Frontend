@@ -107,8 +107,6 @@
 			}
 		);
 
-		console.log(getAllProblems);
-
 		if (getAllProblems && getAllProblems.data.length > 0) {
 			if (isLoadMore) {
 				allProblems = [...allProblems.slice(0, -1), ...getAllProblems.data];
@@ -140,7 +138,6 @@
 
 	async function loadMore() {
 		if (loadingMore || !loaded) return;
-		console.log("load more");
 		loadingMore = true;
 		await updateProblems(true);
 		loadingMore = false;

@@ -16,13 +16,13 @@
 	let showHistoryPopup = false;
 
 	onMount(async () => {
-		const result = await api.call(`/user/score-data/${$userData.id}`, {
+		const result = await api.call(`/user/full-data/${$userData.id}`, {
 			method: "GET",
 			withToken: true,
 		});
 
-		if (result?.data) {
-			$userData.score = result.data.score;
+		if (result) {
+			$userData = { ...$userData, ...result };
 		}
 	});
 
@@ -74,8 +74,6 @@
 				ctx.drawImage(img, 0, 0, 100, 100);
 
 				const base64Image = canvas.toDataURL("image/png");
-
-				console.log(base64Image.length);
 
 				await api.call("/user/upload-icon", {
 					method: "POST",

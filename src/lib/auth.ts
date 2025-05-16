@@ -9,7 +9,7 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 	let userData;
 
 	if (token) {
-		console.log(token);
+		// console.log(token);
 		try {
 			const response = await fetch(`http://${BACK_HOST}/user/data`, {
 				method: "GET",
@@ -34,11 +34,11 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 			userData = null;
 		}
 	} else {
-		console.log("No auth token cookie found.");
+		// console.log("No auth token cookie found.");
 		if (autoRedirect) redirect(307, "/login");
 	}
 
-	console.log("User data", userData);
+	// console.log("User data", userData);
 
 	return userData;
 };

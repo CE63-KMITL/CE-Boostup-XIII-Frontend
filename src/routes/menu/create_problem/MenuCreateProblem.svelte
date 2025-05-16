@@ -545,7 +545,6 @@
 			<div class="radioButtonContainer">
 				<RadioButton
 					selected={(() => {
-						console.log(problem.headerMode);
 						return problem.headerMode == "disallowed";
 					})()}
 					onclick={() => (problem.headerMode = "disallowed")}

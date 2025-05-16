@@ -16,7 +16,7 @@
 	let maxPoints = 0;
 
 	onMount(async () => {
-		const score = await api.call(`/user/score-data/${$userData.id}`, {
+		const score = await api.call(`/user/full-data/${$userData.id}`, {
 			withToken: true,
 		});
 
@@ -29,8 +29,6 @@
 		});
 
 		data = result?.data;
-
-		console.log(data);
 
 		allRewards = [
 			...(data?.redeemed || []).map((r) => ({ ...r, status: "redeemed" as const })),
