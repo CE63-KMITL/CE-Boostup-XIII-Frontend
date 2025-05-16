@@ -33,6 +33,8 @@
 
 	let currentSelectData = null;
 
+
+
 	//Pop-up Staff Cliam
 	let showStaffClaim = false;
 	function openStaffClaim() {
@@ -41,66 +43,15 @@
 	function closeStaffClaim() {
 		showStaffClaim = false;
 	}
-
-	// Edit Score (Add+ & Substract(Minus-))
-	// let editMessage: string;
-	// let editScore: number;
-	// let editMethod = "";
-	// let dataEditScore = {
-	// 	userId: "",
-	// 	amount: 0,
-	// 	message: "",
-	// };
-	// let showEditScore = false;
-	
-	// function openEditScore() { showEditScore = true; }
-	// function closeEditScore() { showEditScore = false; }
-	// function setEditScore(setMethod: string, setUserId: string, setAmount: number, setMessage: string) {
-	// 	//setMehtod need to be "+" or "-" Naja to check method in component
-	// 	if (setAmount == null || setAmount == 0) {
-	// 		showPopup("กรุณาใส่คะแนนที่ต้องการแก้ไขด้วยน้า ( •̀ ω •́ )✧");
-	// 		return;
-	// 	} else if (setMessage == null || setMessage == "") {
-	// 		showPopup("กรุณาใส่หมายเหตุด้วยน้า ( •̀ ω •́ )✧");
-	// 		return;
-	// 	} else {
-	// 		editMethod = setMethod;
-	// 		dataEditScore = {
-	// 			userId: setUserId,
-	// 			amount: setAmount,
-	// 			message: setMessage,
-	// 		};
-
-	// 		editMessage = null;
-	// 		editScore = null;
-
-	// 		openEditScore();
-	// 	}
-	// }
-
-	// Pop-up Score History
-	// let historyWay;
-	// let showHistoryPopup = false;
-	// function showUserHistory(userHistory: any) {
-	// 	if (userHistory == $userData) {
-	// 		historyWay = userHistory;
-	// 		currentSelectData = userHistory;
-	// 	} else if (userHistory == $selectData) {
-	// 		historyWay = userHistory.data;
-	// 	}
-	// 	showHistoryPopup = true;
-	// }
-
-	// function closeUserHistory(userHistory: any) {
-	// 	if (userHistory.id === $userData.id) {
-	// 		currentSelectData = null;
-	// 	}
-	// 	showHistoryPopup = false;
-	// }
+	//
 
 	function imageHousePath(filename: string): string {
         return `/house/${filename}.png`;
     }
+
+	function setSelectDataToNull() {
+		selectData.set(null);
+	}
 
 	function protectClick(event) {
 		event.stopPropagation();
@@ -194,35 +145,6 @@ Staff Claim
 		</div>
 	</div>
 {/if}
-
-<!-- 
--------------------------------------------------------
-Popup Score History
--------------------------------------------------------
--->
-
-<!-- {#if showHistoryPopup}
-	<div class="backdrop" onclick={() => closeUserHistory(currentSelectData)} in:fade out:fade>
-		<div id="popup" onclick={protectClick} in:azScale out:azScale>
-			<div id="popup-top">ประวัติคะแนน</div>
-			<div id="popup-middle"><History userDataHistory={historyWay}></History></div>
-			<div id="popup-bottom">
-				<button class="sc-history-btn" onclick={() => closeUserHistory(historyWay)}>ปิด</button>
-			</div>
-		</div>
-	</div>
-{/if} -->
-
-<!-- 
--------------------------------------------------------
-Popup Edit Score
--------------------------------------------------------
--->
-
-<!-- {#if showEditScore}
-	<EditScore getMethod={editMethod} getData={dataEditScore} />
-	<div>{closeEditScore()}</div>
-{/if} -->
 
 <!-- 
 -------------------------------------------------------
@@ -373,10 +295,10 @@ Style SCSS Na
 			align-items: center;
 			justify-content: center;
 
-			.dragon-image {
+			:global(.dragon-image) {
 				width: 60%;
 			}
-			#dragontext {
+			:global(#dragontext) {
 				filter: drop-shadow(0 2px 3px var(--list-shadow));
 			}
 		}
