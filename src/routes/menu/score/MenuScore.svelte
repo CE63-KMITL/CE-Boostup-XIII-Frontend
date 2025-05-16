@@ -170,6 +170,7 @@ HTML Crapp
 							border: 0px;
 							background-color: transparent;
 							"
+							
 						/>
 					</Frame>
 					{#if isSearching != ""}
