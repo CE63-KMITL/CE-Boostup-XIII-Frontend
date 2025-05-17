@@ -4,13 +4,21 @@
 	export let name;
 
 	function handleError() {
-		data = "NONE";
+		data = "ERROR";
 	}
 </script>
 
 <div class="usericon">
-	{#if data}
-		<img src={data} alt={name ? name.slice(0, 4) + ".." : "UNNAMED"} onerror={handleError} />
+	{#if data == "ERROR"}
+		{#if name}
+			<div class="usericon">
+				{name ? name.slice(0, 1) : ""}
+			</div>
+		{:else}
+			<User></User>
+		{/if}
+	{:else if data}
+		<img src={data} alt="" onerror={handleError} />
 	{:else}
 		<User></User>
 	{/if}
@@ -22,7 +30,7 @@
 		width: auto;
 		height: 100%;
 		border-radius: 50%;
-		border: 1px solid var(--outline);
+		border: 1.5px solid var(--grayed);
 		overflow: hidden;
 		display: flex;
 		justify-content: center;
