@@ -101,7 +101,7 @@
 		<div class="dragon-image">
 			<img src={"dragon-logo.png"} alt="" />
 		</div>
-		<span id="dragontext">CE BOOSTUP</span>
+		<span id="dragontext">CE BOOSTUP (กรุณาเลือกผู้ใช้ที่ต้องการแก้ไข)</span>
 	</div>
 {/if}
 

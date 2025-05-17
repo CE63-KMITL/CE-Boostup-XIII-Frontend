@@ -4,7 +4,7 @@
 	export let name;
 
 	function handleError() {
-		data = null;
+		data = "NONE";
 	}
 </script>
 

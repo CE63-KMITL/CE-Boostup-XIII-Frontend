@@ -6,6 +6,8 @@
 	import { selectedHouseStore } from "../score";
 	import { selectData } from "../score";
 	import LoadingList from "$lib/components/LoadingList.svelte";
+	import { IsRole, userData } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
 
 	export let dataMyHouse: any[] = [];
 
@@ -24,13 +26,15 @@
 	});
 </script>
 
-<div class="myHouseLeaderboard">
-	<select id="dropdown" bind:value={$selectedHouseStore}>
-		{#each optionDropdown as option}
-			<option>{option.name.charAt(0).toUpperCase() + option.name.slice(1)}</option>
-		{/each}
-	</select>
-</div>
+{#if IsRole(Role.STAFF)}
+	<div class="myHouseLeaderboard">
+		<select id="dropdown" bind:value={$selectedHouseStore}>
+			{#each optionDropdown as option}
+				<option>{option.name.charAt(0).toUpperCase() + option.name.slice(1)}</option>
+			{/each}
+		</select>
+	</div>
+{/if}
 
 {#each dataMyHouse as user, i}
 	{#if user == "loading"}
