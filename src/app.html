@@ -25,6 +25,17 @@
 			},
 			{ once: true }
 		);
+
+          function onResize() {
+               if (window.innerHeight/ window.innerWidth >= 1.25) {
+                    document.documentElement.setAttribute("mobile", "");
+               } else {
+                    document.documentElement.removeAttribute("mobile");
+               }
+          }
+
+          onResize();
+          window.addEventListener("resize", onResize);
 	</script>
 	<head>
 		<meta charset="utf-8" />

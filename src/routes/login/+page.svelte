@@ -17,14 +17,32 @@
 	let see_password: boolean = false;
 
 	async function Login() {
+		//-------------------------------------------------------
+		// Form Validation
+		//-------------------------------------------------------
+		if (!email || !password) {
+			await showPopup("โปรดกรอกอีเมลและรหัสผ่าน");
+			return;
+		}
+
+		//-------------------------------------------------------
+		// Email Format Validation
+		//-------------------------------------------------------
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			await showPopup("รูปแบบอีเมลไม่ถูกต้อง");
+			return;
+		}
+
+		//-------------------------------------------------------
+		// API Call
+		//-------------------------------------------------------
 		const res = await api.call("/auth/login", { method: "POST", data: { email, password } });
-		console.log(res.token);
 		if (res.token) {
 			setCookie("token", res.token);
 			goto("/menu");
 		} else {
-			showPopup(`ไม่สามารถเข้าสู่ระบบได้\n\n${JSON.stringify(res.message)}`);
-			const massage = await showPopup(res.message);
+			await showPopup(res.message);
 		}
 	}
 
@@ -63,6 +81,60 @@
 		);
 	}
 
+	//-------------------------------------------------------
+	// Request Password Reset
+	//-------------------------------------------------------
+	//-------------------------------------------------------
+	// Request Password Reset
+	//-------------------------------------------------------
+	async function onRequestResetPassword() {
+		const inputsForReset: ShowPopupInputs = [
+			{
+				type: "text",
+				name: "email",
+				label: "อีเมล",
+				placeholder: "อีเมลของคุณ",
+				required: true,
+			},
+		];
+
+		showPopup(
+			"รีเซ็ตรหัสผ่าน",
+			{
+				ยืนยัน: {
+					primary: true,
+					callback: async (formData) => {
+						if (formData && formData.email) {
+							try {
+								const res = await api.call("/auth/request-reset-password", {
+									method: "POST",
+									data: { email: formData.email },
+								});
+								if (res) {
+									await showPopup(res, {
+										ตกลง: () => {},
+									});
+								} else {
+									await showPopup("เราได้ทำการส่งการรีเซ็ตรหัสผ่านไปยังอีเมลของคุณแล้ว!", {
+										ตกลง: () => {},
+									});
+								}
+							} catch (error: any) {
+								console.error("Error requesting password reset:", error);
+								await showPopup(error.message || "เกิดข้อผิดพลาดในการร้องขอรีเซ็ตรหัสผ่าน");
+							}
+						} else {
+							await showPopup("โปรดกรอกอีเมลเพื่อรีเซ็ตรหัสผ่าน");
+						}
+					},
+				},
+				ยกเลิก: { cancel: true, callback: () => {} },
+			},
+			"large",
+			inputsForReset
+		);
+	}
+
 	let loaded = false;
 	onMount(() => {
 		loaded = true;
@@ -73,13 +145,24 @@
 	{#if loaded}
 		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
 		<div in:azScale={{ delay: 100, duration: 700 }} class="LoginBox">
-			<h1 class="LoginHead">เข้าสู่ระบบ</h1>
+			<h1 in:fly={{ y: 100, delay: 100, duration: 700 }} class="LoginHead">เข้าสู่ระบบ</h1>
 			<div class="InputBox">
-				<div class="EmailBox">
+				<div in:fly={{ y: 100, delay: 140, duration: 700 }} class="EmailBox">
 					<p class="Text">อีเมล</p>
-					<input class="Email" type="email" placeholder="อีเมล" bind:value={email} />
+					<input
+						class="Email"
+						type="email"
+						placeholder="อีเมล"
+						bind:value={email}
+						on:keydown={(event) => {
+							if (event.key === "Enter") {
+								event.preventDefault();
+								document.getElementById("Password")?.focus();
+							}
+						}}
+					/>
 				</div>
-				<div class="PasswordBox">
+				<div in:fly={{ y: 100, delay: 300, duration: 700 }} class="PasswordBox">
 					<p class="Text">รหัสผ่าน</p>
 					<div class="WrapPasswordInput">
 						<input
@@ -88,10 +171,16 @@
 							type={see_password ? "text" : "password"}
 							placeholder="รหัสผ่าน"
 							bind:value={password}
+							on:keydown={(event) => {
+								if (event.key === "Enter") {
+									event.preventDefault();
+									Login();
+								}
+							}}
 						/>
 						<button
 							class="IoIosEyeOff"
-							onclick={() => {
+							on:click={() => {
 								see_password = !see_password;
 							}}
 						>
@@ -103,12 +192,14 @@
 						</button>
 					</div>
 				</div>
-				<div class="ForgetAndCreate">
-					<p class="ForgetPassword">ลืมรหัสผ่าน</p>
-					<p class="ForgetPassword" onclick={onCreateAccount}>สร้างบัญชี</p>
+				<div in:fly={{ y: 100, delay: 350, duration: 700 }} class="ForgetAndCreate">
+					<p class="ForgetPassword" on:click={onRequestResetPassword}>ลืมรหัสผ่าน</p>
+					<p class="ForgetPassword" on:click={onCreateAccount}>สร้างบัญชี</p>
 				</div>
 			</div>
-			<Button class="Login" onclick={() => Login()}>Login</Button>
+			<div in:fly={{ y: 100, delay: 400, duration: 700 }} class="full">
+				<Button class="Login" on:click={() => Login()}>Login</Button>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -141,6 +232,7 @@
 	}
 
 	.LoginBox {
+		backdrop-filter: blur(5px);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -178,7 +270,6 @@
 		align-items: center;
 		justify-content: start;
 		width: 100%;
-		max-width: 25rem;
 		gap: 5px;
 	}
 
@@ -187,7 +278,6 @@
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 		width: 100%;
-		max-width: 25rem;
 		background-color: var(--bg);
 		border: 1px solid var(--theme-dark);
 		border-radius: 5px;

@@ -25,7 +25,6 @@
 		$searchParams.difficultySortBy = null;
 	}}
 	selected={(() => {
-		console.log(!$searchParams.difficultySortBy);
 		return !$searchParams.difficultySortBy;
 	})()}
 	>ไม่เรียง

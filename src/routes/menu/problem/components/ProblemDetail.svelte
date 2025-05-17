@@ -1,4 +1,5 @@
 <script lang="ts">
+	import UserIcon from "$lib/components/UserIcon.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
 
@@ -12,7 +13,10 @@
 			<div class="title">{problem?.title}</div>
 			<div class="problem-id">{problem?.id}</div>
 		</div>
-		<div class="author">{problem?.author?.name}</div>
+		<div class="author">
+			<div class="author-icon"><UserIcon name={problem?.author?.name} data={problem.author?.icon} /></div>
+			{problem?.author?.name}
+		</div>
 	</div>
 	<div class="problem-info">
 		<div class="tags">
@@ -81,6 +85,16 @@
 </div>
 
 <style lang="scss">
+	.author-icon {
+		width: 2rem;
+	}
+	.author {
+		font-size: 0.8rem;
+		color: var(--text);
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
 	//-------------------------------------------------------
 	// Layout & Container
 	//-------------------------------------------------------

@@ -68,7 +68,12 @@
 					<div class="testcase-output">Output</div>
 					<textarea class="output" disabled>{testCase?.result?.output}</textarea>
 					<div class="testcase-output">Expected Output</div>
-					<textarea class="output" disabled>{testCase?.expectOutput}</textarea>
+					<textarea
+						class="output"
+						disabled
+						placeholder="(ข้อความตรงนี้จะถูก generate ตอนที่สรา้งโจทย์ หรือ อัพเดทโจทย์)"
+						>{testCase?.expectOutput}</textarea
+					>
 				</div>
 			{/if}
 

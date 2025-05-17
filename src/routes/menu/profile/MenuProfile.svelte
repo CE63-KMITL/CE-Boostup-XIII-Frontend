@@ -1,359 +1,678 @@
 <script lang="ts">
-  //import NavBar from '../../components/NavBar.svelte'
-  import { onMount } from "svelte";
-  import * as api from "$lib/fetchApi";
-  import houseIcon from "./house-placeholder.png";
-  import UserIcon from "$lib/components/UserIcon.svelte";
+	import { userData } from "$lib/auth.local";
+	import { onMount } from "svelte";
+	import * as api from "$lib/fetchApi";
+	import UserIcon from "$lib/components/UserIcon.svelte";
+	import Button from "$lib/components/Button.svelte";
+	import History from "../score/components/History.svelte";
+	import { fade } from "svelte/transition";
+	import { azScale } from "$lib/transition";
+	import { showPopup } from "$lib/components/PopUp.svelte";
+	import { say } from "$lib/normalFunction";
+	import EditButton from "./components/EditButton.svelte";
 
-  // convert date to dd/mm format
-  function convertDate(dateString) {
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = {
-      day: "2-digit",
-      month: "numeric",
-    };
-    return date.toLocaleDateString("th-TH", options);
-  }
+	let isEditing = false;
+	let editedUserData = { ...$userData };
+	let uploadInput: HTMLInputElement;
+	let showHistoryPopup = false;
 
-  let user = null;
-  let scoreInfo = null;
-  let scoreLog = null;
+	onMount(async () => {
+		const result = await api.call(`/user/full-data/${$userData.id}`, {
+			method: "GET",
+			withToken: true,
+		});
 
-  onMount(async () => {
-    // Fetch user data
-    user = await api.call("/user/me", { method: "GET", withToken: true });
-    scoreInfo = await api.call("/user/me/scorelog", {
-      method: "GET",
-      withToken: true,
-    });
-    scoreLog = scoreInfo.scoreLogs;
-  });
+		if (result) {
+			$userData = { ...$userData, ...result };
+		}
+	});
+
+	function startEdit() {
+		editedUserData = { ...$userData };
+		isEditing = true;
+	}
+
+	async function saveEdit() {
+		const payload = {
+			name: editedUserData.name,
+		};
+		const result = await api.call("/user/set-name", {
+			method: "PATCH",
+			data: payload,
+			withToken: true,
+		});
+
+		showPopup(say("ชื่อถูกบันทึกแล้ว", "(^▽^)"), {
+			ตกลง: () => {
+				window.location.reload();
+			},
+		});
+	}
+
+	function cancelEdit() {
+		isEditing = false;
+		editedUserData = { ...$userData };
+	}
+
+	async function handleUpload(event: Event) {
+		const file = (event.target as HTMLInputElement)?.files?.[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = async () => {
+			const img = new Image();
+			img.onload = async () => {
+				const canvas = document.createElement("canvas");
+				const ctx = canvas.getContext("2d");
+				canvas.width = 100;
+				canvas.height = 100;
+				ctx.drawImage(img, 0, 0, 100, 100);
+
+				const base64Image = canvas.toDataURL("image/png");
+
+				await api.call("/user/upload-icon", {
+					method: "POST",
+					data: { iconBase64: base64Image },
+					withToken: true,
+				});
+
+				showPopup(say("อัปโหลดรูปภาพสําเร็จ!", "(^▽^)"), {
+					"เย่!~": () => {
+						window.location.reload();
+					},
+				});
+			};
+			img.src = reader.result as string;
+		};
+
+		reader.readAsDataURL(file);
+	}
+
+	function triggerUpload() {
+		uploadInput.click();
+	}
+
+	function toggleHistoryPopup() {
+		showHistoryPopup = !showHistoryPopup;
+	}
 </script>
 
 <div class="Container">
-  <div class="profile">
-    <h1>ข้อมูลนักผจญภัย</h1>
-    <div class="profile_box">
-      <div>
-        <img src={houseIcon} alt="house" class="icon" />
-        <table class="score_table">
-          <thead>
-            <tr>
-              <th class="score_header">คะแนนนักผจญภัย</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="score_body">{user?.score}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+	<div class="profile">
+		<h1>ข้อมูลนักผจญภัย</h1>
+		<div class="profile_box">
+			<div>
+				{#if $userData?.house}
+					<div class="houseicon">
+						<img src="/house/{$userData?.house}.png" alt="" class="icon" />
+					</div>
+				{/if}
+				<table class="score_table">
+					<thead>
+						<tr>
+							<th class="score_header">คะแนนนักผจญภัย</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="score_body">{$userData.score}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-      <div class="profile_info">
-        <div class="bio_info">
-          <UserIcon data={user?.icon} />
-          <div class="name_id">
-            <div class="name">{user?.name}</div>
-            <div class="id">{user?.studentId ? user?.studentId : "NULL"}</div>
-          </div>
-        </div>
+			<div class="profile_info">
+				<div class="bio_info">
+					<div class="usericon-container">
+						<button class="upload-trigger" on:click={triggerUpload}>
+							<UserIcon name={$userData.name} data={$userData.icon} />
+							<div class="upload-overlay">เปลี่ยนรูป</div>
+						</button>
+						<input
+							type="file"
+							accept="image/*"
+							bind:this={uploadInput}
+							on:change={handleUpload}
+							style="display: none;"
+						/>
+					</div>
+					<div class="name_id">
+						{#if isEditing}
+							<input type="text" bind:value={editedUserData.name} class="name-input" />
+							<div class="id-display">{editedUserData.studentId}</div>
+						{:else}
+							<div class="name">{$userData.name}</div>
+							<div class="id">{$userData.studentId}</div>
+						{/if}
+					</div>
+				</div>
+				{#if !isEditing}
+					<EditButton onclick={startEdit} />
+				{/if}
 
-        <div>
-          <div CLASS="personal_info">
-            <div>อีเมล : {user?.email ? user?.email : "NULL"}</div>
-            <div>บ้าน : {user?.house ? user?.house : "NULL"}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+				<div>
+					<div class="personal_info">
+						<div>อีเมล : {$userData.email}</div>
+						<div>บ้าน : {$userData.house}</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-  <div class="score_history">
-    <h2>ประวัติคะแนน</h2>
-    <div class="score_table">
-      {#each scoreLog as log, i}
-        <div class="score_body">
-          <div class="score_number">{scoreLog[i]?.amount}</div>
-          <div class="staff_and_time">
-            <div class="staff">{scoreLog[i]?.modifiedBy?.name}</div>
-            <div class="time">{convertDate(scoreLog[i]?.date)}</div>
-          </div>
-        </div>
-      {/each}
-    </div>
-  </div>
+		{#if isEditing}
+			<div class="edit-actions">
+				<Button onclick={saveEdit}>บันทึก</Button>
+				<Button onclick={cancelEdit}>ยกเลิก</Button>
+			</div>
+		{/if}
+
+		<Button onclick={() => (window.location.href = "/login?clear")}>Logout</Button>
+	</div>
+
+	<div class="history-button-mobile">
+		<Button onclick={toggleHistoryPopup}>ประวัติคะแนน</Button>
+	</div>
+
+	<div class="score_history">
+		<h2>ประวัติคะแนน</h2>
+		<div class="score_table">
+			<History userDataHistory={$userData} />
+		</div>
+	</div>
+
+	{#if showHistoryPopup}
+		<div class="history-popup-overlay" transition:fade={{ duration: 200 }} on:click={toggleHistoryPopup}>
+			<div transition:azScale class="history-popup-content" on:click|stopPropagation>
+				<h2>ประวัติคะแนน</h2>
+				<div class="score_table">
+					<History userDataHistory={$userData} />
+				</div>
+				<Button onclick={toggleHistoryPopup}>ปิด</Button>
+			</div>
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">
-  h1 {
-    font-size: 2vw;
-    font-weight: 700;
-    text-align: center;
-    margin-top: 4.5vh;
-    color: var(--text);
-  }
+	h1 {
+		font-size: 2rem;
+		font-weight: 700;
+		text-align: center;
+		margin-top: 4.5vh;
+		color: var(--text);
+	}
 
-  h2 {
-    font-size: 1.3vw;
-    font-weight: 4000;
-    text-align: left;
-    margin-top: 3vh;
-    margin-left: 2vw;
-    color: var(--text);
-  }
+	h2 {
+		font-size: 1.3rem;
+		font-weight: 4000;
+		text-align: left;
+		margin-top: 3vh;
+		margin-left: 2vw;
+		color: var(--text);
+	}
 
-  .Container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2vw;
-    min-height: 100vh;
-    width: 100vw;
-    padding-top: 2.5vh;
-    padding-bottom: 2.5vh;
-  }
+	.Container {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		overflow: auto;
+		gap: var(--n-gap);
+		padding: 2rem var(--n-gap) 5rem;
+		box-sizing: border-box;
+		height: 100%;
+	}
 
-  .profile {
-    width: 45vw;
-    height: 80vh;
-    background-color: var(--profile-bg);
-    border-radius: 20px;
-    outline: 2px solid;
-    border-color: var(--list-border);
-  }
+	.profile,
+	.score_history {
+		flex: 1;
+		max-width: 45vw;
+		min-height: 80vh;
+		height: auto;
+		overflow: auto;
+		background-color: var(--profile-bg);
+		border-radius: var(--n-border-radius);
+		outline: 2px solid var(--list-border);
+		padding: 1rem;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		backdrop-filter: blur(5px);
+		filter: drop-shadow(0 0 4px var(--list-shadow));
+	}
 
-  .profile_box {
-    display: flex;
-    margin-top: 1.5vh;
-  }
+	.profile_box {
+		display: flex;
+		flex-direction: row;
+		gap: var(--n-gap);
+	}
 
-  .score_history {
-    width: 45vw;
-    height: 80vh;
-    background-color: var(--profile-bg);
-    border-radius: 20px;
-    outline: 2px solid;
-    border-color: var(--list-border);
-  }
+	.houseicon {
+		width: 13vw;
+		height: auto;
+		background-color: var(--profile-bg);
+		border-radius: var(--n-border-radius);
+	}
 
-  .score_history .score_table {
-    overflow-y: auto;
-    width: 45vw;
-    height: 70vh;
-    padding-bottom: 1.2vh;
-  }
+	.profile .icon {
+		aspect-ratio: 3/4;
+		width: 100%;
+		height: auto;
+		border-radius: 15px;
+	}
 
-  .score_history .score_table .score_body {
-    display: flex;
-    height: 10vh;
-    width: 40vw;
-    margin-top: 3vh;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: var(--list-bg);
-    border-radius: 10px;
-    outline: 1px solid;
-  }
+	.profile .score_table {
+		margin-top: 2vh;
+		text-align: center;
+		width: 12.9vw;
+		background-color: var(--profile-bg);
+		border-radius: 10px;
+		overflow: hidden;
+		outline: 1px solid var(--list-border);
+	}
 
-  .score_history .score_table .score_body .score_number {
-    font-size: 1.2vw;
-    color: green;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: 1.5vw;
-  }
+	.profile .score_header {
+		font-size: 1rem;
+		background: var(--sc-orangelight);
+		padding: 0.5rem;
+		color: var(--text);
+	}
 
-  .score_history .score_table .score_body .staff_and_time {
-    font-size: 1vw;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: auto;
-    margin-right: 1.2vw;
-    text-align: center;
-  }
+	.profile .score_body {
+		font-size: 1rem;
+		background-color: var(--list-bg);
+		padding: 2vh 0;
+		color: var(--text);
+	}
 
-  .score_history .score_table .score_body .staff_and_time .time {
-    font-weight: 600;
-    color: var(--theme-dark-text);
-  }
+	.profile_info {
+		flex: 1;
+		min-width: 200px;
+		border-radius: var(--n-border-radius);
+		outline: 1px solid var(--list-border);
+		background-color: var(--profile-bg);
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		box-sizing: border-box;
+		position: relative;
+		filter: drop-shadow(1px 1px 2px var(--list-shadow));
+	}
 
-  .score_history .score_table .score_body .staff_and_time .staff {
-    font-weight: 600;
-    color: var(--text);
-  }
+	.bio_info {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
 
-  .profile .icon {
-    width: 13vw;
-    height: 40vh;
-    margin-top: 5vh;
-    margin-left: 4vw;
-    border-radius: 15px;
-  }
-  .profile .score_table {
-    margin-top: 2vh;
-    margin-left: 4vw;
-    text-align: center;
-    height: 10vh;
-    width: 13vw;
-    background-color: var(--profile-bg);
-  }
+	.usericon-container {
+		position: relative;
+		width: 4rem;
+		height: 4rem;
+		border-radius: 15px;
+		overflow: hidden;
+		cursor: pointer;
+	}
 
-  .profile .score_header {
-    font-size: 1vw;
-    background: var(--light-yellow, #f1d5a1);
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    outline: 1px solid;
-  }
+	.upload-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.5);
+		color: white;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		opacity: 0;
+		transition: opacity 0.2s ease-in-out;
+		font-size: 0.8rem;
+		text-align: center;
+		border-radius: 50%;
+	}
 
-  .profile .score_body {
-    font-size: 1vw;
-    background-color: var(--list-bg);
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
-    outline: 1px solid;
-  }
+	.usericon-container:hover .upload-overlay {
+		opacity: 1;
+	}
 
-  .profile_info {
-    width: 20vw;
-    height: 53vh;
-    margin-left: 2.5vw;
-    margin-top: 5vh;
-    border-radius: 20px;
-    outline: 1px solid;
-    border-color: var(--list-border);
-    background-color: var(--profile-bg);
-  }
+	.upload-trigger {
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		width: 100%;
+		height: 100%;
+	}
 
-  .bio_info {
-    display: flex;
-  }
+	.usericon-container :global(.user-icon) {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
 
-  .bio_info .name_id {
-    font-size: 1.1vw;
-    margin-top: 4vh;
-    margin-left: 1.5vw;
-  }
-  .bio_info .name_id .name {
-    color: var(--text);
-  }
-  .bio_info .name_id .id {
-    color: var(--theme-dark-text);
-  }
+	.name_id {
+		flex: 1;
+		font-size: 1.1rem;
+		display: flex;
+		flex-direction: column;
+		color: var(--text);
+		overflow: hidden;
+	}
+	.name_id .name {
+		font-weight: bold;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.name_id .id {
+		color: var(--theme-dark);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 
-  .personal_info {
-    font-size: 1.1vw;
-    margin-top: 3vh;
-    margin-left: 2vw;
-    color: var(--text);
-  }
-  @media only screen and (max-width: 1024px) and (min-height: 600px) {
-    h1 {
-      font-size: 6vw;
-      margin-top: 3vh;
-    }
+	.name-input,
+	.id-input,
+	.info-input {
+		padding: 0.2rem 0.4rem;
+		border: 1px solid var(--list-border);
+		border-radius: 5px;
+		font-size: 1rem;
+		margin-bottom: 0.2rem;
+		color: var(--text);
+		background-color: var(--profile-bg);
+		width: 100%;
+		box-sizing: border-box;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 
-    h2 {
-      font-size: 4.5vw;
-      margin-top: 2vh;
-      margin-left: 5vw;
-    }
+	.id-display {
+		padding: 0.2rem 0.4rem;
+		font-size: 1rem;
+		margin-bottom: 0.2rem;
+		color: var(--theme-dark);
+		width: 100%;
+		box-sizing: border-box;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 
-    .Container {
-      flex-direction: column;
-      gap: 3vh;
-      padding-top: 2vh;
-      padding-bottom: 2vh;
-    }
+	.edit-actions {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+		margin-top: 2rem;
+	}
 
-    .profile,
-    .score_history {
-      width: 90vw;
-      height: auto;
-      min-height: 60vh;
-      margin-bottom: 2vh;
-    }
+	.score_history .score_table {
+		margin: 1rem;
+	}
 
-    .profile_box {
-      flex-direction: column;
-    }
+	.history-button-mobile {
+		display: none;
+		width: 100%;
+		max-width: 45vw;
+		margin-top: var(--n-gap);
+	}
 
-    .score_history .score_table {
-      width: 100%;
-      height: 60vh;
-    }
+	.history-popup-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.7);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 1000;
+	}
 
-    .score_history .score_table .score_body {
-      width: 85vw;
-      height: auto;
-      min-height: 8vh;
-      margin-top: 2vh;
-      flex-direction: column;
-      padding: 1vh 0;
-    }
+	.history-popup-content {
+		background-color: var(--profile-bg);
+		border-radius: var(--n-border-radius);
+		padding: 1rem;
+		max-width: 90vw;
+		max-height: 80vh;
+		overflow-y: auto;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
 
-    .score_history .score_table .score_body .score_number {
-      font-size: 4vw;
-      margin-left: 5vw;
-      margin-bottom: 1vh;
-    }
+	.history-popup-content h2 {
+		margin: 0 0 1rem 0;
+		text-align: center;
+	}
 
-    .score_history .score_table .score_body .staff_and_time {
-      font-size: 3.5vw;
-      margin-left: 5vw;
-      margin-right: 5vw;
-      text-align: left;
-    }
+	.history-popup-content .score_table {
+		margin: 0;
+	}
 
-    .profile .icon {
-      width: 40vw;
-      height: 45vh;
-      margin: 3vh auto;
-    }
+	.history-popup-content .sc-history-score-main {
+		width: auto;
+	}
 
-    .profile .score_table {
-      width: 85vw;
-      margin: 2vh auto;
-    }
+	:global(html[mobile]) {
+		.Container {
+			flex-direction: column;
+			align-items: center;
+			padding: 1rem var(--n-gap) 3rem;
+		}
 
-    .profile .score_header,
-    .profile .score_body {
-      font-size: 3.5vw;
-    }
+		.profile {
+			width: 100%;
+			max-width: 90vw;
+			height: auto;
+			min-height: unset;
+			backdrop-filter: blur(5px);
+			filter: drop-shadow(0 0 4px var(--list-shadow));
+		}
 
-    .profile_info {
-      width: 85vw;
-      height: auto;
-      margin: 3vh auto;
-      padding-bottom: 2vh;
-    }
+		.score_history {
+			display: none;
+		}
 
-    .bio_info {
-      flex-direction: column;
-      align-items: center;
-    }
+		.history-button-mobile {
+			display: block;
+			width: 100%;
+			max-width: 90vw;
+			margin-top: var(--n-gap);
+			margin-bottom: 1rem;
+		}
 
-    .bio_info .name_id {
-      font-size: 4vw;
-      margin: 1vh auto;
-      text-align: center;
-    }
+		.profile_box {
+			flex-direction: column;
+			align-items: center;
+			margin: 1rem 0;
+			gap: 1rem;
+		}
 
-    .personal_info {
-      font-size: 4vw;
-      margin-left: 5vw;
-      margin-right: 5vw;
-    }
-  }
+		.houseicon {
+			width: 30vw;
+			max-width: 200px;
+		}
 
-  @media only screen and (max-width: 430px) and (min-height: 500px) {
-    .profile .icon {
-      width: 60vw;
-      height: 45vh;
-      margin: 3vh auto;
-    }
-  }
+		.profile .score_table {
+			width: 30vw;
+			max-width: 200px;
+			margin-top: 1rem;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.profile_info {
+			width: 100%;
+			max-width: 500px;
+			height: auto;
+			min-height: unset;
+			margin: 1rem auto;
+			position: relative;
+			filter: drop-shadow(0 0 4px var(--list-shadow));
+		}
+
+		.bio_info {
+			flex-direction: column;
+			align-items: center;
+			gap: 0.5rem;
+			position: static;
+		}
+
+		.edit-icon-button {
+			position: absolute;
+			bottom: 0.5rem;
+			right: 0.5rem;
+			margin-top: 0;
+		}
+
+		.usericon-container {
+			width: 6rem;
+			height: 6rem;
+		}
+
+		.name_id,
+		.personal_info {
+			align-items: center;
+			width: 100%;
+		}
+
+		.name-input,
+		.id-input,
+		.info-input,
+		.id-display {
+			width: 90%;
+			max-width: 300px;
+			text-align: center;
+		}
+
+		h1 {
+			margin-top: 1rem;
+			margin-bottom: 1rem;
+		}
+
+		h2 {
+			margin-top: 1rem;
+			margin-left: 1rem;
+		}
+
+		.score_history .score_table {
+			margin: 1rem;
+		}
+	}
+
+	@media (max-width: 600px) {
+		h1 {
+			font-size: 1.8rem;
+		}
+
+		h2 {
+			font-size: 1.4rem;
+		}
+
+		.profile {
+			padding: 0.5rem;
+		}
+
+		.profile_info {
+			padding: 0.8rem;
+		}
+
+		.usericon-container {
+			width: 5rem;
+			height: 5rem;
+		}
+
+		.name_id {
+			font-size: 1rem;
+		}
+
+		.personal_info {
+			font-size: 1rem;
+		}
+
+		.name-input,
+		.id-input,
+		.info-input,
+		.id-display {
+			font-size: 0.9rem;
+			padding: 0.1rem 0.3rem;
+		}
+
+		.edit-icon {
+			width: 1rem;
+			height: 1rem;
+		}
+
+		.edit-actions {
+			flex-direction: column;
+			align-items: center;
+			gap: 0.5rem;
+			margin-top: 1rem;
+		}
+
+		.profile .score_table {
+			width: 40vw;
+			max-width: 180px;
+		}
+
+		.houseicon {
+			width: 40vw;
+			max-width: 180px;
+		}
+
+		.history-button-mobile {
+			max-width: 90vw;
+		}
+
+		.history-popup-content {
+			max-width: 95vw;
+			padding: 0.8rem;
+		}
+	}
+
+	@media (max-width: 400px) {
+		h1 {
+			font-size: 1.5rem;
+		}
+
+		h2 {
+			font-size: 1.2rem;
+		}
+
+		.usericon-container {
+			width: 4rem;
+			height: 4rem;
+		}
+
+		.name_id {
+			font-size: 0.9rem;
+		}
+
+		.personal_info {
+			font-size: 0.9rem;
+		}
+
+		.name-input,
+		.id-input,
+		.info-input,
+		.id-display {
+			font-size: 0.8rem;
+		}
+
+		.profile .score_table {
+			width: 50vw;
+			max-width: 150px;
+		}
+
+		.houseicon {
+			width: 50vw;
+			max-width: 150px;
+		}
+	}
 </style>

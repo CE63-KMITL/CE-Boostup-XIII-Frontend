@@ -3,11 +3,34 @@
 	import BadgeGold from "$lib/components/Icons/Badge_Gold.svelte";
 	import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
+	import { createEventDispatcher } from "svelte";
+	import { azScale } from "$lib/transition";
+	import { refreshHouseList } from "../score";
+	import { IsRole, userData } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
 
-	let index: number = $$restProps?.index;
+	//let index: number = $$restProps?.index;
+	export let index: number;
+	export let id: string;
+	export let user: any;
+
+	// for sent event back Ja
+	const dispatch = createEventDispatcher();
+
+	// set event with user data
+	function handleClick() {
+		if (!IsRole(Role.STAFF) || user.role == "staff") return;
+
+		dispatch("select", {
+			row: index,
+			data: user,
+		});
+
+		refreshHouseList();
+	}
 </script>
 
-<List class="listScores {index < 3 ? 'top' : ''}>" {...$$restProps}>
+<List class="listScores {index < 3 ? 'top' : ''} {user.role == 'staff' ? 'staff' : ''}" {id} onclick={handleClick}>
 	<div class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>
@@ -20,17 +43,20 @@
 		{/if}
 	</div>
 	<slot></slot>
-	<!-- {@render content()} -->
 </List>
 
 <style lang="scss">
 	:global(.listScores) {
 		display: flex;
+		flex-direction: row;
 		justify-content: space-between;
 		margin-top: 12px;
 		padding: 10px;
 		height: 50px;
 		background-color: var(--bg);
+		align-items: center;
+		// opacity: 0;
+
 		:global(> div) {
 			text-align: center;
 			white-space: nowrap;
@@ -39,30 +65,49 @@
 				width: 5%;
 				min-width: 10%;
 				max-width: 10%;
-				z-index: 3;
 			}
 			&:nth-child(2) {
-				width: 15%;
-				min-width: 150px;
-				min-width: 35%;
-				text-overflow: ellipsis;
-				overflow: hidden;
+				width: 5%;
+				min-width: 40px;
+				max-width: 10%;
 			}
 			&:nth-child(3) {
-				width: 15%;
+				width: 32%;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				text-align: left;
+				padding-inline-start: 2%;
 			}
 			&:nth-child(4) {
-				width: 16%;
+				width: 15%;
 			}
 			&:nth-child(5) {
+				width: 16%;
+			}
+			&:nth-child(6) {
 				width: 8%;
+				text-align: right;
+				padding-inline-end: 2%;
 			}
 		}
 	}
 
+	:global(div.listScores.staff) {
+		outline: 1px solid var(--status-not-started);
+		background: color-mix(in srgb, var(--status-not-started), var(--bg) 80%) !important;
+	}
+
 	.image {
-		margin-top: -25px;
+		margin-top: -10px;
 		display: flex;
 		justify-content: center;
+	}
+
+	:global(.houseIcon) {
+		display: flex;
+		justify-content: center;
+		transform: scale(1);
+		margin-top: -15px;
+		margin-left: 20px;
 	}
 </style>

@@ -34,11 +34,11 @@ export const getUserData = async ({ cookies, fetch, autoRedirect = true }) => {
 			userData = null;
 		}
 	} else {
-		console.log("No auth token cookie found.");
+		// console.log("No auth token cookie found.");
 		if (autoRedirect) redirect(307, "/login");
 	}
 
-	console.log("User data", userData);
+	// console.log("User data", userData);
 
 	return userData;
 };

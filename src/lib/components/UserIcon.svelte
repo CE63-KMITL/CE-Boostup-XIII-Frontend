@@ -140,39 +140,13 @@
     overflow: hidden;
     cursor: pointer;
 
-    .profile-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-      display: block;
-      border: 1px solid #ddd;
-    }
-
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-      cursor: pointer;
-
-      input {
-        display: none;
-      }
-
-      .upload-text {
-        font-weight: bold;
-        font-size: 1rem;
-      }
-    }
-
-    &:hover .overlay {
-      opacity: 1;
-    }
-  }
+		img {
+			width: auto;
+			height: 100%;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	}
 </style>

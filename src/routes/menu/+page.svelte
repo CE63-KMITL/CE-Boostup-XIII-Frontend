@@ -13,9 +13,9 @@
 	import MenuCode from "./code/MenuCode.svelte";
 	import MenuCreateProblem from "./create_problem/MenuCreateProblem.svelte";
 	import ProblemInMenu from "./problem/MenuProblem.svelte";
-	import { items, currentPage, updatePage } from "./pageManager";
+	import { items, currentPage, updatePage, mobile } from "./pageManager";
 	import { afterNavigate } from "$app/navigation";
-  import MenuSetting from "./setting/MenuSetting.svelte";
+	import MenuSetting from "./setting/MenuSetting.svelte";
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import * as api from "$lib/fetchApi";
 	import MenuScore from "./score/MenuScore.svelte";
@@ -34,11 +34,16 @@
 		let url = new URL(window.location.href);
 		if (!url.searchParams.get("page")) {
 			url.searchParams.append("page", "problem");
-			console.log(url);
 			window.history.pushState(null, null, url);
 		}
 		$currentPage = url.searchParams.get("page");
 		document.title = $items[$currentPage];
+
+		function onResize() {
+			$mobile = window.innerHeight / window.innerWidth >= 1.25;
+		}
+		onResize();
+		window.addEventListener("resize", onResize);
 	});
 
 	let showMobileTopbar = false;
@@ -98,13 +103,12 @@
 							updatePage("profile");
 						}
 					}}
+					style="padding: 0px;"
 				>
 					{#if $userData.role == null}
 						ล็อคอิน
-					{:else if $userData.icon}
-						<img src={$userData.icon} alt="Icon" class="circular-icon" />
 					{:else}
-						<UserIcon data={$userData.icon} />
+						<UserIcon name={$userData.name} data={$userData.icon} />
 					{/if}
 				</div>
 
@@ -138,9 +142,9 @@
 				<MenuCreateProblem></MenuCreateProblem>
 			</div>
 		{:else if $currentPage == "profile"}
-		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-			<MenuProfile></MenuProfile>
-		</div>
+			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+				<MenuProfile></MenuProfile>
+			</div>
 		{:else if $currentPage == "setting"}
 			<div class="full" in:azScale={{ delay: 250 }} out:azScale>
 				<MenuSetting></MenuSetting>

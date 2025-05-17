@@ -9,6 +9,10 @@ export const userData = writable({
 	studentId: null,
 	score: null,
 	house: null,
+	rank: null,
+	houseRank: null,
+	houseScore: null,
+	email: null,
 });
 
 export function IsRole(role: Role) {
