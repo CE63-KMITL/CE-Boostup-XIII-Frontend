@@ -13,6 +13,7 @@
 	$: editName = $page.url.searchParams.get("editName");
 	$: email = $page.url.searchParams.get("email");
 	$: otp = $page.url.searchParams.get("otp");
+	$: reset = $page.url.searchParams.get("reset");
 
 	let text_password: string = "";
 	let text_re_password: string = "";
@@ -20,7 +21,7 @@
 	let recheck_password: boolean = false;
 	let name: string = "";
 
-	async function onOpenAccount() {
+	async function onConfirm() {
 		if (text_password == "" || text_re_password == "") {
 			showPopup("กรุณากรอกรหัสผ่าน");
 			return;
@@ -31,19 +32,36 @@
 			return;
 		}
 
-		const res = await api.call("/auth/open-account", {
-			method: "PATCH",
-			data: {
-				email: email,
-				otp: otp,
-				password: text_password,
-				name: editName == "false" ? null : name,
-			},
-		});
+		if (reset == "true") {
+			await api.call("/auth/reset-password", {
+				method: "PATCH",
+				data: {
+					email: email,
+					otp: otp,
+					password: text_password,
+				},
+			});
 
-		if (res) {
-			setCookie("token", res.token);
-			window.location.href = "/menu";
+			await showPopup("รหัสผ่านถูกเปลี่ยนเเรียบร้อยแล้ว", {
+				ตกลง: () => {
+					window.location.href = "/login";
+				},
+			});
+		} else {
+			const res = await api.call("/auth/open-account", {
+				method: "PATCH",
+				data: {
+					email: email,
+					otp: otp,
+					password: text_password,
+					name: editName == "false" ? null : name,
+				},
+			});
+
+			if (res) {
+				setCookie("token", res.token);
+				window.location.href = "/menu";
+			}
 		}
 	}
 
@@ -111,7 +129,7 @@
 				</div>
 			</div>
 			<div in:fly={{ y: 100, delay: 400, duration: 700 }} class="full">
-				<Button class="confirm" onclick={onOpenAccount}>ยืนยัน</Button>
+				<Button class="confirm" onclick={onConfirm}>ยืนยัน</Button>
 			</div>
 		</div>
 	</div>
