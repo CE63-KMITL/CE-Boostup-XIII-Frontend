@@ -2,6 +2,7 @@
   import User from "./Icons/User.svelte";
   import Cropper from "svelte-easy-crop";
   import Button from "./Button.svelte";
+  import * as api from "$lib/fetchApi";
 
   let showCrop = false;
   let initalCropPosition = { x: 0, y: 0 };
@@ -72,13 +73,11 @@
     try {
       // Change to the new cropped image
       data = await getCroppedImage(data, pixelCrop);
-      // Base64 String
-      let uploadData = data.split(",")[1];
       // Send to backend
-      const response = await fetch("/api/profile/upload", {
+      const response = await api.call("/user/upload-icon", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: uploadData }),
+        data: { file: data },
+        withToken: true,
       });
 
       if (response.ok) {
