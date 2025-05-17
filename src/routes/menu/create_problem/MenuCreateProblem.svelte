@@ -513,7 +513,7 @@
 			<div class="difficulty">
 				<Stars bind:difficulty={problem.difficulty}></Stars>
 				<div class="difficultySlider">
-					<input type="range" step="0.5" min="0.5" max="5" bind:value={problem.difficulty} />
+					<input type="range" step="1" min="1" max="5" bind:value={problem.difficulty} />
 					<div style="width: 40px; text-align: end">{problem.difficulty}</div>
 				</div>
 			</div>

@@ -189,6 +189,13 @@ div:not(.view-line) {
 	flex-direction: column;
 }
 
+input:not([type="checkbox"]):not([type="range"]),
+.input,
+textarea,
+.output {
+	padding: 10px;
+}
+
 input:not([type="checkbox"]),
 .input,
 textarea,
@@ -203,7 +210,6 @@ textarea,
 	color: var(--text);
 	width: 100%;
 	box-sizing: border-box;
-	padding: 10px;
 	transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 

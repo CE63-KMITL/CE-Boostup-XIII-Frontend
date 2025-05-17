@@ -7,12 +7,9 @@
 	let dark;
 
 	function changeTheme() {
-		const url = new URL(window.location.href);
 		dark = !dark;
-		url.searchParams.set("dark", dark.toString());
-		window.history.pushState({}, "", url.toString());
 
-		localStorage.setItem("dark", url.searchParams.get("dark"));
+		localStorage.setItem("dark", dark);
 		if (localStorage.getItem("dark") === "true") {
 			document.documentElement.setAttribute("dark", "");
 		} else {

@@ -46,7 +46,7 @@
 	>มากไปน้อย
 </RadioButton>
 <div>ช่วงความยาก:</div>
-<RangeSliderDouble min={0.5} max={5} step={0.5} bind:minValue={minDifficulty} bind:maxValue={maxDifficulty}
+<RangeSliderDouble min={1} max={5} step={1} bind:minValue={minDifficulty} bind:maxValue={maxDifficulty}
 ></RangeSliderDouble>
 
 <div class="range-values">
