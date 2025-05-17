@@ -13,6 +13,7 @@
 	import { Role } from "$lib/enum/role";
 	import { mobile, updatePage } from "../pageManager";
 	import { showPopup } from "$lib/components/PopUp.svelte";
+	import { statusColors, statusStaffColors, statusStaffText, statusText } from "$lib/constants/problem";
 
 	//-------------------------------------------------------
 	// Component State
@@ -127,10 +128,27 @@
 				problem.testCases[i].result = result[i];
 			}
 		}
+
+		updateStatus();
 	}
 
 	function onViewProblem() {
 		updatePage("create_problem");
+	}
+
+	let currentStatus;
+	async function updateStatus() {
+		try {
+			const result = await api.call(`/user/problem-status/${currentProblemId}`, {
+				withToken: true,
+			});
+
+			if (result) {
+				currentStatus = result?.status;
+			}
+		} catch (error) {
+			currentStatus = "Not Started";
+		}
 	}
 
 	//-------------------------------------------------------
@@ -147,6 +165,7 @@
 			currentProblemId = problemIdFromUrl;
 			problem = await api.call(`/problem/code/${currentProblemId}`, { withToken: true });
 			document.title = "โจทย์: " + problem.title;
+			updateStatus();
 		}
 
 		codeText = await loadCode();
@@ -207,6 +226,12 @@
 
 <div class="component">
 	<div class="full mainFrame">
+		{#if currentStatus}
+			<div class="status" style="color: {statusColors[currentStatus]};">
+				✿ {statusText[currentStatus]} ✿
+			</div>
+		{/if}
+
 		<div class="full subFrame">
 			<Tab margin={false} class="ProblemContainer" headers={leftHeaderTabs} bind:activeTab={leftActiveTab}>
 				{@render contentElement(leftActiveTab)}
@@ -228,6 +253,17 @@
 <style lang="scss">
 	.component {
 		display: contents;
+
+		.status {
+			padding: 10px;
+			background: var(--bg);
+			border-radius: var(--n-border-radius);
+			border: 1px solid var(--outline);
+			font-weight: 600;
+			text-align: center;
+			box-shadow: 0 4px 24px var(--list-shadow);
+			font-size: 1rem;
+		}
 
 		.mainFrame {
 			display: flex;

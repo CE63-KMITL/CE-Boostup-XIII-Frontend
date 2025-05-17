@@ -7,7 +7,12 @@ const API_HOST = import.meta.env.VITE_API_HOST;
 
 export async function call(
 	route: string,
-	options: { method?: string; data?: any; withToken?: boolean } = { method: "GET", data: null, withToken: false }
+	options: { method?: string; data?: any; withToken?: boolean; isAlert?: boolean } = {
+		method: "GET",
+		data: null,
+		withToken: false,
+		isAlert: true,
+	}
 ) {
 	let response;
 	try {
@@ -65,16 +70,19 @@ export async function call(
 		}
 
 		if (!response.ok) {
-			showPopup(
-				say(
-					`${route}\n\n⚠️ เกิดข้อผิดพลาด\n\n${responseData.error ?? ""}\n${
-						typeof responseData.message == "object"
-							? JSON.stringify(responseData.message)
-							: responseData.message
-					}`,
-					"(┬┬﹏┬┬)"
-				)
-			);
+			if (options.isAlert) {
+				showPopup(
+					say(
+						`${route}\n\n⚠️ เกิดข้อผิดพลาด\n\n${responseData.error ?? ""}\n${
+							typeof responseData.message == "object"
+								? JSON.stringify(responseData.message)
+								: responseData.message
+						}`,
+						"(┬┬﹏┬┬)"
+					)
+				);
+			}
+
 			throw new Error(responseData.message);
 		}
 

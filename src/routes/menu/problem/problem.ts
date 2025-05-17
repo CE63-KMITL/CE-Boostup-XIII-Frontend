@@ -13,7 +13,7 @@ export const searchParams = writable({
 	idReverse: false,
 	tag: [],
 	difficulty: null,
-	minDifficulty: 0.5,
+	minDifficulty: 1,
 	maxDifficulty: 5,
 	difficultySortBy: null,
 	status: null,

@@ -27,6 +27,7 @@
 	export let saveCode = null;
 	export let value = "";
 
+	let lastSaved = null;
 	let autoSaveTimeout = null;
 
 	/*
@@ -58,8 +59,10 @@
 
 			autoSaveTimeout = setTimeout(
 				async () => {
-					if (saveCode) {
-						await saveCode(editor.getValue());
+					const currentText = editor.getValue();
+					if (saveCode && currentText != lastSaved) {
+						lastSaved = currentText;
+						await saveCode(currentText);
 					}
 				},
 				Number(localStorage.getItem("autoSaveDelay")) || 500
@@ -68,6 +71,7 @@
 
 		if (loadCode) {
 			editor.setValue(await loadCode());
+			lastSaved = editor.getValue();
 		}
 
 		return () => {
@@ -100,6 +104,15 @@
 	export function setValue(value: string) {
 		editor?.setValue(value);
 	}
+
+	async function onExit() {
+		if (lastSaved != editor.getValue()) {
+			await saveCode(editor.getValue());
+		}
+	}
+
+	onbeforeunload = onExit;
+	onDestroy(onExit);
 </script>
 
 <div class="editorContainer">
