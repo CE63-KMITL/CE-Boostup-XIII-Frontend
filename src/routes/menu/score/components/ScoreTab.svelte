@@ -18,6 +18,9 @@
 	// Stores
 	//-------------------------------------------------------
 	import { selectedHouseStore } from "../score";
+	import { userData } from "$lib/auth.local";
+
+	$selectedHouseStore = $userData.house;
 
 	let headerTabs: { [key: string]: string } = { overall: "Overall", house: "House", myHouse: "MyHouse" };
 	let activeTab = "overall";
