@@ -529,7 +529,7 @@
 					<Checkbox
 						color={tagsColors[tag]}
 						value={tag}
-						checked={problem.tags.includes(tag)}
+						selected={problem.tags.includes(tag)}
 						onSelect={() => {
 							if (!problem.tags.includes(tag)) {
 								problem.tags = [...problem.tags, tag];

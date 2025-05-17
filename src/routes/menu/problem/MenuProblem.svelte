@@ -168,14 +168,21 @@
 		subscribeSelectedProblemId = selectedProblemId.subscribe(async () => {
 			selectedProblem = null;
 
-			const problemData =
+			let problemData =
 				allProblems.find((problem) => typeof problem === "object" && problem.id === $selectedProblemId) ||
 				selectedProblem;
 
 			if (problemData) {
-				problemData.description = await api.call(`/problem/detail/${problemData.id}`, {
+				const result = await api.call(`/problem/more-detail/${problemData.id}`, {
 					withToken: true,
 				});
+
+				if (result) {
+					problemData = {
+						...problemData,
+						...result,
+					};
+				}
 			}
 
 			selectedProblem = problemData;
