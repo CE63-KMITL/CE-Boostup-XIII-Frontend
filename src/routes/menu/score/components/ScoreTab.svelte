@@ -10,7 +10,7 @@
 	import { pagination } from "$lib/paginaion";
 	import { onMount } from "svelte";
 	import * as api from "$lib/fetchApi";
-	import { runProblemListAnimation } from "$lib/animation";
+	import { runListAnimation } from "$lib/animation";
 	import { scoreRefreshTrigger } from "../score";
 	import Search from "$lib/components/Icons/Search.svelte";
 
@@ -72,7 +72,7 @@
 					elements.push(element);
 				}
 
-				await runProblemListAnimation(elements);
+				await runListAnimation(elements);
 			});
 		} else {
 			users = [...users];

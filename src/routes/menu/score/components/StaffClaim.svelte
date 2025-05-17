@@ -126,11 +126,6 @@ HTML Structure
 	<h3>{selectedUser.name}</h3>
 	<p>รหัสนักศึกษา: {selectedUser.studentId}</p>
 	<p>คะแนนสะสม: {selectedUser.score}</p>
-	{#if nextReward}
-		<p>อีก {pointsToNextReward} คะแนน จะได้รับ {nextReward.reward}!</p>
-	{:else}
-		<p>เก็บรางวัลครบทั้งหมดแล้ว</p>
-	{/if}
 </div>
 
 <div class="rewards-section">

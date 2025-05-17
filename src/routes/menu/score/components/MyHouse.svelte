@@ -5,6 +5,7 @@
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import { selectedHouseStore } from "../score";
 	import { selectData } from "../score";
+	import LoadingList from "$lib/components/LoadingList.svelte";
 
 	export let dataMyHouse: any[] = [];
 
@@ -32,12 +33,16 @@
 </div>
 
 {#each dataMyHouse as user, i}
-	<RankOrdering index={i} id={user.id} {user} on:select={handleHouseClick}>
-		<div><UserIcon name={user.name} data={user.icon}></UserIcon></div>
-		<div>{user.name}</div>
-		<div>{user.studentId}</div>
-		<div style="text-align: right; padding-inline-end: 2%;">{user.score}</div>
-	</RankOrdering>
+	{#if user == "loading"}
+		<LoadingList></LoadingList>
+	{:else}
+		<RankOrdering index={i} id={user.id} {user} on:select={handleHouseClick}>
+			<div><UserIcon name={user.name} data={user.icon}></UserIcon></div>
+			<div>{user.name}</div>
+			<div>{user.studentId}</div>
+			<div style="text-align: right; padding-inline-end: 2%;">{user.score}</div>
+		</RankOrdering>
+	{/if}
 {/each}
 
 <style lang="scss">

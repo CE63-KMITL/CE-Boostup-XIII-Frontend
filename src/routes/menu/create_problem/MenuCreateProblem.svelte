@@ -35,7 +35,7 @@
 			leftActiveTab = "solutionCode";
 			rightActiveTab = "";
 			leftHeaderTabs = {
-				solutionCode: "โค้ด",
+				solutionCode: "เฉลย",
 				defaultCode: "โค้ดเริ่มต้น",
 				details: "รายละเอียดโจทย์",
 				inputOutput: "รันโค้ด",
@@ -46,7 +46,7 @@
 			leftActiveTab = "solutionCode";
 			rightActiveTab = "details";
 			leftHeaderTabs = {
-				solutionCode: "โค้ด",
+				solutionCode: "เฉลย",
 				defaultCode: "โค้ดเริ่มต้น",
 			};
 			rightHeaderTabs = {

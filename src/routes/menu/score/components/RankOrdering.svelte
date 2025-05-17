@@ -30,7 +30,14 @@
 	}
 </script>
 
-<List class="listScores {index < 3 ? 'top' : ''} {user.role == 'staff' ? 'staff' : ''}" {id} onclick={handleClick}>
+<List
+	class="listScores {index < 3 ? 'top' : ''} {user.role == 'staff' ? 'staff' : ''} {user.house == '' ||
+	user.house == null
+		? 'noHouse'
+		: ''}"
+	{id}
+	onclick={handleClick}
+>
 	<div class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>
@@ -93,8 +100,13 @@
 	}
 
 	:global(div.listScores.staff) {
-		outline: 1px solid var(--status-not-started);
-		background: color-mix(in srgb, var(--status-not-started), var(--bg) 80%) !important;
+		outline: 1px solid var(--used-time);
+		background: color-mix(in srgb, var(--used-time), var(--bg) 80%) !important;
+	}
+
+	:global(div.listScores.noHouse) {
+		outline: 1px solid var(--grayed);
+		background: color-mix(in srgb, var(--grayed), var(--bg) 80%) !important;
 	}
 
 	.image {

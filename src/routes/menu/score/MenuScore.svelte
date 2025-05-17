@@ -16,21 +16,8 @@
 	import EditSelectedUser from "./components/EditSelectedUser.svelte";
 	import * as api from "$lib/fetchApi";
 
-	const profile = {
-		name: "เพ็ญพิชชา ปานจันทร์",
-		studentId: "68010662",
-		rank: 23,
-		score: 300,
-		houseRank: 5,
-		houseScore: 1200,
-	};
-
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
-
-	function imageHousePath(filename: string): string {
-		return `/house/${filename}.png`;
-	}
 
 	function setSelectDataToNull() {
 		selectData.set(null);

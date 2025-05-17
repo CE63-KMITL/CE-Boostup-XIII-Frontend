@@ -217,7 +217,7 @@
 			</Tab>
 		</div>
 
-		{#if IsRole(Role.STAFF)}
+		{#if IsRole(Role.STAFF) && problemIdFromUrl}
 			<Frame shadow={true}>
 				<Button onclick={onViewProblem}>แก้ไขโจทย์</Button>
 			</Frame>

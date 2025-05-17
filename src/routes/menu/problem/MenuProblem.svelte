@@ -21,7 +21,7 @@
 	import Loading from "$lib/components/Loading.svelte";
 	import { fade, fly } from "svelte/transition";
 	import { azScale } from "$lib/transition";
-	import { runProblemListAnimation } from "$lib/animation";
+	import { runListAnimation } from "$lib/animation";
 
 	/*
      -------------------------------------------------------
@@ -122,7 +122,7 @@
 				for (let i = 0; i < dataIds.length; i++) {
 					elements.push(document.querySelector(`[data-problem-id="${dataIds[i]}"]`));
 				}
-				await runProblemListAnimation(elements);
+				await runListAnimation(elements);
 			});
 		} else {
 			if (isLoadMore) {
@@ -138,7 +138,7 @@
 
 	async function loadMore() {
 		if (loadingMore || !loaded) return;
-          
+
 		loadingMore = true;
 		await updateProblems(true);
 		loadingMore = false;

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import Checkbox from "../../../lib/components/Checkbox.svelte";
+	import Frame from "$lib/components/Frame.svelte";
+	import Fullscreen from "$lib/components/Fullscreen.svelte";
 
 	let dark;
 
@@ -23,39 +25,22 @@
 	});
 </script>
 
-<div class="container">
-	<Checkbox onclick={changeTheme} selected={localStorage.getItem("dark") === "true"}>
-		{#if !dark}
-			Enable Dark Mode
-		{:else}
-			Disable Dark Mode
-		{/if}
-	</Checkbox>
+<div class="full component">
+	<Frame blur-bg class="setting-containter full" margin={true}>
+		<Checkbox onclick={changeTheme} selected={localStorage.getItem("dark") === "true"}>
+			{#if !dark}
+				Enable Dark Mode
+			{:else}
+				Disable Dark Mode
+			{/if}
+		</Checkbox>
+	</Frame>
 </div>
 
 <style lang="scss">
-	.container {
-		width: 100%;
-		height: 80%;
-		background-color: var(--bg-50);
-		border-radius: 20px;
-		box-shadow: 0 4px 24px var(--list-shadow);
-		margin-top: 50px;
-		margin-bottom: 30px;
-		margin-left: 5%;
-		margin-right: 5%;
-		padding: 24px 16px;
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: flex-start;
-		max-width: 90%;
-		min-width: 10%;
-		box-sizing: border-box;
-
-		:global([dark]) & {
-			background-color: var(--bg-50);
-			box-shadow: 0 4px 24px var(--list-shadow);
-		}
+	:global(.setting-containter) {
+		padding: 10px;
+		width: 90%;
+		align-self: center;
 	}
 </style>
