@@ -37,7 +37,7 @@
 				email: email,
 				otp: otp,
 				password: text_password,
-				name: editName == "false" ? name : null,
+				name: editName == "false" ? null : name,
 			},
 		});
 

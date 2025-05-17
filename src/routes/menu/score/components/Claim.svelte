@@ -24,7 +24,7 @@
 			$userData.score = score.score;
 		}
 
-		const result = await api.call(`/rewards/user/${$userData.id}/status`, {
+		const result = await api.call(`/reward/user/${$userData.id}/status`, {
 			withToken: true,
 		});
 
@@ -42,7 +42,9 @@
 			maxPoints = 0;
 		}
 
-		progressPercentage = ($userData.score ?? 0 / maxPoints) * 100;
+		console.log($userData.score, maxPoints);
+
+		progressPercentage = (($userData.score ?? 0) / maxPoints) * 100;
 	});
 </script>
 

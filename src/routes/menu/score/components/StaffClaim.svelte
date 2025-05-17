@@ -56,7 +56,7 @@
 			return;
 		}
 		try {
-			const result = await api.call(`/rewards/user/${$selectData.data?.id}/status`, {
+			const result = await api.call(`/reward/user/${$selectData.data?.id}/status`, {
 				withToken: true,
 			});
 
@@ -81,7 +81,7 @@
 
 	async function handleMarkAsRedeemed(reward: (typeof userRewards)[0]) {
 		try {
-			await api.call("/rewards/redeem", {
+			await api.call("/reward/redeem", {
 				method: "POST",
 				data: { userId: selectedUser.id, rewardId: reward.id },
 				withToken: true,
@@ -97,7 +97,7 @@
 
 	async function handleRemoveRedeemed(reward: (typeof userRewards)[0]) {
 		try {
-			await api.call(`/rewards/redeem/${reward.id}/cancel`, {
+			await api.call(`/reward/redeem/${reward.id}/cancel`, {
 				method: "DELETE",
 				withToken: true,
 			});
