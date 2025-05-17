@@ -110,7 +110,7 @@
 				.filter((header) => header != ""),
 			defaultCode: defaultCode,
 			solutionCode,
-			difficulty: problem.difficulty,
+			difficulty: Number(problem.difficulty),
 			tags: problem.tags,
 			testCases: problem.testCases.map((testCase) => {
 				return {
