@@ -292,6 +292,7 @@
 			display: flex;
 			width: 100%;
 			transition: all 0.2s ease-out;
+			opacity: 0;
 
 			:global(.problem-mini-info) {
 				display: flex;

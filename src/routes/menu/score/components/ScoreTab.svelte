@@ -31,6 +31,9 @@
 		maxPage = null;
 		users = [];
 		loading = false;
+		if (tabName == "myHouse") {
+			return;
+		}
 		await loadData();
 	}
 
@@ -104,6 +107,7 @@
 		loading = false;
 		loadData();
 	}
+
 	$: if ($scoreRefreshTrigger !== null) {
 		page = 1;
 		maxPage = null;
