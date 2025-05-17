@@ -650,6 +650,13 @@
 						{#if isAuthor}
 							<Button
 								color="var(--bg)"
+								hoverColor="var(--status-in-progress)"
+								textColor="var(--status-in-progress)"
+								outline="var(--status-in-progress)"
+								onclick={onCreateOwnProblem}>สร้างโจทย์เพิ่ม</Button
+							>
+							<Button
+								color="var(--bg)"
 								hoverColor="var(--grayed)"
 								textColor="var(--grayed)"
 								outline="var(--grayed)"

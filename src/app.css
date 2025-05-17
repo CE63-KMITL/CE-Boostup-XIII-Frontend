@@ -78,6 +78,8 @@ html:not([dark]) {
 	--sc-bg: rgb(255, 255, 255);
 	--sc-plus: rgb(153 185 139);
 	--sc-minus: rgb(226 113 113);
+
+	--grayed: rgb(100, 100, 100);
 }
 
 html[dark] {
@@ -137,6 +139,7 @@ html[dark] {
 	--sc-plus: rgb(153 185 139);
 	--sc-minus: rgb(226 113 113);
 
+	--grayed: rgb(153, 153, 153);
 	background: black;
 }
 
