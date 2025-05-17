@@ -4,13 +4,31 @@
 
 	export let userDataHistory: any;
 
+	//-------------------------------------------------------
+	// Variables
+	//-------------------------------------------------------
 	let dataScoreHistory: any[] = [];
 
-	function formatDate(dateString: string): string {
+	//-------------------------------------------------------
+	// Functions
+	//-------------------------------------------------------
+	function formatDate(dateString: string): { date: string; time: string } {
 		const date = new Date(dateString);
-		return date.toLocaleDateString("th-TH", { day: "2-digit", month: "2-digit" });
+		const datePart = date.toLocaleDateString("th-TH", {
+			day: "2-digit",
+			month: "2-digit",
+			year: "numeric",
+		});
+		const timePart = date.toLocaleTimeString("th-TH", {
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+		return { date: datePart, time: timePart };
 	}
 
+	//-------------------------------------------------------
+	// Lifecycle
+	//-------------------------------------------------------
 	onMount(async () => {
 		const scoreHistory = await api.call(`/user/score/${userDataHistory.id}`);
 		dataScoreHistory = scoreHistory.scoreLogs;
@@ -26,15 +44,39 @@
 		{/if}
 		<div class="message">{data.message}</div>
 		<div id="sc-right-history">
-			<span>{data.modifiedBy.name}</span>
-			<span style="color: var(--sc-orangedark);">{formatDate(data.date)}</span>
+			<span class="modified-by-name">{data.modifiedBy.name}</span>
+			<span class="time" style="color: var(--sc-orangedark);">{formatDate(data.date).time}</span>
+			<span class="date" style="color: var(--sc-orangedark);">{formatDate(data.date).date}</span>
 		</div>
 	</div>
 {/each}
 
 <style lang="scss">
+	//-------------------------------------------------------
+	// Element/Class Styles
+	//-------------------------------------------------------
+	.date {
+		text-align: end;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: inline-block;
+		width: 100%;
+	}
+
+	.time {
+		text-align: end;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: inline-block;
+		width: 100%;
+	}
+
 	.message {
 		padding-inline: 10px;
+		flex: 1 1 0;
+		min-width: 0;
 	}
 
 	.sc-history-score-main {
@@ -49,10 +91,24 @@
 		width: 100%;
 		height: auto;
 
+		& > div:first-child {
+			flex: 0 0 60px;
+		}
+
 		#sc-right-history {
 			display: flex;
 			flex-direction: column;
 			align-items: end;
+			min-width: 0;
+			width: 30%;
+		}
+
+		.modified-by-name {
+			width: 100%;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: inline-block;
 		}
 	}
 </style>

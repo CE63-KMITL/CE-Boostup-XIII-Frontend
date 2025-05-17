@@ -87,7 +87,7 @@
 				withToken: true,
 			});
 
-			showPopup(say("ทำเครื่องหมายว่ารับรางวัลแล้วสำเร็จ!", "(*´▽`*)"));
+			await showPopup(say("ทำเครื่องหมายว่ารับรางวัลแล้วสำเร็จ!", "(*´▽`*)"));
 			fetchUserRewards(selectedUser.id);
 		} catch (error: any) {
 			console.error("Error marking reward as redeemed:", error);
@@ -102,7 +102,7 @@
 				withToken: true,
 			});
 
-			showPopup(say("ยกเลิกรางวัลที่รับไปแล้วสำเร็จ!", "(●'◡'●)"));
+			await showPopup(say("ยกเลิกรางวัลที่รับไปแล้วสำเร็จ!", "(●'◡'●)"));
 			fetchUserRewards(selectedUser.id);
 		} catch (error: any) {
 			console.error("Error removing redeemed reward:", error);

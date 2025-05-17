@@ -37,7 +37,7 @@
 	<div>
 		<div class="title">{problem.title}</div>
 		<div class="author">
-			<div class="author-icon"><UserIcon data={problem.author?.icon} /></div>
+			<div class="author-icon"><UserIcon name={problem.author?.name} data={problem.author?.icon} /></div>
 			{problem.author?.name}
 		</div>
 	</div>

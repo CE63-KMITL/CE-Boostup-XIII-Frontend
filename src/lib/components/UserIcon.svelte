@@ -2,11 +2,15 @@
 	import User from "./Icons/User.svelte";
 	export let data;
 	export let name;
+
+	function handleError() {
+		data = null;
+	}
 </script>
 
 <div class="usericon">
 	{#if data}
-		<img src={data} alt={name.slice(0, 4) + ".."} />
+		<img src={data} alt={name ? name.slice(0, 4) + ".." : "UNNAMED"} onerror={handleError} />
 	{:else}
 		<User></User>
 	{/if}

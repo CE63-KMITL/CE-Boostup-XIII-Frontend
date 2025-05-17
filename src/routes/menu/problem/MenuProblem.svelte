@@ -138,6 +138,7 @@
 
 	async function loadMore() {
 		if (loadingMore || !loaded) return;
+          
 		loadingMore = true;
 		await updateProblems(true);
 		loadingMore = false;

@@ -146,6 +146,7 @@
 		if (problemIdFromUrl) {
 			currentProblemId = problemIdFromUrl;
 			problem = await api.call(`/problem/code/${currentProblemId}`, { withToken: true });
+			document.title = "โจทย์: " + problem.title;
 		}
 
 		codeText = await loadCode();

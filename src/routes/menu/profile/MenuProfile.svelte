@@ -9,6 +9,7 @@
 	import { azScale } from "$lib/transition";
 	import { showPopup } from "$lib/components/PopUp.svelte";
 	import { say } from "$lib/normalFunction";
+	import EditButton from "./components/EditButton.svelte";
 
 	let isEditing = false;
 	let editedUserData = { ...$userData };
@@ -34,24 +35,18 @@
 	async function saveEdit() {
 		const payload = {
 			name: editedUserData.name,
-			studentId: editedUserData.studentId,
-			email: editedUserData.email,
-			house: editedUserData.house,
 		};
-		const result = await api.call("/user/set-data", {
-			method: "POST",
+		const result = await api.call("/user/set-name", {
+			method: "PATCH",
 			data: payload,
 			withToken: true,
 		});
 
-		if (result?.data) {
-			$userData = { ...$userData, ...result.data };
-			isEditing = false;
-			alert("ข้อมูลถูกบันทึกแล้ว");
-		} else {
-			console.error("Failed to save user data:", result?.error);
-			alert("บันทึกข้อมูลไม่สำเร็จ: " + result?.error?.message || "Unknown error");
-		}
+		showPopup(say("ชื่อถูกบันทึกแล้ว", "(^▽^)"), {
+			ตกลง: () => {
+				window.location.reload();
+			},
+		});
 	}
 
 	function cancelEdit() {
@@ -80,6 +75,7 @@
 					data: { iconBase64: base64Image },
 					withToken: true,
 				});
+
 				showPopup(say("อัปโหลดรูปภาพสําเร็จ!", "(^▽^)"), {
 					"เย่!~": () => {
 						window.location.reload();
@@ -151,18 +147,7 @@
 					</div>
 				</div>
 				{#if !isEditing}
-					<button class="edit-icon-button" on:click={startEdit}>
-						<svg
-							class="edit-icon"
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="currentColor"
-						>
-							<path
-								d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.114l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.091l-.65 2.882a.75.75 0 00.926.926l2.882-.65a5.25 5.25 0 002.091-1.32l8.4-8.4z"
-							/>
-						</svg>
-					</button>
+					<EditButton onclick={startEdit} />
 				{/if}
 
 				<div>
@@ -253,7 +238,7 @@
 		flex-direction: column;
 		gap: 1rem;
 		backdrop-filter: blur(5px);
-		filter: drop-shadow(0 0 4px var(--list-shadow)); /* Use color variable */
+		filter: drop-shadow(0 0 4px var(--list-shadow));
 	}
 
 	.profile_box {
@@ -312,14 +297,13 @@
 		gap: 1rem;
 		box-sizing: border-box;
 		position: relative;
-		filter: drop-shadow(1px 1px 2px var(--list-shadow)); /* Use color variable */
+		filter: drop-shadow(1px 1px 2px var(--list-shadow));
 	}
 
 	.bio_info {
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		/* position: relative; */ /* Remove relative from bio_info */
 	}
 
 	.usericon-container {
@@ -374,17 +358,17 @@
 		display: flex;
 		flex-direction: column;
 		color: var(--text);
-		overflow: hidden; /* Add overflow handling */
+		overflow: hidden;
 	}
 	.name_id .name {
 		font-weight: bold;
-		overflow: hidden; /* Add overflow handling */
+		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 	.name_id .id {
 		color: var(--theme-dark);
-		overflow: hidden; /* Add overflow handling */
+		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
@@ -401,7 +385,7 @@
 		background-color: var(--profile-bg);
 		width: 100%;
 		box-sizing: border-box;
-		overflow: hidden; /* Add overflow handling */
+		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
@@ -410,37 +394,12 @@
 		padding: 0.2rem 0.4rem;
 		font-size: 1rem;
 		margin-bottom: 0.2rem;
-		color: var(--theme-dark); /* Match the color of the non-editing state */
+		color: var(--theme-dark);
 		width: 100%;
 		box-sizing: border-box;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-	}
-
-	.edit-icon-button {
-		position: absolute;
-		bottom: 0.5rem; /* Adjust position from bottom */
-		right: 0.5rem; /* Adjust position from right */
-		background: none;
-		border: none;
-		cursor: pointer;
-		padding: 0.5rem;
-		color: var(--text);
-	}
-
-	.edit-icon {
-		width: 1.2rem;
-		height: 1.2rem;
-		fill: currentColor;
-	}
-
-	.personal_info {
-		font-size: 1.1rem;
-		color: var(--text);
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
 	}
 
 	.edit-actions {
@@ -513,7 +472,7 @@
 			height: auto;
 			min-height: unset;
 			backdrop-filter: blur(5px);
-			filter: drop-shadow(0 0 4px var(--list-shadow)); /* Use color variable for mobile */
+			filter: drop-shadow(0 0 4px var(--list-shadow));
 		}
 
 		.score_history {
@@ -555,21 +514,21 @@
 			min-height: unset;
 			margin: 1rem auto;
 			position: relative;
-			filter: drop-shadow(0 0 4px var(--list-shadow)); /* Use color variable for mobile */
+			filter: drop-shadow(0 0 4px var(--list-shadow));
 		}
 
 		.bio_info {
 			flex-direction: column;
 			align-items: center;
 			gap: 0.5rem;
-			position: static; /* bio_info can be static on mobile */
+			position: static;
 		}
 
 		.edit-icon-button {
-			position: absolute; /* Keep absolute positioning */
-			bottom: 0.5rem; /* Adjust position from bottom */
-			right: 0.5rem; /* Adjust position from right */
-			margin-top: 0; /* Remove margin-top */
+			position: absolute;
+			bottom: 0.5rem;
+			right: 0.5rem;
+			margin-top: 0;
 		}
 
 		.usericon-container {

@@ -93,8 +93,8 @@
 	}
 
 	:global(div.listScores.staff) {
-		outline: 1px solid var(--used-time);
-		background: color-mix(in srgb, var(--used-time), var(--bg) 80%) !important;
+		outline: 1px solid var(--status-not-started);
+		background: color-mix(in srgb, var(--status-not-started), var(--bg) 80%) !important;
 	}
 
 	.image {

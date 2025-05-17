@@ -472,6 +472,8 @@
 						"medium"
 					);
 				}
+
+				document.title = "แก้ไขโจทย์: " + problem.title;
 				loaded = true;
 			} else {
 				await showPopup("ไม่พบโจทย์ที่ระบุ", { ตกลง: () => goto("/menu?page=problem") });
