@@ -21,7 +21,7 @@
 	}
 
 	onMount(async () => {
-		const house = await api.call(`/houseScores?orderBy=ASC`);
+		const house = await api.call(`/houseScores?orderBy=ASC`, { withToken: true });
 		optionDropdown = house.data;
 	});
 </script>

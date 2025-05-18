@@ -15,7 +15,7 @@
 	}
 
 	onMount(async () => {
-		res = await api.call(`/houseScores?orderBy=DESC`);
+		res = await api.call(`/houseScores?orderBy=DESC`, { withToken: true });
 		dataHouse = res.data;
 	});
 
