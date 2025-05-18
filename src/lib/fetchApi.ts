@@ -11,7 +11,6 @@ export async function call(
 		method: "GET",
 		data: null,
 		withToken: false,
-		isAlert: true,
 	}
 ) {
 	let response;
@@ -70,7 +69,7 @@ export async function call(
 		}
 
 		if (!response.ok) {
-			if (options.isAlert) {
+			if (options.isAlert || options.isAlert == null) {
 				showPopup(
 					say(
 						`${route}\n\n⚠️ เกิดข้อผิดพลาด\n\n${responseData.error ?? ""}\n${
