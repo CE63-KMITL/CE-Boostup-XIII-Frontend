@@ -143,7 +143,7 @@
 
 <div class="Container">
 	{#if loaded}
-		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
+		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้อนรับเหล่านักผจญภัย</h1>
 		<div in:azScale={{ delay: 100, duration: 700 }} class="LoginBox">
 			<h1 in:fly={{ y: 100, delay: 100, duration: 700 }} class="LoginHead">เข้าสู่ระบบ</h1>
 			<div class="InputBox">

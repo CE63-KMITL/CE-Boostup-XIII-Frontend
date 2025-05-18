@@ -73,7 +73,7 @@
 
 {#if loaded}
 	<div class="registerContainer">
-		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้นรับเหล่านักผจญภัย</h1>
+		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้อนรับเหล่านักผจญภัย</h1>
 		<div in:azScale={{ delay: 100, duration: 700 }} class="registerBox">
 			<h1 in:fly={{ y: 100, delay: 100, duration: 700 }} class="registerHead">ข้อมูลผู้ใช้</h1>
 			{#if editName != "false"}

@@ -123,7 +123,6 @@
 					width: 100%;
 					position: absolute;
 					background-color: transparent;
-					pointer-events: none;
 					border: 0;
 					padding: 0px;
 				}
