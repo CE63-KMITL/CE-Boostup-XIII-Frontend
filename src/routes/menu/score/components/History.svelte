@@ -30,7 +30,9 @@
 	// Lifecycle
 	//-------------------------------------------------------
 	onMount(async () => {
-		const scoreHistory = await api.call(`/user/score/${userDataHistory.id}`);
+		const scoreHistory = await api.call(`/user/score/${userDataHistory.id}`, {
+			withToken: true,
+		});
 		dataScoreHistory = scoreHistory.scoreLogs;
 	});
 </script>
