@@ -25,7 +25,7 @@
 	}
 </script>
 
-<!-- 
+<!--
 ------------------------------------------------------
 HTML Structure
 -------------------------------------------------------
@@ -48,7 +48,7 @@ HTML Structure
 	</div>
 </div>
 
-<!-- 
+<!--
 ------------------------------------------------------
 Styles
 -------------------------------------------------------
@@ -78,7 +78,7 @@ Styles
 				.range {
 					background: var(--theme);
 					height: 100%;
-					border-radius: 999px; // Added for consistency if range is shorter than bg
+					border-radius: 999px;
 				}
 			}
 
@@ -95,47 +95,44 @@ Styles
 				input[type="range"] {
 					appearance: none;
 					-webkit-appearance: none;
-					-moz-appearance: none; // For Firefox, to attempt to style the track further if needed
-					pointer-events: none; // Make the input track non-interactive
-					height: 0px; // Track is invisible
+					-moz-appearance: none;
+					pointer-events: none;
+					height: 0px;
 					width: 100%;
 					position: absolute;
 					background-color: transparent;
 					border: 0;
 					padding: 0px;
-					margin: 0; // Ensure no default margins
+					margin: 0;
 				}
 
 				input[type="range"]::-webkit-slider-thumb {
 					appearance: none;
 					-webkit-appearance: none;
-					pointer-events: all; // Thumb is interactive
+					pointer-events: all;
 					width: 15px;
 					height: 15px;
 					border-radius: 50%;
 					cursor: pointer;
 					background: var(--theme);
-					// The thumb will be vertically centered on the conceptual track line
 				}
 
 				input[type="range"]::-moz-range-thumb {
-					appearance: none; // Usually not strictly needed for -moz-range-thumb styling itself
-					pointer-events: all; // Thumb is interactive
+					appearance: none;
+					pointer-events: all;
 					width: 15px;
 					height: 15px;
 					border-radius: 50%;
 					cursor: pointer;
 					background: var(--theme);
-					border: none; // Remove default border for Firefox thumbs
+					border: none;
 				}
 
-				// Hover effects for thumbs
 				input[type="range"]::-webkit-slider-thumb:hover,
 				input[type="range"]::-moz-range-thumb:hover {
 					filter: brightness(1.15);
 				}
 
-				// Active effects for thumbs
 				input[type="range"]::-webkit-slider-thumb:active,
 				input[type="range"]::-moz-range-thumb:active {
 					box-shadow:
