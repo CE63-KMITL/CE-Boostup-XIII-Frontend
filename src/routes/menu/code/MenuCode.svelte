@@ -141,6 +141,7 @@
 		try {
 			const result = await api.call(`/user/problem-status/${currentProblemId}`, {
 				withToken: true,
+                    isAlert: false
 			});
 
 			if (result) {
