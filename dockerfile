@@ -19,16 +19,16 @@ ENV VITE_BACK_HOST=${VITE_BACK_HOST}
 ARG VITE_REDIS_HOST
 ENV VITE_REDIS_HOST=${VITE_REDIS_HOST}
 
-RUN pnpm run build
+RUN pnpm run build && pnpm prune --prod
 
 FROM node:23-alpine
 WORKDIR /app
 
 COPY --from=build /app/build .
 
-COPY --from=pnpm /app/node_modules ./node_modules
-COPY --from=pnpm /app/package.json ./package.json
-COPY --from=pnpm /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
 ENV PORT=3001
 EXPOSE 3001
