@@ -199,7 +199,8 @@ textarea,
 input:not([type="checkbox"]),
 .input,
 textarea,
-.output {
+.output,
+.description {
 	outline: none;
 	border: 1px solid var(--outline);
 	border-radius: 5px;
