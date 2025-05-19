@@ -30,13 +30,26 @@ const rateLimiter = new RateLimiterRedis({
 //-------------------------------------------------------
 export const handle: Handle = async ({ event, resolve }) => {
 	const clientAddress = event.getClientAddress();
+	const token = event.cookies.get("token");
+
+	let rateLimitKey;
+	let keyType;
+
+	if (token) {
+		rateLimitKey = token;
+		keyType = "Cookie (token)";
+	} else {
+		const userAgent = event.request.headers.get("user-agent") || "unknown";
+		rateLimitKey = `${clientAddress}-${userAgent}`;
+		keyType = "IP + User-Agent";
+	}
 
 	try {
-		await rateLimiter.consume(clientAddress);
+		await rateLimiter.consume(rateLimitKey);
 		const response = await resolve(event);
 		return response;
 	} catch (rateLimiterRes) {
-		console.warn(`Global rate limit exceeded for IP: ${clientAddress}`);
+		console.warn(`Global rate limit exceeded for ${keyType}: ${rateLimitKey}`);
 		return new Response("Too Many Requests", {
 			status: 429,
 			headers: {
