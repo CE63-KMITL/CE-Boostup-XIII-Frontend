@@ -42,6 +42,12 @@
 
 	async function loadData() {
 		if (loading) return;
+		if (!loadingMore) {
+			page = 1;
+			maxPage = null;
+			users = [];
+			loading = false;
+		}
 		if (maxPage && page > maxPage) return;
 		loading = true;
 
@@ -91,16 +97,19 @@
 	let maxPage = null;
 	let users = [];
 	let loading = false;
+	let loadingMore = false;
 
 	async function loadMore() {
 		if (loading) return;
+		loadingMore = true;
 		page++;
 		await loadData();
+		loadingMore = false;
 	}
 
 	onMount(() => {
 		pagination(scrollElement, loadMore);
-		loadData();
+		selectTab("overall");
 	});
 
 	$: if (activeTab === "myHouse" && $selectedHouseStore) {
