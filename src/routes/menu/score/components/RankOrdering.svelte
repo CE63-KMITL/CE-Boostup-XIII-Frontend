@@ -119,7 +119,6 @@
 		display: flex;
 		justify-content: center;
 		transform: scale(1);
-		margin-top: -15px;
 		margin-left: 20px;
 	}
 </style>
