@@ -1,0 +1,269 @@
+<script lang="ts">
+	import { page } from "$app/stores";
+	import Button from "$lib/components/Button.svelte";
+	import IoIosEye from "svelte-icons/io/IoIosEye.svelte";
+	import * as api from "$lib/fetchApi";
+	import IoIosEyeOff from "svelte-icons/io/IoIosEyeOff.svelte";
+	import { showPopup } from "$lib/components/PopUp.svelte";
+	import { setCookie } from "$lib/cookie";
+	import { onMount } from "svelte";
+	import { fly } from "svelte/transition";
+	import { azScale } from "$lib/transition";
+
+	$: editName = $page.url.searchParams.get("editName");
+	$: email = $page.url.searchParams.get("email");
+	$: otp = $page.url.searchParams.get("otp");
+	$: reset = $page.url.searchParams.get("reset");
+
+	let text_password: string = "";
+	let text_re_password: string = "";
+	let see_password: boolean = false;
+	let recheck_password: boolean = false;
+	let name: string = "";
+
+	async function onConfirm() {
+		if (text_password == "" || text_re_password == "") {
+			showPopup("กรุณากรอกรหัสผ่าน");
+			return;
+		}
+
+		if (text_password != text_re_password) {
+			showPopup("รหัสผ่านไม่ตรงกัน");
+			return;
+		}
+
+		if (reset == "true") {
+			await api.call("/auth/reset-password", {
+				method: "PATCH",
+				data: {
+					email: email,
+					otp: otp,
+					password: text_password,
+				},
+			});
+
+			await showPopup("รหัสผ่านถูกเปลี่ยนเเรียบร้อยแล้ว", {
+				ตกลง: () => {
+					window.location.href = "/login";
+				},
+			});
+		} else {
+			const res = await api.call("/auth/open-account", {
+				method: "PATCH",
+				data: {
+					email: email,
+					otp: otp,
+					password: text_password,
+					name: editName == "false" ? null : name,
+				},
+			});
+
+			if (res) {
+				setCookie("token", res.token);
+				window.location.href = "/menu";
+			}
+		}
+	}
+
+	let loaded = false;
+	onMount(() => {
+		loaded = true;
+	});
+</script>
+
+{#if loaded}
+	<div class="registerContainer">
+		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้อนรับเหล่านักผจญภัย</h1>
+		<div in:azScale={{ delay: 100, duration: 700 }} class="registerBox">
+			<h1 in:fly={{ y: 100, delay: 100, duration: 700 }} class="registerHead">ข้อมูลผู้ใช้</h1>
+			{#if editName != "false"}
+				<div class="nameBox">
+					<p class="Text">ชื่อผู้ใช้</p>
+					<input type="text" class="name" placeholder="ชื่อผู้ใช้" bind:value={name} />
+				</div>
+			{/if}
+			<div in:fly={{ y: 100, delay: 140, duration: 700 }} class="passwordBox">
+				<p class="Text">รหัสผ่าน</p>
+				<div class="wrap">
+					<input
+						type={see_password ? "text" : "password"}
+						class="password"
+						placeholder="รหัสผ่าน"
+						bind:value={text_password}
+					/>
+					<button
+						class="IoIosEyeOff"
+						on:click={() => {
+							see_password = !see_password;
+						}}
+					>
+						{#if see_password}
+							<IoIosEye />
+						{:else}
+							<IoIosEyeOff />
+						{/if}
+					</button>
+				</div>
+			</div>
+			<div in:fly={{ y: 100, delay: 300, duration: 700 }} class="recheckBox">
+				<p class="Text">ยืนยันรหัสผ่าน</p>
+				<div class="wrap">
+					<input
+						type={recheck_password ? "text" : "password"}
+						class="recheck"
+						placeholder="ยืนยันรหัสผ่าน"
+						bind:value={text_re_password}
+					/>
+					<button
+						class="IoIosEyeOff"
+						on:click={() => {
+							recheck_password = !recheck_password;
+						}}
+					>
+						{#if recheck_password}
+							<IoIosEye />
+						{:else}
+							<IoIosEyeOff />
+						{/if}
+					</button>
+				</div>
+			</div>
+			<div in:fly={{ y: 100, delay: 400, duration: 700 }} class="full">
+				<Button class="confirm" onclick={onConfirm}>ยืนยัน</Button>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<style lang="scss">
+	.Head {
+		color: var(--tag-text);
+		text-shadow: 0px 4px var(--list-shadow);
+		text-align: center;
+		font-size: 3.5rem;
+		font-weight: 700;
+	}
+
+	.registerContainer {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+	}
+
+	.registerBox {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		height: auto;
+		min-width: fit-content;
+		width: 25%;
+		padding: 1rem;
+		padding-top: 0px;
+		gap: 1rem;
+		margin-left: 0.75rem;
+		margin-right: 0.75rem;
+		border: 1px solid var(--theme-dark);
+		border-radius: 15px;
+		background-color: var(--bg-50);
+		backdrop-filter: blur(5px);
+	}
+	.registerHead {
+		font-size: 3.5rem;
+		font-weight: 700;
+		margin-top: 2rem;
+		color: var(--theme-dark-text);
+	}
+	.nameBox {
+		display: flex;
+		align-self: self-start;
+		flex-direction: column;
+		justify-content: center;
+		width: 100%;
+		gap: 5px;
+	}
+	.name {
+		padding: 0.125rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: 100%;
+
+		background-color: var(--bg);
+		border: 1px solid var(--theme-dark);
+		border-radius: 5px;
+		font-size: 1.125rem;
+	}
+	.name::placeholder {
+		color: var(--theme-dark);
+		font-weight: 400;
+	}
+	.passwordBox {
+		display: flex;
+		align-self: self-start;
+		flex-direction: column;
+		justify-content: center;
+		width: 100%;
+
+		gap: 5px;
+	}
+	.password {
+		padding: 0.125rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: 100%;
+		background-color: var(--bg);
+		border: 1px solid var(--theme-dark);
+		border-radius: 5px;
+		font-size: 1.125rem;
+	}
+	.password::placeholder {
+		color: var(--theme-dark);
+		font-weight: 400;
+	}
+	.recheckBox {
+		display: flex;
+		align-self: self-start;
+		flex-direction: column;
+		justify-content: center;
+		width: 100%;
+
+		gap: 5px;
+		margin-bottom: 2rem;
+	}
+	.recheck {
+		padding: 0.125rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: 100%;
+		background-color: var(--bg);
+		border: 1px solid var(--theme-dark);
+		border-radius: 5px;
+		font-size: 1.125rem;
+	}
+	.recheck::placeholder {
+		color: var(--theme-dark);
+		font-weight: 400;
+	}
+	:global(.confirm) {
+		margin-bottom: 1rem;
+	}
+	.wrap {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+	}
+	.Text {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: var(--theme-dark);
+	}
+	.IoIosEyeOff {
+		width: 2rem;
+	}
+	.IoIosEyeOff :global(svg) {
+		fill: var(--theme-dark);
+	}
+</style>

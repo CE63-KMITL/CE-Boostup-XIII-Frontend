@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<style>
+		@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wdth,wght@62.5..100,100..900&display=swap");
+	</style>
+	<script>
+		const URL_Params = new URLSearchParams(window.location.search);
+
+		if (URL_Params.get("dark")) {
+			localStorage.setItem("dark", URL_Params.get("dark"));
+		}
+
+		if (localStorage.getItem("dark") === "true") {
+			document.documentElement.setAttribute("dark", "");
+		} else {
+			document.documentElement.removeAttribute("dark");
+		}
+
+		document.title = "CE BOOST UP XIII";
+
+		window.addEventListener(
+			"load",
+			() => {
+				document.documentElement.setAttribute("loaded", "");
+			},
+			{ once: true }
+		);
+
+          function onResize() {
+               if (window.innerHeight/ window.innerWidth >= 1.25) {
+                    document.documentElement.setAttribute("mobile", "");
+               } else {
+                    document.documentElement.removeAttribute("mobile");
+               }
+          }
+
+          onResize();
+          window.addEventListener("resize", onResize);
+	</script>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/logo.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style>
+			#bg-container > #bg {
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				object-fit: cover;
+			}
+
+               body > #bg-container {
+                    position: fixed;
+                    width: 100%;
+                    height: 100%;
+                    z-index: -1;
+               }
+
+			body {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div id="bg-container"">
+			<img id="bg" src="%sveltekit.assets%/bgboostup.png" />
+		</div>
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

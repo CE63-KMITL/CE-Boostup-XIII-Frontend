@@ -1,0 +1,35 @@
+<div {...$$restProps}>
+	<slot></slot>
+</div>
+
+<style lang="scss">
+	div {
+		transition: all 0.2s ease-out;
+		outline: 1px solid var(--list-outline);
+		cursor: pointer;
+		user-select: none;
+		border-radius: var(--n-border-radius);
+		gap: var(--n-gap);
+		padding-block: 10px;
+		container-type: inline-size;
+		filter: drop-shadow(0 2px 4px var(--list-shadow));
+
+		&:not(#header) {
+			background: var(--list-bg);
+
+			&:hover:not([selected]) {
+				background-color: var(--hover-list-bg);
+				outline: 1px solid var(--hover-list-outline);
+			}
+
+			&[selected] {
+				background-color: var(--selected-list-bg);
+				outline: 1px solid var(--selected-list-outline);
+			}
+		}
+
+		:global(> div) {
+			align-content: center;
+		}
+	}
+</style>
