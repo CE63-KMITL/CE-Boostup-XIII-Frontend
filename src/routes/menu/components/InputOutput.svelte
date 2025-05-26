@@ -15,7 +15,7 @@
 
 	$: {
 		if (outputElement) {
-			outputElement.innerHTML = result.output.replace(/ /g, "&nbsp;") || "";
+			outputElement.innerHTML = result.output ? result.output.replace(/ /g, "&nbsp;") : "";
 		}
 	}
 </script>
