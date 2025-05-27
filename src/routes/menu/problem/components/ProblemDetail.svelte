@@ -170,6 +170,7 @@
 		padding: 10px;
 		border-radius: 10px;
 		margin-bottom: 10px;
+		white-space: break-spaces;
 	}
 
 	//-------------------------------------------------------
