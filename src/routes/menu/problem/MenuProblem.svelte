@@ -233,13 +233,7 @@
 		<div class="top-frame">
 			<Frame id="search-frame">
 				<Search></Search>
-				<input
-					id="search"
-					placeholder="ค้นหา"
-					oninput={(e: any) => {
-						$searchParams["searchText"] = e.target.value;
-					}}
-				/>
+				<input id="search" placeholder="ค้นหา" value={$searchParams.searchText} />
 			</Frame>
 			{#if IsRole(Role.STAFF)}
 				<Checkbox
