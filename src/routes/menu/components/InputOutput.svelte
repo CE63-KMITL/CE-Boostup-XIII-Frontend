@@ -15,7 +15,7 @@
 
 	$: {
 		if (outputElement) {
-			outputElement.innerHTML = result.output ? result.output.replace(/ /g, "&nbsp;") : "";
+			outputElement.innerHTML = result.output || "";
 		}
 	}
 </script>
@@ -51,14 +51,6 @@
 
 	textarea,
 	.output {
-		overflow: auto;
-		resize: vertical;
 		height: 50%;
-		white-space: pre;
-	}
-
-	.output:not(.readable) {
-		line-height: 18px;
-		font-family: initial;
 	}
 </style>

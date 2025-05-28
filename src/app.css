@@ -189,6 +189,21 @@ div:not(.view-line) {
 	flex-direction: column;
 }
 
+.output {
+	overflow: auto;
+	resize: vertical;
+	white-space: pre;
+}
+
+.output:not(.readable) {
+	line-height: 18px;
+	font-family: monospace;
+}
+
+.description {
+	word-spacing: 5px;
+}
+
 input:not([type="checkbox"]):not([type="range"]),
 .input,
 textarea,
@@ -212,7 +227,6 @@ textarea,
 	width: 100%;
 	box-sizing: border-box;
 	transition: border-color 0.2s ease, box-shadow 0.2s ease;
-	word-spacing: 5px;
 	letter-spacing: 1px;
 }
 
