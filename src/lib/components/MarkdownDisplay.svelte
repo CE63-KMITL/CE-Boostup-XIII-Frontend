@@ -122,4 +122,15 @@
 		background-color: var(--hover-list-bg);
 		color: var(--text);
 	}
+	.markdown-render-container :global(a) {
+		background: var(--button-bg);
+		color: var(--button-text);
+		padding: 5px;
+		padding-inline: 10px;
+		border-radius: 99px;
+
+		&:hover {
+			filter: brightness(1.15);
+		}
+	}
 </style>
