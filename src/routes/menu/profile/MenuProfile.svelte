@@ -104,7 +104,7 @@
 			<div>
 				{#if $userData?.house}
 					<div class="houseicon">
-						<img src="/house/{$userData?.house}.png" alt="" class="icon" />
+						<img src="/house/{$userData?.house}.jpg" alt="" class="icon" />
 					</div>
 				{/if}
 				<table class="score_table">

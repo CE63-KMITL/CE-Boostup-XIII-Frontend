@@ -65,7 +65,7 @@ HTML Crapp
 			{#if activeTab == "scoreDetail"}
 				<div id="scoreTab" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<div class="scl-image">
-						<img src="/house/{$userData.house}.png" alt="" />
+						<img src="/house/{$userData.house}.jpg" alt="" />
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
