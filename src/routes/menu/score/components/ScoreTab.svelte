@@ -26,29 +26,42 @@
 	let activeTab = "overall";
 	let scrollElement;
 	let searchText = "";
+	let previousSearchText = "";
 
+	//-------------------------------------------------------
+	// Data Loading State
+	//-------------------------------------------------------
+	let page = 1;
+	let maxPage: number | null = null;
+	let users: (string | Record<string, any>)[] = [];
+	let loading = false;
+	let loadingMore = false;
+	let typeDelay: any = null;
+
+	//-------------------------------------------------------
+	// Functions
+	//-------------------------------------------------------
 	async function selectTab(tabName: string) {
 		activeTab = tabName;
-
-		page = 1;
-		maxPage = null;
-		users = [];
-		loading = false;
-		if (tabName == "myHouse") {
-			return;
-		}
-		await loadData();
-	}
-
-	async function loadData() {
-		if (loading) return;
-		if (!loadingMore) {
+		if (tabName === "overall") {
 			page = 1;
 			maxPage = null;
 			users = [];
 			loading = false;
 		}
 		if (maxPage && page > maxPage) return;
+		loading = true;
+		if (tabName === "overall") {
+			await resetAndLoadData();
+			previousSearchText = searchText;
+		}
+	}
+
+	async function loadData() {
+		if (loading && !loadingMore) return;
+		if (loading && loadingMore) return;
+
+		if (maxPage && page > maxPage && loadingMore) return;
 		loading = true;
 
 		let query = "";
@@ -57,15 +70,17 @@
 				query = `orderByScore=true&searchText=${searchText}`;
 				break;
 			case "myHouse":
-				let houseValue = "";
-				selectedHouseStore.subscribe((value) => {
-					houseValue = value;
-				})();
-				query = `orderByScore=true&house=${houseValue.toLowerCase()}`;
+				if ($selectedHouseStore) {
+					query = `orderByScore=true&house=${$selectedHouseStore.toLowerCase()}`;
+				} else {
+					loading = false;
+					return;
+				}
 				break;
 		}
+		if (loadingMore) users = [...users, "loading"];
+		else users = ["loading"];
 
-		users = [...users, "loading"];
 		const result = await api.call(`/user/search?page=${page}&${query}`, {
 			method: "GET",
 			withToken: true,
@@ -73,7 +88,11 @@
 		users = [...users.slice(0, -1)];
 
 		if (result) {
-			users = [...users, ...result.data];
+			if (loadingMore) {
+				users = [...users, ...result.data];
+			} else {
+				users = [...result.data];
+			}
 			maxPage = result.totalPage;
 
 			requestAnimationFrame(async () => {
@@ -93,11 +112,14 @@
 		loading = false;
 	}
 
-	let page = 1;
-	let maxPage = null;
-	let users = [];
-	let loading = false;
-	let loadingMore = false;
+	async function resetAndLoadData() {
+		page = 1;
+		maxPage = null;
+		users = [];
+		loading = false;
+		loadingMore = false;
+		await loadData();
+	}
 
 	async function loadMore() {
 		if (loading) return;
@@ -107,42 +129,41 @@
 		loadingMore = false;
 	}
 
-	onMount(() => {
+	//-------------------------------------------------------
+	// Lifecycle
+	//-------------------------------------------------------
+	onMount(async () => {
 		pagination(scrollElement, loadMore);
-		selectTab("overall");
+		previousSearchText = searchText;
+		await selectTab("overall");
 	});
 
+	//-------------------------------------------------------
+	// Reactive Statements
+	//-------------------------------------------------------
 	$: if (activeTab === "myHouse" && $selectedHouseStore) {
-		page = 1;
-		maxPage = null;
-		users = [];
-		loading = false;
-		loadData();
+		resetAndLoadData();
 	}
 
 	$: if ($scoreRefreshTrigger !== null) {
-		page = 1;
-		maxPage = null;
-		users = [];
-		loading = false;
-		loadData();
+		resetAndLoadData();
+		if (activeTab === "overall") {
+			previousSearchText = searchText;
+		}
 	}
 
-	let typeDelay = null;
 	$: {
-		searchText;
-
-		if (typeDelay) {
-			clearTimeout(typeDelay);
+		if (activeTab === "overall") {
+			if (searchText !== previousSearchText) {
+				if (typeDelay) {
+					clearTimeout(typeDelay);
+				}
+				typeDelay = setTimeout(async () => {
+					await resetAndLoadData();
+					previousSearchText = searchText;
+				}, 250);
+			}
 		}
-
-		typeDelay = setTimeout(() => {
-			page = 1;
-			maxPage = null;
-			users = [];
-			loading = false;
-			loadData();
-		}, 250);
 	}
 </script>
 

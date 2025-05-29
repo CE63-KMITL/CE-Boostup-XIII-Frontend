@@ -226,6 +226,14 @@
 			previousSelectedId = $selectedProblemId;
 		}
 	}
+
+	let searchTextTimeout = null;
+	async function updateSearchText(text) {
+		if (searchTextTimeout) clearTimeout(searchTextTimeout);
+		searchTextTimeout = setTimeout(async () => {
+			$searchParams.searchText = text;
+		}, 500);
+	}
 </script>
 
 <div id="problem">
@@ -233,7 +241,14 @@
 		<div class="top-frame">
 			<Frame id="search-frame">
 				<Search></Search>
-				<input id="search" placeholder="ค้นหา" value={$searchParams.searchText} />
+				<input
+					id="search"
+					placeholder="ค้นหา"
+					value={$searchParams.searchText}
+					oninput={(e: any) => {
+						updateSearchText(e.target.value);
+					}}
+				/>
 			</Frame>
 			{#if IsRole(Role.STAFF)}
 				<Checkbox

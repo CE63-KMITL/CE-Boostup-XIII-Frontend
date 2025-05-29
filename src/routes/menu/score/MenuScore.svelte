@@ -16,29 +16,57 @@
 	import EditSelectedUser from "./components/EditSelectedUser.svelte";
 	import * as api from "$lib/fetchApi";
 
+	//-------------------------------------------------------
+	// Component State
+	//-------------------------------------------------------
 	let headerTabs: { [key: string]: string } = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 	let activeTab = "scoreDetail";
 
+	//-------------------------------------------------------
+	// Functions
+	//-------------------------------------------------------
 	function setSelectDataToNull() {
 		selectData.set(null);
 	}
 
+	//-------------------------------------------------------
+	// Lifecycle
+	//-------------------------------------------------------
 	onMount(async () => {
+		if (!$userData?.id) {
+			headerTabs = {};
+			activeTab = "";
+			return;
+		}
+
+		let fetchedUserData;
+		try {
+			const result = await api.call(`/user/full-data/${$userData.id}`, {
+				withToken: true,
+			});
+
+			if (result && Object.keys(result).length > 0) {
+				$userData = { ...$userData, ...result };
+				fetchedUserData = $userData;
+			} else {
+				console.warn(`No data returned or empty data for user ID: ${$userData.id}`);
+				headerTabs = {};
+				activeTab = "";
+				return;
+			}
+		} catch (error) {
+			console.error("Failed to fetch user data:", error);
+			headerTabs = {};
+			activeTab = "";
+			return;
+		}
+
 		if (IsRole(Role.STAFF)) {
 			headerTabs = { scoreDetail: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
 			activeTab = "scEditData";
-		}
-
-		if (!$userData.id) {
-			headerTabs = {};
-		}
-
-		const result = await api.call(`/user/full-data/${$userData.id}`, {
-			withToken: true,
-		});
-
-		if (result) {
-			$userData = { ...$userData, ...result };
+		} else {
+			headerTabs = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
+			activeTab = "scoreDetail";
 		}
 	});
 </script>
@@ -51,15 +79,12 @@
 	</div>
 {/if}
 
-<!-- 
+<!--
 -------------------------------------------------------
-HTML Crapp
+ Main Component Structure
 -------------------------------------------------------
 -->
-
 <div id="Score">
-	<!-- SC-Left Side -->
-
 	<Tab id="sc-left" class="side" headers={headerTabs} bind:activeTab {...$$restProps}>
 		{#if $userData?.id}
 			{#if activeTab == "scoreDetail"}
@@ -69,8 +94,6 @@ HTML Crapp
 					</div>
 					<div id="scl-main">
 						<div class="scl-top">
-							<!-- ยังขาดข้อมูล rank, houseRank, houseScore -->
-
 							<div id="scl-top-userIcon">
 								<UserIcon name={$userData.name} data={$userData.icon}></UserIcon>
 							</div>
@@ -81,9 +104,7 @@ HTML Crapp
 						<div id="scl-detail-bottom">{$userData?.score}</div>
 						<Frame id="scl-detail-top">บ้านอันดับที่ {$userData?.houseRank}</Frame>
 						<div id="scl-detail-bottom">{$userData?.houseScore}</div>
-						<!-- <Button class="scl-btn" onclick={() => showUserHistory($userData)} filter={false}
-							>ประวัติคะแนน</Button
-						> -->
+
 						<HistoryBtn giveMeYourUserData={$userData}></HistoryBtn>
 					</div>
 				</div>
@@ -101,7 +122,6 @@ HTML Crapp
 		{/if}
 	</Tab>
 
-	<!-- SC-Right Side -->
 	<Frame id="sc-right" full="" blur-bg border={false}>
 		<ScoreTab></ScoreTab>
 	</Frame>
@@ -122,12 +142,11 @@ HTML Crapp
 	</div>
 </div>
 
-<!-- 
+<!--
 -------------------------------------------------------
-Style SCSS Na
+ Styles
 -------------------------------------------------------
 -->
-
 <style lang="scss">
 	.scl-top-name {
 		width: 100%;
@@ -160,9 +179,6 @@ Style SCSS Na
 		padding: 0;
 		opacity: 0;
 	}
-
-	// :global(#sc-bottom.show) {
-	// }
 
 	#Score {
 		width: 100%;
