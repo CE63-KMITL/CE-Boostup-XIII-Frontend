@@ -187,6 +187,7 @@
 		cursor: pointer;
 		color: var(--description);
 		z-index: 10;
+		line-height: 1;
 		aspect-ratio: 1/1;
 		height: 30px;
 	}

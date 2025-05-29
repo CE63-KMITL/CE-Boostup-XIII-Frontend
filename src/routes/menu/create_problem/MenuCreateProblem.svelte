@@ -19,6 +19,7 @@
 	import { goto } from "$app/navigation";
 	import { mobile, updatePage } from "../pageManager";
 	import { sleep } from "$lib/normalFunction";
+	import ProblemDetail from "../problem/components/ProblemDetail.svelte";
 
 	//-------------------------------------------------------
 	// Component State
@@ -38,6 +39,7 @@
 				solutionCode: "เฉลย",
 				defaultCode: "โค้ดเริ่มต้น",
 				details: "รายละเอียดโจทย์",
+				details_preview: "รายละเอียดโจทย์ (Preview)",
 				inputOutput: "รันโค้ด",
 				testcase: "Test case",
 			};
@@ -51,6 +53,7 @@
 			};
 			rightHeaderTabs = {
 				details: "รายละเอียดโจทย์",
+				details_preview: "รายละเอียดโจทย์ (Preview)",
 				inputOutput: "รันโค้ด",
 				testcase: "Test case",
 			};
@@ -591,6 +594,10 @@
 			<div class="headText">รายละเอียดโจทย์</div>
 
 			<textarea class="description" placeholder="รายละเอียดโจทย์" bind:value={problem.description}> </textarea>
+		</div>
+	{:else if activeTab === "details_preview"}
+		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
+			<ProblemDetail {problem} />
 		</div>
 	{:else if activeTab === "inputOutput"}
 		<div class="full" in:azScale={{ delay: 250 }} out:azScale>

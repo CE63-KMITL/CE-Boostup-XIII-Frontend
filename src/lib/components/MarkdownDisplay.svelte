@@ -11,8 +11,8 @@
 	// State
 	//-------------------------------------------------------
 	const md = new MarkdownIt({
-		html: true, // Ensure HTML is enabled to render <img> tags for clicking
-		linkify: true, // Autoconvert URL-like text to links
+		html: false,
+		linkify: true,
 		typographer: true,
 	});
 
@@ -54,15 +54,21 @@
 {#if showImagePopup && popupImageSrc}
 	<ImagePopup src={popupImageSrc} alt={popupImageAlt || ""} on:close={closeImagePopup} />
 {/if}
+
 <style>
 	.markdown-render-container :global(img) {
 		cursor: pointer;
 		max-width: 100%;
 		height: auto;
 		border-radius: var(--n-border-radius);
-		margin-block: 0.5em; /* Optional: add some space around images */
+		margin-block: 0.5em;
+		transition: all 0.2s ease-in-out;
+
+		&:hover {
+			filter: brightness(1.15);
+			transform: scale(1.01);
+		}
 	}
-	/* Add more global styles for other markdown elements if needed, e.g., tables, blockquotes */
 	.markdown-render-container :global(h1),
 	.markdown-render-container :global(h2),
 	.markdown-render-container :global(h3) {
@@ -74,31 +80,32 @@
 		line-height: 1.7;
 	}
 	.markdown-render-container :global(code) {
-		background-color: var(--hover-list-bg); /* Uses theme-aware variable from app.css */
+		background-color: var(--hover-list-bg);
 		color: var(--text);
 		padding: 0.2em 0.4em;
 		border-radius: 3px;
 		font-size: 0.9em;
 	}
 	.markdown-render-container :global(pre) {
-		background-color: var(--darker); /* Uses theme-aware variable from app.css */
+		background-color: var(--bg);
 		color: var(--text);
 		border: 1px solid var(--outline);
 		padding: 1em;
 		border-radius: 5px;
 		overflow-x: auto;
+		box-shadow: 2px 2px 5px var(--list-shadow);
 	}
 	.markdown-render-container :global(pre code) {
 		background-color: transparent;
-		color: inherit; /* Inherit color from pre */
+		color: inherit;
 		padding: 0;
 		border: none;
 	}
 	.markdown-render-container :global(blockquote) {
-		border-left: 4px solid var(--theme); /* Uses theme-aware variable for accent */
+		border-left: 4px solid var(--theme);
 		padding-left: 1em;
 		margin-left: 0;
-		color: var(--description); /* Uses theme-aware variable for muted text */
+		color: var(--description);
 	}
 	.markdown-render-container :global(table) {
 		border-collapse: collapse;
@@ -112,7 +119,7 @@
 		padding: 0.5em 0.75em;
 	}
 	.markdown-render-container :global(th) {
-		background-color: var(--hover-list-bg); /* Uses theme-aware variable */
+		background-color: var(--hover-list-bg);
 		color: var(--text);
 	}
 </style>
