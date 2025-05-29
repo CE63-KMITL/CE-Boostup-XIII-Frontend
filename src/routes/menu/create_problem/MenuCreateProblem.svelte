@@ -764,6 +764,7 @@
 	}
 
 	.description {
+		flex-shrink: 0;
 		height: 100%;
 		min-height: 150px;
 		white-space: pre-wrap;

@@ -2,6 +2,7 @@
 	import UserIcon from "$lib/components/UserIcon.svelte";
 	import Stars from "./Stars.svelte";
 	import Tag from "./Tag.svelte";
+	import MarkdownDisplay from "$lib/components/MarkdownDisplay.svelte";
 
 	export let problem: any = null;
 	export let padding = true;
@@ -81,7 +82,9 @@
 		</div>
 	{/if}
 
-	<div class="description">{problem?.description || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"}</div>
+	<div class="description markdown-content">
+		<MarkdownDisplay markdownContent={problem?.description || "ไม่สามารถโหลดรายละเอียดโจทย์ได้"} />
+	</div>
 </div>
 
 <style lang="scss">
@@ -103,6 +106,8 @@
 		width: 100%;
 		display: flex;
 		flex-direction: column;
+		flex: 1;
+		min-height: 0;
 	}
 
 	//-------------------------------------------------------
@@ -170,8 +175,6 @@
 		padding: 10px;
 		border-radius: 10px;
 		margin-bottom: 10px;
-		white-space: break-spaces;
-		overflow: auto;
 	}
 
 	//-------------------------------------------------------
