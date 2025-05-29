@@ -144,7 +144,7 @@
 			<button on:click={() => adjustScale(-0.2)} aria-label="Zoom out">-</button>
 			<span>{Math.round(currentScale * 100)}%</span>
 			<button on:click={() => adjustScale(0.2)} aria-label="Zoom in">+</button>
-			<button on:click={resetZoomAndPan} aria-label="Reset zoom">Reset</button>
+			<button on:click={resetZoomAndPan} aria-label="Reset zoom">รีเซ็ต</button>
 		</div>
 	</div>
 </div>
