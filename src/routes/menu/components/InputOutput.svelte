@@ -10,14 +10,6 @@
 		output: null,
 		used_time: null,
 	};
-
-	let outputElement: HTMLDivElement;
-
-	$: {
-		if (outputElement) {
-			outputElement.innerHTML = result.output || "";
-		}
-	}
 </script>
 
 <div class="full mainFrame">
@@ -26,12 +18,9 @@
 	<div class="headText header">Input</div>
 	<textarea class="input" placeholder="Input here" bind:value={inputText}></textarea>
 	<div class="headText header">Output</div>
-	<div
-		class="output"
-		class:readable={result.exit_status != "SUCCESS"}
-		placeholder="Output here"
-		bind:this={outputElement}
-	></div>
+	<div class="output" class:readable={result.exit_status != "SUCCESS"} placeholder="Output here">
+		{result.output || ""}
+	</div>
 </div>
 
 <style lang="scss">
