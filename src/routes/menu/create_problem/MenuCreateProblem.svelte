@@ -523,7 +523,7 @@
 
 			<div class="headText">เวลาสูงสุดที่อนุญาตให้รัน (ms)</div>
 
-			<input type="number" bind:value={problem.timeLimit} placeholder="1000" />
+			<input type="number" bind:value={problem.timeLimit} placeholder="100" />
 
 			<div class="headText">ประเภท (Tags)</div>
 
