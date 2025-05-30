@@ -52,7 +52,7 @@
 	{@html htmlContent}
 </div>
 {#if showImagePopup && popupImageSrc}
-	<ImagePopup src={popupImageSrc} alt={popupImageAlt || ""} on:close={closeImagePopup} />
+	<ImagePopup src={popupImageSrc} alt={popupImageAlt || ""} onClose={closeImagePopup} />
 {/if}
 
 <style>

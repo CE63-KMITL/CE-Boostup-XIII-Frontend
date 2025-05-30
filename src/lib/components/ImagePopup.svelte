@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { azScale } from "$lib/transition";
-	import { createEventDispatcher, onMount, onDestroy } from "svelte";
+	import { onMount, onDestroy } from "svelte";
 	import { fade } from "svelte/transition";
 
 	//-------------------------------------------------------
@@ -8,11 +8,11 @@
 	//-------------------------------------------------------
 	export let src: string;
 	export let alt: string = "";
+	export let onClose: () => void;
 
 	//-------------------------------------------------------
 	// State
 	//-------------------------------------------------------
-	const dispatch = createEventDispatcher();
 	let currentScale = 1;
 	let offsetX = 0;
 	let offsetY = 0;
@@ -27,7 +27,7 @@
 	// Event Handlers
 	//-------------------------------------------------------
 	function closePopup() {
-		dispatch("close");
+		onClose();
 	}
 
 	function handleWheelZoom(event: WheelEvent) {
@@ -36,14 +36,6 @@
 		const direction = event.deltaY < 0 ? 1 : -1;
 		const newScale = Math.max(0.5, Math.min(currentScale + direction * zoomIntensity, 5));
 
-		// if (imgElement) {
-		// 	const rect = imgElement.getBoundingClientRect();
-		// 	const mouseX = event.clientX - rect.left;
-		// 	const mouseY = event.clientY - rect.top;
-
-		// 	offsetX = offsetX - (mouseX / currentScale - mouseX / newScale) * newScale;
-		// 	offsetY = offsetY - (mouseY / currentScale - mouseY / newScale) * newScale;
-		// }
 		currentScale = newScale;
 		if (currentScale === 1) resetZoomAndPan();
 	}
@@ -154,8 +146,8 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		width: 100vw;
-		height: 100vh;
+		width: 100%;
+		height: 100%;
 		background-color: rgba(0, 0, 0, 0.8);
 		display: flex;
 		justify-content: center;
@@ -169,7 +161,7 @@
 		border-radius: 8px;
 		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 		position: relative;
-		max-width: 90vw;
+		max-width: 90%;
 		height: 90%;
 		display: flex;
 		flex-direction: column;
