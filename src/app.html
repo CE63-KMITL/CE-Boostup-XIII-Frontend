@@ -16,6 +16,12 @@
 			document.documentElement.removeAttribute("dark");
 		}
 
+          if (localStorage.getItem("performance_mode") === "true") {
+			document.documentElement.setAttribute("performance_mode", "");
+		} else {
+			document.documentElement.removeAttribute("performance_mode");
+		}
+
 		document.title = "CE BOOST UP XIII";
 
 		window.addEventListener(
@@ -62,6 +68,14 @@
 				width: 100%;
 				height: 100%;
 			}
+
+               html[performance_mode="true"] *{
+                    backdrop-filter: none !important;
+                    box-shadow: none !important;
+                    filter: none !important;
+                    transition: none !important;
+                    animation-duration: 0s !important;
+               }
 		</style>
 		%sveltekit.head%
 	</head>

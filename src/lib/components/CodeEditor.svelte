@@ -7,7 +7,6 @@
 	import { initMonaco, Monaco, themes, type monaco } from "$lib/monaco";
 	import { onDestroy, onMount } from "svelte";
 	import Dropdown from "./Dropdown.svelte";
-	import { flip } from "svelte/animate";
 	import { fly } from "svelte/transition";
 	import { azScale } from "$lib/transition";
 	import { cubicOut } from "svelte/easing";
@@ -70,8 +69,13 @@
 		});
 
 		if (loadCode) {
-			editor.setValue(await loadCode());
-			lastSaved = editor.getValue();
+			if (editor) {
+				editor.setValue(await loadCode());
+				lastSaved = editor.getValue();
+			} else {
+				editorElement.value = await loadCode();
+				lastSaved = editorElement.value;
+			}
 		}
 
 		return () => {
@@ -102,12 +106,22 @@
 	}
 
 	export function setValue(value: string) {
-		editor?.setValue(value);
+		if (editor) {
+			editor.setValue(value);
+		} else {
+			editorElement.value = value;
+		}
 	}
 
 	async function onExit() {
-		if (lastSaved != editor.getValue()) {
-			await saveCode(editor.getValue());
+		if (editor) {
+			if (lastSaved != editor.getValue()) {
+				await saveCode(editor.getValue());
+			}
+		} else {
+			if (lastSaved != editorElement.value) {
+				await saveCode(editorElement.value);
+			}
 		}
 	}
 
@@ -117,20 +131,43 @@
 
 <div class="editorContainer">
 	{#if mounted}
-		<div in:fly={{ x: -100, duration: 250, delay: 400, easing: cubicOut }} class="controls">
-			<Dropdown
-				label="ธีม Code editor"
-				options={themes}
-				bind:selectedId={selectedTheme}
-				on:change={handleThemeChange}
-			/>
-		</div>
+		{#if localStorage.getItem("vscode_editor") === "true"}
+			<div in:fly={{ x: -100, duration: 250, delay: 400, easing: cubicOut }} class="controls">
+				<Dropdown
+					label="ธีม Code editor"
+					options={themes}
+					bind:selectedId={selectedTheme}
+					on:change={handleThemeChange}
+				/>
+			</div>
 
-		<div
-			in:azScale={{ duration: 300, delay: 500, easing: cubicOut }}
-			bind:this={editorElement}
-			class="monaco-editor editor"
-		></div>
+			<div
+				in:azScale={{ duration: 300, delay: 500, easing: cubicOut }}
+				bind:this={editorElement}
+				class="monaco-editor editor"
+			></div>
+		{:else}
+			<textarea
+				in:azScale={{ duration: 300, delay: 500, easing: cubicOut }}
+				bind:this={editorElement}
+				class="editor"
+				onchange={() => {
+					if (autoSaveTimeout) {
+						clearTimeout(autoSaveTimeout);
+					}
+					autoSaveTimeout = setTimeout(
+						async () => {
+							const currentText = editorElement.value;
+							if (saveCode && currentText != lastSaved) {
+								lastSaved = currentText;
+								await saveCode(currentText);
+							}
+						},
+						Number(localStorage.getItem("autoSaveDelay")) || 500
+					);
+				}}
+			></textarea>
+		{/if}
 	{/if}
 </div>
 

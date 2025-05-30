@@ -3,10 +3,6 @@
 	import StarTransparent from "$lib/components/Icons/StarTransparent.svelte";
 
 	export let difficulty = 0;
-
-	// function getDifficultyStars(difficulty: number): string {
-	// 	return "★".repeat(Math.floor(difficulty)) + "☆".repeat(5 - Math.ceil(difficulty));
-	// }
 </script>
 
 <div class="difficulty">
@@ -25,6 +21,7 @@
 		letter-spacing: 2px;
 		display: flex;
 		flex-direction: row;
+		justify-content: center;
 		gap: 5px;
 	}
 </style>

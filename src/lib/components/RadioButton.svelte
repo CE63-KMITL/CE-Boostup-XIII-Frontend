@@ -16,7 +16,7 @@
 	});
 
 	$: if (thisElement && textContentElement) {
-		thisElement.title = textContentElement.textContent?.trim() || '';
+		thisElement.title = textContentElement.textContent?.trim() || "";
 	}
 </script>
 
@@ -59,7 +59,6 @@
 			outline: 0px solid transparent;
 			color: var(--color);
 			overflow: hidden;
-			pointer-events: none;
 
 			&:hover {
 				background: var(--hover-list-bg);
