@@ -254,5 +254,9 @@
 		padding-inline: 10px;
 		width: 100%;
 		border-radius: 25px;
+		top: 0;
+		left: 0;
+		position: sticky;
+		z-index: 1;
 	}
 </style>

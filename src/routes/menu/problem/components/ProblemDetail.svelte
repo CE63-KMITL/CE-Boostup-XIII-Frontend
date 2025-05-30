@@ -204,7 +204,7 @@
 	}
 
 	.mode-value {
-		color: var(--theme);
+		font-weight: 600;
 
 		&.disallowed {
 			color: var(--status-not-started);

@@ -597,7 +597,7 @@
 		</div>
 	{:else if activeTab === "details_preview"}
 		<div class="full" in:azScale={{ delay: 250 }} out:azScale>
-			<ProblemDetail {problem} />
+			<ProblemDetail problem={getProblemData()} />
 		</div>
 	{:else if activeTab === "inputOutput"}
 		<div class="full" in:azScale={{ delay: 250 }} out:azScale>

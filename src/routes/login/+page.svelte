@@ -143,12 +143,12 @@
 
 <div class="Container">
 	{#if loaded}
-		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้อนรับเหล่านักผจญภัย</h1>
+		<div in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้อนรับเหล่านักผจญภัย</div>
 		<div in:azScale={{ delay: 100, duration: 700 }} class="LoginBox">
-			<h1 in:fly={{ y: 100, delay: 100, duration: 700 }} class="LoginHead">เข้าสู่ระบบ</h1>
+			<div in:fly={{ y: 100, delay: 100, duration: 700 }} class="LoginHead">เข้าสู่ระบบ</div>
 			<div class="InputBox">
 				<div in:fly={{ y: 100, delay: 140, duration: 700 }} class="EmailBox">
-					<p class="Text">อีเมล</p>
+					<div class="Text">อีเมล</div>
 					<input
 						class="Email"
 						type="email"
@@ -163,7 +163,7 @@
 					/>
 				</div>
 				<div in:fly={{ y: 100, delay: 300, duration: 700 }} class="PasswordBox">
-					<p class="Text">รหัสผ่าน</p>
+					<div class="Text">รหัสผ่าน</div>
 					<div class="WrapPasswordInput">
 						<input
 							class="Password"
@@ -193,8 +193,8 @@
 					</div>
 				</div>
 				<div in:fly={{ y: 100, delay: 350, duration: 700 }} class="ForgetAndCreate">
-					<p class="ForgetPassword" on:click={onRequestResetPassword}>ลืมรหัสผ่าน</p>
-					<p class="ForgetPassword" on:click={onCreateAccount}>สร้างบัญชี</p>
+					<div class="ForgetPassword" on:click={onRequestResetPassword}>ลืมรหัสผ่าน</div>
+					<div class="ForgetPassword" on:click={onCreateAccount}>สร้างบัญชี</div>
 				</div>
 			</div>
 			<div in:fly={{ y: 100, delay: 400, duration: 700 }} class="full">

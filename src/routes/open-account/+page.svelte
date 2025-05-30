@@ -73,17 +73,17 @@
 
 {#if loaded}
 	<div class="registerContainer">
-		<h1 in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้อนรับเหล่านักผจญภัย</h1>
+		<div in:fly={{ y: 100, duration: 500 }} class="Head">ยินดีต้อนรับเหล่านักผจญภัย</div>
 		<div in:azScale={{ delay: 100, duration: 700 }} class="registerBox">
-			<h1 in:fly={{ y: 100, delay: 100, duration: 700 }} class="registerHead">ข้อมูลผู้ใช้</h1>
+			<div in:fly={{ y: 100, delay: 100, duration: 700 }} class="registerHead">ข้อมูลผู้ใช้</div>
 			{#if editName != "false"}
 				<div class="nameBox">
-					<p class="Text">ชื่อผู้ใช้</p>
+					<div class="Text">ชื่อผู้ใช้</div>
 					<input type="text" class="name" placeholder="ชื่อผู้ใช้" bind:value={name} />
 				</div>
 			{/if}
 			<div in:fly={{ y: 100, delay: 140, duration: 700 }} class="passwordBox">
-				<p class="Text">รหัสผ่าน</p>
+				<div class="Text">รหัสผ่าน</div>
 				<div class="wrap">
 					<input
 						type={see_password ? "text" : "password"}
@@ -106,7 +106,7 @@
 				</div>
 			</div>
 			<div in:fly={{ y: 100, delay: 300, duration: 700 }} class="recheckBox">
-				<p class="Text">ยืนยันรหัสผ่าน</p>
+				<div class="Text">ยืนยันรหัสผ่าน</div>
 				<div class="wrap">
 					<input
 						type={recheck_password ? "text" : "password"}
