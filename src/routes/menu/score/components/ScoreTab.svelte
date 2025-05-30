@@ -248,7 +248,7 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		background-color: var(--bg);
+		background-color: var(--sc-bg);
 		border: 1px solid var(--outline);
 		padding: 0px;
 		padding-inline: 10px;
