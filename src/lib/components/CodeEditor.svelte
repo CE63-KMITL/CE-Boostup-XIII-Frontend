@@ -41,32 +41,34 @@
 		mounted = true;
 		let cCompletionProviderRegistration = await initMonaco();
 
-		editor = Monaco.editor.create(editorElement, {
-			value: value,
-			language: "c",
-			theme: selectedTheme,
-			automaticLayout: true,
-			smoothScrolling: true,
-		});
+		if (localStorage.getItem("vscode_editor") != "false") {
+			editor = Monaco.editor.create(editorElement, {
+				value: value,
+				language: "c",
+				theme: selectedTheme,
+				automaticLayout: true,
+				smoothScrolling: true,
+			});
 
-		editor.onDidChangeModelContent(function () {
-			value = editor.getValue();
+			editor.onDidChangeModelContent(function () {
+				value = editor.getValue();
 
-			if (autoSaveTimeout) {
-				clearTimeout(autoSaveTimeout);
-			}
+				if (autoSaveTimeout) {
+					clearTimeout(autoSaveTimeout);
+				}
 
-			autoSaveTimeout = setTimeout(
-				async () => {
-					const currentText = editor.getValue();
-					if (saveCode && currentText != lastSaved) {
-						lastSaved = currentText;
-						await saveCode(currentText);
-					}
-				},
-				Number(localStorage.getItem("autoSaveDelay")) || 500
-			);
-		});
+				autoSaveTimeout = setTimeout(
+					async () => {
+						const currentText = editor.getValue();
+						if (saveCode && currentText != lastSaved) {
+							lastSaved = currentText;
+							await saveCode(currentText);
+						}
+					},
+					Number(localStorage.getItem("autoSaveDelay")) || 500
+				);
+			});
+		}
 
 		if (loadCode) {
 			if (editor) {
@@ -131,22 +133,7 @@
 
 <div class="editorContainer">
 	{#if mounted}
-		{#if localStorage.getItem("vscode_editor") === "true"}
-			<div in:fly={{ x: -100, duration: 250, delay: 400, easing: cubicOut }} class="controls">
-				<Dropdown
-					label="ธีม Code editor"
-					options={themes}
-					bind:selectedId={selectedTheme}
-					on:change={handleThemeChange}
-				/>
-			</div>
-
-			<div
-				in:azScale={{ duration: 300, delay: 500, easing: cubicOut }}
-				bind:this={editorElement}
-				class="monaco-editor editor"
-			></div>
-		{:else}
+		{#if localStorage.getItem("vscode_editor") === "false"}
 			<textarea
 				in:azScale={{ duration: 300, delay: 500, easing: cubicOut }}
 				bind:this={editorElement}
@@ -167,6 +154,21 @@
 					);
 				}}
 			></textarea>
+		{:else}
+			<div in:fly={{ x: -100, duration: 250, delay: 400, easing: cubicOut }} class="controls">
+				<Dropdown
+					label="ธีม Code editor"
+					options={themes}
+					bind:selectedId={selectedTheme}
+					on:change={handleThemeChange}
+				/>
+			</div>
+
+			<div
+				in:azScale={{ duration: 300, delay: 500, easing: cubicOut }}
+				bind:this={editorElement}
+				class="monaco-editor editor"
+			></div>
 		{/if}
 	{/if}
 </div>
