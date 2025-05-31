@@ -39,32 +39,18 @@
 	onMount(() => {
 		dark = localStorage.getItem("dark") === "true";
 		performance_mode = localStorage.getItem("performance_mode") === "true";
-		vscode_editor = localStorage.getItem("vscode_editor") === "true";
+		vscode_editor = localStorage.getItem("vscode_editor") != "false";
 	});
 </script>
 
 <div class="full component">
 	<Frame blur-bg class="setting-containter full" margin={true}>
-		<Checkbox onclick={changeTheme} selected={localStorage.getItem("dark") === "true"}>
-			{#if !dark}
-				Enable Dark Mode
-			{:else}
-				Disable Dark Mode
-			{/if}
-		</Checkbox>
+		<Checkbox onclick={changeTheme} selected={localStorage.getItem("dark") === "true"}>Enable Dark Mode</Checkbox>
 		<Checkbox onclick={changeEditor} selected={localStorage.getItem("vscode_editor") === "true"}>
-			{#if !vscode_editor}
-				Enable VSCode Editor
-			{:else}
-				Disable VSCode Editor
-			{/if}
+			Enable VSCode Editor
 		</Checkbox>
 		<Checkbox onclick={changePerformanceMode} selected={localStorage.getItem("performance_mode") === "true"}>
-			{#if !performance_mode}
-				Enable Performance Mode
-			{:else}
-				Disable Performance Mode
-			{/if}
+			Enable Performance Mode
 		</Checkbox>
 	</Frame>
 </div>

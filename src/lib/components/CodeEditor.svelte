@@ -188,6 +188,10 @@
 		flex-direction: row;
 	}
 
+	textarea.editor {
+		overflow: auto;
+	}
+
 	.editor {
 		padding-block: 10px;
 		width: 100%;
