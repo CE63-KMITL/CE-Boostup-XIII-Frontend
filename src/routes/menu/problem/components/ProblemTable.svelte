@@ -195,7 +195,8 @@
 				{/if}
 			</HeaderSelection>
 		</div>
-		<div class="do-now"></div>
+		<div>ผ่านแล้ว</div>
+		<div></div>
 	</List>
 	{#each problems as problem}
 		{#if problem == "loading"}
@@ -320,16 +321,21 @@
 					width: 30%;
 				}
 				&:nth-child(3) {
-					width: 50%;
+					width: 25%;
 					text-align: center;
 				}
 				&:nth-child(4) {
-					width: 20%;
+					width: 15%;
 					text-align: center;
 					flex-shrink: 0;
 				}
 				&:nth-child(5) {
+					width: 10%;
+					text-align: center;
+				}
+				&:nth-child(6) {
 					width: 15%;
+					min-width: 100px;
 					text-align: center;
 				}
 			}
@@ -379,15 +385,15 @@
 				:global(> div) {
 					&:nth-child(1) {
 						width: 1%;
-						min-width: 50px;
+						min-width: 40px;
 					}
 					&:nth-child(2) {
-						width: 40%;
+						width: 30%;
 					}
 					&:nth-child(3) {
 						flex-direction: column;
 						min-width: 105px;
-						width: 30%;
+						width: 25%;
 						overflow: visible;
 
 						div {
@@ -395,9 +401,15 @@
 						}
 					}
 					&:nth-child(4) {
+						width: 15%;
 						min-width: 80px;
 					}
 					&:nth-child(5) {
+						width: 10%;
+						min-width: 60px;
+					}
+					&:nth-child(6) {
+						width: 15%;
 						display: none;
 					}
 				}
@@ -406,10 +418,22 @@
 			@container (max-width:300px) {
 				:global(> div) {
 					&:nth-child(2) {
-						width: 50%;
+						width: 45%;
 					}
 					&:nth-child(3) {
 						display: none;
+					}
+					&:nth-child(4) {
+						width: 25%;
+						min-width: 70px;
+					}
+					&:nth-child(5) {
+						display: none;
+					}
+					&:nth-child(6) {
+						width: 30%;
+						min-width: 80px;
+						display: block;
 					}
 				}
 			}

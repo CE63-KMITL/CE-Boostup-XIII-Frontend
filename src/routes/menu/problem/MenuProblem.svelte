@@ -162,30 +162,34 @@
 		await updateProblems();
 
 		subscribeSearchParams = searchParams.subscribe(() => {
+			$selectedProblemId = null;
 			updateProblems();
 		});
 
-		subscribeSelectedProblemId = selectedProblemId.subscribe(async () => {
-			selectedProblem = null;
+		subscribeSelectedProblemId = selectedProblemId.subscribe(async (currentId) => {
+			if (!currentId) {
+				selectedProblem = null;
+				return;
+			}
 
-			let problemData =
-				allProblems.find((problem) => typeof problem === "object" && problem.id === $selectedProblemId) ||
-				selectedProblem;
+			const problemDataFromList = allProblems.find((p) => typeof p === "object" && p.id === currentId) as
+				| Problem
+				| undefined;
 
-			if (problemData) {
-				const result = await api.call(`/problem/more-detail/${problemData.id}`, {
+			if (problemDataFromList) {
+				const moreDetails = await api.call(`/problem/more-detail/${currentId}`, {
 					withToken: true,
 				});
 
-				if (result) {
-					problemData = {
-						...problemData,
-						...result,
-					};
+				if (moreDetails) {
+					selectedProblem = { ...problemDataFromList, ...moreDetails };
+				} else {
+					selectedProblem = problemDataFromList;
 				}
+			} else {
+				selectedProblem = null;
+				console.warn(`Problem with ID ${currentId} not found in the current list. Cannot display details.`);
 			}
-
-			selectedProblem = problemData;
 		});
 	});
 
@@ -332,7 +336,7 @@
 
 			:global(.close-problem-detail) {
 				display: none;
-				margin-bottom: 10px;
+				margin-top: 10px;
 			}
 		}
 

@@ -75,6 +75,7 @@
 			}
 		})()}
 	</div>
+	<div class="passed-count">{typeof problem === 'object' ? (problem.passedCount ?? 0) : '-'}</div>
 	<div class="problemButtonContainer">
 		{#if $searchParams.staff}
 			<a
@@ -147,6 +148,11 @@
 
 	.status {
 		font-weight: 500;
+	}
+
+	.passed-count {
+		font-weight: 500;
+		color: var(--text);
 	}
 
 	.problemButtonContainer a {

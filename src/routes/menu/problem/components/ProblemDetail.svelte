@@ -20,10 +20,15 @@
 		</div>
 	</div>
 	<div class="problem-info">
-		<div class="tags">
-			{#each problem?.tags as tag}
-				<Tag {tag} />
-			{/each}
+		<div class="left-info">
+			<div class="passed-count-detail">
+				🍀 ผ่านแล้ว {problem?.passedCount ?? 0} คน
+			</div>
+			<div class="tags">
+				{#each problem?.tags as tag}
+					<Tag {tag} />
+				{/each}
+			</div>
 		</div>
 		<div class="stars">
 			<Stars difficulty={problem?.difficulty} />
@@ -161,6 +166,20 @@
 		width: 70%;
 		display: flex;
 		flex-wrap: wrap;
+	}
+
+	.left-info {
+		display: flex;
+		align-items: center;
+		gap: 15px;
+	}
+
+	.passed-count-detail {
+		font-size: 1rem;
+		color: var(--status-done);
+		margin-left: auto;
+		white-space: nowrap;
+		font-weight: 500;
 	}
 	//-------------------------------------------------------
 	// Content Elements

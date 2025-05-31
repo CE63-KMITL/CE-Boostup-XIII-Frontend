@@ -11,6 +11,7 @@ export interface Problem {
 	difficulty: 1 | 2 | 3 | 4 | 5;
 	status: string;
 	devStatus: string;
+	passedCount?: number;
 }
 
 export const tagsColors: { [key: string]: string } = {
