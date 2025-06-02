@@ -118,6 +118,7 @@
 					onclick={() => {
 						updatePage("setting");
 					}}
+					style="aspect-ratio: 1/1;"
 				>
 					<Setting></Setting>
 				</div>
