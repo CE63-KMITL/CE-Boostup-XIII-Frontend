@@ -161,7 +161,7 @@
 		border-radius: 8px;
 		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 		position: relative;
-		max-width: 90%;
+		width: 90%;
 		height: 90%;
 		display: flex;
 		flex-direction: column;
