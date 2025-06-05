@@ -91,7 +91,7 @@
 			{/if}
 		</div>
 
-		<div><img src={imageHousePath(house.name)} alt="House Icon" class="houseIcon" /></div>
+		<img src={imageHousePath(house.name)} alt="House Icon" class="houseIcon" />
 		<div class="info-container">
 			<div class="houseName">
 				{house.name.charAt(0).toUpperCase() + house.name.slice(1)}
@@ -131,6 +131,7 @@
 		align-items: center;
 		justify-content: flex-end;
 		padding-inline-end: 3%;
+		height: 20px;
 	}
 
 	.score-bar {
@@ -154,5 +155,10 @@
 		justify-content: center;
 		transform: scale(1);
 		margin-left: 20px;
+		height: calc(100% + 20px);
+	}
+
+	.info-container {
+		width: fill-available;
 	}
 </style>
