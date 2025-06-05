@@ -46,7 +46,7 @@
 		{:else if index == 2}
 			<BadgeBronze></BadgeBronze>
 		{:else}
-			{String(+index + 1).padStart(2, "0")}
+			{String(+index + 1).padStart(3, "0")}
 		{/if}
 	</div>
 	<slot></slot>
@@ -87,6 +87,7 @@
 			}
 			&:nth-child(4) {
 				width: 15%;
+				min-width: 100px;
 			}
 			&:nth-child(5) {
 				width: 16%;
@@ -113,12 +114,5 @@
 		margin-top: -10px;
 		display: flex;
 		justify-content: center;
-	}
-
-	:global(.houseIcon) {
-		display: flex;
-		justify-content: center;
-		transform: scale(1);
-		margin-left: 20px;
 	}
 </style>
