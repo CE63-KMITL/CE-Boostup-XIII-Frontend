@@ -39,8 +39,9 @@
 	}
 
 	function calculatePercentageWidth(currentScore: number, max: number, index: number): number {
-		if (index === 0) return 100;
-		if (max === 0) return 0;
+		if (index == 0) return 100;
+		if (max == 0 && currentScore == 0) return 100;
+		if (max == 0) return 0;
 		const percentage = (currentScore / max) * 100;
 		return percentage;
 	}
@@ -79,7 +80,7 @@
 
 {#each dataHouse as house, index}
 	<List class="house-list" on:select={handleHouseClick}>
-		<div class:image={index <= 2}>
+		<div class="ranking" class:image={index <= 2}>
 			{#if index == 0}
 				<BadgeGold></BadgeGold>
 			{:else if index == 1}
@@ -117,6 +118,11 @@
 		height: 50px;
 		background-color: var(--bg);
 		align-items: center;
+	}
+
+	.ranking {
+		min-width: 70px;
+		text-align: center;
 	}
 
 	.houseName {
