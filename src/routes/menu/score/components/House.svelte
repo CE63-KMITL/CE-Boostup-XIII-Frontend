@@ -73,7 +73,6 @@
 					label: "จำนวนคะแนน",
 					placeholder: "ใส่จำนวนคะแนน (ต้องมากกว่า 0)",
 					required: true,
-					value: 0,
 				},
 			],
 			true
