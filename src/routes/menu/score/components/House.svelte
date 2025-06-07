@@ -6,21 +6,77 @@
 	import BadgeGold from "$lib/components/Icons/Badge_Gold.svelte";
 	import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
 	import List from "$lib/components/List.svelte";
+	import { showPopup } from "$lib/components/PopUp.svelte";
+	import { IsRole } from "$lib/auth.local";
+	import { Role } from "$lib/enum/role";
 
 	//-------------------------------------------------------
 	// State Variables
 	//-------------------------------------------------------
 	let dataHouse: any[] = [];
-	let selectedHouseData;
 	let res;
 	let intervalId: any;
 	let maxScoreCalculated: number = 0;
 
 	//-------------------------------------------------------
-	// Event Handlers
+	// Event Handlers & Actions
 	//-------------------------------------------------------
-	function handleHouseClick(event) {
-		selectedHouseData = event.detail;
+	async function handleHouseItemClick(house: any) {
+		if (!IsRole(Role.STAFF)) {
+			return;
+		}
+
+		const houseNameDisplay = house.name.charAt(0).toUpperCase() + house.name.slice(1);
+
+		await showPopup(
+			`แก้ไขคะแนนบ้าน ${houseNameDisplay}`,
+			{
+				เพิ่มคะแนน: {
+					callback: async (formData?: { [key: string]: any }) => {
+						const scoreValue = Number(formData?.scoreChange);
+						if (!formData || isNaN(scoreValue) || scoreValue <= 0) {
+							showPopup("กรุณาใส่ค่าคะแนนที่มากกว่า 0", { ตกลง: () => {} }, "small");
+							return;
+						}
+						await api.call(`/houseScores/add/${house.name}`, {
+							method: "PUT",
+							data: { value: scoreValue },
+							withToken: true,
+						});
+						await fetchHouseScores();
+					},
+					primary: true,
+				},
+				ลดคะแนน: {
+					callback: async (formData?: { [key: string]: any }) => {
+						const scoreValue = Number(formData?.scoreChange);
+						if (!formData || isNaN(scoreValue) || scoreValue <= 0) {
+							showPopup("กรุณาใส่ค่าคะแนนที่มากกว่า 0", { ตกลง: () => {} }, "small");
+							return;
+						}
+						await api.call(`/houseScores/subtract/${house.name}`, {
+							method: "PUT",
+							data: { value: scoreValue },
+							withToken: true,
+						});
+						await fetchHouseScores();
+					},
+				},
+				ยกเลิก: { callback: () => {}, cancel: true },
+			},
+			"medium",
+			[
+				{
+					type: "number",
+					name: "scoreChange",
+					label: "จำนวนคะแนน",
+					placeholder: "ใส่จำนวนคะแนน (ต้องมากกว่า 0)",
+					required: true,
+					value: 0,
+				},
+			],
+			true
+		);
 	}
 
 	//-------------------------------------------------------
@@ -79,7 +135,11 @@
 </script>
 
 {#each dataHouse as house, index}
-	<List class="house-list" on:select={handleHouseClick}>
+	<List
+		class="house-list"
+		onclick={() => handleHouseItemClick(house)}
+		style={IsRole(Role.STAFF) ? "cursor: pointer;" : ""}
+	>
 		<div class="ranking" class:image={index <= 2}>
 			{#if index == 0}
 				<BadgeGold></BadgeGold>
