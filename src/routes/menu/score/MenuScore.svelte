@@ -69,6 +69,23 @@
 			headerTabs = { scoreDetail: "คะแนนของฉัน", claimPrice: "ของรางวัล" };
 			activeTab = "scoreDetail";
 		}
+
+		if ($mobile == true) {
+			activeTab = "score";
+
+			headerTabs = {
+				scoreDetail: "คะแนนของฉัน",
+				claimPrice: "ของรางวัล",
+				score: "คะแนนทั้งหมด",
+			};
+		} else {
+			activeTab = "scoreDetail";
+
+			headerTabs = {
+				scoreDetail: "คะแนนของฉัน",
+				claimPrice: "ของรางวัล",
+			};
+		}
 	});
 
 	$: {
@@ -509,19 +526,6 @@
 
 			:global(#sc-right) {
 				display: none;
-			}
-		}
-
-		:global(#scoreTab) {
-			flex-direction: row;
-			align-items: start;
-			justify-content: center;
-
-			:global(div.scl-image) {
-				height: auto;
-				width: 90%;
-				padding: 0px;
-				margin-top: 0px;
 			}
 		}
 
