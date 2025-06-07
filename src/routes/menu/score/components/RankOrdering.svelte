@@ -66,7 +66,8 @@
 						<b>
 							{stageKey}
 						</b>
-						<Star /> :
+						<Star />
+						{">>"}
 						{stageValue}
 					</div>
 				{/each}
@@ -84,7 +85,7 @@
 		justify-content: space-between;
 		margin-top: 12px;
 		padding: 10px;
-		height: 50px;
+		height: 60px;
 		background-color: var(--bg);
 		align-items: center;
 		opacity: 0;
@@ -142,13 +143,18 @@
 
 		.passed-star {
 			display: flex;
-			gap: 5px;
 			align-items: center;
 			justify-content: center;
 			flex-direction: row;
-			height: 50%;
+			background: var(--bg);
+			height: 20px;
+			padding: 5px;
 			border-radius: var(--n-border-radius);
 			outline: 1px solid var(--theme);
+
+			svg {
+				width: 13px;
+			}
 		}
 	}
 
