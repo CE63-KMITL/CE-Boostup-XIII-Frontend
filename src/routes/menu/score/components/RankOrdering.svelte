@@ -63,7 +63,7 @@
 				<div class="passed-star">
 					{index}
 					<Star></Star>
-					{passed}
+					{JSON.stringify(passed)}
 				</div>
 			{/each}
 		</div>
