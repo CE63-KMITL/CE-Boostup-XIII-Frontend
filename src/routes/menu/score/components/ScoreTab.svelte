@@ -22,7 +22,7 @@
 
 	$selectedHouseStore = $userData.house;
 
-	let headerTabs: { [key: string]: string } = { overall: "Overall", house: "House", myHouse: "MyHouse" };
+	let headerTabs: { [key: string]: string } = { overall: "ทั้งหมด", house: "บ้าน", myHouse: "บ้านของฉัน" };
 	let activeTab = "overall";
 	let scrollElement;
 	let searchText = "";
