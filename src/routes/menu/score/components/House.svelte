@@ -43,6 +43,7 @@
 							data: { value: scoreValue },
 							withToken: true,
 						});
+						await showPopup("เพิ่มคะแนนสําเร็จ!", { ตกลง: () => {} }, "small");
 						await fetchHouseScores();
 					},
 					primary: true,
@@ -59,6 +60,7 @@
 							data: { value: scoreValue },
 							withToken: true,
 						});
+						await showPopup("ลดคะแนนสําเร็จ!", { ตกลง: () => {} }, "small");
 						await fetchHouseScores();
 					},
 					cancel: true,
