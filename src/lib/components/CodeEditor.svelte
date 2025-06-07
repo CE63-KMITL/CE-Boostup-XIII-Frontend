@@ -68,6 +68,23 @@
 					Number(localStorage.getItem("autoSaveDelay")) || 500
 				);
 			});
+		} else {
+			editorElement.onchange = async () => {
+				value = editorElement.value;
+				if (autoSaveTimeout) {
+					clearTimeout(autoSaveTimeout);
+				}
+				autoSaveTimeout = setTimeout(
+					async () => {
+						const currentText = editorElement.value;
+						if (saveCode && currentText != lastSaved) {
+							lastSaved = currentText;
+							await saveCode(currentText);
+						}
+					},
+					Number(localStorage.getItem("autoSaveDelay")) || 500
+				);
+			};
 		}
 
 		if (loadCode) {
