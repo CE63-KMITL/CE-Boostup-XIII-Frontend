@@ -60,5 +60,8 @@
 		padding: 10px;
 		width: 90%;
 		align-self: center;
+          gap: 10px;
+		width: fit-content;
+		height: max-content;
 	}
 </style>
