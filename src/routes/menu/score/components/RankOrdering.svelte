@@ -64,8 +64,10 @@
 			{#if user?.passed}
 				{#each Object.entries(user.passed) as [stageKey, stageValue]}
 					<div class="passed-star">
-						{stageKey}
-						<Star />
+						<b>
+							{stageKey}
+						</b>
+						<Star /> :
 						{stageValue}
 					</div>
 				{/each}
@@ -137,6 +139,17 @@
 		:global(.rank-info-top div) {
 			text-align: center;
 			white-space: nowrap;
+		}
+
+		.passed-star {
+			display: flex;
+			gap: 5px;
+			align-items: center;
+			justify-content: center;
+			flex-direction: row;
+			height: 50%;
+			border-radius: var(--n-border-radius);
+			outline: 1px solid var(--theme);
 		}
 	}
 
