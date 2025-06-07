@@ -169,7 +169,7 @@
 	}
 
 	:global(html[mobile]) {
-		.houseIcon {
+		.ranking {
 			transform: scale(0.7);
 		}
 	}

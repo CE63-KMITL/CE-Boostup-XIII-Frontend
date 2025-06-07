@@ -40,12 +40,7 @@
 	{#if user == "loading"}
 		<LoadingList></LoadingList>
 	{:else}
-		<RankOrdering index={i} id={user.id} {user} on:select={handleHouseClick}>
-			<div><UserIcon name={user.name} data={user.icon}></UserIcon></div>
-			<div>{user.name}</div>
-			<div>{user.studentId}</div>
-			<div style="text-align: right; padding-inline-end: 2%;">{user.score}</div>
-		</RankOrdering>
+		<RankOrdering index={i} {user} on:select={handleHouseClick} />
 	{/if}
 {/each}
 
