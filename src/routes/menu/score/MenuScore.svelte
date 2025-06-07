@@ -93,8 +93,7 @@
 			activeTab = "score";
 
 			if (IsRole(Role.STAFF)) {
-				headerTabs = { scoreDetail: "ข้อมูล", scEditData: "แก้ไขคะแนน", score: "คะแนนทั้งหมด" };
-				activeTab = "scEditData";
+				headerTabs = { scoreDetail: "ข้อมูล", score: "คะแนนทั้งหมด" };
 			} else {
 				headerTabs = {
 					scoreDetail: "คะแนนของฉัน",

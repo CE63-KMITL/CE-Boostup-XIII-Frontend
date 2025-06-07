@@ -61,13 +61,15 @@
 
 		<div class="rank-info-bottom">
 			{JSON.stringify(user?.passed)}
-			{#each user?.passed as passed, index}
-				<div class="passed-star">
-					{index}
-					<Star></Star>
-					{passed}
-				</div>
-			{/each}
+			{#if user?.passed}
+				{#each Object.entries(user.passed) as [stageKey, stageValue]}
+					<div class="passed-star">
+						{stageKey}
+						<Star />
+						{stageValue}
+					</div>
+				{/each}
+			{/if}
 		</div>
 	</div>
 
