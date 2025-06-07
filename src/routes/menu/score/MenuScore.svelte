@@ -86,9 +86,11 @@
 				claimPrice: "ของรางวัล",
 			};
 		}
+
+		updateMobile();
 	});
 
-	$: {
+	function updateMobile() {
 		if ($mobile == true) {
 			activeTab = "score";
 
@@ -114,6 +116,11 @@
 				};
 			}
 		}
+	}
+
+	$: {
+		$mobile;
+		updateMobile();
 	}
 </script>
 

@@ -108,7 +108,9 @@
 			width: 5%;
 			min-width: 10%;
 			max-width: 10%;
+			text-align: center;
 		}
+
 		.usericon {
 			min-width: 40px;
 			max-width: 10%;
@@ -151,8 +153,9 @@
 			padding: 5px;
 			border-radius: var(--n-border-radius);
 			outline: 1px solid var(--theme);
+			text-wrap: nowrap;
 
-			svg {
+			:global(svg) {
 				width: 13px;
 			}
 		}

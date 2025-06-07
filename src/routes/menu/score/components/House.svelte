@@ -61,8 +61,9 @@
 						});
 						await fetchHouseScores();
 					},
+					cancel: true,
 				},
-				ยกเลิก: { callback: () => {}, cancel: true },
+				ยกเลิก: { callback: () => {} },
 			},
 			"medium",
 			[
