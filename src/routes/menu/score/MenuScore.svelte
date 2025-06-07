@@ -15,6 +15,7 @@
 	import HistoryBtn from "./components/HistoryBtn.svelte";
 	import EditSelectedUser from "./components/EditSelectedUser.svelte";
 	import * as api from "$lib/fetchApi";
+	import { mobile } from "../pageManager";
 
 	//-------------------------------------------------------
 	// Component State
@@ -69,6 +70,25 @@
 			activeTab = "scoreDetail";
 		}
 	});
+
+	$: {
+		if ($mobile == true) {
+			activeTab = "score";
+
+			headerTabs = {
+				scoreDetail: "คะแนนของฉัน",
+				claimPrice: "ของรางวัล",
+				score: "คะแนนทั้งหมด",
+			};
+		} else {
+			activeTab = "scoreDetail";
+
+			headerTabs = {
+				scoreDetail: "คะแนนของฉัน",
+				claimPrice: "ของรางวัล",
+			};
+		}
+	}
 </script>
 
 {#if $popup}
@@ -116,30 +136,36 @@
 				<div id="scoreTab-editscore" class="full" in:azScale={{ delay: 250 }} out:azScale>
 					<EditSelectedUser></EditSelectedUser>
 				</div>
+			{:else if activeTab == "score"}
+				<ScoreTab></ScoreTab>
 			{/if}
 		{:else}
 			กรุณาเข้าสู่ระบบก่อนใช้งาน
 		{/if}
 	</Tab>
 
-	<Frame id="sc-right" full="" blur-bg border={false}>
-		<ScoreTab></ScoreTab>
-	</Frame>
+	{#if $mobile != true}
+		<Frame id="sc-right" full="" blur-bg border={false}>
+			<ScoreTab></ScoreTab>
+		</Frame>
+	{/if}
 
-	<div id="sc-bottom" class:show={$selectData != null}>
-		{#if $selectData != null}
-			<div in:azScale={{ delay: 250 }} out:azScale class="full">
-				<EditSelectedUser></EditSelectedUser>
-				<Button
-					color="var(--bg)"
-					hoverColor="var(--status-not-started)"
-					textColor="var(--status-not-started)"
-					outline="var(--status-not-started)"
-					onclick={setSelectDataToNull}>ปิด</Button
-				>
-			</div>
-		{/if}
-	</div>
+	{#if IsRole(Role.STAFF)}
+		<div id="sc-bottom" class:show={$selectData != null}>
+			{#if $selectData != null}
+				<div in:azScale={{ delay: 250 }} out:azScale class="full">
+					<EditSelectedUser></EditSelectedUser>
+					<Button
+						color="var(--bg)"
+						hoverColor="var(--status-not-started)"
+						textColor="var(--status-not-started)"
+						outline="var(--status-not-started)"
+						onclick={setSelectDataToNull}>ปิด</Button
+					>
+				</div>
+			{/if}
+		</div>
+	{/if}
 </div>
 
 <!--
@@ -477,12 +503,12 @@
 			flex-direction: column;
 
 			:global(#sc-left) {
-				display: none;
+				width: auto;
+				height: 100%;
 			}
 
 			:global(#sc-right) {
-				width: auto;
-				height: 100%;
+				display: none;
 			}
 		}
 

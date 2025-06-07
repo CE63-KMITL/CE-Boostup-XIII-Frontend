@@ -83,7 +83,7 @@
 		{#each allRewards as reward, i (i)}
 			<div class="reward-item">
 				<div class="reward-item-image">
-					<img src="/rewards/{reward.name}.png" alt="" width="40" height="40" />
+					<img src="/reward.jpg" alt="" width="40" height="40" />
 				</div>
 				<div class="reward-item-name">{reward.name}</div>
 				<div class="reward-item-needed-score">
