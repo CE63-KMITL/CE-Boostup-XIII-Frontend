@@ -50,20 +50,22 @@
 		{/if}
 	</div>
 
+	<div class="usericon"><UserIcon name={user.name} data={user?.icon} /></div>
+
 	<div class="rank-info">
 		<div class="rank-info-top">
-			<div class="usericon"><UserIcon name={user.name} data={user?.icon} /></div>
 			<div class="name">{user.name}</div>
 			<div class="studentId">{user.studentId}</div>
 			<div class="house">{user.house}</div>
 		</div>
 
 		<div class="rank-info-bottom">
+			{JSON.stringify(user?.passed)}
 			{#each user?.passed as passed, index}
 				<div class="passed-star">
 					{index}
 					<Star></Star>
-					{JSON.stringify(passed)}
+					{passed}
 				</div>
 			{/each}
 		</div>
@@ -87,6 +89,7 @@
 		.rank-info {
 			display: flex;
 			flex-direction: column;
+			width: 100%;
 			height: 100%;
 		}
 
