@@ -92,18 +92,28 @@
 		if ($mobile == true) {
 			activeTab = "score";
 
-			headerTabs = {
-				scoreDetail: "คะแนนของฉัน",
-				claimPrice: "ของรางวัล",
-				score: "คะแนนทั้งหมด",
-			};
+			if (IsRole(Role.STAFF)) {
+				headerTabs = { scoreDetail: "ข้อมูล", scEditData: "แก้ไขคะแนน", score: "คะแนนทั้งหมด" };
+				activeTab = "scEditData";
+			} else {
+				headerTabs = {
+					scoreDetail: "คะแนนของฉัน",
+					claimPrice: "ของรางวัล",
+					score: "คะแนนทั้งหมด",
+				};
+			}
 		} else {
 			activeTab = "scoreDetail";
 
-			headerTabs = {
-				scoreDetail: "คะแนนของฉัน",
-				claimPrice: "ของรางวัล",
-			};
+			if (IsRole(Role.STAFF)) {
+				headerTabs = { scoreDetail: "ข้อมูล", scEditData: "แก้ไขคะแนน" };
+				activeTab = "scEditData";
+			} else {
+				headerTabs = {
+					scoreDetail: "คะแนนของฉัน",
+					claimPrice: "ของรางวัล",
+				};
+			}
 		}
 	}
 </script>
