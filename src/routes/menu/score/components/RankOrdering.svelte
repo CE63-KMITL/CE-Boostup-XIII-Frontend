@@ -60,7 +60,6 @@
 		</div>
 
 		<div class="rank-info-bottom">
-			{JSON.stringify(user?.passed)}
 			{#if user?.passed}
 				{#each Object.entries(user.passed) as [stageKey, stageValue]}
 					<div class="passed-star">
