@@ -103,9 +103,11 @@
 			max-width: 10%;
 		}
 		.usericon {
-			width: 5%;
 			min-width: 40px;
 			max-width: 10%;
+			width: 40px;
+			height: 40px;
+			aspect-ratio: 1/1;
 		}
 		.name {
 			width: 32%;

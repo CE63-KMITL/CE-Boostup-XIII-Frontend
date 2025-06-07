@@ -21,11 +21,3 @@
 		<RankOrdering index={i} {user} on:select={handleSelect} />
 	{/if}
 {/each}
-
-<style>
-	.usericon {
-		width: 40px;
-		height: 40px;
-		aspect-ratio: 1/1;
-	}
-</style>
