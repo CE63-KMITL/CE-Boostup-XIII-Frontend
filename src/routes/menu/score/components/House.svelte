@@ -167,4 +167,10 @@
 	.info-container {
 		width: fill-available;
 	}
+
+	:global(html[mobile]) {
+		.houseIcon {
+			transform: scale(0.7);
+		}
+	}
 </style>

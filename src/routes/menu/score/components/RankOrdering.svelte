@@ -4,14 +4,14 @@
 	import BadgeSilver from "$lib/components/Icons/Badge_Silver.svelte";
 	import BadgeBronze from "$lib/components/Icons/Badge_Bronze.svelte";
 	import { createEventDispatcher } from "svelte";
-	import { azScale } from "$lib/transition";
 	import { refreshHouseList } from "../score";
 	import { IsRole, userData } from "$lib/auth.local";
 	import { Role } from "$lib/enum/role";
+	import UserIcon from "$lib/components/UserIcon.svelte";
+	import Star from "$lib/components/Icons/Star.svelte";
 
 	//let index: number = $$restProps?.index;
 	export let index: number;
-	export let id: string;
 	export let user: any;
 
 	// for sent event back Ja
@@ -35,10 +35,10 @@
 	user.house == null
 		? 'noHouse'
 		: ''}"
-	{id}
+	id={user.id}
 	onclick={handleClick}
 >
-	<div class:image={index <= 2}>
+	<div class="ranking" class:image={index <= 2}>
 		{#if index == 0}
 			<BadgeGold></BadgeGold>
 		{:else if index == 1}
@@ -49,7 +49,27 @@
 			{String(+index + 1).padStart(3, "0")}
 		{/if}
 	</div>
-	<slot></slot>
+
+	<div class="rank-info">
+		<div class="rank-info-top">
+			<div class="usericon"><UserIcon name={user.name} data={user?.icon} /></div>
+			<div class="name">{user.name}</div>
+			<div class="studentId">{user.studentId}</div>
+			<div class="house">{user.house}</div>
+		</div>
+
+		<div class="rank-info-bottom">
+			{#each user?.passed as passed, index}
+				<div class="passed-star">
+					{index}
+					<Star></Star>
+					{passed}
+				</div>
+			{/each}
+		</div>
+	</div>
+
+	<div class="score">{user.score}</div>
 </List>
 
 <style lang="scss">
@@ -62,41 +82,54 @@
 		height: 50px;
 		background-color: var(--bg);
 		align-items: center;
-		// opacity: 0;
+		opacity: 0;
 
-		:global(> div) {
+		.rank-info {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+
+		.rank-info > div {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+		}
+
+		.ranking {
+			width: 5%;
+			min-width: 10%;
+			max-width: 10%;
+		}
+		.usericon {
+			width: 5%;
+			min-width: 40px;
+			max-width: 10%;
+		}
+		.name {
+			width: 32%;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			text-align: left;
+			padding-inline-start: 2%;
+		}
+		.studentId {
+			width: 15%;
+			min-width: 100px;
+		}
+		.house {
+			width: 16%;
+		}
+		.score {
+			width: 8%;
+			text-align: right;
+			padding-inline-end: 2%;
+		}
+
+		:global(.rank-info-top div) {
 			text-align: center;
 			white-space: nowrap;
-
-			&:nth-child(1) {
-				width: 5%;
-				min-width: 10%;
-				max-width: 10%;
-			}
-			&:nth-child(2) {
-				width: 5%;
-				min-width: 40px;
-				max-width: 10%;
-			}
-			&:nth-child(3) {
-				width: 32%;
-				text-overflow: ellipsis;
-				overflow: hidden;
-				text-align: left;
-				padding-inline-start: 2%;
-			}
-			&:nth-child(4) {
-				width: 15%;
-				min-width: 100px;
-			}
-			&:nth-child(5) {
-				width: 16%;
-			}
-			&:nth-child(6) {
-				width: 8%;
-				text-align: right;
-				padding-inline-end: 2%;
-			}
 		}
 	}
 
@@ -105,7 +138,7 @@
 		background: color-mix(in srgb, var(--used-time), var(--bg) 80%) !important;
 	}
 
-	:global(div.listScores.noHouse) {
+	:global(div.listScores.noHouse:not(.staff)) {
 		outline: 1px solid var(--grayed);
 		background: color-mix(in srgb, var(--grayed), var(--bg) 80%) !important;
 	}
