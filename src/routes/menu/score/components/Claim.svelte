@@ -65,7 +65,7 @@
 		{#each allRewards as reward, i (i)}
 			{@const leftPosition = maxPoints > 0 ? (reward.points / maxPoints) * 100 : 0}
 			<div class="checkpoint status-{reward.status}" style="left: {leftPosition}%;">
-				<img src="/reward.jpg" alt="" />
+				<img src="/rewards/{reward.name}.jpg" alt="" />
 				<span class="checkpoint-label">{reward.name} ({reward.points})</span>
 			</div>
 		{/each}
@@ -83,7 +83,7 @@
 		{#each allRewards as reward, i (i)}
 			<div class="reward-item">
 				<div class="reward-item-image">
-					<img src="/reward.jpg" alt="" width="40" height="40" />
+					<img src="/rewards/{reward.name}.jpg" alt="" width="40" height="40" />
 				</div>
 				<div class="reward-item-name">{reward.name}</div>
 				<div class="reward-item-needed-score">
