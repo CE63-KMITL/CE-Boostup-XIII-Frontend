@@ -10,8 +10,8 @@
 	import { say } from "$lib/normalFunction";
 
 	const profile = {
-		name: "เพ็ญพิชชา ปานจันทร์",
-		studentId: "68010662",
+		name: "",
+		studentId: "",
 		rank: 23,
 		score: 300,
 		houseRank: 5,
@@ -62,7 +62,7 @@
 				<ProfileUser user={$selectData.data} />
 			</div>
 			<div class="sc-instead-ntung-top-detail">
-				<div id="detail-top">นักผจญภัยอันดับที่ {$selectData.data.rank}</div>
+				<div id="detail-top">นักผจญภัยอันดับที่ {$selectData.row}</div>
 				<div id="detail-bottom">{$selectData.data.score}</div>
 				<div id="detail-top">บ้านอันดับที่ {$selectData.data.houseRank}</div>
 				<div id="detail-bottom">{$selectData.data.houseScore}</div>
