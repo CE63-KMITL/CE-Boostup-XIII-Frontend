@@ -161,6 +161,17 @@
 		}
 	}
 
+	:global(html[mobile]) {
+		:global(.listScores) {
+			:global(.rank-info-top) {
+				height: 100%;
+			}
+			:global(.rank-info-bottom) {
+				display: none;
+			}
+		}
+	}
+
 	:global(div.listScores.staff) {
 		outline: 1px solid var(--used-time);
 		background: color-mix(in srgb, var(--used-time), var(--bg) 80%) !important;
