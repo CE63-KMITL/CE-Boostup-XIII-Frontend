@@ -163,10 +163,12 @@
 
 	:global(html[mobile]) {
 		:global(.listScores) {
-			:global(.rank-info-top) {
+			.rank-info-top {
 				height: 100%;
+				align-items: center;
 			}
-			:global(.rank-info-bottom) {
+
+			.rank-info-bottom {
 				display: none;
 			}
 		}
