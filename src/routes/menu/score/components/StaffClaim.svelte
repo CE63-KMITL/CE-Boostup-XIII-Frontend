@@ -145,7 +145,7 @@ HTML Structure
 				<tr>
 					<td data-label="รางวัล">
 						<div class="reward-info">
-							<img src="/rewards/{reward.reward}.jpg" alt={reward.reward} />
+							<img src="/rewards/{reward.name}.jpg" alt={reward.reward} />
 							<span>{reward.name}</span>
 						</div>
 					</td>
